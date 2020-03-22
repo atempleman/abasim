@@ -7,12 +7,13 @@ import { Observable } from 'rxjs';
 import { InitialDraftPicks } from '../_models/initialDraftPicks';
 import { Team } from '../_models/team';
 import { DraftSelection } from '../_models/draftSelection';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DraftService {
-  baseUrl = 'http://localhost:5000/api/draft/';
+  baseUrl = environment.apiUrl + '/draft/';
 
   constructor(private http: HttpClient) { }
 

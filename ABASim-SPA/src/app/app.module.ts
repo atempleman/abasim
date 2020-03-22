@@ -33,6 +33,11 @@ import { InitiallotteryComponent } from './initiallottery/initiallottery.compone
 import { DraftPlayerPoolComponent } from './draft-player-pool/draft-player-pool.component';
 import { DraftboardComponent } from './draftboard/draftboard.component';
 import { InitialDraftComponent } from './initial-draft/initial-draft.component';
+import { JwtModule } from '@auth0/angular-jwt';
+
+export function tokenGetter() {
+   return localStorage.getItem('token');
+}
 
 @NgModule({
    declarations: [
@@ -69,7 +74,14 @@ import { InitialDraftComponent } from './initial-draft/initial-draft.component';
       HttpClientModule,
       FormsModule,
       ReactiveFormsModule,
-      ModalModule.forRoot()
+      ModalModule.forRoot(),
+      JwtModule.forRoot({
+         config: {
+             tokenGetter: tokenGetter,
+             whitelistedDomains: ['localhost:5000'],
+             blacklistedRoutes: ['localhost:5000/api/auth']
+         }
+       })
    ],
    providers: [
       ErrorInterceptorProvider,

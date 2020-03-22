@@ -4,12 +4,13 @@ import { Player } from '../_models/player';
 import { Observable } from 'rxjs';
 import { Team } from '../_models/team';
 import { DepthChart } from '../_models/depthChart';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeamService {
-  baseUrl = 'http://localhost:5000/api/team/';
+  baseUrl = environment.apiUrl + '/team/';
 
   constructor(private http: HttpClient) { }
 
