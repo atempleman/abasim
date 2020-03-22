@@ -1,0 +1,46 @@
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+    <div class="page-header">
+        <h1>DRAFT HEADQUARTERS</h1>
+    </div>
+    <div *ngIf="this.league?.stateId < 3" class="row mt-2 ml-5">
+		<p><i class="fa fa-exclamation-triangle"></i> League Administrator will run draft lottery soon.</p>
+	</div>
+    <div class="row">
+        <div class="col">
+            <div class="panel with-nav-tabs panel-primary">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        <li><button (click)="draftClicked()">Draft</button></li>
+                        <li><button (click)="lotteryClicked()" *ngIf="this.league?.stateId > 5">Draft Lottery</button></li>
+                        <li><button (click)="playerPoolClicked()">Draft Player Pool</button></li>
+                        <li><button (click)="rankingsClicked()">Draftboard</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="row"> -->
+        <!-- <div class="col"> -->
+            <div class="panel-body">
+                <div class="tab-pane" id="drafttab" *ngIf="draftDisplayed == 1 && this.league?.stateId == 4">
+                    <app-initial-draft></app-initial-draft>
+                </div>
+                <div class="tab-pane" id="draftlotterytab" *ngIf="lotteryDisplayed == 1">
+                    <app-initiallottery></app-initiallottery>
+                </div>
+                <div class="tab-pane" id="draftplayerpooltab" *ngIf="playerPoolDisplayed == 1">
+                    <app-draft-player-pool></app-draft-player-pool>
+                </div>
+                <div class="tab-pane" id="draftrankingstab" *ngIf="rankingsDisplayed == 1">
+                    <app-draftboard></app-draftboard>
+                </div>
+            </div>
+        <!-- </div> -->
+    <!-- </div> -->
+</div>
+<br/>

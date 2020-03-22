@@ -1,0 +1,141 @@
+<div *ngIf="this.league?.stateId != 1">
+  <div class="container">
+    <div class="row bardhe">
+      <div class="feature-col col-xs-12 col-sm-6 col-md-6 kolonat-hom">
+        <div class="teksti-home">
+          <h3 class="title">Deptch Charts</h3>
+        </div>
+        <div class="row mt-2 ml-5">
+          <p><i class="fa fa-exclamation-triangle"></i> Set your team depth charts. This will provide a guideline as to
+            who plays when for you team in the simulation.</p>
+        </div>
+        <br />
+        <hr />
+
+        <div class="container">
+          <div class="row col-md-6 col-md-offset-2 custyle">
+            <table class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Position</th>
+                  <th>Starter</th>
+                  <th>Depth #1</th>
+                  <th>Depth #2</th>
+                </tr>
+              </thead>
+              <tr>
+                <td>PG</td>
+                <td>
+                  <select name="pg-depth1" [value]="dcPG01?.playerId" [(ngModel)]="pg01Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="pg-depth2" [value]="dcPG02?.playerId" [(ngModel)]="pg02Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select></td>
+                <td>
+                  <select name="pg-depth3" [value]="dcPG03?.playerId" [(ngModel)]="pg03Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>SG</td>
+                <td>
+                  <select name="sg-depth1" [value]="dcSG01?.playerId" [(ngModel)]="sg01Id">
+                  <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select></td>
+                <td>
+                  <select name="sg-depth2" [value]="dcSG02?.playerId" [(ngModel)]="sg02Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select></td>
+                <td>
+                  <select name="sg-depth3" [value]="dcSG03?.playerId" [(ngModel)]="sg03Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>SF</td>
+                <td>
+                  <select name="sf-depth1" [value]="dcSF01?.playerId" [(ngModel)]="sf01Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="sf-depth2" [value]="dcSF02?.playerId" [(ngModel)]="sf02Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="sf-depth3" [value]="dcSF03?.playerId" [(ngModel)]="sf03Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>PF</td>
+                <td>
+                  <select name="pf-depth1" [value]="dcPF01?.playerId" [(ngModel)]="pf01Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="pf-depth2" [value]="dcPF02?.playerId" [(ngModel)]="pf02Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="pf-depth3" [value]="dcPF03?.playerId" [(ngModel)]="pf03Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>C</td>
+                <td>
+                  <select name="c-depth1" [value]="dcC01?.playerId" [(ngModel)]="c01Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="c-depth2" [value]="dcC02?.playerId" [(ngModel)]="c02Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="c-depth3" [value]="dcC03?.playerId" [(ngModel)]="c03Id">
+                    <option *ngFor="let player of this.playingRoster" [value]="player.id">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+            <br />
+            <hr />
+            <button type="submit" class="btn btn-primary" (click)="saveDepthChart()">Save Changes</button>
+          </div>
+        </div>
+        <!-- <div class="row bardhe" *ngFor="let round of this.rounds">
+                <h5>Round {{ round }}</h5>
+                  <table class="table table-striped custab">
+                        <thead>
+                              <tr>
+                              <th>Postion</th>
+                              <th>Depth #1</th>
+                              <th>Depth #2</th>
+                              <th>Depth #3</th>
+                              </tr>
+                        </thead>
+                        <tr *ngFor="let picks of this.roundPicks">
+                              <td>{{ picks }}</td>
+                              <td>{{ getTeamNameForSelection(round, picks) }}</td>
+                              <td><ng-container *ngIf="round <= this.tracker.round">{{ getPlayerSelected(round, picks) }}</ng-container></td>
+                        </tr>
+                  </table>
+            
+              </div> -->
+      </div>
+    </div>
+  </div>
+</div>

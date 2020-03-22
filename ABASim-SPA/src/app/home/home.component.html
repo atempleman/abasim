@@ -1,0 +1,96 @@
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Login</h3>
+        </div>
+        <div class="panel-body">
+          <form [formGroup]="loginForm" accept-charset="UTF-8" role="form" (ngSubmit)="login()">
+            <fieldset>
+              <div class="form-group">
+                <input class="form-control" placeholder="yourmail@example.com" name="username" type="text" formControlName="username">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="Password" name="password" type="password" value="" formControlName="password">
+              </div>
+              <!-- <div class="checkbox">
+                <label>
+                  <input name="remember" type="checkbox" value="Remember Me"> Remember Me
+                </label>
+              </div> -->
+              <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+<br />
+
+<div *ngIf="this.availableTeams" class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Register</h3>
+        </div>
+        <div class="panel-body">
+          <form [formGroup]="registerForm" accept-charset="UTF-8" role="form" (ngSubmit)="register()">
+            <fieldset>
+              <div class="form-group">
+                <input class="form-control" placeholder="Username" name="username" type="text" formControlName="username">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="Password" name="password" type="password" value="" formControlName="password">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value="" formControlName="confirmPassword">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="yourmail@example.com" name="email" type="text" formControlName="email">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="Name" name="name" type="text" value="" formControlName="name">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="City - e.g. Atlanta" name="teamname" type="text" value="" formControlName="teamname">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="Mascot - e.g. Hawks" name="mascot" type="text" value="" formControlName="mascot">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="Short code - e.g. ATL" name="shortcode" type="text" value="" formControlName="shortcode">
+              </div>
+              <input class="btn btn-lg btn-success btn-block" type="submit" value="Register">
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="!this.availableTeams" class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Register Unavailable</h3>
+        </div>
+        <div class="panel-body">
+          Currently no teams are available to be registered for. Please go to the Contact Us page and register your interest to go on our waiting list or to discuss options of starting your own league!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

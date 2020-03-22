@@ -1,0 +1,28 @@
+<h4>Draft Lottery</h4> 
+<table *ngIf="this.league?.stateId == 2" class="table table-striped custab">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Team </th>
+      <th>Chance</th>
+    </tr>
+  </thead>
+  <tr *ngFor="let team of this.teams">
+    <td>1</td>
+    <td>{{ team.teamname }}, {{ team.mascot }}</td>
+    <td>3.33%</td>
+  </tr>
+</table>
+
+<table *ngIf="this.league?.stateId == 3" class="table table-striped custab">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Team </th>
+    </tr>
+  </thead>
+  <tr *ngFor="let team of this.teams; let i = index">
+    <td>{{ i + 1 }}</td>
+    <td>{{ team.teamname }}, {{ team.mascot }}</td>
+  </tr>
+</table>

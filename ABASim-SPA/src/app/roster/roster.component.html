@@ -1,0 +1,47 @@
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+    <div class="page-header">
+        <h1>TEAM ROSTER</h1>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="panel with-nav-tabs panel-primary">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        <li><button (click)="rosterClicked()">Roster</button></li>
+                        <li><button (click)="coachingClicked()" *ngIf="this.league?.stateId > 4">Coaching</button></li>
+                        <li><button (click)="depthChartsClicked()" *ngIf="this.league?.stateId > 3">Depth Charts</button></li>
+                        <li><button (click)="tradesClicked()">Trades</button></li>
+                        <li><button (click)="freeAgentsClicked()" *ngIf="this.league?.stateId > 4">Free Agents</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="row"> -->
+        <!-- <div class="col"> -->
+            <div class="panel-body">
+                <div *ngIf="this.rosterDisplayed == 1" class="tab-pane" id="rostertab">
+                    <app-team-roster></app-team-roster>
+                </div>
+                <div *ngIf="this.coachingDisplayed == 1" class="tab-pane" id="coachingtab">
+                    <app-coaching></app-coaching>
+                </div>
+                <div *ngIf="this.depthChartDisplayed == 1" class="tab-pane" id="depthcharttab">
+                    <app-depthchart></app-depthchart>
+                </div>
+                <div *ngIf="this.tradesDisplayed == 1" class="tab-pane" id="tradestab">
+                    <app-trades>></app-trades>
+                </div>
+                <div *ngIf="this.freeAgentsDisplayed == 1" class="tab-pane" id="freeagentstab">
+                    <app-freeagents></app-freeagents>
+                </div>
+            </div>
+        <!-- </div> -->
+    <!-- </div> -->
+</div>
+<br/>

@@ -1,0 +1,43 @@
+<div class="box">
+	<div class="container">
+		<div class="row">
+			<div class="card col-4 mt-3">
+				<div>
+					<div class="mb-2">
+						<h5 class="card-title">League Status</h5>
+						<p class="card-text">Change League Status the League</p>
+						<button role="button" class="btn btn-primary" (click)="openModal(status)">View Status</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<ng-template #status>
+	<div class="modal-header">
+	  <h4 class="modal-title">Manage League</h4>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #league (ngSubmit)="updateLeagueStatus()">
+		<div class="modal-body">
+			<div class="form-group">
+				<label class="col-md-6 control-label" for="textinput">Current: {{ this.currentStatus }}</label>
+				<br />
+				<label class="col-md-6 control-label" for="textinput">Status: </label>
+				<span>
+					<select name="leagueStatus" [(ngModel)]="statusSelection">
+					  <option *ngFor="let state of this.leagueStates" [value]="state.id">{{ state.state }}</option>
+					</select>
+				  </span>
+			</div>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary">Select</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		  </div>
+	</form>
+</ng-template>  

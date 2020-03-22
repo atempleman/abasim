@@ -1,0 +1,79 @@
+<div class="container">
+	<div class="row bardhe">
+		<div class="feature-col col-xs-12 col-sm-6 col-md-6 kolonat-hom">
+            <div class="teksti-home"><h3 class="title">Current Pick - Round #{{ tracker?.round }}, Pick #{{ tracker?.pick }}</h3>
+                  <p class="text">Time Remaining: {{ this.timeDisplay }}</p>
+                  <br />
+                  <div *ngIf="this.team?.id == this.teamOnClock?.id">
+                        <form #draftPlayerForm>
+                              <div class="modal-body">
+                                    <p>The {{ this.team.teamname }} {{ this.team.mascot }} select:</p>
+                                    <select name="leagueStatus" [(ngModel)]="this.draftSelection">
+                                          <option *ngFor="let player of this.draftablePlayers" [value]="player.playerId">{{ player.surname }}, {{ player.firstName }}</option>
+                                    </select>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <span class="margin-left: 10px">
+                                          <button type="submit" class="btn btn-primary" (click)="makeDraftPick()">Make Pick</button>
+                                    </span>
+                              </div>
+                        </form>
+                  </div>
+                  <br />
+                  <div>
+                        <button role="button" class="btn btn-warning" (click)="this.refresh()">Refresh</button>
+                  </div>
+                  <br />
+                  <div>
+                        <button role="button" class="btn btn-danger" *ngIf="this.timeRemaining == 0 && this.isAdmin == 1" (click)="autoPickAction()">Auto-Pick</button>
+                  </div>
+            </div>
+        </div>
+        
+        <div class="feature-col col-xs-12 col-sm-6 col-md-6 kolonat-hom">
+            <div class="teksti-home"><h3 class="title">On the Clock: {{ this.teamOnClock?.teamname }} {{ this.teamOnClock?.mascot }}</h3>
+                  <p class="text">Selecting Next: {{ this.nextTeam?.teamname }} {{ this.nextTeam?.mascot }}</p>
+            </div>
+        </div>
+  </div>
+  <br />
+  <div class="row bardhe" *ngFor="let round of this.rounds">
+    <h5>Round {{ round }}</h5>
+      <table class="table table-striped custab" *ngIf="this.loaded >= 4">
+            <thead>
+                  <tr>
+                  <th>Pick</th>
+                  <th>Team</th>
+                  <th>Selection</th>
+                  </tr>
+            </thead>
+            <tr *ngFor="let picks of this.roundPicks">
+                  <td>{{ picks }}</td>
+                  <td>{{ getTeamNameForSelection(round, picks) }}</td>
+                  <td><ng-container *ngIf="round <= this.tracker.round">{{ getPlayerSelected(round, picks) }}</ng-container></td>
+            </tr>
+      </table>
+
+  </div>
+
+
+
+
+  <!-- <ng-template #makePick>
+	<div class="modal-header">
+	  <h4 class="modal-title">Make Draft Selection - Round #{{ this.tracker?.round }} Pick #{{ this.tracker?.pick }}</h4>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #draftPlayerForm>
+		<div class="modal-body">
+                  <p>The {{ this.team.teamname }} {{ this.team.mascot }} select:</p>
+                  <select name="leagueStatus" [(ngModel)]="this.draftSelection">
+                        <option *ngFor="let player of this.draftablePlayers" [value]="player.playerId">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary" (click)="makeDraftPick()">Select</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		  </div>
+	</form>
+</ng-template>  -->
+

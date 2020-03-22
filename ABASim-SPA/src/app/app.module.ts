@@ -1,0 +1,84 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BsDropdownModule, ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { FooterComponent } from './footer/footer.component';
+import { HomeComponent } from './home/home.component';
+import { ContactComponent } from './contact/contact.component';
+import { ErrorInterceptorProvider } from './_services/error.interceptor';
+import { AlertifyService } from './_services/alertify.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { RosterComponent } from './roster/roster.component';
+import { PlayersComponent } from './players/players.component';
+import { DraftComponent } from './draft/draft.component';
+import { AdminComponent } from './admin/admin.component';
+import { StatsComponent } from './stats/stats.component';
+import { StandingsComponent } from './standings/standings.component';
+import { ScheduleandresultsComponent } from './scheduleandresults/scheduleandresults.component';
+import { FinancesComponent } from './finances/finances.component';
+import { TeamRosterComponent } from './team-roster/team-roster.component';
+import { CoachingComponent } from './coaching/coaching.component';
+import { FreeagentsComponent } from './freeagents/freeagents.component';
+import { TradesComponent } from './trades/trades.component';
+import { DepthchartComponent } from './depthchart/depthchart.component';
+import { AdminleagueComponent } from './adminleague/adminleague.component';
+import { AdminteamComponent } from './adminteam/adminteam.component';
+import { AdmindraftComponent } from './admindraft/admindraft.component';
+import { InitiallotteryComponent } from './initiallottery/initiallottery.component';
+import { DraftPlayerPoolComponent } from './draft-player-pool/draft-player-pool.component';
+import { DraftboardComponent } from './draftboard/draftboard.component';
+import { InitialDraftComponent } from './initial-draft/initial-draft.component';
+
+@NgModule({
+   declarations: [
+      AppComponent,
+      NavbarComponent,
+      FooterComponent,
+      HomeComponent,
+      ContactComponent,
+      DashboardComponent,
+      RosterComponent,
+      PlayersComponent,
+      DraftComponent,
+      AdminComponent,
+      StatsComponent,
+      StandingsComponent,
+      ScheduleandresultsComponent,
+      FinancesComponent,
+      TeamRosterComponent,
+      CoachingComponent,
+      FreeagentsComponent,
+      TradesComponent,
+      DepthchartComponent,
+      AdminleagueComponent,
+      AdminteamComponent,
+      AdmindraftComponent,
+      InitiallotteryComponent,
+      DraftPlayerPoolComponent,
+      DraftboardComponent,
+      InitialDraftComponent
+   ],
+   imports: [
+      BrowserModule,
+      AppRoutingModule,
+      HttpClientModule,
+      FormsModule,
+      ReactiveFormsModule,
+      ModalModule.forRoot()
+   ],
+   providers: [
+      ErrorInterceptorProvider,
+      AlertifyService,
+      BsModalService,
+      BsModalRef
+   ],
+   bootstrap: [
+      AppComponent
+   ]
+})
+export class AppModule { }
