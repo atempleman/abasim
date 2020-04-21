@@ -20,6 +20,7 @@ import { InitiallotteryComponent } from './initiallottery/initiallottery.compone
 import { DraftPlayerPoolComponent } from './draft-player-pool/draft-player-pool.component';
 import { DraftboardComponent } from './draftboard/draftboard.component';
 import { InitialDraftComponent } from './initial-draft/initial-draft.component';
+import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'initial-draft', component: InitialDraftComponent, canActivate: [AuthGuard] },
   { path: 'scheduleandresults', component: ScheduleandresultsComponent, canActivate: [AuthGuard] },
   { path: 'finances', component: FinancesComponent, canActivate: [AuthGuard] },
+  { path: 'adminpreseason', component: AdminpreseasonComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

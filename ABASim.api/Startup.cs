@@ -38,7 +38,8 @@ namespace ABASim.api
 
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnectionLocal")));
+            // services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
             ConfigureServices(services);
         }
@@ -46,6 +47,7 @@ namespace ABASim.api
         public void ConfigureProductionServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            // services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnectionLocal")));
             
             ConfigureServices(services);
         }
@@ -61,6 +63,7 @@ namespace ABASim.api
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IDraftRepository, DraftRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddScoped<ILeagueRepository, LeagueRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {

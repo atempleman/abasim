@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABASim.api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200307075715_DraftTracker")]
-    partial class DraftTracker
+    [Migration("20200421093400_preseason")]
+    partial class preseason
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -250,6 +250,9 @@ namespace ABASim.api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Day")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("StateId")
                         .HasColumnType("INTEGER");
 
@@ -457,6 +460,23 @@ namespace ABASim.api.Migrations
                     b.ToTable("PlayerRatings");
                 });
 
+            modelBuilder.Entity("ABASim.api.Models.PlayerTeam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlayerTeams");
+                });
+
             modelBuilder.Entity("ABASim.api.Models.PlayerTendancy", b =>
                 {
                     b.Property<int>("Id")
@@ -510,6 +530,9 @@ namespace ABASim.api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AwayTeamId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameDay")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HomeTeamId")

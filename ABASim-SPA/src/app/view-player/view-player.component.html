@@ -1,0 +1,43 @@
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+    <div class="page-header">
+        <h1>PLAYER NAME</h1>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="panel with-nav-tabs panel-primary">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        <li><button (click)="playerDetails()">Details</button></li>
+                        <li><button (click)="statistics()">Statistics</button></li>
+                        <li><button (click)="gradings()">Grades</button></li>
+                        <li><button (click)="ratings()">Ratings</button></li>
+                        <li><button (click)="tendacies()">Tendancies</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="panel-body">
+        <div *ngIf="this.detailsDisplayed == 1" class="tab-pane" id="rostertab">
+            Details
+        </div>
+        <div *ngIf="this.statisticsDisplayed == 1" class="tab-pane" id="coachingtab">
+            Statisticss
+        </div>
+        <div *ngIf="this.gradingDisplayed == 1" class="tab-pane" id="depthcharttab">
+            Grading
+        </div>
+        <div *ngIf="this.ratingsDisplayed == 1" class="tab-pane" id="tradestab">
+            Ratings
+        </div>
+        <div *ngIf="this.tendanciesDisplayed == 1" class="tab-pane" id="freeagentstab">
+            Tendancies
+        </div>
+      </div>
+</div>
+<br/>

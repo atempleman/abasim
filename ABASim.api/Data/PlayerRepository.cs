@@ -20,6 +20,24 @@ namespace ABASim.api.Data
             return players;
         }
 
+        public async Task<IEnumerable<Player>> GetFreeAgents()
+        {
+            List<Player> freeAgents = new List<Player>();
+            var players = await _context.Players.ToListAsync();
+
+            foreach (var player in players)
+            {
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+
+                if (playerTeam.TeamId == 31)
+                {
+                    // Player is free agent
+                    freeAgents.Add(player);
+                }
+            }
+            return freeAgents;
+        }
+
         public async Task<IEnumerable<DraftPlayerDto>> GetInitialDraftPlayerPool()
         {
             List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();

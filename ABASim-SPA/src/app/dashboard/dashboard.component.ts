@@ -22,7 +22,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
-      console.log(this.league);
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {

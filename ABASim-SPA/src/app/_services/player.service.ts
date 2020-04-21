@@ -24,4 +24,8 @@ export class PlayerService {
   getAllPlayers(): Observable<Player[]> {
     return this.http.get<Player[]>(this.baseUrl + 'getallplayers');
   }
+
+  getFreeAgents(): Observable<Player[]> {
+    return this.http.get<Player[]>(this.baseUrl + 'getfreeagents');
+  }
 }

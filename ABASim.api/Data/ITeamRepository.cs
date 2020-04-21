@@ -19,5 +19,7 @@ namespace ABASim.api.Data
          Task<IEnumerable<DepthChart>> GetDepthChartForTeam(int teamId);
 
          Task<bool> SaveDepthChartForTeam(DepthChart[] charts);
+
+         Task<bool> RosterSpotCheck(int teamId);
     }
 }

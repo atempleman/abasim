@@ -16,7 +16,7 @@
                 <div class="panel-heading">
                     <ul class="nav nav-tabs">
                         <li><button (click)="draftClicked()">Draft</button></li>
-                        <li><button (click)="lotteryClicked()" *ngIf="this.league?.stateId > 5">Draft Lottery</button></li>
+                        <li><button (click)="lotteryClicked()" *ngIf="this.league?.stateId < 5">Draft Lottery</button></li>
                         <li><button (click)="playerPoolClicked()">Draft Player Pool</button></li>
                         <li><button (click)="rankingsClicked()">Draftboard</button></li>
                     </ul>

@@ -12,5 +12,7 @@ namespace ABASim.api.Data
          Task<Player> GetPlayerForId(int playerId);
 
          Task<IEnumerable<Player>> GetAllPlayers();
+
+         Task<IEnumerable<Player>> GetFreeAgents();
     }
 }

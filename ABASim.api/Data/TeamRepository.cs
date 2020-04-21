@@ -62,6 +62,16 @@ namespace ABASim.api.Data
             return team;
         }
 
+        public async Task<bool> RosterSpotCheck(int teamId)
+        {
+            var rosterSpotsUsed = await _context.Rosters.Where(x => x.TeamId == teamId).ToListAsync();
+            if (rosterSpotsUsed.Count < 15) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         public async Task<bool> SaveDepthChartForTeam(DepthChart[] charts)
         {
             var exists = await _context.DepthCharts.FirstOrDefaultAsync(x => x.TeamId == charts[0].TeamId);

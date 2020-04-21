@@ -11,30 +11,31 @@ namespace ABASim.api.Controllers
     [ApiController]
     public class LeagueController : ControllerBase
     {
-        private readonly DataContext _context;
-        public LeagueController(DataContext context)
+        // private readonly DataContext _context;
+        private readonly ILeagueRepository _repo;
+        public LeagueController(ILeagueRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet("getleague")]
         public async Task<IActionResult> GetLeague()
         {
-            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var league = await _repo.GetLeague();
             return Ok(league);
         }
 
         [HttpGet("getleaguestatus")]
         public async Task<IActionResult> GetLeagueStates()
         {
-            var leagueStates = await _context.LeagueStates.ToListAsync();
+            var leagueStates = await _repo.GetLeagueStates();
             return Ok(leagueStates);
         }
 
         [HttpGet("getleaguestateforid/{stateId}")]
         public async Task<IActionResult> GetLeagueStateForId(int stateId)
         {
-            var leagueState = await _context.LeagueStates.FirstOrDefaultAsync(x => x.Id == stateId);
+            var leagueState = await _repo.GetLeagueStateForId(stateId);
             return Ok(leagueState);
         }
     }

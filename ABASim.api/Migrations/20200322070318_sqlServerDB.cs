@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ABASim.api.Migrations
 {
-    public partial class WholeDB : Migration
+    public partial class sqlServerDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     Contact = table.Column<string>(nullable: true)
@@ -27,7 +27,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TeamId = table.Column<int>(nullable: false),
                     PlayerId = table.Column<int>(nullable: false),
                     Position = table.Column<int>(nullable: false),
@@ -43,7 +43,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Round = table.Column<int>(nullable: false),
                     Pick = table.Column<int>(nullable: false),
                     TeamId = table.Column<int>(nullable: false),
@@ -55,11 +55,41 @@ namespace ABASim.api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DraftRankings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeamId = table.Column<int>(nullable: false),
+                    PlayerId = table.Column<int>(nullable: false),
+                    Rank = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DraftRankings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DraftTrackers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Round = table.Column<int>(nullable: false),
+                    Pick = table.Column<int>(nullable: false),
+                    DateTimeOfLastPick = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DraftTrackers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GameBoxScores",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     GameId = table.Column<int>(nullable: false),
                     TeamId = table.Column<int>(nullable: false),
                     PlayerId = table.Column<int>(nullable: false),
@@ -92,7 +122,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     GameId = table.Column<int>(nullable: false),
                     AwayScore = table.Column<int>(nullable: false),
                     HomeScore = table.Column<int>(nullable: false),
@@ -108,7 +138,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Round = table.Column<int>(nullable: false),
                     Pick = table.Column<int>(nullable: false),
                     TeamId = table.Column<int>(nullable: false),
@@ -124,7 +154,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     StateId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -137,7 +167,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     State = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -150,7 +180,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     PlayerId = table.Column<int>(nullable: false),
                     TeamId = table.Column<int>(nullable: false),
                     YearOne = table.Column<int>(nullable: false),
@@ -176,7 +206,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     PlayerId = table.Column<int>(nullable: false),
                     TwoGrade = table.Column<string>(nullable: true),
                     ThreeGrade = table.Column<string>(nullable: true),
@@ -200,7 +230,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     PlayerId = table.Column<int>(nullable: false),
                     TwoRating = table.Column<int>(nullable: false),
                     ThreeRating = table.Column<int>(nullable: false),
@@ -226,7 +256,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(nullable: true),
                     Surname = table.Column<string>(nullable: true),
                     PGPosition = table.Column<int>(nullable: false),
@@ -241,11 +271,25 @@ namespace ABASim.api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PlayerTeams",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PlayerId = table.Column<int>(nullable: false),
+                    TeamId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerTeams", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PlayerTendancies",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     PlayerId = table.Column<int>(nullable: false),
                     TwoPointTendancy = table.Column<int>(nullable: false),
                     ThreePointTendancy = table.Column<int>(nullable: false),
@@ -263,7 +307,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TeamId = table.Column<int>(nullable: false),
                     PlayerId = table.Column<int>(nullable: false)
                 },
@@ -277,7 +321,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AwayTeamId = table.Column<int>(nullable: false),
                     HomeTeamId = table.Column<int>(nullable: false)
                 },
@@ -291,7 +335,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TeamId = table.Column<int>(nullable: false),
                     GamesPlayed = table.Column<int>(nullable: false),
                     Wins = table.Column<int>(nullable: false),
@@ -313,7 +357,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Year = table.Column<int>(nullable: false),
                     Round = table.Column<int>(nullable: false),
                     OriginalTeam = table.Column<int>(nullable: false),
@@ -329,7 +373,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(nullable: false),
                     Teamname = table.Column<string>(nullable: true),
                     ShortCode = table.Column<string>(nullable: true),
@@ -346,7 +390,7 @@ namespace ABASim.api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<byte[]>(nullable: true),
                     PasswordSalt = table.Column<byte[]>(nullable: true),
@@ -370,6 +414,12 @@ namespace ABASim.api.Migrations
 
             migrationBuilder.DropTable(
                 name: "DraftPicks");
+
+            migrationBuilder.DropTable(
+                name: "DraftRankings");
+
+            migrationBuilder.DropTable(
+                name: "DraftTrackers");
 
             migrationBuilder.DropTable(
                 name: "GameBoxScores");
@@ -397,6 +447,9 @@ namespace ABASim.api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Players");
+
+            migrationBuilder.DropTable(
+                name: "PlayerTeams");
 
             migrationBuilder.DropTable(
                 name: "PlayerTendancies");

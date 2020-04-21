@@ -34,6 +34,8 @@ import { DraftPlayerPoolComponent } from './draft-player-pool/draft-player-pool.
 import { DraftboardComponent } from './draftboard/draftboard.component';
 import { InitialDraftComponent } from './initial-draft/initial-draft.component';
 import { JwtModule } from '@auth0/angular-jwt';
+import { ViewPlayerComponent } from './view-player/view-player.component';
+import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -66,7 +68,9 @@ export function tokenGetter() {
       InitiallotteryComponent,
       DraftPlayerPoolComponent,
       DraftboardComponent,
-      InitialDraftComponent
+      InitialDraftComponent,
+      ViewPlayerComponent,
+      AdminpreseasonComponent
    ],
    imports: [
       BrowserModule,

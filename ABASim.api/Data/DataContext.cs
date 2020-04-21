@@ -51,5 +51,7 @@ namespace ABASim.api.Data
         public DbSet<DraftTracker> DraftTrackers { get; set; }
 
         public DbSet<PlayerTeam> PlayerTeams { get; set; }
+
+        public DbSet<PreseasonSchedule> PreseasonSchedules { get; set; }
     }
 }

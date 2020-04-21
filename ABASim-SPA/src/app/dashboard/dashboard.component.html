@@ -4,162 +4,186 @@
 <!------ Include the above in your HEAD tag ---------->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <div class="box">
-	<div class="row mt-15 ml-5">
-		<h3>Current League Status: {{ this.currentState?.state }}</h3>
+	<div class="row">
+		<div class="container">
+			<h3>Team Dashboard</h3>
+			<h4>Current League Status: {{ this.currentState?.state }}</h4>
+		</div>
+		<br />
+		<br />
+		<hr />
+		<div class="col-sm-4 text-center">
+			<h4>YESTERDAY'S RESULTS</h4>
+			<p>List of games</p>
+		</div>
+		<div class="col-sm-4 text-center">
+			<h4>UPCOMING EVENTS</h4>
+			<p>List of games</p>
+		</div>
 	</div>
-	<div *ngIf="this.league?.stateId == 1" class="row mt-2 ml-5">
-		<p><i class="fa fa-exclamation-triangle"></i> Your league is still awaiting players to sign up.</p>
-	</div>
-    <div class="container">
-     	<div class="row">
-			    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
-					<div class="box-part text-center">
-                        <i class="fa fa-users fa-3x" aria-hidden="true"></i>
-						<div class="title">
-							<h4>Team</h4>
-						</div>
-						<div class="text">
-							<span>Manage your roster, depth charts, coaching and make trades and free agent signings.</span>
-						</div>
-						<a (click)="goToRoster()">Go to Team</a>
-					 </div>
-				</div>	 
-				
-				 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-               
-					<div class="box-part text-center">
-					    
-					    <!--<i class="fa fa-twitter fa-3x" aria-hidden="true"></i>-->
-					    <i class="fa fa-list fa-3x" aria-hidden="true"></i>
-                    
-						<div class="title">
-							<h4>Players</h4>
-						</div>
-                        
-						<div class="text">
-							<span>View all of the Players in league and view their details.</span>
-						</div>
-                        
-						<a (click)="goToPlayers()">View Players</a>
-                        
-					 </div>
-				</div>	 
-				
-				 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-               
-					<div class="box-part text-center">
-                        
-                        <i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
-                        
-						<div class="title">
-							<h4>Draft</h4>
-						</div>
-                        
-						<div class="text">
-							<span>View all information related to the draft. View the Player Pool and Lottery, set your auto-draft and draft.</span>
-						</div>
-                        
-						<a (click)="goToDraft()">Go to Draft</a>
-                        
-					 </div>
-				</div>	 
-				
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
-               
-					<div class="box-part text-center">
-                        
-                        <i class="fa fa-signal fa-3x" aria-hidden="true"></i>
-                        
-						<div class="title">
-							<h4>Stats</h4>
-						</div>
-                        
-						<div class="text">
-							<span>View all stats for the current season - Leaders, Players and Team stats.</span>
-						</div>
-                        
-						<a (click)="goToStats()">View Stats</a>
-                        
-					 </div>
-				</div>	 
-				
-				 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
-               
-					<div class="box-part text-center">
-					    
-					    <i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
-                    
-						<div class="title">
-							<h4>Standings</h4>
-						</div>
-                        
-						<div class="text">
-							<span>View the current seasons league standings.</span>
-						</div>
-                        
-						<a (click)="goToStandings()">View Standings</a>
-                        
-					 </div>
-				</div>	 
-				
-				 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3"> 
-               
-					<div class="box-part text-center">
-                        
-                        <i class="fa fa-calendar fa-3x" aria-hidden="true"></i>
-                        
-						<div class="title">
-							<h4>Schedule & Results</h4>
-						</div>
-                        
-						<div class="text">
-							<span>View the season schedule and view the past game results and view box scores.</span>
-						</div>
-                        
-						<a (click)="goToScheduleAndReuslts()">View Schedule & Results</a>
-                        
-					 </div>
-				</div>
-				
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
-               
-					<div class="box-part text-center">
-                        
-                        <i class="fa fa-credit-card fa-3x" aria-hidden="true"></i>
-                        
-						<div class="title">
-							<h4>Finances</h4>
-						</div>
-                        
-						<div class="text">
-							<span>View Team Finances, including budget, player contracts and managing contract extensions.</span>
-						</div>
-                        
-						<a (click)="goToFinances()">View Team Finances</a>
-                        
-					 </div>
-				</div>
-				
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.isAdmin == 1">
-               
-					<div class="box-part text-center">
-                        
-                        <i class="fa fa-user-secret fa-3x" aria-hidden="true"></i>
-                        
-						<div class="title">
-							<h4>Administration</h4>
-						</div>
-                        
-						<div class="text">
-							<span>View Administration Functions for the league.</span>
-						</div>
-                        
-						<a (click)="goToAdmin()">View Admin Area</a>
-                        
-					 </div>
-				</div>
+
+	<div class="row">
 		
-		</div>		
-    </div>
+			<div *ngIf="this.league?.stateId == 1" class="row mt-2 ml-5">
+				<p><i class="fa fa-exclamation-triangle"></i> Your league is still awaiting players to sign up.</p>
+			</div>
+			<div class="container">
+				 <div class="row">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
+							<div class="box-part text-center">
+								<i class="fa fa-users fa-3x" aria-hidden="true"></i>
+								<div class="title">
+									<h4>Team</h4>
+								</div>
+								<div class="text">
+									<span>Manage your roster, depth charts, coaching and make trades and free agent signings.</span>
+								</div>
+								<a (click)="goToRoster()">Go to Team</a>
+							 </div>
+						</div>	 
+						
+						 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					   
+							<div class="box-part text-center">
+								
+								<!--<i class="fa fa-twitter fa-3x" aria-hidden="true"></i>-->
+								<i class="fa fa-list fa-3x" aria-hidden="true"></i>
+							
+								<div class="title">
+									<h4>Players</h4>
+								</div>
+								
+								<div class="text">
+									<span>View all of the Players in league and view their details.</span>
+								</div>
+								
+								<a (click)="goToPlayers()">View Players</a>
+								
+							 </div>
+						</div>	 
+						
+						 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+					   
+							<div class="box-part text-center">
+								
+								<i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
+								
+								<div class="title">
+									<h4>Draft</h4>
+								</div>
+								
+								<div class="text">
+									<span>View all information related to the draft. View the Player Pool and Lottery, set your auto-draft and draft.</span>
+								</div>
+								
+								<a (click)="goToDraft()">Go to Draft</a>
+								
+							 </div>
+						</div>	 
+						
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
+					   
+							<div class="box-part text-center">
+								
+								<i class="fa fa-signal fa-3x" aria-hidden="true"></i>
+								
+								<div class="title">
+									<h4>Stats</h4>
+								</div>
+								
+								<div class="text">
+									<span>View all stats for the current season - Leaders, Players and Team stats.</span>
+								</div>
+								
+								<a (click)="goToStats()">View Stats</a>
+								
+							 </div>
+						</div>	 
+						
+						 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
+					   
+							<div class="box-part text-center">
+								
+								<i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
+							
+								<div class="title">
+									<h4>Standings</h4>
+								</div>
+								
+								<div class="text">
+									<span>View the current seasons league standings.</span>
+								</div>
+								
+								<a (click)="goToStandings()">View Standings</a>
+								
+							 </div>
+						</div>	 
+						
+						 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3"> 
+					   
+							<div class="box-part text-center">
+								
+								<i class="fa fa-calendar fa-3x" aria-hidden="true"></i>
+								
+								<div class="title">
+									<h4>Schedule & Results</h4>
+								</div>
+								
+								<div class="text">
+									<span>View the season schedule and view the past game results and view box scores.</span>
+								</div>
+								
+								<a (click)="goToScheduleAndReuslts()">View Schedule & Results</a>
+								
+							 </div>
+						</div>
+						
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
+					   
+							<div class="box-part text-center">
+								
+								<i class="fa fa-credit-card fa-3x" aria-hidden="true"></i>
+								
+								<div class="title">
+									<h4>Finances</h4>
+								</div>
+								
+								<div class="text">
+									<span>View Team Finances, including budget, player contracts and managing contract extensions.</span>
+								</div>
+								
+								<a (click)="goToFinances()">View Team Finances</a>
+								
+							 </div>
+						</div>
+						
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.isAdmin == 1">
+					   
+							<div class="box-part text-center">
+								
+								<i class="fa fa-user-secret fa-3x" aria-hidden="true"></i>
+								
+								<div class="title">
+									<h4>Administration</h4>
+								</div>
+								
+								<div class="text">
+									<span>View Administration Functions for the league.</span>
+								</div>
+								
+								<a (click)="goToAdmin()">View Admin Area</a>
+								
+							 </div>
+						</div>
+				
+				</div>		
+			</div>
+	</div>
 </div>
+
+
+
+
+

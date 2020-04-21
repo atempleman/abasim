@@ -248,6 +248,9 @@ namespace ABASim.api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Day")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("StateId")
                         .HasColumnType("INTEGER");
 
@@ -525,6 +528,9 @@ namespace ABASim.api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AwayTeamId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameDay")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HomeTeamId")

@@ -64,5 +64,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.SaveDepthChartForTeam(depthCharts);
             return Ok(result);
         }
+
+        [HttpGet("rosterSpotCheck/{teamId}")]
+        public async Task<IActionResult> RosterSpotCheck(int teamId)
+        {
+            var result = await _repo.RosterSpotCheck(teamId);
+            return Ok(result);
+        }
     }
 }

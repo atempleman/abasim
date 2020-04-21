@@ -42,4 +42,8 @@ export class TeamService {
     return this.http.post(this.baseUrl + 'savedepthchart', depthCharts);
   }
 
+  rosterSpotCheck(teamId: number) {
+    return this.http.get<boolean>(this.baseUrl + 'rosterSpotCheck/' + teamId);
+  }
+
 }

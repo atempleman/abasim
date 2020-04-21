@@ -15,7 +15,7 @@
                         <li><button (click)="rosterClicked()">Roster</button></li>
                         <li><button (click)="coachingClicked()" *ngIf="this.league?.stateId > 4">Coaching</button></li>
                         <li><button (click)="depthChartsClicked()" *ngIf="this.league?.stateId > 3">Depth Charts</button></li>
-                        <li><button (click)="tradesClicked()">Trades</button></li>
+                        <li><button (click)="tradesClicked()" *ngIf="this.league?.stateId > 3">Trades</button></li>
                         <li><button (click)="freeAgentsClicked()" *ngIf="this.league?.stateId > 4">Free Agents</button></li>
                     </ul>
                 </div>

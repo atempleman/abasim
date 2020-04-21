@@ -87,6 +87,14 @@ export class InitialDraftComponent implements OnInit {
   }
 
   refresh() {
+    this.playerService.getInitialDraftPlayers().subscribe(result => {
+      this.draftablePlayers = result;
+    }, error => {
+      this.alertify.error('Error getting available players to draft');
+    }, () => {
+      this.loaded++;
+    });
+
     this.getDraftDetails();
   }
 
@@ -124,39 +132,43 @@ export class InitialDraftComponent implements OnInit {
   }
 
   getNextDraftingTeam() {
+    let draftOver = 0;
     let pick = this.tracker.pick + 1;
     let round = this.tracker.round;
 
-    if (pick === 30) {
-      pick = 1;
-      round = round + 1;
+    if (pick === 31) {
+      if (round === 13) {
+        // Draft is over
+        draftOver = 1;
+      } else {
+        pick = 1;
+        round = round + 1;
+      }
     }
 
-    const draftPick = this.allDraftPicks.find(x => x.pick === pick && x.round === round);
-    this.teamService.getTeamForTeamId(draftPick.teamId).subscribe(result => {
-      this.nextTeam = result;
-    }, error => {
-      this.alertify.error('Error getting team on the clock');
-    });
+    if (draftOver !== 1) {
+      const draftPick = this.allDraftPicks.find(x => x.pick === pick && x.round === round);
+      this.teamService.getTeamForTeamId(draftPick.teamId).subscribe(result => {
+        this.nextTeam = result;
+      }, error => {
+        this.alertify.error('Error getting team on the clock');
+      });
+    }
   }
 
   timerDisplay() {
     const time = this.tracker.dateTimeOfLastPick + ' UTC';
-    // console.log(time);
     const dtPick = new Date(time);
-    // console.log(dtPick);
     const currentTime = new Date();
-    // console.log(currentTime);
 
-    this.timeRemaining =  dtPick.getTime() - currentTime.getTime();
-    const value = (this.timeRemaining / 1000).toFixed(0);
-    // console.log(value);
-    this.timeRemaining = +value;
     this.interval = setInterval(() => {
+      this.timeRemaining =  dtPick.getTime() - currentTime.getTime();
+      const value = (this.timeRemaining / 1000).toFixed(0);
+      this.timeRemaining = +value;
+
       if (this.timeRemaining > 0) {
         this.timeRemaining--;
         this.timeDisplay = this.transform(this.timeRemaining);
-
       } else {
         this.timeRemaining = 0;
         this.timeDisplay = 'Time Expired';
