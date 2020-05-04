@@ -64,6 +64,7 @@ namespace ABASim.api
             services.AddScoped<IDraftRepository, DraftRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<ILeagueRepository, LeagueRepository>();
+            services.AddScoped<IGameEngineRepository, GameEngineRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {

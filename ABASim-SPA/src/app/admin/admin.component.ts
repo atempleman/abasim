@@ -29,4 +29,8 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/adminpreseason']);
   }
 
+  runEngine() {
+    this.router.navigate(['/admintestengine']);
+  }
+
 }

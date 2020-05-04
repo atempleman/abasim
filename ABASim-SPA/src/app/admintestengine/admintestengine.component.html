@@ -1,0 +1,44 @@
+<div class="box">
+  <div class="container mt-10">
+    <div class="row" *ngIf="this.setupDisplay == 1">
+      <div class="col">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Setup Game</h3>
+          </div>
+          <div class="panel-body" >
+            <form [formGroup]="gameSetupForm" accept-charset="UTF-8" role="form" (ngSubmit)="gameSetup()">
+              <fieldset>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Away Team Id" name="awayId" type="text"
+                    formControlName="awayid">
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Home Team Id" name="homeId" type="text" value=""
+                    formControlName="homeid">
+                </div>
+                <input class="btn btn-lg btn-success btn-block" type="submit" value="Run Game">
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div class="row" *ngIf="this.detailsDisplay == 1">
+        <div class="col">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Game Details</h3>
+            </div>
+            <div class="panel-body" >
+              <div class="panel-body">
+                <div class="row" *ngFor="let comm of this.commentaryData">
+                  {{ comm }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>

@@ -21,6 +21,7 @@ import { DraftPlayerPoolComponent } from './draft-player-pool/draft-player-pool.
 import { DraftboardComponent } from './draftboard/draftboard.component';
 import { InitialDraftComponent } from './initial-draft/initial-draft.component';
 import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
+import { AdmintestengineComponent } from './admintestengine/admintestengine.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'scheduleandresults', component: ScheduleandresultsComponent, canActivate: [AuthGuard] },
   { path: 'finances', component: FinancesComponent, canActivate: [AuthGuard] },
   { path: 'adminpreseason', component: AdminpreseasonComponent, canActivate: [AuthGuard] },
+  { path: 'admintestengine', component: AdmintestengineComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
