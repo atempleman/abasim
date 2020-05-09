@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ABASim.api.Data;
 using ABASim.api.Dtos;
@@ -57,6 +58,17 @@ namespace ABASim.api.Controllers
         Player _playerPassed;
         PlayerRating _playerRatingPassed;
 
+        int _homeFoulBonus = 0;
+        int _awayFoulBonus = 0;
+
+        int foulCounter = 0;
+        int blockCounter = 0;
+        int stealCounter = 0;
+        int turnoverCounter = 0;
+        int shotClockCounter = 0;
+        int assistCounter = 0;
+        int assistCounterChance = 0;
+
         public GameEngineController(IGameEngineRepository repo)
         {
             _repo = repo;
@@ -98,12 +110,21 @@ namespace ABASim.api.Controllers
             RunQuarter();
 
             // 3rd Quarter
+            BackToStarters();
             RunQuarter();
 
             // 4th Quarter
             RunQuarter();
 
             // Overtime - TODO
+
+            commentaryData.Add("Number of blocks - " + blockCounter);
+            commentaryData.Add("Number of steals - " + stealCounter);
+            commentaryData.Add("Number of turnovers - " + turnoverCounter);
+            commentaryData.Add("Number of fouls - " + foulCounter);
+            commentaryData.Add("Number of shot clocks - " + shotClockCounter);
+            commentaryData.Add("Number of assists - " + assistCounter);
+            commentaryData.Add("Number of assist chances - " + assistCounterChance);
 
             return Ok(commentaryData);
         }
@@ -417,6 +438,9 @@ namespace ABASim.api.Controllers
 
         public void RunQuarter()
         {
+            _homeFoulBonus = 0;
+            _awayFoulBonus = 0;
+
             while (_time > 0)
             {
                 if(_shotClock > 0)
@@ -436,8 +460,18 @@ namespace ABASim.api.Controllers
                             ThreePointShot();
                             break;
                         case 4:
+                            // player has been fouled
+                            if (_time > 0)
+                                PlayerFouled();
                             break;
                         case 5:
+                            PlayerTurnover();
+
+                            if (_time > 0)
+                                Inbounds();
+                            break;
+                        case 6:
+                            // Ball has been stolen - already handled
                             break;
                         default:
                             break;
@@ -454,38 +488,47 @@ namespace ABASim.api.Controllers
         {
             int decision = 0;
 
-            // Now need to get the current players tendancies
-            PlayerTendancy tendancy = GetCurrentPlayersTendancies();
-            
-            // This could change if there are bonuses which will be added later on
-            int value = 1000;
-            int result = _random.Next(1, value + 1);
+            // Need to check whether a steal has occurred
+            int isSteal = StealCheck();
 
-            int twoSection = tendancy.TwoPointTendancy;
-            int threeSection = twoSection + tendancy.ThreePointTendancy;
-            int foulSection = threeSection + tendancy.FouledTendancy;
-            int turnoverSection = foulSection + tendancy.TurnoverTendancy;
+            if (isSteal == 0)
+            {
+                // Now need to get the current players tendancies
+                PlayerTendancy tendancy = GetCurrentPlayersTendancies();
+                
+                // This could change if there are bonuses which will be added later on
+                int value = 1000;
+                int result = _random.Next(1, value + 1);
 
-            if (result <= twoSection)
-            {
-                decision = 2;
-            } 
-            else if (result > twoSection && result <= threeSection)
-            {
-                decision = 3;
-            } 
-            else if (result > threeSection && result <= foulSection)
-            {
-                decision = 4;
-            }
-            else if (result > foulSection && result <= turnoverSection)
-            {
-                decision = 5;
-            } 
-            else 
-            {
-                // The player has passed the ball
-                decision = 1; 
+                int twoSection = tendancy.TwoPointTendancy;
+                int threeSection = twoSection + tendancy.ThreePointTendancy;
+                int foulSection = threeSection + tendancy.FouledTendancy;
+                int turnoverSection = foulSection + tendancy.TurnoverTendancy;
+
+                if (result <= twoSection)
+                {
+                    decision = 2;
+                } 
+                else if (result > twoSection && result <= threeSection)
+                {
+                    decision = 3;
+                } 
+                else if (result > threeSection && result <= foulSection)
+                {
+                    decision = 4;
+                }
+                else if (result > foulSection && result <= turnoverSection)
+                {
+                    decision = 5;
+                } 
+                else 
+                {
+                    // The player has passed the ball
+                    decision = 1; 
+                }
+            } else {
+                stealCounter++;
+                decision = 6;
             }
 
             return decision;
@@ -942,262 +985,536 @@ namespace ABASim.api.Controllers
 
         public void TwoPointShot()
         {
-            PlayerRating currentRating = GetCurrentPlayersRatings();
-            int result = _random.Next(1, 1001);
-
-            int twoRating = currentRating.TwoRating;
-
-            if (twoRating >= result)
+            int possibleAssist = 0;
+            string assistingPlayingName = "";
+            if(_playerPassed != null)
             {
-                // Show was made
-                 int timeValue = _random.Next(2, 7);
+                assistingPlayingName = _playerPassed.FirstName + " " + _playerPassed.Surname;
+            }
 
-                // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
-                if (timeValue > _time || timeValue > _shotClock)
-                {
-                    // This action causes time to expire
-                    if (timeValue > _time)
-                    {
-                        timeValue = _time;
-                    }
-                    else if (timeValue > _shotClock)
-                    {
-                        timeValue = _shotClock;
-                    }
-                }
+            // Need to see if the shot was blocked
+            int blockResult = BlockCheck();
 
-                _shotClock = 24;
-                _time = _time - timeValue;
-                StaminaUpdates(timeValue);
-                UpdateTimeInBoxScore(timeValue);
-                
-                // Update Score
+            if (blockResult == 0)
+            {
+                PlayerRating currentRating = GetCurrentPlayersRatings();
+                int result = _random.Next(1, 1001);
+
+                int twoRating = StaminaEffect(currentRating.PlayerId, _teamPossession, currentRating.TwoRating);
+
+                // Need to Apply ORPM to result - effecting quality of the shot
+                int orpmValue = GetOrpmValue(_teamPossession);
+
+                // Need to Apply DRPM to result
+                int defence = -1;
                 if (_teamPossession == 0)
                 {
-                    _homeScore = _homeScore + 2;
-                    UpdatePlusMinusBoxScore(2);
-
-                    // Update the Box Score
-                    BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    temp.FGM++;
-                    temp.Points = temp.Points + 2;
-                    int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _homeBoxScores[index] = temp;
-                } else {
-                    _awayScore = _awayScore + 2;
-                    UpdatePlusMinusBoxScore(2);
-
-                    // Update the Box Score
-                    BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    temp.FGM++;
-                    temp.Points = temp.Points + 2;
-                    int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _awayBoxScores[index] = temp;
-                }
-
-                // Comm
-                commentaryData.Add(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                Console.WriteLine(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-
-                if (_teamPossession == 0)
-                {
-                    _teamPossession = 1;
-                } else {
-                    _teamPossession = 0;
-                }
-
-                Inbounds();
-            } else {
-                // Shot missed
-                int timeValue = _random.Next(2, 7);
-
-                // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
-                if (timeValue > _time || timeValue > _shotClock)
-                {
-                    // This action causes time to expire
-                    if (timeValue > _time)
-                    {
-                        timeValue = _time;
-                    }
-                    else if (timeValue > _shotClock)
-                    {
-                        timeValue = _shotClock;
-                    }
-                }
-
-                _time = _time - timeValue;
-                StaminaUpdates(timeValue);
-                UpdateTimeInBoxScore(timeValue);
-
-                if (_teamPossession == 0)
-                {
-                    // Update the Box Score
-                    BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _homeBoxScores[index] = temp;
+                    defence = 1;
                 }
                 else
                 {
-                    // Update the Box Score
-                    BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _awayBoxScores[index] = temp;
+                    defence = 0;
+                }
+                int drpmValue = GetDrpmValue(defence);
+
+                result = result - orpmValue + drpmValue;
+
+                // Need to determine whether an assist chance has been created
+                if (_playerRatingPassed != null)
+                {
+                    assistCounterChance++;
+                    int assistRating = _playerRatingPassed.AssitRating;
+                    int assistResult = _random.Next(0, 1000);
+
+                    if (assistResult <= assistRating)
+                    {
+                        possibleAssist = 1;
+                        assistCounter++;
+                        // update the result
+                        result = result - 50;
+                    }
+                    else
+                    {
+                        possibleAssist = 0;
+                    }
                 }
 
-                // Commentary
-                commentaryData.Add(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                Console.WriteLine(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                if (twoRating >= result)
+                {
+                    // Show was made
+                    int timeValue = _random.Next(2, 7);
 
-                // Go to the Rebound
+                    // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                    if (timeValue > _time || timeValue > _shotClock)
+                    {
+                        // This action causes time to expire
+                        if (timeValue > _time)
+                        {
+                            timeValue = _time;
+                        }
+                        else if (timeValue > _shotClock)
+                        {
+                            timeValue = _shotClock;
+                        }
+                    }
+
+                    _shotClock = 24;
+                    _time = _time - timeValue;
+                    StaminaUpdates(timeValue);
+                    UpdateTimeInBoxScore(timeValue);
+                    
+                    // Update Score
+                    if (_teamPossession == 0)
+                    {
+                        _homeScore = _homeScore + 2;
+                        UpdatePlusMinusBoxScore(2);
+
+                        // Update the Box Score
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.FGM++;
+                        temp.Points = temp.Points + 2;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+
+                        if (possibleAssist == 1)
+                        {
+                            // Update the Box Score
+                            BoxScore tempAst = _homeBoxScores.Find(x => x.Id == _playerPassed.Id);
+                            tempAst.Assists++;
+                            int indexAst = _homeBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
+                            _homeBoxScores[indexAst] = tempAst;
+                        }
+                    } else {
+                        _awayScore = _awayScore + 2;
+                        UpdatePlusMinusBoxScore(2);
+
+                        // Update the Box Score
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.FGM++;
+                        temp.Points = temp.Points + 2;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+
+                        if (possibleAssist == 1)
+                        {
+                            // Update the Box Score
+                            BoxScore tempAst = _awayBoxScores.Find(x => x.Id == _playerPassed.Id);
+                            tempAst.Assists++;
+                            int indexAst = _awayBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
+                            _awayBoxScores[indexAst] = tempAst;
+                        }
+                    }
+
+                    // Comm
+                    commentaryData.Add(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    Console.WriteLine(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+
+                    if (_teamPossession == 0)
+                    {
+                        _teamPossession = 1;
+                    } else {
+                        _teamPossession = 0;
+                    }
+
+                    Inbounds();
+                } else {
+                    // Shot missed
+                    int timeValue = _random.Next(2, 7);
+
+                    // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                    if (timeValue > _time || timeValue > _shotClock)
+                    {
+                        // This action causes time to expire
+                        if (timeValue > _time)
+                        {
+                            timeValue = _time;
+                        }
+                        else if (timeValue > _shotClock)
+                        {
+                            timeValue = _shotClock;
+                        }
+                    }
+
+                    _time = _time - timeValue;
+                    StaminaUpdates(timeValue);
+                    UpdateTimeInBoxScore(timeValue);
+
+                    if (_teamPossession == 0)
+                    {
+                        // Update the Box Score
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+                    }
+                    else
+                    {
+                        // Update the Box Score
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+                    }
+
+                    // Commentary
+                    commentaryData.Add(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                    // Go to the Rebound
+                    Rebound();
+                }
+            } else {
+                // Shot has been blocked
+                blockCounter++;
+                // TODO - need to handle the fact the shot clock would not reset on offensive rebound here
                 Rebound();
             }
+
+            
         }
 
         public void ThreePointShot()
         {
-            PlayerRating currentRating = GetCurrentPlayersRatings();
-            int result = _random.Next(1, 1001);
-
-            int twoRating = currentRating.ThreeRating;
-
-            if (twoRating >= result)
+            int possibleAssist = 0;
+            string assistingPlayingName = "";
+            if(_playerPassed != null)
             {
-                // Show was made
-                 int timeValue = _random.Next(2, 7);
+                assistingPlayingName = _playerPassed.FirstName + " " + _playerPassed.Surname;
+            }
 
-                // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
-                if (timeValue > _time || timeValue > _shotClock)
-                {
-                    // This action causes time to expire
-                    if (timeValue > _time)
-                    {
-                        timeValue = _time;
-                    }
-                    else if (timeValue > _shotClock)
-                    {
-                        timeValue = _shotClock;
-                    }
-                }
+            // Need to see if the shot was blocked
+            int blockResult = BlockCheck();
 
-                _shotClock = 24;
-                _time = _time - timeValue;
-                StaminaUpdates(timeValue);
-                UpdateTimeInBoxScore(timeValue);
-                
-                // Update Score
+            if (blockResult == 0)
+            {
+                PlayerRating currentRating = GetCurrentPlayersRatings();
+                int result = _random.Next(1, 1001);
+
+                int threeRating = StaminaEffect(currentRating.PlayerId, _teamPossession, currentRating.ThreeRating);
+
+                // Need to Apply ORPM to result - effecting quality of the shot
+                int orpmValue = GetOrpmValue(_teamPossession);
+
+                // Need to Apply DRPM to result
+                int defence = -1;
                 if (_teamPossession == 0)
                 {
-                    _homeScore = _homeScore + 3;
-                    UpdatePlusMinusBoxScore(3);
-
-                    // Update the Box Score
-                    BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    temp.FGM++;
-                    temp.ThreeFGA++;
-                    temp.ThreeFGM++;
-                    temp.Points = temp.Points + 3;
-                    int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _homeBoxScores[index] = temp;
-                } else {
-                    _awayScore = _awayScore + 3;
-                    UpdatePlusMinusBoxScore(3);
-
-                    // Update the Box Score
-                    BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    temp.FGM++;
-                    temp.ThreeFGA++;
-                    temp.ThreeFGM++;
-                    temp.Points = temp.Points + 3;
-                    int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _awayBoxScores[index] = temp;
-                }
-
-                // Comm
-                commentaryData.Add(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                Console.WriteLine(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-
-                if (_teamPossession == 0)
-                {
-                    _teamPossession = 1;
-                } else {
-                    _teamPossession = 0;
-                }
-
-                Inbounds();
-            } else {
-                // Shot missed
-                int timeValue = _random.Next(2, 7);
-
-                // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
-                if (timeValue > _time || timeValue > _shotClock)
-                {
-                    // This action causes time to expire
-                    if (timeValue > _time)
-                    {
-                        timeValue = _time;
-                    }
-                    else if (timeValue > _shotClock)
-                    {
-                        timeValue = _shotClock;
-                    }
-                }
-
-                _time = _time - timeValue;
-                StaminaUpdates(timeValue);
-                UpdateTimeInBoxScore(timeValue);
-
-                if (_teamPossession == 0)
-                {
-                    // Update the Box Score
-                    BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    temp.ThreeFGA++;
-                    int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _homeBoxScores[index] = temp;
+                    defence = 1;
                 }
                 else
                 {
-                    // Update the Box Score
-                    BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
-                    temp.FGA++;
-                    temp.ThreeFGA++;
-                    int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
-                    _awayBoxScores[index] = temp;
+                    defence = 0;
+                }
+                int drpmValue = GetDrpmValue(defence);
+
+                result = result - orpmValue + drpmValue;
+
+                // Need to determine whether an assist chance has been created
+                if (_playerRatingPassed != null)
+                {
+                    assistCounterChance++;
+                    int assistRating = _playerRatingPassed.AssitRating;
+                    int assistResult = _random.Next(0, 1000);
+
+                    if (assistResult <= assistRating)
+                    {
+                        possibleAssist = 1;
+                        assistCounter++;
+                        // update the result
+                        result = result - 50;
+                    }
+                    else
+                    {
+                        possibleAssist = 0;
+                    }
                 }
 
-                // Commentary
-                commentaryData.Add(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                Console.WriteLine(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                if (threeRating >= result)
+                {
+                    // Show was made
+                    int timeValue = _random.Next(2, 7);
 
-                // Go to the Rebound
+                    // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                    if (timeValue > _time || timeValue > _shotClock)
+                    {
+                        // This action causes time to expire
+                        if (timeValue > _time)
+                        {
+                            timeValue = _time;
+                        }
+                        else if (timeValue > _shotClock)
+                        {
+                            timeValue = _shotClock;
+                        }
+                    }
+
+                    _shotClock = 24;
+                    _time = _time - timeValue;
+                    StaminaUpdates(timeValue);
+                    UpdateTimeInBoxScore(timeValue);
+                    
+                    // Update Score
+                    if (_teamPossession == 0)
+                    {
+                        _homeScore = _homeScore + 3;
+                        UpdatePlusMinusBoxScore(3);
+
+                        // Update the Box Score
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.FGM++;
+                        temp.ThreeFGA++;
+                        temp.ThreeFGM++;
+                        temp.Points = temp.Points + 3;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+                    } else {
+                        _awayScore = _awayScore + 3;
+                        UpdatePlusMinusBoxScore(3);
+
+                        // Update the Box Score
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.FGM++;
+                        temp.ThreeFGA++;
+                        temp.ThreeFGM++;
+                        temp.Points = temp.Points + 3;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+                    }
+
+                    // Comm
+                    commentaryData.Add(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    Console.WriteLine(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+
+                    if (_teamPossession == 0)
+                    {
+                        _teamPossession = 1;
+                    } else {
+                        _teamPossession = 0;
+                    }
+
+                    Inbounds();
+                } else {
+                    // Shot missed
+                    int timeValue = _random.Next(2, 7);
+
+                    // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                    if (timeValue > _time || timeValue > _shotClock)
+                    {
+                        // This action causes time to expire
+                        if (timeValue > _time)
+                        {
+                            timeValue = _time;
+                        }
+                        else if (timeValue > _shotClock)
+                        {
+                            timeValue = _shotClock;
+                        }
+                    }
+
+                    _time = _time - timeValue;
+                    StaminaUpdates(timeValue);
+                    UpdateTimeInBoxScore(timeValue);
+
+                    if (_teamPossession == 0)
+                    {
+                        // Update the Box Score
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.ThreeFGA++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+                    }
+                    else
+                    {
+                        // Update the Box Score
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.ThreeFGA++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+                    }
+
+                    // Commentary
+                    commentaryData.Add(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                    // Go to the Rebound
+                    Rebound();
+                }
+            } else {
+                // Shot has been blocked
+                blockCounter++;
+                // TODO - need to handle the fact the shot clock would not reset on offensive rebound here
                 Rebound();
             }
         }
 
+        public int BlockCheck()
+        {
+            PlayerRating currentRating = GetCurrentPlayersRatings();
+
+            if (_teamPossession == 0)
+            {
+                // int blockTeam = 1;
+
+                // Away team is trying to block the shot
+                List<PlayerRating> awayRatings = new List<PlayerRating>();
+                awayRatings.Add(awayPGRatings);
+                awayRatings.Add(awaySGRatings);
+                awayRatings.Add(awaySFRatings);
+                awayRatings.Add(awayPFRatings);
+                awayRatings.Add(awayCRatings);
+
+                List<PlayerRating> awayRatingsSorted = new List<PlayerRating>();
+                awayRatingsSorted = awayRatings.OrderByDescending(x => x.BlockRating).ToList();
+
+                for (int i = 0; i < awayRatingsSorted.Count; i++)
+                {
+                    PlayerRating checking = awayRatingsSorted[i];
+                    int rating = StaminaEffect(checking.PlayerId, 1, checking.BlockRating);
+                    int result = _random.Next(1, 1001);
+
+                    if (result <= rating)
+                    {
+                        // Update the timer
+                        int timeValue = _random.Next(1, 4);
+
+                        // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                        if (timeValue > _time || timeValue > _shotClock)
+                        {
+                            // This action causes time to expire
+                            if (timeValue > _time)
+                            {
+                                timeValue = _time;
+                            }
+                            else if (timeValue > _shotClock)
+                            {
+                                timeValue = _shotClock;
+                            }
+                        }
+
+                        // Updates
+                        // Get correct display of time
+                        _time = _time - timeValue;
+                        _shotClock = _shotClock - timeValue;
+                        UpdateTimeInBoxScore(timeValue);
+                        StaminaUpdates(timeValue);
+
+                        // Box Score - both block and the shooter
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.BlockedAttempts++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+
+                        BoxScore temp2 = _awayBoxScores.Find(x => x.Id == checking.PlayerId);
+                        temp2.Blocks++;
+                        int index2 = _awayBoxScores.FindIndex(x => x.Id == checking.PlayerId);
+                        _awayBoxScores[index2] = temp2;
+
+                        // Commentary
+
+                        commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                        return 1;
+                    }
+
+                }
+            } else {
+                // int blockingTeam = 1;
+
+                // Home team is trying to block the shot
+                List<PlayerRating> homeRatings = new List<PlayerRating>();
+                homeRatings.Add(homePGRatings);
+                homeRatings.Add(homeSGRatings);
+                homeRatings.Add(homeSFRatings);
+                homeRatings.Add(homePFRatings);
+                homeRatings.Add(homeCRatings);
+
+                List<PlayerRating> homeRatingsSorted = new List<PlayerRating>();
+                homeRatingsSorted = homeRatings.OrderByDescending(x => x.BlockRating).ToList();
+
+                for (int i = 0; i < homeRatingsSorted.Count; i++)
+                {
+                    PlayerRating checking = homeRatingsSorted[i];
+                    int rating = StaminaEffect(checking.PlayerId, 0, checking.BlockRating);
+                    int result = _random.Next(1, 1001);
+
+                    if (result <= rating)
+                    {
+                        // Update the timer
+                        int timeValue = _random.Next(1, 4);
+
+                        // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                        if (timeValue > _time || timeValue > _shotClock)
+                        {
+                            // This action causes time to expire
+                            if (timeValue > _time)
+                            {
+                                timeValue = _time;
+                            }
+                            else if (timeValue > _shotClock)
+                            {
+                                timeValue = _shotClock;
+                            }
+                        }
+
+                        // Updates
+                        // Get correct display of time
+                        _time = _time - timeValue;
+                        _shotClock = _shotClock - timeValue;
+                        UpdateTimeInBoxScore(timeValue);
+                        StaminaUpdates(timeValue);
+
+                        // Box Score - both block and the shooter
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.FGA++;
+                        temp.BlockedAttempts++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+
+                        BoxScore temp2 = _homeBoxScores.Find(x => x.Id == checking.PlayerId);
+                        temp2.Blocks++;
+                        int index2 = _homeBoxScores.FindIndex(x => x.Id == checking.PlayerId);
+                        _homeBoxScores[index2] = temp2;
+
+                        // Commentary
+                        commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                        return 1;
+                    }
+                }
+            }
+            return 0;
+        }
+
         public void Rebound()
         {
+            _playerRatingPassed = null;
+            _playerPassed = null;
+
             int offensiveRate = 0;
             int defensiveRate = 0;
 
             if (_teamPossession == 0)
             {
-                int homePGRebound = homePGRatings.ORebRating;
-                int homeSGRebound = homeSGRatings.ORebRating;
-                int homeSFRebound = homeSFRatings.ORebRating;
-                int homePFRebound = homePFRatings.ORebRating;
-                int homeCRebound = homeCRatings.ORebRating;
+                int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.ORebRating);
+                int homeSGRebound = StaminaEffect(homeSGRatings.PlayerId, 0, homeSGRatings.ORebRating);
+                int homeSFRebound = StaminaEffect(homeSFRatings.PlayerId, 0, homeSFRatings.ORebRating);
+                int homePFRebound = StaminaEffect(homePFRatings.PlayerId, 0, homePFRatings.ORebRating);
+                int homeCRebound = StaminaEffect(homeCRatings.PlayerId, 0, homeCRatings.ORebRating);
 
-                int awayPGRebound =awayPGRatings.DRebRating;
-                int awaySGRebound = awaySGRatings.DRebRating;
-                int awaySFRebound = awaySFRatings.DRebRating;
-                int awayPFRebound = awayPFRatings.DRebRating;
-                int awayCRebound = awayCRatings.DRebRating;
+                int awayPGRebound = StaminaEffect(awayPGRatings.PlayerId, 1, awayPGRatings.DRebRating);
+                int awaySGRebound = StaminaEffect(awaySGRatings.PlayerId, 1, awaySGRatings.DRebRating);
+                int awaySFRebound = StaminaEffect(awaySFRatings.PlayerId, 1, awaySFRatings.DRebRating);
+                int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.DRebRating);
+                int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.DRebRating);
 
                 offensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound;
                 defensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound;
@@ -1348,17 +1665,17 @@ namespace ABASim.api.Controllers
                     Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                 }
             } else {
-                int awayPGRebound = awayPGRatings.ORebRating;
-                int awaySGRebound = awaySGRatings.ORebRating;
-                int awaySFRebound = awaySFRatings.ORebRating;
-                int awayPFRebound = awayPFRatings.ORebRating;
-                int awayCRebound = awayCRatings.ORebRating;
+                int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.DRebRating);
+                int homeSGRebound = StaminaEffect(homeSGRatings.PlayerId, 0, homeSGRatings.DRebRating);
+                int homeSFRebound = StaminaEffect(homeSFRatings.PlayerId, 0, homeSFRatings.DRebRating);
+                int homePFRebound = StaminaEffect(homePFRatings.PlayerId, 0, homePFRatings.DRebRating);
+                int homeCRebound = StaminaEffect(homeCRatings.PlayerId, 0, homeCRatings.DRebRating);
 
-                int homePGRebound = homePGRatings.DRebRating;
-                int homeSGRebound = homeSGRatings.DRebRating;
-                int homeSFRebound = homeSFRatings.DRebRating;
-                int homePFRebound = homePFRatings.DRebRating;
-                int homeCRebound = homeCRatings.DRebRating;
+                int awayPGRebound = StaminaEffect(awayPGRatings.PlayerId, 1, awayPGRatings.ORebRating);
+                int awaySGRebound = StaminaEffect(awaySGRatings.PlayerId, 1, awaySGRatings.ORebRating);
+                int awaySFRebound = StaminaEffect(awaySFRatings.PlayerId, 1, awaySFRatings.ORebRating);
+                int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.ORebRating);
+                int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.ORebRating);
 
                 defensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound;
                 offensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound;
@@ -1511,8 +1828,533 @@ namespace ABASim.api.Controllers
             }
         }
 
+        public int StealCheck()
+        {
+            PlayerRating currentRating = GetCurrentPlayersRatings();
+
+            if (_teamPossession == 0)
+            {
+                // int stealingTeam = 1;
+
+                // Away team is trying to steal the ball
+                List<PlayerRating> awayRatings = new List<PlayerRating>();
+                awayRatings.Add(awayPGRatings);
+                awayRatings.Add(awaySGRatings);
+                awayRatings.Add(awaySFRatings);
+                awayRatings.Add(awayPFRatings);
+                awayRatings.Add(awayCRatings);
+
+                List<PlayerRating> awayRatingsSorted = new List<PlayerRating>();
+                awayRatingsSorted = awayRatings.OrderByDescending(x => x.StealRating).ToList();
+
+                for (int i = 0; i < awayRatingsSorted.Count; i++)
+                {
+                    PlayerRating checking = awayRatingsSorted[i];
+                    int rating = StaminaEffect(checking.PlayerId, 1, checking.StealRating);
+                    int result = _random.Next(1, 1001);
+
+                    if (result <= rating)
+                    {
+                        // Update the timer
+                        int timeValue = _random.Next(1, 4);
+
+                        // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                        if (timeValue > _time || timeValue > _shotClock)
+                        {
+                            // This action causes time to expire
+                            if (timeValue > _time)
+                            {
+                                timeValue = _time;
+                            }
+                            else if (timeValue > _shotClock)
+                            {
+                                timeValue = _shotClock;
+                            }
+                        }
+
+                        // Updates
+                        // Get correct display of time
+                        _time = _time - timeValue;
+                        _shotClock = _shotClock - timeValue;
+                        UpdateTimeInBoxScore(timeValue);
+                        StaminaUpdates(timeValue);
+
+                        // Box Score - both block and the shooter
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.Turnovers++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+
+                        BoxScore temp2 = _awayBoxScores.Find(x => x.Id == checking.PlayerId);
+                        temp2.Steals++;
+                        int index2 = _awayBoxScores.FindIndex(x => x.Id == checking.PlayerId);
+                        _awayBoxScores[index2] = temp2;
+
+                        // Commentary
+                        commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                        _teamPossession = 1;
+                        _playerPossession = _random.Next(1, 6); // not sure how to make this correct
+
+                        return 1;
+                    }
+                }
+            } else {
+                // int stealingTeam = 1;
+
+                // Home team is trying to steal the shot
+                List<PlayerRating> homeRatings = new List<PlayerRating>();
+                homeRatings.Add(homePGRatings);
+                homeRatings.Add(homeSGRatings);
+                homeRatings.Add(homeSFRatings);
+                homeRatings.Add(homePFRatings);
+                homeRatings.Add(homeCRatings);
+
+                List<PlayerRating> homeRatingsSorted = new List<PlayerRating>();
+                homeRatingsSorted = homeRatings.OrderByDescending(x => x.StealRating).ToList();
+
+                for (int i = 0; i < homeRatingsSorted.Count; i++)
+                {
+                    PlayerRating checking = homeRatingsSorted[i];
+                    int rating = StaminaEffect(checking.PlayerId, 0, checking.StealRating);
+                    int result = _random.Next(1, 1001);
+
+                    if (result <= rating)
+                    {
+                        // Update the timer
+                        int timeValue = _random.Next(1, 4);
+
+                        // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+                        if (timeValue > _time || timeValue > _shotClock)
+                        {
+                            // This action causes time to expire
+                            if (timeValue > _time)
+                            {
+                                timeValue = _time;
+                            }
+                            else if (timeValue > _shotClock)
+                            {
+                                timeValue = _shotClock;
+                            }
+                        }
+
+                        // Updates
+                        // Get correct display of time
+                        _time = _time - timeValue;
+                        _shotClock = _shotClock - timeValue;
+                        UpdateTimeInBoxScore(timeValue);
+                        StaminaUpdates(timeValue);
+
+                        // Box Score - both block and the shooter
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentRating.PlayerId);
+                        temp.Turnovers++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+
+                        BoxScore temp2 = _homeBoxScores.Find(x => x.Id == checking.PlayerId);
+                        temp2.Steals++;
+                        int index2 = _homeBoxScores.FindIndex(x => x.Id == checking.PlayerId);
+                        _homeBoxScores[index2] = temp2;
+
+                        // Commentary
+                        commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                        _teamPossession = 1;
+                        _playerPossession = _random.Next(1, 6);
+
+                        return 1;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        public void PlayerFouled()
+        {
+            foulCounter++;
+            _playerRatingPassed = null;
+            _playerPassed = null;
+
+            // Setup fouling objects
+            Player playerFouling = new Player();
+            int isFreeThrows = 0;
+            int teamWhichFouled = 2;
+
+            // Set the time
+            int timeValue = _random.Next(1, 3);
+
+            // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+            if (timeValue > _time || timeValue > _shotClock)
+            {
+                // This action causes time to expire
+                if (timeValue > _time)
+                {
+                    timeValue = _time;
+                }
+                else if (timeValue > _shotClock)
+                {
+                    timeValue = _shotClock;
+                }
+            }
+
+            // Update what goes game wide
+            _time = _time - timeValue;
+            _shotClock = _shotClock - timeValue;
+            StaminaUpdates(timeValue);
+            UpdateTimeInBoxScore(timeValue);
+
+            // Need to update the player fouling boxscore
+            int fouler = _random.Next(1, 6);
+            playerFouling = UpdateFouler(fouler);
+            string fouling = playerFouling.FirstName + " " + playerFouling.Surname;
+
+            int result = _random.Next(1, 20);
+
+            if (result < 16)
+            {
+                // Non-Shooting Foul
+                if (_teamPossession == 1)
+                {
+                    // Commentary
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    _homeFoulBonus++;
+                    teamWhichFouled = 0;
+
+                    if (_homeFoulBonus > 4)
+                    {
+                        // Commentary
+                        commentaryData.Add(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        isFreeThrows = 1;
+                    }
+                }
+                else
+                {
+                    // Commentary
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    _awayFoulBonus++;
+                    teamWhichFouled = 1;
+
+                    if (_awayFoulBonus > 4)
+                    {
+                        // Commentary
+                        commentaryData.Add(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        isFreeThrows = 1;
+                    }
+                }
+
+                // Foul Trouble Check for subs
+                int sub = FoulTroubleCheck(teamWhichFouled, fouler);
+
+                if (sub == 1)
+                {
+                    // Player needs to be subbed out due to foul trouble
+                    Substitution(teamWhichFouled, fouler);
+                }
+                
+                // Check if it is free throws
+                if (isFreeThrows == 1)
+                {
+                    // Need to check if there are any subs to be made
+                    SubCheckFT();
+
+                    int ftResult = FreeThrows(2);
+                    if (ftResult == 0)
+                    {
+                        // last shot was made
+                        if (_teamPossession == 0)
+                        {
+                            _teamPossession = 1;
+                        }
+                        else
+                        {
+                            _teamPossession = 0;
+                        }
+                        Inbounds();
+                    }
+                    else
+                    {
+                        Rebound();
+                    }
+                }
+                else
+                {
+                    // Need to check for subs
+                    SubCheck();
+                    Inbounds();
+                }
+            }
+            else
+            {
+                // Shooting Foul
+                if (_teamPossession == 0)
+                {
+                    _homeFoulBonus++;
+                }
+                else
+                {
+                    _awayFoulBonus++;
+                }
+
+                // Need to determine if it is a 3 or 2
+                int shots = _random.Next(1, 11);
+
+                if (shots <= 8)
+                {
+                    // Commentary
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                    // Need to check if there are any subs to be made
+                    SubCheckFT();
+
+                    int ftResult = FreeThrows(2);
+                    if (ftResult == 0)
+                    {
+                        // last shot was made
+                        if (_teamPossession == 0)
+                        {
+                            _teamPossession = 1;
+                        }
+                        else
+                        {
+                            _teamPossession = 0;
+                        }
+                        Inbounds();
+                    }
+                    else
+                    {
+                        Rebound();
+                    }
+                }
+                else
+                {
+                    // Commentary
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                    // Need to check if there are any subs to be made
+                    SubCheckFT();
+
+                    int ftResult = FreeThrows(3);
+                    if (ftResult == 0)
+                    {
+                        // last shot was made
+                        if (_teamPossession == 0)
+                        {
+                            _teamPossession = 1;
+                        }
+                        else
+                        {
+                            _teamPossession = 0;
+                        }
+                        // Finish the action
+                        Inbounds();
+                    }
+                    else
+                    {
+                        Rebound();
+                    }
+                }
+            }
+        }
+
+        public int FreeThrows(int shots)
+        {
+            int lastShot = 0;
+            PlayerRating currentPlayerRating = GetCurrentPlayersRatings();
+            _playerRatingPassed = null;
+            _playerPassed = null;
+
+            for (int i = 0; i < shots; i++)
+            {
+                int result = _random.Next(1, 1001);
+                int ftRating = StaminaEffect(currentPlayerRating.PlayerId, _teamPossession, currentPlayerRating.FTRating);
+
+                if (result <= ftRating)
+                {
+                    // Free throw is made
+                    // box score
+                    if (_teamPossession == 0)
+                    {
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentPlayerRating.PlayerId);
+                        temp.Points++;
+                        temp.FTM++;
+                        temp.FTA++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentPlayerRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+                        _homeScore++;
+                    } 
+                    else
+                    {
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentPlayerRating.PlayerId);
+                        temp.Points++;
+                        temp.FTM++;
+                        temp.FTA++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentPlayerRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+                        _awayScore++;
+                    }
+                    UpdatePlusMinusBoxScore(1);
+
+                    // commentary
+                    commentaryData.Add(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                } 
+                else
+                {
+                    // Free throw is missed
+                    if (shots - 1 == i)
+                    {
+                        lastShot = 1;
+                    }
+
+                    // commentary
+                    commentaryData.Add(comm.GetMissedFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.GetMissedFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                    // box score
+                    if (_teamPossession == 0)
+                    {
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == currentPlayerRating.PlayerId);
+                        temp.FTA++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == currentPlayerRating.PlayerId);
+                        _homeBoxScores[index] = temp;
+                    }
+                    else
+                    {
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == currentPlayerRating.PlayerId);
+                        temp.FTA++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == currentPlayerRating.PlayerId);
+                        _awayBoxScores[index] = temp;
+                    }
+                }
+            }
+            _shotClock = 24;
+            return lastShot;
+        }
+
+        public void PlayerTurnover()
+        {
+            turnoverCounter++;
+            _playerRatingPassed = null;
+            _playerPassed = null;
+
+            // Update the timer
+            int timeValue = _random.Next(1, 4);            
+
+            // Need to check if the time has not gone past 0 and update the time value appropriately
+            if (timeValue > _time || timeValue > _shotClock)
+            {
+                // This action causes time to expire
+                if (timeValue > _time)
+                {
+                    timeValue = _time;
+                }
+                else if (timeValue > _shotClock)
+                {
+                    timeValue = _shotClock;
+                }
+            }
+            
+            // Player has committed a turnover
+            int result = _random.Next(1, 51);
+            PlayerRating current = GetCurrentPlayersRatings();
+
+            int turnoverType = -1;
+            if (result <= 35)
+            {
+                turnoverType = 0;
+            }
+            else if (result <= 48)
+            {
+                turnoverType = 1;
+            }
+            else
+            {
+                turnoverType = 2;
+            }
+
+            StaminaUpdates(timeValue);
+            UpdateTimeInBoxScore(timeValue);
+
+            if (_teamPossession == 0)
+            {
+                BoxScore temp = _homeBoxScores.Find(x => x.Id == current.PlayerId);
+                // Need to check if it was Offensive Foul
+                if (turnoverType == 2)
+                {
+                    temp.Fouls++;
+
+                    // Need to identify the current position
+                    int fouler = CheckCurrentPosition(current.PlayerId);
+
+                    // Foul Trouble Check for subs
+                    int sub = FoulTroubleCheck(1, fouler);
+
+                    if (sub == 1)
+                    {
+                        // Player needs to be subbed out due to foul trouble
+                        Substitution(1, fouler);
+                    }
+                }
+                temp.Turnovers++;
+                int index = _homeBoxScores.FindIndex(x => x.Id == current.PlayerId);
+                _homeBoxScores[index] = temp;
+
+                // commentary
+                commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                // change possession
+                _teamPossession = 1;
+            }
+            else
+            {
+                BoxScore temp = _awayBoxScores.Find(x => x.Id == current.PlayerId);
+                // Need to check if it was Offensive Foul
+                if (turnoverType == 2)
+                {
+                    temp.Fouls++;
+
+                    // Need to identify the current position
+                    int fouler = CheckCurrentPosition(current.PlayerId);
+
+                    // Foul Trouble Check for subs
+                    int sub = FoulTroubleCheck(1, fouler);
+
+                    if (sub == 1)
+                    {
+                        // Player needs to be subbed out due to foul trouble
+                        Substitution(1, fouler);
+                    }
+                }
+                temp.Turnovers++;
+                int index = _awayBoxScores.FindIndex(x => x.Id == current.PlayerId);
+                _awayBoxScores[index] = temp;
+
+                // commentary
+                commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                // change possession
+                _teamPossession = 0;
+            }
+            _shotClock = 24;
+            SubCheck();
+        }
+
         public void ShotClockViolation()
         {
+            shotClockCounter++;
+            _playerRatingPassed = null;
+            _playerPassed = null;
+
             _shotClock = 24;
             
             if (_teamPossession == 0)
@@ -1524,7 +2366,8 @@ namespace ABASim.api.Controllers
                 _teamPossession = 0;
             }
 
-            // Now it would go to check for SUBS - TODO
+            // Now it would go to check for SUBS
+            SubCheck();
 
             // Need to add the commentary here
             commentaryData.Add(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
@@ -1658,6 +2501,1471 @@ namespace ABASim.api.Controllers
                         }
                         passerSet = 1;
                     }
+                }
+            }
+        }
+
+        public int GetOrpmValue(int team)
+        {
+            if (team == 0)
+            {
+                int pgVal = homePGRatings.ORPMRating / 10;
+                int sgVal = homeSGRatings.ORPMRating / 10;
+                int sfVal = homeSFRatings.ORPMRating / 10;
+                int pfVal = homePFRatings.ORPMRating / 10;
+                int cVal = homeCRatings.ORPMRating / 10;
+
+                int total = pgVal + sgVal + sfVal + pfVal + cVal;
+                int valueToReturn = total / 5;
+                return valueToReturn;
+            }
+            else
+            {
+                int pgVal = awayPGRatings.ORPMRating / 10;
+                int sgVal = awaySGRatings.ORPMRating / 10;
+                int sfVal = awaySFRatings.ORPMRating / 10;
+                int pfVal = awayPFRatings.ORPMRating / 10;
+                int cVal = awayCRatings.ORPMRating / 10;
+
+                int total = pgVal + sgVal + sfVal + pfVal + cVal;
+                int valueToReturn = total / 5;
+                return valueToReturn;
+            }
+        }
+
+        public int GetDrpmValue(int team)
+        {
+            if (team == 0)
+            {
+                int pgVal = homePGRatings.DRPMRating / 10;
+                int sgVal = homeSGRatings.DRPMRating / 10;
+                int sfVal = homeSFRatings.DRPMRating / 10;
+                int pfVal = homePFRatings.DRPMRating / 10;
+                int cVal = homeCRatings.DRPMRating / 10;
+
+                int total = pgVal + sgVal + sfVal + pfVal + cVal;
+                int valueToReturn = total / 5;
+                return valueToReturn;
+            }
+            else
+            {
+                int pgVal = awayPGRatings.DRPMRating / 10;
+                int sgVal = awaySGRatings.DRPMRating / 10;
+                int sfVal = awaySFRatings.DRPMRating / 10;
+                int pfVal = awayPFRatings.DRPMRating / 10;
+                int cVal = awayCRatings.DRPMRating / 10;
+
+                int total = pgVal + sgVal + sfVal + pfVal + cVal;
+                int valueToReturn = total / 5;
+                return valueToReturn;
+            }
+        }
+
+        // SUBS
+        public int FoulTroubleCheck(int team, int player)
+        {
+            int subOut = 0;
+            int fouls = 0;
+
+            if (team == 0)
+            {
+                switch (player)
+                {
+                    case 1:
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == homePG.Id);
+                        fouls = temp.Fouls;
+                        break;
+                    case 2:
+                        BoxScore temp2 = _homeBoxScores.Find(x => x.Id == homeSG.Id);
+                        fouls = temp2.Fouls;
+                        break;
+                    case 3:
+                        BoxScore temp3 = _homeBoxScores.Find(x => x.Id == homeSF.Id);
+                        fouls = temp3.Fouls;
+                        break;
+                    case 4:
+                        BoxScore temp4 = _homeBoxScores.Find(x => x.Id == homePF.Id);
+                        fouls = temp4.Fouls;
+                        break;
+                    case 5:
+                        BoxScore temp5 = _homeBoxScores.Find(x => x.Id == homeC.Id);
+                        fouls = temp5.Fouls;
+                        break;
+                }
+            }
+            else
+            {
+                switch (player)
+                {
+                    case 1:
+                        BoxScore temp6 = _awayBoxScores.Find(x => x.Id == awayPG.Id);
+                        fouls = temp6.Fouls;
+                        break;
+                    case 2:
+                        BoxScore temp7 = _awayBoxScores.Find(x => x.Id == awaySG.Id);
+                        fouls = temp7.Fouls;
+                        break;
+                    case 3:
+                        BoxScore temp8 = _awayBoxScores.Find(x => x.Id == awaySF.Id);
+                        fouls = temp8.Fouls;
+                        break;
+                    case 4:
+                        BoxScore temp9 = _awayBoxScores.Find(x => x.Id == awayPF.Id);
+                        fouls = temp9.Fouls;
+                        break;
+                    case 5:
+                        BoxScore temp10 = _awayBoxScores.Find(x => x.Id == awayC.Id);
+                        fouls = temp10.Fouls;
+                        break;
+                }
+            }
+
+            switch (_quarter)
+            {
+                case 1:
+                    if (fouls >= 2)
+                    {
+                        subOut = 1;
+                    }
+                    break;
+                case 2:
+                    if (fouls >= 3)
+                    {
+                        subOut = 1;
+                    }
+                    break;
+                case 3:
+                    if (fouls >= 4)
+                    {
+                        subOut = 1;
+                    }
+                    break;
+                default:
+                    subOut = 0;
+                    break;
+            }
+
+            if (fouls == 6)
+            {
+                subOut = 1;
+            }
+            return subOut;
+        }
+
+        public void Substitution(int team, int position)
+        {
+            // // Now need to sort out the sub commentary
+            // string outPlayer = "";
+            // string inPlayer = "";
+
+            if (team == 0)
+            {
+                // Need to find the correct position
+                switch (position)
+                {
+                    case 1:
+                        Player current = homePG;
+                        // outPlayer = current.FirstName + " " + current.Surname;
+
+                        PlayerRating currentRatings = homePGRatings;
+
+                        List<DepthChart> depth = _homeDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> filterDepth = depth.Where(x => x.Position == 1).ToList();
+                        int homePGSet = 0;
+
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < filterDepth.Count; i++)
+                        {
+                            DepthChart dc = filterDepth[i];
+
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(homePG.Id);
+                            onCourtIds.Add(homeSG.Id);
+                            onCourtIds.Add(homeSF.Id);
+                            onCourtIds.Add(homePF.Id);
+                            onCourtIds.Add(homeC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+                            if(!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = homePG.FirstName + " " + homePG.Surname;
+                                    homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    homePGSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _homeStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
+                                    stOn.OnOff = 1;
+                                    index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _homeStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (homePGSet != 1)
+                        {
+                            // We do not have a player set for the sub
+                            // The player stays on
+                        }
+                        break;
+                    case 2:
+                        Player currentHomeSG = homeSG;
+                        // outPlayer = currentHomeSG.FirstName + " " + currentHomeSG.Surname;
+                        PlayerRating currentHomeSGRatings = homeSGRatings;
+                        int homeSGSet = 0;
+
+                        List<DepthChart> homeSGdepth = _homeDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> homeSGfilterDepth = homeSGdepth.Where(x => x.Position == 2).ToList();
+
+                        for (int i = 0; i < homeSGfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = homeSGfilterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(homePG.Id);
+                            onCourtIds.Add(homeSG.Id);
+                            onCourtIds.Add(homeSF.Id);
+                            onCourtIds.Add(homePF.Id);
+                            onCourtIds.Add(homeC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = homeSG.FirstName + " " + homeSG.Surname;
+                                    homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    homeSGSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomeSG.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _homeStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
+                                    stOn.OnOff = 1;
+                                    index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _homeStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (homeSGSet != 1)
+                        {
+                            // We do not have a player set for the sub
+                            // LEave him on the court
+                        }
+                        break;
+                    case 3:
+                        Player currentHomeSF = homeSF;
+                        // outPlayer = currentHomeSF.FirstName + " " + currentHomeSF.Surname;
+                        PlayerRating currentHomeSFRatings = homeSFRatings;
+                        int homeSFSet = 0;
+
+                        List<DepthChart> homeSFdepth = _homeDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> homeSFfilterDepth = homeSFdepth.Where(x => x.Position == 3).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < homeSFfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = homeSFfilterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(homePG.Id);
+                            onCourtIds.Add(homeSG.Id);
+                            onCourtIds.Add(homeSF.Id);
+                            onCourtIds.Add(homePF.Id);
+                            onCourtIds.Add(homeC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = homeSF.FirstName + " " + homeSF.Surname;
+                                    homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    homeSFSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomeSF.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _homeStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
+                                    stOn.OnOff = 1;
+                                    index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _homeStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (homeSFSet != 1)
+                        {
+                            // We do not have a player set for the sub
+                            // Leave the player on the court
+                        }
+                        break;
+                    case 4:
+                        Player currentHomePF = homePF;
+                        PlayerRating currentHomePFRatings = homePFRatings;
+                        // outPlayer = currentHomePF.FirstName + " " + currentHomePF.Surname;
+                        int homePFSet = 0;
+
+                        List<DepthChart> homePFdepth = _homeDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> homePFfilterDepth = homePFdepth.Where(x => x.Position == 4).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < homePFfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = homePFfilterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(homePG.Id);
+                            onCourtIds.Add(homeSG.Id);
+                            onCourtIds.Add(homeSF.Id);
+                            onCourtIds.Add(homePF.Id);
+                            onCourtIds.Add(homeC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = homePF.FirstName + " " + homePF.Surname;
+                                    homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    homePFSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomePF.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _homeStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
+                                    stOn.OnOff = 1;
+                                    index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _homeStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (homePFSet != 1)
+                        {
+                            // We do not have a player set for the sub
+                            // LEave the player on the court
+                        }
+                        break;
+                    case 5:
+                        Player currentHomeC = homeC;
+                        PlayerRating currentHomeCRatings = homeCRatings;
+                        // outPlayer = currentHomeC.FirstName + " " + currentHomeC.Surname;
+                        int homeCSet = 0;
+
+                        List<DepthChart> homeCdepth = _homeDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> homeCfilterDepth = homeCdepth.Where(x => x.Position == 5).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < homeCfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = homeCfilterDepth[i];
+
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(homePG.Id);
+                            onCourtIds.Add(homeSG.Id);
+                            onCourtIds.Add(homeSF.Id);
+                            onCourtIds.Add(homePF.Id);
+                            onCourtIds.Add(homeC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = homeC.FirstName + " " + homeC.Surname;
+                                    homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    homeCSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomeC.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _homeStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
+                                    stOn.OnOff = 1;
+                                    index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _homeStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (homeCSet != 1)
+                        {
+                            // We do not have a player set for the sub
+                            // LEave player on the court
+                        }
+                        break;
+                    default:
+                        commentaryData.Add("Error making substitution");
+                        break;
+                }
+            }
+            else
+            {
+                switch (position)
+                {
+                    case 1:
+                        Player current = awayPG;
+                        // outPlayer = current.FirstName + " " + current.Surname;
+                        PlayerRating currentRatings = awayPGRatings;
+                        int awayPGSet = 0;
+
+                        List<DepthChart> depth = _awayDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> filterDepth = depth.Where(x => x.Position == 1).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < filterDepth.Count; i++)
+                        {
+                            DepthChart dc = filterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(awayPG.Id);
+                            onCourtIds.Add(awaySG.Id);
+                            onCourtIds.Add(awaySF.Id);
+                            onCourtIds.Add(awayPF.Id);
+                            onCourtIds.Add(awayC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = awayPG.FirstName + " " + awayPG.Surname;
+                                    awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    awayPGSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _awayStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
+                                    stOn.OnOff = 1;
+                                    index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _awayStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (awayPGSet != 1)
+                        {
+                            // We do not have a player set for the sub
+
+                        }
+                        break;
+                    case 2:
+                        Player currentAwaySG = awaySG;
+                        // outPlayer = currentAwaySG.FirstName + " " + currentAwaySG.Surname;
+                        PlayerRating currentAwaySGRatings = awaySGRatings;
+                        int awaySGSet = 0;
+
+                        List<DepthChart> awaySGdepth = _awayDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> awaySGfilterDepth = awaySGdepth.Where(x => x.Position == 2).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < awaySGfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = awaySGfilterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(awayPG.Id);
+                            onCourtIds.Add(awaySG.Id);
+                            onCourtIds.Add(awaySF.Id);
+                            onCourtIds.Add(awayPF.Id);
+                            onCourtIds.Add(awayC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = awaySG.FirstName + " " + awaySG.Surname;
+                                    awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    awaySGSet = 1;
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwaySG.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _awayStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
+                                    stOn.OnOff = 1;
+                                    index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _awayStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (awaySGSet != 1)
+                        {
+                            // We do not have a player set for the sub
+
+                        }
+                        break;
+                    case 3:
+                        Player currentAwaySF = awaySF;
+                        // outPlayer = currentAwaySF.FirstName + " " + currentAwaySF.Surname;
+                        PlayerRating currentAwaySFRatings = awaySFRatings;
+                        int awaySFSet = 0;
+
+                        List<DepthChart> awaySFdepth = _awayDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> awaySFfilterDepth = awaySFdepth.Where(x => x.Position == 3).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < awaySFfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = awaySFfilterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(awayPG.Id);
+                            onCourtIds.Add(awaySG.Id);
+                            onCourtIds.Add(awaySF.Id);
+                            onCourtIds.Add(awayPF.Id);
+                            onCourtIds.Add(awayC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = awaySF.FirstName + " " + awaySF.Surname;
+                                    awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    awaySFSet = 1;
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwaySF.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _awayStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
+                                    stOn.OnOff = 1;
+                                    index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _awayStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (awaySFSet != 1)
+                        {
+                            // We do not have a player set for the sub
+
+                        }
+                        break;
+                    case 4:
+                        Player currentAwayPF = awayPF;
+                        // outPlayer = currentAwayPF.FirstName + " " + currentAwayPF.Surname;
+                        PlayerRating currentAwayPFRatings = awayPFRatings;
+                        int awayPFSet = 0;
+
+                        List<DepthChart> awayPFdepth = _awayDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> awayPFfilterDepth = awayPFdepth.Where(x => x.Position == 4).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < awayPFfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = awayPFfilterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(awayPG.Id);
+                            onCourtIds.Add(awaySG.Id);
+                            onCourtIds.Add(awaySF.Id);
+                            onCourtIds.Add(awayPF.Id);
+                            onCourtIds.Add(awayC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = awayPF.FirstName + " " + awayPF.Surname;
+                                    awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    awayPFSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwayPF.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _awayStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
+                                    stOn.OnOff = 1;
+                                    index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _awayStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (awayPFSet != 1)
+                        {
+                            // We do not have a player set for the sub
+
+                        }
+                        break;
+                    case 5:
+                        Player currentAwayC = awayC;
+                        // outPlayer = currentAwayC.FirstName + " " + currentAwayC.Surname;
+                        PlayerRating currentAwayCRatings = awayCRatings;
+                        int awayCSet = 0;
+
+                        List<DepthChart> awayCdepth = _awayDepth.OrderBy(x => x.Depth).ToList();
+                        List<DepthChart> awayCfilterDepth = awayCdepth.Where(x => x.Position == 5).ToList();
+                        // Now need to determine which player is being subbed in
+                        for (int i = 0; i < awayCfilterDepth.Count; i++)
+                        {
+                            DepthChart dc = awayCfilterDepth[i];
+                            // Carry on as it is the correct position
+                            // Need to check that the player is not on the court in another position
+                            // Get list of the all of the current player ids
+                            List<int> onCourtIds = new List<int>();
+                            onCourtIds.Add(awayPG.Id);
+                            onCourtIds.Add(awaySG.Id);
+                            onCourtIds.Add(awaySF.Id);
+                            onCourtIds.Add(awayPF.Id);
+                            onCourtIds.Add(awayC.Id);
+
+                            var exists = onCourtIds.Contains(dc.PlayerId);
+
+                            if (!exists)
+                            {
+                                // That way we don't accidently keep the same player on
+                                // Now need to check whether this player is not in foul trouble too
+                                int check = FoulTroubleCheck(team, dc.PlayerId);
+
+                                if (check == 0)
+                                {
+                                    // Player can be subbed
+                                    // Now need to get the player object from the roster
+                                    awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                                    // inPlayer = awayC.FirstName + " " + awayC.Surname;
+                                    awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                                    awayCSet = 1;
+
+                                    // Need to update the stamina track objects for on and off court
+                                    StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwayC.Id);
+                                    stOff.OnOff = 0;
+                                    int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                                    _awayStaminas[index] = stOff;
+
+                                    StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
+                                    stOn.OnOff = 1;
+                                    index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                                    _awayStaminas[index] = stOn;
+
+                                    // // Update the Commentary for the Sub
+                                    // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (awayCSet != 1)
+                        {
+                            // We do not have a player set for the sub
+                        }
+                        break;
+                    default:
+                        commentaryData.Add("Error making substitution");
+                        break;
+                }
+            }
+
+            
+        }
+
+        public void SubCheck()
+        {
+            // First Check the Home Team
+            for (int i = 0; i < _homeStaminas.Count; i++)
+            {
+                StaminaTrack st = _homeStaminas[i];
+
+                if (st.StaminaValue > 500 && st.OnOff == 1)
+                {
+                    // Player should be subbed out
+                    // Need to determine which position the player is currently at
+                    int playerid = st.PlayerId;
+                    int position = 0;
+                    Player current = new Player();
+
+                    if (homePG.Id == playerid)
+                    {
+                        position = 1;
+                        current = homePG;
+                    }
+                    else if (homeSG.Id == playerid)
+                    {
+                        position = 2;
+                        current = homeSG;
+                    }
+                    else if (homeSF.Id == playerid)
+                    {
+                        position = 3;
+                        current = homeSF;
+                    }
+                    else if (homePF.Id == playerid)
+                    {
+                        position = 4;
+                        current = homePF;
+                    }
+                    else if (homeC.Id == playerid)
+                    {
+                        position = 5;
+                        current = homeC;
+                    }
+
+                    Substitution(0, position);
+
+                    // Now need to sort out the sub commentary
+                    string outPlayer = current.FirstName + " " + current.Surname;
+                    string inPlayer = "";
+
+                    switch (position)
+                    {
+                        case 1:
+                            inPlayer = homePG.FirstName + " " + homePG.Surname;
+                            break;
+                        case 2:
+                            inPlayer = homeSG.FirstName + " " + homeSG.Surname;
+                            break;
+                        case 3:
+                            inPlayer = homeSF.FirstName + " " + homeSF.Surname;
+                            break;
+                        case 4:
+                            inPlayer = homePF.FirstName + " " + homePF.Surname;
+                            break;
+                        case 5:
+                            inPlayer = homeC.FirstName + " " + homeC.Surname;
+                            break;
+                    }
+                    
+                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+
+                }
+            }
+
+            // Now check the Away Team
+            for (int i = 0; i < _awayStaminas.Count; i++)
+            {
+                StaminaTrack st = _awayStaminas[i];
+                PlayerRating currentShooter = GetCurrentPlayersRatings();
+
+                if (st.StaminaValue > 500 && st.OnOff == 1)
+                {
+                    // Player should be subbed out
+                    // Need to determine which position the player is currently at
+                    int playerid = st.PlayerId;
+                    int position = 0;
+                    Player current = new Player();
+
+                    if (awayPG.Id == playerid)
+                    {
+                        position = 1;
+                        current = awayPG;
+                    }
+                    else if (awaySG.Id == playerid)
+                    {
+                        position = 2;
+                        current = awaySG;
+                    }
+                    else if (awaySF.Id == playerid)
+                    {
+                        position = 3;
+                        current = awaySF;
+                    }
+                    else if (awayPF.Id == playerid)
+                    {
+                        position = 4;
+                        current = awayPF;
+                    }
+                    else if (awayC.Id == playerid)
+                    {
+                        position = 5;
+                        current = awayC;
+                    }
+
+                    Substitution(1, position);
+
+                    // Now need to sort out the sub commentary
+                    string outPlayer = current.FirstName + " " + current.Surname;
+                    string inPlayer = "";
+
+                    switch (position)
+                    {
+                        case 1:
+                            inPlayer = awayPG.FirstName + " " + awayPG.Surname;
+                            break;
+                        case 2:
+                            inPlayer = awaySG.FirstName + " " + awaySG.Surname;
+                            break;
+                        case 3:
+                            inPlayer = awaySF.FirstName + " " + awaySF.Surname;
+                            break;
+                        case 4:
+                            inPlayer = awayPF.FirstName + " " + awayPF.Surname;
+                            break;
+                        case 5:
+                            inPlayer = awayC.FirstName + " " + awayC.Surname;
+                            break;
+                    }
+                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                    Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                }
+            }
+        }
+
+        public void SubCheckFT()
+        {
+            // First Check the Home Team
+            for (int i = 0; i < _homeStaminas.Count; i++)
+            {
+                StaminaTrack st = _homeStaminas[i];
+                PlayerRating currentShooter = GetCurrentPlayersRatings();
+
+                if (st.PlayerId != currentShooter.PlayerId)
+                {
+                    if (st.StaminaValue > 500 && st.OnOff == 1)
+                    {
+                        // Player should be subbed out
+                        // Need to determine which position the player is currently at
+                        int playerid = st.PlayerId;
+                        int position = 0;
+                        Player current = new Player();
+
+                        if (homePG.Id == playerid)
+                        {
+                            position = 1;
+                            current = homePG;
+                        }
+                        else if (homeSG.Id == playerid)
+                        {
+                            position = 2;
+                            current = homeSG;
+                        }
+                        else if (homeSF.Id == playerid)
+                        {
+                            position = 3;
+                            current = homeSF;
+                        }
+                        else if (homePF.Id == playerid)
+                        {
+                            position = 4;
+                            current = homePF;
+                        }
+                        else if (homeC.Id == playerid)
+                        {
+                            position = 5;
+                            current = homeC;
+                        }
+
+                        Substitution(0, position);
+
+                        // Now need to sort out the sub commentary
+                        string outPlayer = current.FirstName + " " + current.Surname;
+                        string inPlayer = "";
+
+                        switch (position)
+                        {
+                            case 1:
+                                inPlayer = homePG.FirstName + " " + homePG.Surname;
+                                break;
+                            case 2:
+                                inPlayer = homeSG.FirstName + " " + homeSG.Surname;
+                                break;
+                            case 3:
+                                inPlayer = homeSF.FirstName + " " + homeSF.Surname;
+                                break;
+                            case 4:
+                                inPlayer = homePF.FirstName + " " + homePF.Surname;
+                                break;
+                            case 5:
+                                inPlayer = homeC.FirstName + " " + homeC.Surname;
+                                break;
+                        }
+
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                    }
+                }
+            }
+
+            // Now check the Away Team
+            for (int i = 0; i < _awayStaminas.Count; i++)
+            {
+                StaminaTrack st = _awayStaminas[i];
+                PlayerRating currentShooter = GetCurrentPlayersRatings();
+                if (st.PlayerId != currentShooter.PlayerId)
+                {
+
+                    if (st.StaminaValue > 500 && st.OnOff == 1)
+                    {
+                        // Player should be subbed out
+                        // Need to determine which position the player is currently at
+                        int playerid = st.PlayerId;
+                        int position = 0;
+                        Player current = new Player();
+
+                        if (awayPG.Id == playerid)
+                        {
+                            position = 1;
+                            current = awayPG;
+                        }
+                        else if (awaySG.Id == playerid)
+                        {
+                            position = 2;
+                            current = awaySG;
+                        }
+                        else if (awaySF.Id == playerid)
+                        {
+                            position = 3;
+                            current = awaySF;
+                        }
+                        else if (awayPF.Id == playerid)
+                        {
+                            position = 4;
+                            current = awayPF;
+                        }
+                        else if (awayC.Id == playerid)
+                        {
+                            position = 5;
+                            current = awayC;
+                        }
+
+                        Substitution(1, position);
+
+                        // Now need to sort out the sub commentary
+                        string outPlayer = current.FirstName + " " + current.Surname;
+                        string inPlayer = "";
+
+                        switch (position)
+                        {
+                            case 1:
+                                inPlayer = awayPG.FirstName + " " + awayPG.Surname;
+                                break;
+                            case 2:
+                                inPlayer = awaySG.FirstName + " " + awaySG.Surname;
+                                break;
+                            case 3:
+                                inPlayer = awaySF.FirstName + " " + awaySF.Surname;
+                                break;
+                            case 4:
+                                inPlayer = awayPF.FirstName + " " + awayPF.Surname;
+                                break;
+                            case 5:
+                                inPlayer = awayC.FirstName + " " + awayC.Surname;
+                                break;
+                        }
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                    }
+                }
+            }
+        }
+
+        public void BackToStarters()
+        {
+            // Home Team
+            for (int i=1; i<6; i++)
+            {
+                DepthChart dc = null;
+                List<int> onCourtIds = null;
+                bool exists;
+                switch (i)
+                {
+                    case 1:
+                        Player currentHomePG = homePG;
+                        PlayerRating currentHomePGRatings = homePGRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _homeDepth.Where(x => x.Position == 1 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomePG.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+                        }
+                        break;
+                    case 2:
+                        Player currentHomeSG = homeSG;
+                        PlayerRating currentHomeSGRatings = homeSGRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _homeDepth.Where(x => x.Position == 2 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomeSG.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+                        }
+                        break;
+                    case 3:
+                        Player currentHomeSF = homeSF;
+                        PlayerRating currentHomeSFRatings = homeSFRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _homeDepth.Where(x => x.Position == 3 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomeSF.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+                        }
+                        break;
+                    case 4:
+                        Player currentHomePF = homePF;
+                        PlayerRating currentHomePFRatings = homePFRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _homeDepth.Where(x => x.Position == 4 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomePF.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+                        }
+                        break;
+                    case 5:
+                        Player currentHomeC = homeC;
+                        PlayerRating currentHomeCRatings = homeCRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _homeDepth.Where(x => x.Position == 5 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == currentHomeC.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+                        }
+                        break;
+                }
+            }
+
+            // Away Team
+            for (int i = 1; i < 6; i++)
+            {
+                DepthChart dc = null;
+                List<int> onCourtIds = null;
+                bool exists;
+
+                switch (i)
+                {
+                    case 1:
+                        Player currentAwayPG = awayPG;
+                        PlayerRating currentAwayPGRatings = awayPGRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _awayDepth.Where(x => x.Position == 1 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwayPG.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+                        }
+                        break;
+                    case 2:
+                        Player currentAwaySG = awaySG;
+                        PlayerRating currentAwaySGRatings = awaySGRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _awayDepth.Where(x => x.Position == 2 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwaySG.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+                        }
+                        break;
+                    case 3:
+                        Player currentAwaySF = awaySF;
+                        PlayerRating currentAwaySFRatings = awaySFRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _awayDepth.Where(x => x.Position == 3 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwaySF.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+                        }
+                        break;
+                    case 4:
+                        Player currentAwayPF = awayPF;
+                        PlayerRating currentAwayPFRatings = awayPFRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _awayDepth.Where(x => x.Position == 4 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if(!exists)
+                        {
+                            awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwayPF.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+                            
+                        }
+                        break;
+                    case 5:
+                        Player currentAwayC = awayC;
+                        PlayerRating currentAwayCRatings = awayCRatings;
+                        //int awayPFSet = 0;
+
+                        dc = _awayDepth.Where(x => x.Position == 5 && x.Depth == 1).First();
+                        onCourtIds = new List<int>();
+                        onCourtIds.Add(awayPG.Id);
+                        onCourtIds.Add(awaySG.Id);
+                        onCourtIds.Add(awaySF.Id);
+                        onCourtIds.Add(awayPF.Id);
+                        onCourtIds.Add(awayC.Id);
+
+                        exists = onCourtIds.Contains(dc.PlayerId);
+
+                        if (!exists)
+                        {
+                            awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            //awayPFSet = 1;
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == currentAwayC.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+                        }
+                        break;
                 }
             }
         }
@@ -1829,6 +4137,47 @@ namespace ABASim.api.Controllers
                         int index = _homeStaminas.FindIndex(x => x.PlayerId == st.PlayerId);
                         _homeStaminas[index] = st;
                     }
+                }
+            }
+        }
+
+        public int StaminaEffect(int playerid, int team, int rating)
+        {
+            if(team == 0)
+            {
+                // Home
+                StaminaTrack st = _homeStaminas.Find(x => x.PlayerId == playerid);
+                decimal effect = st.StaminaValue / 100;
+                int value = (int)effect;
+
+                if (value == 0)
+                {
+                    return rating;
+                }
+                else
+                {
+                    double multiplier = (double)value / 100;
+                    double newRating = (double)rating * multiplier;
+                    int returnValue = rating - (int)newRating;
+                    return returnValue;
+                }
+            } else
+            {
+                // Away
+                StaminaTrack st = _awayStaminas.Find(x => x.PlayerId == playerid);
+                int effect = (int)st.StaminaValue / 100;
+                int value = (int)effect;
+
+                if (value == 0)
+                {
+                    return rating;
+                }
+                else
+                {
+                    double multiplier = (double)value / 100;
+                    double newRating = (double)rating * multiplier;
+                    int returnValue = rating - (int)newRating;
+                    return returnValue;
                 }
             }
         }
@@ -2121,7 +4470,126 @@ namespace ABASim.api.Controllers
             }
         }
 
+        public Player UpdateFouler(int playerPos)
+        {
+            Player playerFouling = null;
+            switch (playerPos)
+            {
+                case 1:
+                    if (_teamPossession == 1)
+                    {
+                        // Home PG fouled - update the box score
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == homePG.Id);
+                        temp.Fouls++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == homePG.Id);
+                        _homeBoxScores[index] = temp;
+                        playerFouling = homePG;
+                    }
+                    else
+                    {
+                        // Away PG
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == awayPG.Id);
+                        temp.Fouls++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == awayPG.Id);
+                        _awayBoxScores[index] = temp;
+                        playerFouling = awayPG;
+                    }
+                    break;
+                case 2:
+                    if (_teamPossession == 1)
+                    {
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == homeSG.Id);
+                        temp.Fouls++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == homeSG.Id);
+                        _homeBoxScores[index] = temp;
+                        playerFouling = homeSG;
+                    }
+                    else
+                    {
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == awaySG.Id);
+                        temp.Fouls++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == awaySG.Id);
+                        _awayBoxScores[index] = temp;
+                        playerFouling = awaySG;
+                    }
+                    break;
+                case 3:
+                    if (_teamPossession == 1)
+                    {
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == homeSF.Id);
+                        temp.Fouls++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == homeSF.Id);
+                        _homeBoxScores[index] = temp;
+                        playerFouling = homeSF;
+                    }
+                    else
+                    {
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == awaySF.Id);
+                        temp.Fouls++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == awaySF.Id);
+                        _awayBoxScores[index] = temp;
+                        playerFouling = awaySF;
+                    }
+                    break;
+                case 4:
+                    if (_teamPossession == 1)
+                    {
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == homePF.Id);
+                        temp.Fouls++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == homePF.Id);
+                        _homeBoxScores[index] = temp;
+                        playerFouling = homePF;
+                    }
+                    else
+                    {
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == awayPF.Id);
+                        temp.Fouls++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == awayPF.Id);
+                        _awayBoxScores[index] = temp;
+                        playerFouling = awayPF;
+                    }
+                    break;
+                case 5:
+                    if (_teamPossession == 1)
+                    {
+                        BoxScore temp = _homeBoxScores.Find(x => x.Id == homeC.Id);
+                        temp.Fouls++;
+                        int index = _homeBoxScores.FindIndex(x => x.Id == homeC.Id);
+                        _homeBoxScores[index] = temp;
+                        playerFouling = homeC;
+                    }
+                    else
+                    {
+                        BoxScore temp = _awayBoxScores.Find(x => x.Id == awayC.Id);
+                        temp.Fouls++;
+                        int index = _awayBoxScores.FindIndex(x => x.Id == awayC.Id);
+                        _awayBoxScores[index] = temp;
+                        playerFouling = awayC;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return playerFouling;
+        }
+
         // HELPERS
+        public string GetPlayerFullNameForPosition(int teamPos, int playerId)
+        {
+            if (teamPos == 1)
+            {
+                // Home
+                var player = _homePlayers.Find(x => x.Id == playerId);
+                return player.FirstName + " " + player.Surname;
+            }
+            else
+            {
+                // Away
+                var player = _awayPlayers.Find(x => x.Id == playerId);
+                return player.FirstName + " " + player.Surname;
+            }
+        }
+
         public string GetCurrentPlayerFullName()
         {
             string name = "";
@@ -2284,6 +4752,40 @@ namespace ABASim.api.Controllers
             return current;
         }
     
-        
+        public int CheckCurrentPosition(int playerId)
+        {
+            if (awayPG.Id == playerId)
+            {
+                return 1;
+            } else if (awaySG.Id == playerId)
+            {
+                return 2;
+            } else if (awaySF.Id == playerId)
+            {
+                return 3;
+            } else if (awayPF.Id == playerId)
+            {
+                return 4;
+            } else if (awayC.Id == playerId)
+            {
+                return 5;
+            } else if (homePG.Id == playerId)
+            {
+                return 1;
+            } else if (homeSG.Id == playerId)
+            {
+                return 2;
+            } else if (homeSF.Id == playerId)
+            {
+                return 3;
+            } else if (homePF.Id == playerId)
+            {
+                return 4;
+            } else if (homeC.Id == playerId)
+            {
+                return 5;
+            }
+            return 0;
+        }
     }
 }

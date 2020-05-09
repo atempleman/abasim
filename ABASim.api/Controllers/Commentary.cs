@@ -130,7 +130,7 @@ namespace ABASim.api.Controllers
             }
         }
 
-        public string GetTwoPointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string GetTwoPointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int assist, string assistPlayer)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -144,18 +144,24 @@ namespace ABASim.api.Controllers
                 scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
             }
 
+            string assistComm = "";
+            if(assist == 1)
+            {
+                assistComm = " The shot was assisted by " + assistPlayer;
+            }
+
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the mid-range jump shot.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the mid-range jump shot." + assistComm;
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A strong drive to the rim results in 2 points for " + playername + ".";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A strong drive to the rim results in 2 points for " + playername + "." + assistComm;
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested shot in the paint by " + playername + " is good.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested shot in the paint by " + playername + " is good." + assistComm;
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " An easy drive to the hoop for " + playername + " for an easy 2.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " An easy drive to the hoop for " + playername + " for an easy 2." + assistComm;
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " with the stepback for 2.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " with the stepback for 2." + assistComm;
                 default:
                     return "Error has occured in the GetTwoPointMakeCommentary";
             }
@@ -192,7 +198,7 @@ namespace ABASim.api.Controllers
             }
         }
 
-        public string GetThreePointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string GetThreePointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int assist, string assistPlayer)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -205,19 +211,25 @@ namespace ABASim.api.Controllers
             } else {
                 scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
             }
+
+            string assistComm = "";
+            if(assist == 1)
+            {
+                assistComm = " The shot was assisted by " + assistPlayer;
+            }
             
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the corner three.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the corner three." + assistComm;
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A spectacular step-back 3 by " + playername + ".";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A spectacular step-back 3 by " + playername + "." + assistComm;
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested 3 ball by " + playername + " is good.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested 3 ball by " + playername + " is good." + assistComm;
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A wide open 3 from the elbow for " + playername + " is good.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A wide open 3 from the elbow for " + playername + " is good." + assistComm;
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " hits the 3.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " hits the 3." + assistComm;
                 default:
                     return "Error has occured in the GetThreePointMakeCommentary";
             }
@@ -314,6 +326,212 @@ namespace ABASim.api.Controllers
                 default:
                     return "Error in defensive rebound commentary";
             }
+        }
+
+        public string BlockCommentary(string player, string lostPlayer, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            Random random = new Random();
+            int choice = random.Next(0, 5);
+            
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            switch (choice)
+            {
+                case 0:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + player + " has blocked " + lostPlayer + " empathically!";
+                case 1:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The shot by " + lostPlayer + " is blocked by " + player;
+                case 2:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The shot by " + lostPlayer + " is swatted away by " + player;
+                case 3:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm  + player + " comes from the weakside to block " + lostPlayer + "'s shot attempt.";
+                case 4:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm  + "A strong contest on " + lostPlayer + " sees his shot blocked by " + player;
+                default:
+                    return "Error in Block Commentary";
+            }
+        }
+    
+        public string StealCommentary(string player, string lostPlayer, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            Random random = new Random();
+            int choice = random.Next(0, 5);
+            
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            switch (choice)
+            {
+                case 0:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + player + " has picked " + lostPlayer + "'s clean!";
+                case 1:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The pass is intercepted by " + player;
+                case 2:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The ball is fumbled and taken away by " + player;
+                case 3:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + lostPlayer + " throws a sloppy pass which is stolen by " + player;
+                case 4:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "A great steal by " + player;
+                default:
+                    return "Error in Steal Commentary";
+            }
+        }
+
+        public string TurnoverCommentary(int type, string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            Random random = new Random();
+            int choice = random.Next(0, 3);
+            
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            switch (type)
+            {
+                case 0:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " has thrown the ball out of bounds";
+                case 1:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "That's called travel on " + playername + ".";
+                case 2:
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "That is an offensive foul against " + playername + ".";
+                default:
+                    return "Error in turnover commentary";
+            }
+        }
+
+        public string FoulCommentary(string playername, string foulingPlayer, int type, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            Random random = new Random();
+            int choice = random.Next(0, 3);
+            
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            switch (type)
+            {
+                case 1:
+                    // Non-Shooting Foul
+                    switch (choice)
+                    {
+                        case 0:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + foulingPlayer + " fouls " + playername + " on the drive.";
+                        case 1:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + foulingPlayer + " is too aggressive on the steal attempt and is called for the foul on " + playername;
+                        case 2:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " craftily draws the non-shooting foul on " + foulingPlayer;
+                        default:
+                            return "Error in Foul Commentary - Non-shooting foul";
+                    }
+                case 2:
+                    // Shooting Foul - 2
+                    switch (choice)
+                    {
+                        case 0:
+                            return "A clever pump fake inside by " + playername + " draws the foul on " + foulingPlayer + ".";
+                        case 1:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " shoots the mid-range jumpshot and is fouled by " + foulingPlayer + ". The shot is no good.";
+                        case 2:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " pulls up to shoot and is fouled from behind by " + foulingPlayer + ". Two shots coming for " + playername;
+                        default:
+                            return "Error in Foul Commentary - 2 shooting foul";
+                    }
+                case 3:
+                    // Shooting Foul - 3
+                    switch (choice)
+                    {
+                        case 0:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " shoots the the straight on 3 and is fouled by " + foulingPlayer + ". The shot is no good.";
+                        case 1:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " pulls up to shoot the 3 and is fouled from behind by " + foulingPlayer + ". Three shots coming for " + playername;
+                        case 2:
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " fires up the 3 which is way off, but a foul has been called against " + foulingPlayer + ".";
+                        default:
+                            return "Error in Foul Commentary - 3 shooting foul";
+                    }
+                default:
+                    return "Error in the Foul Commentary - Type";
+            }
+        }
+
+        public string BonusCommentary(int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "This will be a shooting foul due to being in the penalty.";
+        }
+
+        public string GetMadeFreeThrowCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " makes the free throw";
+        }
+
+        public string GetMissedFreeThrowCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " misses the free throw";
+        }
+
+        public string GetSubCommentary(string outPlayer, string inPlayer, int possession, string awayTeamName, string homeTeamName)
+        {
+            string subComm = "";
+            if (possession == 0) {
+                subComm = homeTeamName;
+            } else {
+                subComm = awayTeamName;
+            }
+
+            return "SUB: " + subComm + " make a substitution - " + outPlayer + " is subbed out. " + inPlayer + " is taking his place.";
         }
     }
 }
