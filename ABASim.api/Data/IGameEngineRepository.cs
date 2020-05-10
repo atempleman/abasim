@@ -19,5 +19,9 @@ namespace ABASim.api.Data
          Task<IEnumerable<Roster>> GetRoster(int teamId);
 
          Task<IEnumerable<DepthChart>> GetDepthChart(int teamId);
+
+         Task<int> GetLatestGameId();
+
+         Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores);
     }
 }

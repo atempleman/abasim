@@ -21,6 +21,17 @@ namespace ABASim.api.Data
             return depthChart;
         }
 
+        public async Task<int> GetLatestGameId()
+        {
+            var checkRecordsExists = await _context.GameBoxScores.FirstOrDefaultAsync();
+
+            if (checkRecordsExists != null) {
+                var gameId = await _context.GameBoxScores.MaxAsync(x => x.GameId);
+                return gameId;
+            }
+            return 0;
+        }
+
         public async Task<Player> GetPlayer(int playerId)
         {
             var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == playerId);
@@ -49,6 +60,41 @@ namespace ABASim.api.Data
         {
             var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
             return team;
+        }
+
+        public async Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores)
+        {
+            for (int i = 0; i < boxScores.Count; i++) {
+                BoxScore bs = boxScores[i];
+
+                GameBoxScore gbs = new GameBoxScore
+                {
+                    GameId = gameId,
+                    TeamId = bs.TeamId,
+                    PlayerId = bs.Id,
+                    Minutes = bs.Minutes,
+                    Points = bs.Points,
+                    Rebounds = bs.Rebounds,
+                    Assists = bs.Assists,
+                    Steals = bs.Steals,
+                    Blocks = bs.Blocks,
+                    BlockedAttempts = bs.BlockedAttempts,
+                    FieldGoalsMade = bs.FGM,
+                    FieldGoalsAttempted = bs.FGA,
+                    ThreeFieldGoalsMade = bs.ThreeFGM,
+                    ThreeFieldGoalsAttempted = bs.ThreeFGA,
+                    FreeThrowsMade = bs.FTM,
+                    FreeThrowsAttempted = bs.FTM,
+                    ORebs = bs.ORebs,
+                    DRebs = bs.DRebs,
+                    Turnovers = bs.Turnovers,
+                    Fouls = bs.Fouls,
+                    PlusMinus = bs.PlusMinus
+                };
+                
+                await _context.AddAsync(gbs);
+            }
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

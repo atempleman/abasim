@@ -68,6 +68,8 @@ namespace ABASim.api.Controllers
         int shotClockCounter = 0;
         int assistCounter = 0;
         int assistCounterChance = 0;
+        int twosTaken = 0;
+        int threesTaken = 0;
 
         public GameEngineController(IGameEngineRepository repo)
         {
@@ -117,6 +119,10 @@ namespace ABASim.api.Controllers
             RunQuarter();
 
             // Overtime - TODO
+            while (_awayScore == _homeScore)
+            {
+                RunOvertime();
+            }
 
             commentaryData.Add("Number of blocks - " + blockCounter);
             commentaryData.Add("Number of steals - " + stealCounter);
@@ -125,6 +131,19 @@ namespace ABASim.api.Controllers
             commentaryData.Add("Number of shot clocks - " + shotClockCounter);
             commentaryData.Add("Number of assists - " + assistCounter);
             commentaryData.Add("Number of assist chances - " + assistCounterChance);
+            commentaryData.Add("Number of twos taken - " + twosTaken);
+            commentaryData.Add("Number of threes taken - " + threesTaken);
+
+            // Now need to save the box scores
+            // get the latest game id
+            int gameId = await _repo.GetLatestGameId();
+            gameId++;
+
+            // Now we have a game id, now to save the away box scores
+            bool saved = await _repo.SaveTeamsBoxScore(gameId, _awayBoxScores);
+
+            // Now we have a game id, now to save the home box scores
+            saved = await _repo.SaveTeamsBoxScore(gameId, _homeBoxScores);
 
             return Ok(commentaryData);
         }
@@ -247,7 +266,7 @@ namespace ABASim.api.Controllers
                 {
                     Id = player.Id,
                     ScheduleId = 0,
-                    TeamId = _awayRoster[i].TeamId,
+                    TeamId = _homeRoster[i].TeamId,
                     FirstName = player.FirstName,
                     LastName = player.Surname,
                     Minutes = 0,
@@ -434,6 +453,27 @@ namespace ABASim.api.Controllers
             // Need to do the commentary
             commentaryData.Add(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
             Console.WriteLine(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+            int timeValue = 4;
+
+            // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
+            if (timeValue > _time || timeValue > _shotClock)
+            {
+                // This action causes time to expire
+                if (timeValue > _time)
+                {
+                    timeValue = _time;
+                }
+                else if (timeValue > _shotClock)
+                {
+                    timeValue = _shotClock;
+                }
+            }
+
+            _shotClock = _shotClock - timeValue;
+            _time = _time - timeValue;
+            StaminaUpdates(timeValue);
+            UpdateTimeInBoxScore(timeValue);
         }
 
         public void RunQuarter()
@@ -473,6 +513,69 @@ namespace ABASim.api.Controllers
                         case 6:
                             // Ball has been stolen - already handled
                             break;
+                        case 7:
+                            // Player has held onto the ball
+                             _time = _time - 2;
+                            StaminaUpdates(2);
+                            commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                            Console.WriteLine(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    ShotClockViolation();
+                }
+            }
+            EndOfQuarter();
+        }
+
+         public void RunOvertime()
+        {
+            _homeFoulBonus = 0;
+            _awayFoulBonus = 0;
+            _time = 300;
+            _quarter++;
+
+            while (_time > 0)
+            {
+                if(_shotClock > 0)
+                {
+                    int decision = GetPlayerDecision();
+
+                    switch (decision)
+                    {
+                        case 1:
+                            // Player has passed the ball
+                            Pass();
+                            break;
+                        case 2:
+                            TwoPointShot();
+                            break;
+                        case 3:
+                            ThreePointShot();
+                            break;
+                        case 4:
+                            // player has been fouled
+                            if (_time > 0)
+                                PlayerFouled();
+                            break;
+                        case 5:
+                            PlayerTurnover();
+
+                            if (_time > 0)
+                                Inbounds();
+                            break;
+                        case 6:
+                            // Ball has been stolen - already handled
+                            break;
+                        case 7:
+                            // Player has held onto the ball
+                             _time = _time - 2;
+                            StaminaUpdates(2);
+                            commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                            Console.WriteLine(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                            break;
                         default:
                             break;
                     }
@@ -493,17 +596,22 @@ namespace ABASim.api.Controllers
 
             if (isSteal == 0)
             {
+                // Get the shot clock shoot bonus
+                int shotClockBonus = ShotClockShootBonus();
+
                 // Now need to get the current players tendancies
                 PlayerTendancy tendancy = GetCurrentPlayersTendancies();
                 
                 // This could change if there are bonuses which will be added later on
-                int value = 1000;
+                int value = 1000 + shotClockBonus;
                 int result = _random.Next(1, value + 1);
 
-                int twoSection = tendancy.TwoPointTendancy;
-                int threeSection = twoSection + tendancy.ThreePointTendancy;
-                int foulSection = threeSection + tendancy.FouledTendancy;
-                int turnoverSection = foulSection + tendancy.TurnoverTendancy;
+                int twoSection = tendancy.TwoPointTendancy + (shotClockBonus / 2);
+                int threeSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + shotClockBonus);
+                int foulSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + shotClockBonus + tendancy.FouledTendancy);
+                double to = tendancy.TurnoverTendancy * 0.9;
+                int turn = (int)to;
+                int turnoverSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + shotClockBonus + tendancy.FouledTendancy + turn);
 
                 if (result <= twoSection)
                 {
@@ -515,11 +623,26 @@ namespace ABASim.api.Controllers
                 } 
                 else if (result > threeSection && result <= foulSection)
                 {
-                    decision = 4;
+                    
+                    int check = _random.Next(1, 101);
+                    if (check < 70)
+                    {
+                        // The player has been fouled
+                        decision = 4;
+                    } else {
+                        decision = 7; // Player has had to hold onto the ball
+                    }
                 }
                 else if (result > foulSection && result <= turnoverSection)
                 {
-                    decision = 5;
+                    int check = _random.Next(1, 101);
+                    if (check < 45)
+                    {
+                        // The player has turned the ball over
+                        decision = 5;
+                    } else {
+                        decision = 7; // Player has had to hold onto the ball
+                    }
                 } 
                 else 
                 {
@@ -943,12 +1066,6 @@ namespace ABASim.api.Controllers
 
                     // UPDATE THE STAMINA
                     StaminaUpdates(timeValue);
-
-                    // // COMMENTARY
-                    // commentaryData.Add(comm.EndOfQuarterCommtary(_time, _quarter));
-                    // Console.WriteLine(comm.EndOfQuarterCommtary(_time, _quarter));
-
-                    // // Call End of Quarter - TODO
                 }
                 else if (timeValue > _shotClock)
                 {
@@ -985,6 +1102,7 @@ namespace ABASim.api.Controllers
 
         public void TwoPointShot()
         {
+            twosTaken++;
             int possibleAssist = 0;
             string assistingPlayingName = "";
             if(_playerPassed != null)
@@ -1023,7 +1141,7 @@ namespace ABASim.api.Controllers
                 if (_playerRatingPassed != null)
                 {
                     assistCounterChance++;
-                    int assistRating = _playerRatingPassed.AssitRating;
+                    int assistRating = (_playerRatingPassed.AssitRating * 4);
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -1042,7 +1160,7 @@ namespace ABASim.api.Controllers
                 if (twoRating >= result)
                 {
                     // Show was made
-                    int timeValue = _random.Next(2, 7);
+                    int timeValue = _timer.GetTwoShotTime();
 
                     // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                     if (timeValue > _time || timeValue > _shotClock)
@@ -1121,7 +1239,7 @@ namespace ABASim.api.Controllers
                     Inbounds();
                 } else {
                     // Shot missed
-                    int timeValue = _random.Next(2, 7);
+                    int timeValue = _timer.GetTwoShotTime();
 
                     // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                     if (timeValue > _time || timeValue > _shotClock)
@@ -1177,6 +1295,7 @@ namespace ABASim.api.Controllers
 
         public void ThreePointShot()
         {
+            threesTaken++;
             int possibleAssist = 0;
             string assistingPlayingName = "";
             if(_playerPassed != null)
@@ -1215,7 +1334,7 @@ namespace ABASim.api.Controllers
                 if (_playerRatingPassed != null)
                 {
                     assistCounterChance++;
-                    int assistRating = _playerRatingPassed.AssitRating;
+                    int assistRating = (_playerRatingPassed.AssitRating * 3); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -1234,7 +1353,7 @@ namespace ABASim.api.Controllers
                 if (threeRating >= result)
                 {
                     // Show was made
-                    int timeValue = _random.Next(2, 7);
+                    int timeValue = _timer.GetThreeShotTime();
 
                     // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                     if (timeValue > _time || timeValue > _shotClock)
@@ -1299,7 +1418,7 @@ namespace ABASim.api.Controllers
                     Inbounds();
                 } else {
                     // Shot missed
-                    int timeValue = _random.Next(2, 7);
+                    int timeValue = _timer.GetThreeShotTime();
 
                     // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                     if (timeValue > _time || timeValue > _shotClock)
@@ -1359,8 +1478,6 @@ namespace ABASim.api.Controllers
 
             if (_teamPossession == 0)
             {
-                // int blockTeam = 1;
-
                 // Away team is trying to block the shot
                 List<PlayerRating> awayRatings = new List<PlayerRating>();
                 awayRatings.Add(awayPGRatings);
@@ -1376,12 +1493,12 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = awayRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 1, checking.BlockRating);
-                    int result = _random.Next(1, 1001);
+                    int result = _random.Next(1, 2501);
 
                     if (result <= rating)
                     {
                         // Update the timer
-                        int timeValue = _random.Next(1, 4);
+                        int timeValue = _random.Next(2, 6);
 
                         // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                         if (timeValue > _time || timeValue > _shotClock)
@@ -1417,17 +1534,13 @@ namespace ABASim.api.Controllers
                         _awayBoxScores[index2] = temp2;
 
                         // Commentary
-
                         commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                         Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
 
                         return 1;
                     }
-
                 }
             } else {
-                // int blockingTeam = 1;
-
                 // Home team is trying to block the shot
                 List<PlayerRating> homeRatings = new List<PlayerRating>();
                 homeRatings.Add(homePGRatings);
@@ -1443,12 +1556,12 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = homeRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 0, checking.BlockRating);
-                    int result = _random.Next(1, 1001);
+                    int result = _random.Next(1, 2501);
 
                     if (result <= rating)
                     {
                         // Update the timer
-                        int timeValue = _random.Next(1, 4);
+                        int timeValue = _random.Next(2, 6);
 
                         // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                         if (timeValue > _time || timeValue > _shotClock)
@@ -1501,6 +1614,23 @@ namespace ABASim.api.Controllers
 
             int offensiveRate = 0;
             int defensiveRate = 0;
+
+            // Update the timer
+            int timeValue = _random.Next(2, 6);            
+
+            // Need to check if the time has not gone past 0 and update the time value appropriately
+            if (timeValue > _time || timeValue > _shotClock)
+            {
+                // This action causes time to expire
+                if (timeValue > _time)
+                {
+                    timeValue = _time;
+                }
+                else if (timeValue > _shotClock)
+                {
+                    timeValue = _shotClock;
+                }
+            }
 
             if (_teamPossession == 0)
             {
@@ -1826,6 +1956,8 @@ namespace ABASim.api.Controllers
                     Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                 }
             }
+            StaminaUpdates(timeValue);
+            UpdateTimeInBoxScore(timeValue);
         }
 
         public int StealCheck()
@@ -1851,12 +1983,12 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = awayRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 1, checking.StealRating);
-                    int result = _random.Next(1, 1001);
+                    int result = _random.Next(1, 5001);
 
                     if (result <= rating)
                     {
                         // Update the timer
-                        int timeValue = _random.Next(1, 4);
+                        int timeValue = _random.Next(2, 6);
 
                         // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                         if (timeValue > _time || timeValue > _shotClock)
@@ -1897,12 +2029,13 @@ namespace ABASim.api.Controllers
                         _teamPossession = 1;
                         _playerPossession = _random.Next(1, 6); // not sure how to make this correct
 
+                        _playerPassed = null;
+                        _playerRatingPassed = null;
+
                         return 1;
                     }
                 }
             } else {
-                // int stealingTeam = 1;
-
                 // Home team is trying to steal the shot
                 List<PlayerRating> homeRatings = new List<PlayerRating>();
                 homeRatings.Add(homePGRatings);
@@ -1918,12 +2051,12 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = homeRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 0, checking.StealRating);
-                    int result = _random.Next(1, 1001);
+                    int result = _random.Next(1, 5001);
 
                     if (result <= rating)
                     {
                         // Update the timer
-                        int timeValue = _random.Next(1, 4);
+                        int timeValue = _random.Next(2, 6);
 
                         // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
                         if (timeValue > _time || timeValue > _shotClock)
@@ -1964,6 +2097,9 @@ namespace ABASim.api.Controllers
                         _teamPossession = 1;
                         _playerPossession = _random.Next(1, 6);
 
+                        _playerPassed = null;
+                        _playerRatingPassed = null;
+
                         return 1;
                     }
                 }
@@ -1983,7 +2119,7 @@ namespace ABASim.api.Controllers
             int teamWhichFouled = 2;
 
             // Set the time
-            int timeValue = _random.Next(1, 3);
+            int timeValue = _random.Next(1, 5);
 
             // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
             if (timeValue > _time || timeValue > _shotClock)
@@ -2246,7 +2382,7 @@ namespace ABASim.api.Controllers
             _playerPassed = null;
 
             // Update the timer
-            int timeValue = _random.Next(1, 4);            
+            int timeValue = _random.Next(1, 6);            
 
             // Need to check if the time has not gone past 0 and update the time value appropriately
             if (timeValue > _time || timeValue > _shotClock)
@@ -2377,6 +2513,46 @@ namespace ABASim.api.Controllers
             Inbounds();
         }
 
+        public int ShotClockShootBonus()
+        {
+            if (_shotClock > 22)
+            {
+                return 0;
+            }
+            else if (_shotClock > 20)
+            {
+                return 0;
+            }
+            else if (_shotClock > 18)
+            {
+                return 5;
+            }
+            else if (_shotClock > 12)
+            {
+                return 50;
+            }
+            else if (_shotClock > 10)
+            {
+                return 100;
+            }
+            else if (_shotClock > 8)
+            {
+                return 150;
+            }
+            else if (_shotClock > 6)
+            {
+                return 400;
+            }
+            else if (_shotClock > 4)
+            {
+                return 750;
+            }
+            else
+            {
+                return 1200;
+            }
+        }
+
         public void EndOfQuarter()
         {
             commentaryData.Add(comm.EndOfQuarterCommtary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
@@ -2424,6 +2600,23 @@ namespace ABASim.api.Controllers
 
         public void Inbounds()
         {
+             // Update the timer
+            int timeValue = _random.Next(0, 6);            
+
+            // Need to check if the time has not gone past 0 and update the time value appropriately
+            if (timeValue > _time || timeValue > _shotClock)
+            {
+                // This action causes time to expire
+                if (timeValue > _time)
+                {
+                    timeValue = _time;
+                }
+                else if (timeValue > _shotClock)
+                {
+                    timeValue = _shotClock;
+                }
+            }
+
             Inbounding inbound = new Inbounding();
             int value = inbound.GetInboundsResult(_random.Next(100));
             _playerPossession = value;

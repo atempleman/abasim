@@ -52,7 +52,7 @@ export class AdmintestengineComponent implements OnInit {
       Object.assign(this.commentaryData, result);
       
     }, error => {
-      this.alertify.error('Error starting game');
+      this.alertify.error(error);
     }, () => {
       // this.alertify.success('League Status updated.');
       console.log(this.commentaryData);

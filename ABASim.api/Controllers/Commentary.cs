@@ -533,5 +533,20 @@ namespace ABASim.api.Controllers
 
             return "SUB: " + subComm + " make a substitution - " + outPlayer + " is subbed out. " + inPlayer + " is taking his place.";
         }
+
+        public string GetHoldBallCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            }
+
+            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " holds onto the ball.";
+        }
     }
 }
