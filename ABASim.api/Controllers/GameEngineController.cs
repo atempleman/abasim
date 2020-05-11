@@ -140,10 +140,10 @@ namespace ABASim.api.Controllers
             gameId++;
 
             // Now we have a game id, now to save the away box scores
-            bool saved = await _repo.SaveTeamsBoxScore(gameId, _awayBoxScores);
+            bool saved = await _repo.SaveTeamsBoxScore(_game.GameId, _awayBoxScores);
 
             // Now we have a game id, now to save the home box scores
-            saved = await _repo.SaveTeamsBoxScore(gameId, _homeBoxScores);
+            saved = await _repo.SaveTeamsBoxScore(_game.GameId, _homeBoxScores);
 
             return Ok(commentaryData);
         }
@@ -4979,6 +4979,13 @@ namespace ABASim.api.Controllers
                 return 5;
             }
             return 0;
+        }
+    
+        [HttpGet("getboxscoresforgameid/{gameId}")]
+        public async Task<IEnumerable<BoxScore>> GetBoxScoresForGameId(int gameId)
+        {
+            var boxScores = await _repo.GetBoxScoresForGameId(gameId);
+            return boxScores;
         }
     }
 }

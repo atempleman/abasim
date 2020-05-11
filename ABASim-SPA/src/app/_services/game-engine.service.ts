@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { SimGame } from '../_models/simGame';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { BoxScore } from '../_models/boxScore';
 
 @Injectable({
   providedIn: 'root'
@@ -15,5 +17,9 @@ export class GameEngineService {
 
   startTestGame(game: SimGame) {
     return this.http.post(this.baseUrl + 'startGame', game);
+  }
+
+  getBoxScoreForGameId(gameId: number): Observable<BoxScore[]> {
+    return this.http.get<BoxScore[]>(this.baseUrl + 'getboxscoresforgameid/' + gameId);
   }
 }

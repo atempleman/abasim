@@ -6,9 +6,12 @@
           <div class="panel-heading">
             <h3 class="panel-title">Setup Game</h3>
           </div>
-          <div class="panel-body" >
+          <div class="panel-body">
             <form [formGroup]="gameSetupForm" accept-charset="UTF-8" role="form" (ngSubmit)="gameSetup()">
               <fieldset>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Game Id" name="gameId" type="text" formControlName="gameid">
+                </div>
                 <div class="form-group">
                   <input class="form-control" placeholder="Away Team Id" name="awayId" type="text"
                     formControlName="awayid">
@@ -25,20 +28,136 @@
       </div>
     </div>
 
-      <div class="row" *ngIf="this.detailsDisplay == 1">
-        <div class="col">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">Game Details</h3>
-            </div>
-            <div class="panel-body" >
-              <div class="panel-body">
-                <div class="row" *ngFor="let comm of this.commentaryData">
-                  {{ comm }}
+    <div class="row" *ngIf="this.detailsDisplay == 1">
+      <div class="col">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Game Details</h3>
+          </div>
+          <div class="panel-body">
+            <div class="panel-body">
+              <div class="row" *ngFor="let comm of this.commentaryData">
+                {{ comm }}
+              </div>
+              <div class="row mt-5" *ngIf="this.boxScoreButtonsDisplay == 1">
+                <div class="col md-4">
+                  <button class="btn btn-success btn-block" (click)="this.homeBoxScore()">Home Box Score</button>
+                  <button class="btn btn-success btn-block" (click)="this.awayBoxScore()">Away Box Score</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+
+    <div class="row" *ngIf="this.awayBoxScoreDisplay == 1">
+      <div class="col">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Away Box Score</h3>
+          </div>
+          <div class="panel-body">
+            <div class="panel-body">
+              <table *ngIf="this.awayBoxScores?.length != 0" class="table table-striped custab">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Minutes</th>
+                    <th>Points</th>
+                    <th>Rebounds</th>
+                    <th>Assists</th>
+                    <th>Steals</th>
+                    <th>Blocks</th>
+                    <th>BA</th>
+                    <th>Turnovers</th>
+                    <th>FGM-FGA</th>
+                    <th>3FGM-3FGA</th>
+                    <th>FTM-FTA</th>
+                    <th>ORebs</th>
+                    <th>DRebs</th>
+                    <th>Fouls</th>
+                    <th>+/-</th>
+                  </tr>
+                </thead>
+                <tr *ngFor="let player of this.awayBoxScores">
+                  <td>{{ player.firstName }} {{ player.lastName }}</td>
+                  <td>{{ (player.minutes / 60).toFixed(0) }}:{{ player.minutes % 60 }}</td>
+                  <td>{{ player.points }}</td>
+                  <td>{{ player.rebounds }}</td>
+                  <td>{{ player.assists }}</td>
+                  <td>{{ player.steals }}</td>
+                  <td>{{ player.blocks }}</td>
+                  <td>{{ player.blockedAttempts }}</td>
+                  <td>{{ player.turnovers }}</td>
+                  <td>{{ player.fgm }}-{{ player.fga }}</td>
+                  <td>{{ player.threeFGM }}-{{ player.threeFGA }}</td>
+                  <td>{{ player.ftm }}-{{ player.fta }}</td>
+                  <td>{{ player.oRebs }}</td>
+                  <td>{{ player.dRebs }}</td>
+                  <td>{{ player.fouls }}</td>
+                  <td>{{ player.plusMinus }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row" *ngIf="this.homeBoxScoreDisplay == 1">
+      <div class="col">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Home Box Score</h3>
+          </div>
+          <div class="panel-body">
+            <div class="panel-body">
+              <table *ngIf="this.homeBoxScores?.length != 0" class="table table-striped custab">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Minutes</th>
+                    <th>Points</th>
+                    <th>Rebounds</th>
+                    <th>Assists</th>
+                    <th>Steals</th>
+                    <th>Blocks</th>
+                    <th>BA</th>
+                    <th>Turnovers</th>
+                    <th>FGM-FGA</th>
+                    <th>3FGM-3FGA</th>
+                    <th>FTM-FTA</th>
+                    <th>ORebs</th>
+                    <th>DRebs</th>
+                    <th>Fouls</th>
+                    <th>+/-</th>
+                  </tr>
+                </thead>
+                <tr *ngFor="let player of this.homeBoxScores">
+                  <td>{{ player.firstName }} {{ player.lastName }}</td>
+                  <td>{{ (player.minutes / 60).toFixed(0) }}:{{ player.minutes % 60 }}</td>
+                  <td>{{ player.points }}</td>
+                  <td>{{ player.rebounds }}</td>
+                  <td>{{ player.assists }}</td>
+                  <td>{{ player.steals }}</td>
+                  <td>{{ player.blocks }}</td>
+                  <td>{{ player.blockedAttempts }}</td>
+                  <td>{{ player.turnovers }}</td>
+                  <td>{{ player.fgm }}-{{ player.fga }}</td>
+                  <td>{{ player.threeFGM }}-{{ player.threeFGA }}</td>
+                  <td>{{ player.ftm }}-{{ player.fta }}</td>
+                  <td>{{ player.oRebs }}</td>
+                  <td>{{ player.dRebs }}</td>
+                  <td>{{ player.fouls }}</td>
+                  <td>{{ player.plusMinus }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
