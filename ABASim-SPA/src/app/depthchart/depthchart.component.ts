@@ -339,6 +339,8 @@ export class DepthchartComponent implements OnInit {
       // console.log(result);
     }, error => {
       this.alertify.error('Error saving depth charts');
+    }, () => {
+      this.alertify.success('Depth chart saved successfully');
     });
   }
 

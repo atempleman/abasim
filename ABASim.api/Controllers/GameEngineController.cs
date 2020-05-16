@@ -70,6 +70,7 @@ namespace ABASim.api.Controllers
         int assistCounterChance = 0;
         int twosTaken = 0;
         int threesTaken = 0;
+        int timeCounter = 0;
 
         public GameEngineController(IGameEngineRepository repo)
         {
@@ -97,10 +98,6 @@ namespace ABASim.api.Controllers
             commentaryData.Add(comm.GetStartingLineupsCommentary(awayPG, awaySG, awaySF, awayPF, awayC));
             commentaryData.Add(comm.GetStartingLineupsCommentary(homePG, homeSG, homeSF, homePF, homeC));
             commentaryData.Add("It's now time for the opening tip");
-            Console.WriteLine(comm.GetGameIntroCommentry(_awayTeam, _homeTeam));
-            Console.WriteLine(comm.GetStartingLineupsCommentary(awayPG, awaySG, awaySF, awayPF, awayC));
-            Console.WriteLine(comm.GetStartingLineupsCommentary(homePG, homeSG, homeSF, homePF, homeC));
-            Console.WriteLine("It's now time for the opening tip");
             
             Jumpball();
             _initialPossession = _teamPossession;
@@ -133,11 +130,12 @@ namespace ABASim.api.Controllers
             commentaryData.Add("Number of assist chances - " + assistCounterChance);
             commentaryData.Add("Number of twos taken - " + twosTaken);
             commentaryData.Add("Number of threes taken - " + threesTaken);
+            commentaryData.Add("Number of time in game - " + timeCounter);
 
             // Now need to save the box scores
             // get the latest game id
-            int gameId = await _repo.GetLatestGameId();
-            gameId++;
+            // int gameId = await _repo.GetLatestGameId();
+            // gameId++;
 
             // Now we have a game id, now to save the away box scores
             bool saved = await _repo.SaveTeamsBoxScore(_game.GameId, _awayBoxScores);
@@ -452,9 +450,8 @@ namespace ABASim.api.Controllers
 
             // Need to do the commentary
             commentaryData.Add(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-            Console.WriteLine(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
 
-            int timeValue = 4;
+            int timeValue = _random.Next(1, 6);
 
             // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
             if (timeValue > _time || timeValue > _shotClock)
@@ -472,6 +469,7 @@ namespace ABASim.api.Controllers
 
             _shotClock = _shotClock - timeValue;
             _time = _time - timeValue;
+            timeCounter = timeCounter + timeValue;
             StaminaUpdates(timeValue);
             UpdateTimeInBoxScore(timeValue);
         }
@@ -516,6 +514,7 @@ namespace ABASim.api.Controllers
                         case 7:
                             // Player has held onto the ball
                              _time = _time - 2;
+                             timeCounter = timeCounter + 2;
                             StaminaUpdates(2);
                             commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                             Console.WriteLine(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
@@ -572,6 +571,7 @@ namespace ABASim.api.Controllers
                         case 7:
                             // Player has held onto the ball
                              _time = _time - 2;
+                             timeCounter = timeCounter + 2;
                             StaminaUpdates(2);
                             commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                             Console.WriteLine(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
@@ -1060,6 +1060,7 @@ namespace ABASim.api.Controllers
                     timeValue = _time;
                     _shotClock = _shotClock - timeValue;
                     _time = _time - timeValue;
+                    timeCounter = timeCounter + timeValue;
 
                     // UPDATE THE TIME IN THE BOX SCORE OBJECTS
                     UpdateTimeInBoxScores(timeValue);
@@ -1072,6 +1073,7 @@ namespace ABASim.api.Controllers
                     timeValue = _shotClock;
                     _shotClock = _shotClock - timeValue;
                     _time = _time - timeValue;
+                    timeCounter = timeCounter + timeValue;
 
                     // UPDATE THE TIME IN THE BOX SCORE OBJECTS
                     UpdateTimeInBoxScores(timeValue);
@@ -1087,6 +1089,7 @@ namespace ABASim.api.Controllers
             {
                 _shotClock = _shotClock - timeValue;
                 _time = _time - timeValue;
+                timeCounter = timeCounter + timeValue;
 
                 // UPDATE THE TIME IN THE BOX SCORE OBJECTS
                 UpdateTimeInBoxScores(timeValue);
@@ -1140,21 +1143,28 @@ namespace ABASim.api.Controllers
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
                 {
-                    assistCounterChance++;
-                    int assistRating = (_playerRatingPassed.AssitRating * 4);
+                    int assistRating = (_playerRatingPassed.AssitRating * 10);
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
                     {
+                        assistCounterChance++;
                         possibleAssist = 1;
-                        assistCounter++;
                         // update the result
-                        result = result - 50;
+                        result = result - 100;
                     }
                     else
                     {
                         possibleAssist = 0;
                     }
+                }
+
+                // Home shooting bonus
+                if (_teamPossession == 0)
+                {
+                    double value = currentRating.TwoRating * 0.025;
+                    int bonus = (int)value;
+                    twoRating = twoRating + bonus;
                 }
 
                 if (twoRating >= result)
@@ -1178,6 +1188,7 @@ namespace ABASim.api.Controllers
 
                     _shotClock = 24;
                     _time = _time - timeValue;
+                    timeCounter = timeCounter + timeValue;
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
                     
@@ -1256,6 +1267,7 @@ namespace ABASim.api.Controllers
                     }
 
                     _time = _time - timeValue;
+                    timeCounter = timeCounter + timeValue;
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
 
@@ -1333,21 +1345,29 @@ namespace ABASim.api.Controllers
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
                 {
-                    assistCounterChance++;
-                    int assistRating = (_playerRatingPassed.AssitRating * 3); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
+                    
+                    int assistRating = (_playerRatingPassed.AssitRating * 10); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
                     {
+                        assistCounterChance++;
                         possibleAssist = 1;
-                        assistCounter++;
                         // update the result
-                        result = result - 50;
+                        result = result - 100;
                     }
                     else
                     {
                         possibleAssist = 0;
                     }
+                }
+
+                // Home shooting bonus
+                if (_teamPossession == 0)
+                {
+                    double value = currentRating.TwoRating * 0.025;
+                    int bonus = (int)value;
+                    threeRating = threeRating + bonus;
                 }
 
                 if (threeRating >= result)
@@ -1371,6 +1391,8 @@ namespace ABASim.api.Controllers
 
                     _shotClock = 24;
                     _time = _time - timeValue;
+                    timeCounter = timeCounter + timeValue;
+
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
                     
@@ -1389,6 +1411,18 @@ namespace ABASim.api.Controllers
                         temp.Points = temp.Points + 3;
                         int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
                         _homeBoxScores[index] = temp;
+
+                        if (possibleAssist == 1)
+                        {
+                            assistCounter++;
+
+                            // Update the Box Score
+                            BoxScore temp2 = _homeBoxScores.Find(x => x.Id == _playerPassed.Id);
+                            temp2.Assists++;
+                            int index2 = _homeBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
+                            _homeBoxScores[index2] = temp2;
+                        }
+                        
                     } else {
                         _awayScore = _awayScore + 3;
                         UpdatePlusMinusBoxScore(3);
@@ -1402,6 +1436,17 @@ namespace ABASim.api.Controllers
                         temp.Points = temp.Points + 3;
                         int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
                         _awayBoxScores[index] = temp;
+
+                        if (possibleAssist == 1)
+                        {
+                            assistCounter++;
+
+                            // Update the Box Score
+                            BoxScore temp2 = _awayBoxScores.Find(x => x.Id == _playerPassed.Id);
+                            temp2.Assists++;
+                            int index2 = _awayBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
+                            _awayBoxScores[index2] = temp2;
+                        }
                     }
 
                     // Comm
@@ -1435,6 +1480,8 @@ namespace ABASim.api.Controllers
                     }
 
                     _time = _time - timeValue;
+                    timeCounter = timeCounter + timeValue;
+
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
 
@@ -1517,7 +1564,9 @@ namespace ABASim.api.Controllers
                         // Updates
                         // Get correct display of time
                         _time = _time - timeValue;
+                        timeCounter = timeCounter + timeValue;
                         _shotClock = _shotClock - timeValue;
+
                         UpdateTimeInBoxScore(timeValue);
                         StaminaUpdates(timeValue);
 
@@ -1581,6 +1630,8 @@ namespace ABASim.api.Controllers
                         // Get correct display of time
                         _time = _time - timeValue;
                         _shotClock = _shotClock - timeValue;
+                        timeCounter = timeCounter + timeValue;
+
                         UpdateTimeInBoxScore(timeValue);
                         StaminaUpdates(timeValue);
 
@@ -1631,6 +1682,15 @@ namespace ABASim.api.Controllers
                     timeValue = _shotClock;
                 }
             }
+
+            // Updates
+            // Get correct display of time
+            _time = _time - timeValue;
+            _shotClock = _shotClock - timeValue;
+            timeCounter = timeCounter + timeValue;
+
+            UpdateTimeInBoxScore(timeValue);
+            StaminaUpdates(timeValue);
 
             if (_teamPossession == 0)
             {
@@ -2008,6 +2068,8 @@ namespace ABASim.api.Controllers
                         // Get correct display of time
                         _time = _time - timeValue;
                         _shotClock = _shotClock - timeValue;
+                        timeCounter = timeCounter + timeValue;
+
                         UpdateTimeInBoxScore(timeValue);
                         StaminaUpdates(timeValue);
 
@@ -2076,6 +2138,8 @@ namespace ABASim.api.Controllers
                         // Get correct display of time
                         _time = _time - timeValue;
                         _shotClock = _shotClock - timeValue;
+                        timeCounter = timeCounter + timeValue;
+
                         UpdateTimeInBoxScore(timeValue);
                         StaminaUpdates(timeValue);
 
@@ -2138,6 +2202,8 @@ namespace ABASim.api.Controllers
             // Update what goes game wide
             _time = _time - timeValue;
             _shotClock = _shotClock - timeValue;
+            timeCounter = timeCounter + timeValue;
+
             StaminaUpdates(timeValue);
             UpdateTimeInBoxScore(timeValue);
 
@@ -2397,6 +2463,15 @@ namespace ABASim.api.Controllers
                     timeValue = _shotClock;
                 }
             }
+
+            // Updates
+            // Get correct display of time
+            _time = _time - timeValue;
+            _shotClock = _shotClock - timeValue;
+            timeCounter = timeCounter + timeValue;
+
+            UpdateTimeInBoxScore(timeValue);
+            StaminaUpdates(timeValue);
             
             // Player has committed a turnover
             int result = _random.Next(1, 51);
@@ -2502,12 +2577,12 @@ namespace ABASim.api.Controllers
                 _teamPossession = 0;
             }
 
-            // Now it would go to check for SUBS
-            SubCheck();
-
             // Need to add the commentary here
             commentaryData.Add(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
             Console.WriteLine(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+
+            // Now it would go to check for SUBS
+            SubCheck();
 
             // Inbounds the ball to continue on
             Inbounds();
@@ -2617,6 +2692,15 @@ namespace ABASim.api.Controllers
                 }
             }
 
+            // Updates
+            // Get correct display of time
+            _time = _time - timeValue;
+            _shotClock = _shotClock - timeValue;
+            timeCounter = timeCounter + timeValue;
+
+            UpdateTimeInBoxScore(timeValue);
+            StaminaUpdates(timeValue);
+
             Inbounding inbound = new Inbounding();
             int value = inbound.GetInboundsResult(_random.Next(100));
             _playerPossession = value;
@@ -2698,6 +2782,7 @@ namespace ABASim.api.Controllers
             }
         }
 
+        /* REFACTORED */
         public int GetOrpmValue(int team)
         {
             if (team == 0)
@@ -2726,6 +2811,7 @@ namespace ABASim.api.Controllers
             }
         }
 
+        /* REFACTORED */
         public int GetDrpmValue(int team)
         {
             if (team == 0)
@@ -2755,6 +2841,7 @@ namespace ABASim.api.Controllers
         }
 
         // SUBS
+        /* REFACTORED */
         public int FoulTroubleCheck(int team, int player)
         {
             int subOut = 0;
@@ -4164,6 +4251,7 @@ namespace ABASim.api.Controllers
         }
 
         // STATS & TRACKING
+        /* REFACTORED */
         public void UpdateTimeInBoxScores(int time)
         {
             int minutes;
@@ -4240,6 +4328,7 @@ namespace ABASim.api.Controllers
             _awayBoxScores[index] = awayCBS;
         }
 
+        /* REFACTORED */
         public void StaminaUpdates(int time)
         {
             // Away Team
@@ -4340,7 +4429,7 @@ namespace ABASim.api.Controllers
             {
                 // Home
                 StaminaTrack st = _homeStaminas.Find(x => x.PlayerId == playerid);
-                decimal effect = st.StaminaValue / 100;
+                decimal effect = st.StaminaValue / 90;
                 int value = (int)effect;
 
                 if (value == 0)
@@ -4358,7 +4447,7 @@ namespace ABASim.api.Controllers
             {
                 // Away
                 StaminaTrack st = _awayStaminas.Find(x => x.PlayerId == playerid);
-                int effect = (int)st.StaminaValue / 100;
+                int effect = (int)st.StaminaValue / 90;
                 int value = (int)effect;
 
                 if (value == 0)
@@ -4430,6 +4519,7 @@ namespace ABASim.api.Controllers
             }
         }
 
+        /* REFACTORED */
         public void UpdateTimeInBoxScore(int time)
         {
             int minutes;
@@ -4767,6 +4857,7 @@ namespace ABASim.api.Controllers
         }
 
         // HELPERS
+        /* REFACTORED */
         public string GetPlayerFullNameForPosition(int teamPos, int playerId)
         {
             if (teamPos == 1)
@@ -4783,6 +4874,7 @@ namespace ABASim.api.Controllers
             }
         }
 
+        /* REFACTORED */
         public string GetCurrentPlayerFullName()
         {
             string name = "";
@@ -4837,6 +4929,7 @@ namespace ABASim.api.Controllers
             return name;
         }
     
+        /* REFACTORED */
         public PlayerRating GetCurrentPlayersRatings()
         {
             PlayerRating current = new PlayerRating();
@@ -4891,6 +4984,7 @@ namespace ABASim.api.Controllers
             return current;
         }
 
+        /* REFACTORED */
         public PlayerTendancy GetCurrentPlayersTendancies()
         {
             PlayerTendancy current = new PlayerTendancy();
@@ -4945,6 +5039,7 @@ namespace ABASim.api.Controllers
             return current;
         }
     
+        /* REFACTORED */
         public int CheckCurrentPosition(int playerId)
         {
             if (awayPG.Id == playerId)
@@ -4981,6 +5076,7 @@ namespace ABASim.api.Controllers
             return 0;
         }
     
+        /* REFACTORED */
         [HttpGet("getboxscoresforgameid/{gameId}")]
         public async Task<IEnumerable<BoxScore>> GetBoxScoresForGameId(int gameId)
         {

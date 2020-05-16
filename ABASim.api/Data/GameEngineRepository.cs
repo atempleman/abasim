@@ -126,7 +126,7 @@ namespace ABASim.api.Data
                     ThreeFieldGoalsMade = bs.ThreeFGM,
                     ThreeFieldGoalsAttempted = bs.ThreeFGA,
                     FreeThrowsMade = bs.FTM,
-                    FreeThrowsAttempted = bs.FTM,
+                    FreeThrowsAttempted = bs.FTA,
                     ORebs = bs.ORebs,
                     DRebs = bs.DRebs,
                     Turnovers = bs.Turnovers,
