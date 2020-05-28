@@ -1,82 +1,94 @@
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
-
-<div class="container">
-  <div class="row">
-    
+<section id="main_content">
+  <div class="jumbotron">
+    <h1 class="display-3">ABA Basketball!</h1>
+    <p class="lead">Fantasy simulation basketball at its finest.</p>
+    <hr class="my-4">
+    <p>Using our very own simulation engine own your very own basketball franchise.</p>
+    <p>Want to run your own league? Contact us with your enquiry.</p>
+    <p class="lead">
+      <a class="btn btn-success btn-lg" (click)="loginDisplayToggle()" role="button" *ngIf="!this.loginDisplay">Login</a>
+      <a class="btn btn-primary btn-lg ml-3" (click)="loginDisplayToggle()" role="button" *ngIf="this.loginDisplay">Register</a>
+    </p>
   </div>
+</section>
+
+<section id="forms_section">
   <div class="row">
-    <div class="col-sm-6" *ngIf="this.availableTeams">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Register</h3>
-        </div>
-        <div class="panel-body">
-          <form [formGroup]="registerForm" accept-charset="UTF-8" role="form" (ngSubmit)="register()">
-            <fieldset>
-              <div class="form-group">
-                <input class="form-control" placeholder="Username" name="username" type="text" formControlName="username">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="Password" name="password" type="password" value="" formControlName="password">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value="" formControlName="confirmPassword">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="yourmail@example.com" name="email" type="text" formControlName="email">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="Name" name="name" type="text" value="" formControlName="name">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="City - e.g. Atlanta" name="teamname" type="text" value="" formControlName="teamname">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="Mascot - e.g. Hawks" name="mascot" type="text" value="" formControlName="mascot">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="Short code - e.g. ATL" name="shortcode" type="text" value="" formControlName="shortcode">
-              </div>
-              <input class="btn btn-lg btn-success btn-block" type="submit" value="Register">
-            </fieldset>
-          </form>
-        </div>
-      </div>
+    <div class="col-lg-6 form-section" *ngIf="this.availableTeams && !this.loginDisplay">
+      <h3 class="panel-title">Register</h3>
+      <form [formGroup]="registerForm" accept-charset="UTF-8" role="form" (ngSubmit)="register()">
+        <fieldset>
+          <div class="form-group">
+            <input class="form-control" placeholder="Username" name="username" type="text" formControlName="username">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Password" name="password" type="password" value="" formControlName="password">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value="" formControlName="confirmPassword">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="yourmail@example.com" name="email" type="text" formControlName="email">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Name" name="name" type="text" value="" formControlName="name">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="City - e.g. Atlanta" name="teamname" type="text" value="" formControlName="teamname">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Mascot - e.g. Hawks" name="mascot" type="text" value="" formControlName="mascot">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Short code - e.g. ATL" name="shortcode" type="text" value="" formControlName="shortcode">
+          </div>
+          <input class="btn btn-lg btn-success btn-block" type="submit" value="Register">
+        </fieldset>
+      </form>
     </div>
 
-    <div class="col-sm-6" *ngIf="!this.availableTeams">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Register Unavailable</h3>
-        </div>
-        <div class="panel-body">
-          Currently no teams are available to be registered for. Please go to the Contact Us page and register your interest to go on our waiting list or to discuss options of starting your own league!
-        </div>
-      </div>
+    <div class="col-lg-6 form-section" *ngIf="!this.availableTeams && !this.loginDisplay">
+      <h3 class="panel-title">Registration Unavailable</h3>
+      <p>Currently no teams are available for registration. Please go to the Contact Us page and register your interest to go on our waiting list or to discuss options of starting your own league!</p>
+      <p>New leagues will be set up shortly after interest has been provided.</p>
+    </div>
+  
+    <div class="col-lg-6 form-section" *ngIf="this.loginDisplay">
+      <h3 class="panel-title">Login</h3>
+      <form [formGroup]="loginForm" accept-charset="UTF-8" role="form" (ngSubmit)="login()">
+        <fieldset>
+          <div class="form-group">
+            <input class="form-control" placeholder="yourmail@example.com" name="username" type="text" formControlName="username">
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Password" name="password" type="password" value="" formControlName="password">
+          </div>
+          <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+        </fieldset>
+      </form>
     </div>
 
-    <div class="col-sm-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Login</h3>
+    <div class="col-lg-6 form-section">
+      <h3 class="panel-title">Contact Us</h3>
+      <p>Have any questions about our Basketball Simulation? Want to get your own compeition started up? Have some general feedback?</p>
+      <p>Drop us a line!</p>
+      <form [formGroup]="contactForm" class="form-horizontal" (ngSubmit)="submitContactForm()">
+        <div class="form-row">
+          <div class="col-md-6 form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Jane Doe" formControlName="name">
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" placeholder="jane.doe@example.com" formControlName="email">
+          </div>
         </div>
-
-        <div class="panel-body">
-          <form [formGroup]="loginForm" accept-charset="UTF-8" role="form" (ngSubmit)="login()">
-            <fieldset>
-              <div class="form-group">
-                <input class="form-control" placeholder="yourmail@example.com" name="username" type="text" formControlName="username">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="Password" name="password" type="password" value="" formControlName="password">
-              </div>
-              <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
-            </fieldset>
-          </form>
+        <div class="form-group ">
+          <label for="contact">Your Message</label>
+         <textarea  class="form-control" placeholder="Description" id="contact" formControlName="contact"></textarea> 
         </div>
-      </div>
+        <input class="btn btn-lg btn-success btn-block" type="submit" value="Send Message">
+      </form>
     </div>
   </div>
+</section>

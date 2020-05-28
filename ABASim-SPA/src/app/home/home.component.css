@@ -1,4 +1,14 @@
-.white{
-    color:#000;
-    background-color:#fff;
+.jumbotron {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
 }
+
+.lead {
+      text-align: center;
+      position: relative;
+}
+
+.form-section {
+    padding: 20px;
+  }

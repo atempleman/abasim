@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { User } from '../_models/user';
 import { TeamService } from '../_services/team.service';
+import { ContactForm } from '../_models/contactForm';
+import { ContactService } from '../_services/contact.service';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +21,7 @@ export class HomeComponent implements OnInit {
 
   registerForm: FormGroup;
   loginForm: FormGroup;
+  contactForm: FormGroup;
 
   usernameRequired = 0;
   passwordRequired = 0;
@@ -32,11 +35,15 @@ export class HomeComponent implements OnInit {
   passwordMatch = 0;
 
   availableTeams = false;
+  loginDisplay = false;
+
+  contactObject: ContactForm;
 
   constructor(private authService: AuthService, private alertify: AlertifyService, private fb: FormBuilder,
-              private teamService: TeamService, private router: Router) { }
+              private teamService: TeamService, private router: Router, private contactService: ContactService) { }
 
   ngOnInit() {
+    this.createContactForm();
     this.createLoginForm();
     // check available teams
     this.teamService.checkAvailableTeams().subscribe(result => {
@@ -66,6 +73,27 @@ export class HomeComponent implements OnInit {
       mascot: ['', Validators.required],
       shortcode: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
+  }
+
+  createContactForm() {
+    this.contactForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required]],
+      contact: ['', Validators.required],
+    });
+  }
+
+  submitContactForm() {
+    if (this.contactForm.valid) {
+      this.contactObject = Object.assign({}, this.contactForm.value);
+      this.contactService.saveContact(this.contactObject).subscribe(() => {
+        this.alertify.success('Contact submitted successfully');
+      }, error => {
+        this.alertify.error(error);
+      }, () => {
+        // clear the form
+      });
+    }
   }
 
   passwordMatchValidator(g: FormGroup) {
@@ -167,5 +195,13 @@ export class HomeComponent implements OnInit {
 
   loggedIn() {
     return this.authService.loggedIn();
+  }
+
+  loginDisplayToggle() {
+    if (this.loginDisplay) {
+      this.loginDisplay = false;
+    } else {
+      this.loginDisplay = true;
+    }
   }
 }
