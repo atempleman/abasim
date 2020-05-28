@@ -12,7 +12,7 @@ namespace ABASim.api.Controllers
         public int GetPassTime()
         {
             Random random = new Random();
-            return random.Next(1, 7);
+            return random.Next(1, 6);
             // int result = random.Next(0, 101);
 
             // if (result <= 10) {
