@@ -8,6 +8,7 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  public isCollapsed = true;
 
   constructor(private router: Router, public authService: AuthService) { }
 

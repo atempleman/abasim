@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule, ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -79,6 +80,7 @@ export function tokenGetter() {
       AppRoutingModule,
       HttpClientModule,
       FormsModule,
+      NgbCollapseModule,
       ReactiveFormsModule,
       ModalModule.forRoot(),
       JwtModule.forRoot({
