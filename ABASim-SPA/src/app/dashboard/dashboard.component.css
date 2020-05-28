@@ -1,4 +1,38 @@
-body{
+.jumbotron {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
+}
+
+.events {
+    padding: 20px;
+    text-align: center;
+}
+
+.upcoming {
+    margin: 0 auto;
+}
+
+.cards-row {
+    padding: 5px;
+
+}
+
+/* .border-info { */
+    /* text-align: center;  centers all of the text - not how i want it*/
+/* } */
+
+/* .text-left {
+    text-align: left !important;
+} */
+
+
+
+
+
+
+
+/* body{
     background: #eee;
 }
 span{
@@ -24,6 +58,5 @@ a{
 }
 
 .fa{
-     /* color:#4183D7; */
      color:#222222;
-}
+} */

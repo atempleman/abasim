@@ -4,6 +4,7 @@ import { League } from '../_models/league';
 import { LeagueState } from '../_models/leagueState';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { GameDisplay } from '../_models/gameDisplay';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +25,9 @@ export class LeagueService {
   getLeagueStatusForId(stateId: number) {
     console.log('state id: ' + stateId);
     return this.http.get<LeagueState>(this.baseUrl + 'getleaguestateforid/' + stateId);
+  }
+
+  getPreseasonGamesForTomorrow(): Observable<GameDisplay[]> {
+    return this.http.get<GameDisplay[]>(this.baseUrl + 'getgamesfortomorrow');
   }
 }

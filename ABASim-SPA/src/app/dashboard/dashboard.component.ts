@@ -5,6 +5,8 @@ import { AlertifyService } from '../_services/alertify.service';
 import { League } from '../_models/league';
 import { LeagueState } from '../_models/leagueState';
 import { AuthService } from '../_services/auth.service';
+import { TeamService } from '../_services/team.service';
+import { Team } from '../_models/team';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,22 +15,34 @@ import { AuthService } from '../_services/auth.service';
 })
 export class DashboardComponent implements OnInit {
   league: League;
+  team: Team;
   currentState: LeagueState;
   isAdmin = 0;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService) { }
+              private authService: AuthService, private teamService: TeamService) { }
 
   ngOnInit() {
+    // Check to see if the user is an admin user
+    this.isAdmin = this.authService.isAdmin();
+
+    // get the league object - TODO - roll the league state into the object as a Dto and pass back
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {
-     this.getCurrentLeagueState();
+      this.getCurrentLeagueState();
+      this.getUpcomingEvents();
     });
 
-    this.isAdmin = this.authService.isAdmin();
+    this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
+      this.team = result;
+    }, error => {
+      this.alertify.error('Error getting your Team');
+    });
+
+
   }
 
   getCurrentLeagueState() {
@@ -39,36 +53,32 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  goToRoster() {
-    this.router.navigate(['/roster']);
+  getUpcomingEvents() {
+    // Preseason
+    if (this.league.stateId === 6) {
+      // Need to get the games for the day
+      this.leagueService.getPreseasonGamesForTomorrow().subscribe(result => {
+
+      }, error => {
+        this.alertify.error('Error getting upcoming games');
+      });
+    }
   }
 
-  goToPlayers() {
-    this.router.navigate(['/players']);
+  goToRoster() {
+    this.router.navigate(['/roster']);
   }
 
   goToDraft() {
     this.router.navigate(['/draft']);
   }
 
-  goToStats() {
-    this.router.navigate(['/stats']);
-  }
-
-  goToStandings() {
-    this.router.navigate(['/standings']);
-  }
-
-  goToScheduleAndReuslts() {
-    this.router.navigate(['/scheduleandresults']);
-  }
-
-  goToFinances() {
-    this.router.navigate(['/finances']);
-  }
-
   goToAdmin() {
     this.router.navigate(['/admin']);
+  }
+
+  goToLeague() {
+
   }
 
 }
