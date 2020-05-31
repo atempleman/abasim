@@ -73,11 +73,13 @@ namespace ABASim.api.Data
 
                 int awayScore = 0;
                 int homeScore = 0;
+                int completed = -1;
 
                 if (gameResult != null)
                 {
                     awayScore = gameResult.AwayScore;
                     homeScore = gameResult.HomeScore;
+                    completed = gameResult.Completed;
                 }
                 
                 CurrentDayGamesDto ng = new CurrentDayGamesDto
@@ -89,7 +91,8 @@ namespace ABASim.api.Data
                     HomeTeamName = homeTeam.Teamname + " " + homeTeam.Mascot,
                     Day = league.Day + 1,
                     awayScore = awayScore,
-                    homeScore = homeScore
+                    homeScore = homeScore,
+                    Completed = completed
                 };
 
                 nextGamesList.Add(ng);

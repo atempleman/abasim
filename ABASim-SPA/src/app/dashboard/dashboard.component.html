@@ -53,17 +53,16 @@
 			</div>
 
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-users fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>TEAM</strong></span></div>
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>PLAYERS</strong></span></div>
 				<div class="card-body">
-					<p class="card-text">Manage your roster, depth charts, coaching and make trades and free agent
-						signings.</p>
-					<button type="button" class="btn btn-link text-left" (click)="goToRoster()">Go to Team</button>
+					<p class="card-text">View all of the Players in league and view their details.</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToPlayers()">View Players</button>
 				</div>
 			</div>
 
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-user-secret fa-3x" aria-hidden="true"></i><span
+				<div class="card-header"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>ADMIN</strong></span></div>
 				<div class="card-body">
 					<p class="card-text">View Administration Functions for the league.</p>
@@ -102,7 +101,11 @@
 			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
-						<td>{{ game.awayTeamName }} @ {{ game.homeTeamName }} <button *ngIf="this.isAdmin == 1" type="button" class="btn btn-link" (click)="runGame()">Run Game</button></td>
+						<td>
+							{{ game.awayTeamName }} @ {{ game.homeTeamName }} 
+							<button *ngIf="this.isAdmin == 1 && game.completed == -1" type="button" class="btn btn-link" (click)="runGame()">Run Game</button>
+							<button *ngIf="game.completed == 0" type="button" class="btn btn-link" (click)="watchGame()">LIVE!</button>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -162,7 +165,7 @@
 								</div>
 								
 								<div class="text">
-									<span>View all of the Players in league and view their details.</span>
+									<span></span>
 								</div>
 								
 								<a (click)="goToPlayers()">View Players</a>

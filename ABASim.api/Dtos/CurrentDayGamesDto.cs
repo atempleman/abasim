@@ -17,5 +17,7 @@ namespace ABASim.api.Dtos
         public int awayScore { get; set; }
 
         public int homeScore { get; set; }
+
+        public int Completed { get; set; }
     }
 }
