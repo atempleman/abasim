@@ -14,5 +14,7 @@ namespace ABASim.api.Data
          Task<LeagueState> GetLeagueStateForId(int stateId);
 
          Task<IEnumerable<NextDaysGameDto>> GetNextDaysGamesForPreseason();
+
+         Task<IEnumerable<CurrentDayGamesDto>> GetTodaysGamesForPreason();
     }
 }

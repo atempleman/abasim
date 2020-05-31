@@ -56,5 +56,12 @@ namespace ABASim.api.Controllers
             var nextGames = await _repo.GetNextDaysGamesForPreseason();
             return Ok(nextGames);
         }
+
+        [HttpGet("getgamesfortoday")]
+        public async Task<IActionResult> GetGamesForTodayPreseason()
+        {
+            var nextGames = await _repo.GetTodaysGamesForPreason();
+            return Ok(nextGames);
+        }
     }
 }

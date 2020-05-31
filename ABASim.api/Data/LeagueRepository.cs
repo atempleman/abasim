@@ -58,5 +58,43 @@ namespace ABASim.api.Data
             }
             return nextGamesList;
         }
+
+        public async Task<IEnumerable<CurrentDayGamesDto>> GetTodaysGamesForPreason()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var todaysGames = await _context.PreseasonSchedules.Where(x => x.Day == (league.Day)).ToListAsync();
+
+            List<CurrentDayGamesDto> nextGamesList = new List<CurrentDayGamesDto>();
+            foreach (var game in todaysGames)
+            {
+                var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayId);
+                var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeId);
+                var gameResult = await _context.PreseasonGameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
+
+                int awayScore = 0;
+                int homeScore = 0;
+
+                if (gameResult != null)
+                {
+                    awayScore = gameResult.AwayScore;
+                    homeScore = gameResult.HomeScore;
+                }
+                
+                CurrentDayGamesDto ng = new CurrentDayGamesDto
+                {
+                    Id = game.Id,
+                    AwayTeamId = awayTeam.Id,
+                    AwayTeamName = awayTeam.Teamname + " " + awayTeam.Mascot,
+                    HomeTeamId = homeTeam.Id,
+                    HomeTeamName = homeTeam.Teamname + " " + homeTeam.Mascot,
+                    Day = league.Day + 1,
+                    awayScore = awayScore,
+                    homeScore = homeScore
+                };
+
+                nextGamesList.Add(ng);
+            }
+            return nextGamesList;
+        }
     }
 }
