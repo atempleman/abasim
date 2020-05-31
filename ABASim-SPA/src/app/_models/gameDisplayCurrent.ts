@@ -7,4 +7,5 @@ export interface GameDisplayCurrent {
     day: number;
     awayScore: number;
     homeScore: number;
+    completed: number;
 }

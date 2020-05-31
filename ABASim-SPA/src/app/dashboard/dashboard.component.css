@@ -15,7 +15,15 @@
 
 .cards-row {
     padding: 5px;
+}
 
+td { 
+    padding: 10px;
+}
+
+table { 
+    border-spacing: 10px;
+    border-collapse: separate;
 }
 
 /* .border-info { */
