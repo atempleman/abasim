@@ -92,6 +92,7 @@ export class HomeComponent implements OnInit {
         this.alertify.error(error);
       }, () => {
         // clear the form
+        this.contactForm.reset();
       });
     }
   }

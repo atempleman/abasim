@@ -4,9 +4,9 @@ namespace ABASim.api.Models
     {
         public int Id { get; set; }
 
-        public int AwayTeam { get; set; }
+        public int AwayId { get; set; }
 
-        public int HomeTeam { get; set; }
+        public int HomeId { get; set; }
 
         public int Day { get; set; }
     }

@@ -7,6 +7,7 @@ import { LeagueState } from '../_models/leagueState';
 import { AuthService } from '../_services/auth.service';
 import { TeamService } from '../_services/team.service';
 import { Team } from '../_models/team';
+import { GameDisplay } from '../_models/gameDisplay';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,8 +17,8 @@ import { Team } from '../_models/team';
 export class DashboardComponent implements OnInit {
   league: League;
   team: Team;
-  currentState: LeagueState;
   isAdmin = 0;
+  upcomingGames: GameDisplay[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService) { }
@@ -32,7 +33,6 @@ export class DashboardComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {
-      this.getCurrentLeagueState();
       this.getUpcomingEvents();
     });
 
@@ -45,20 +45,14 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  getCurrentLeagueState() {
-    this.leagueService.getLeagueStatusForId(this.league.stateId).subscribe(result => {
-      this.currentState = result;
-    }, error => {
-      console.log('Error getting current league state');
-    });
-  }
-
   getUpcomingEvents() {
     // Preseason
     if (this.league.stateId === 6) {
       // Need to get the games for the day
       this.leagueService.getPreseasonGamesForTomorrow().subscribe(result => {
-
+        console.log(result);
+        this.upcomingGames = result;
+        console.log(this.upcomingGames);
       }, error => {
         this.alertify.error('Error getting upcoming games');
       });

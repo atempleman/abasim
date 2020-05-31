@@ -4975,6 +4975,11 @@ namespace ABASim.api.Controllers
             }
         }
 
+        public int EndGameDecisions()
+        {
+            return 0;
+        }
+
         // STATS & TRACKING
         /* REFACTORED */
         public void UpdateTimeInBoxScores(int time)

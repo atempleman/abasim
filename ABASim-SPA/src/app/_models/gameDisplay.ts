@@ -1,9 +1,8 @@
 export interface GameDisplay {
+    id: number;
     awayTeamId: number;
-    awayTeam: string;
+    awayTeamName: string;
     homeTeamId: number;
-    homeTeam: string;
-    gameId: number;
-    awayScore: number;
-    homeScore: number;
+    homeTeamName: string;
+    day: number;
 }

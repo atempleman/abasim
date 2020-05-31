@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ABASim.api.Data;
+using ABASim.api.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,17 @@ namespace ABASim.api.Controllers
         public async Task<IActionResult> GetLeague()
         {
             var league = await _repo.GetLeague();
-            return Ok(league);
+            var leagueState = await _repo.GetLeagueStateForId(league.StateId);
+
+            LeagueDto leagueDto = new LeagueDto
+            {
+                Id = league.Id,
+                StateId = league.StateId,
+                Day = league.Day,
+                State = leagueState.State
+            };
+
+            return Ok(leagueDto);
         }
 
         [HttpGet("getleaguestatus")]
@@ -37,6 +48,13 @@ namespace ABASim.api.Controllers
         {
             var leagueState = await _repo.GetLeagueStateForId(stateId);
             return Ok(leagueState);
+        }
+
+        [HttpGet("getgamesfortomorrow")]
+        public async Task<IActionResult> GetGamesForTomrrowPreseason()
+        {
+            var nextGames = await _repo.GetNextDaysGamesForPreseason();
+            return Ok(nextGames);
         }
     }
 }
