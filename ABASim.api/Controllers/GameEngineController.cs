@@ -78,6 +78,13 @@ namespace ABASim.api.Controllers
 
         List<int> fouledOutPlayers = new List<int>();
 
+        int _endGameShotClockBonus = 0;
+        int _endGameTwoPointAddition = 0;
+        int _endGameThreePointAddition = 0;
+        int _endGameFoulAddition = 0;
+        int _endGameStealAddition = 0;
+        int _endGameResultIncrease = 0;
+
         public GameEngineController(IGameEngineRepository repo)
         {
             _repo = repo;
@@ -503,8 +510,15 @@ namespace ABASim.api.Controllers
             {
                 if(_shotClock > 0)
                 {
-                    int decision = GetPlayerDecision();
+                    // int decision = -1;
 
+                    // if (_quarter > 3 && _time <= 48) {
+                    //     decision = EndGameDecisions();
+                    // } else {
+                    //     decision = GetPlayerDecision();
+                    // }
+                    int decision = GetPlayerDecision();
+                    
                     switch (decision)
                     {
                         case 1:
@@ -611,28 +625,88 @@ namespace ABASim.api.Controllers
         {
             int decision = 0;
 
+            int shotClockBonus = 0;
+
+            // Get the shot clock shoot bonus - TODO here around the end game bonuses
+            if (_quarter > 3 && _time <= 48) {
+                _endGameFoulAddition = 0; // Done
+                _endGameResultIncrease = 0; // Done
+                _endGameShotClockBonus = 0; // Done
+                _endGameStealAddition = 0; // Done
+                _endGameThreePointAddition = 0;
+                _endGameTwoPointAddition = 0;
+                
+                EndGameShootBonus();
+            } else {
+                _endGameFoulAddition = 0;
+                _endGameResultIncrease = 0;
+                _endGameShotClockBonus = 0;
+                _endGameStealAddition = 0;
+                _endGameThreePointAddition = 0;
+                _endGameTwoPointAddition = 0;
+
+                shotClockBonus = ShotClockShootBonus();
+            }
+
             // Need to check whether a steal has occurred
             int isSteal = StealCheck();
 
             if (isSteal == 0)
             {
-                // Get the shot clock shoot bonus
-                int shotClockBonus = ShotClockShootBonus();
-
                 // Now need to get the current players tendancies
                 PlayerTendancy tendancy = GetCurrentPlayersTendancies();
 
-                int foulBonusValue = (int)(tendancy.FouledTendancy * 0.1);
+                int foulBonusValue = 0;
+                if (_quarter > 3 && _time <= 48 && _endGameFoulAddition != 0) {
+                    foulBonusValue = _endGameFoulAddition;
+                } else {
+                    foulBonusValue = (int)(tendancy.FouledTendancy * 0.1);
+                }
 
-                int twoSection = tendancy.TwoPointTendancy;
-                int threeSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy);
-                int foulSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + tendancy.FouledTendancy + foulBonusValue);
-                int turnoverSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy);
+                int threeTendancy = tendancy.ThreePointTendancy;
+                int twoTendancy = tendancy.TwoPointTendancy;
+                int passTendancy = tendancy.PassTendancy;
+                if (_quarter > 3 && _time <= 48 && _endGameThreePointAddition != 0) {
+                    threeTendancy = tendancy.ThreePointTendancy + _endGameThreePointAddition;
+                    
+                    if (tendancy.TwoPointTendancy < _endGameThreePointAddition) {
+                        twoTendancy = 0;
+                        int remainder = _endGameThreePointAddition - tendancy.ThreePointTendancy;
+                        passTendancy = tendancy.PassTendancy - remainder;
+                    } else {
+                        twoTendancy = tendancy.TwoPointTendancy - _endGameThreePointAddition;
+                    }
+                }
 
-                if (shotClockBonus > 0)
+                if (_quarter > 3 && _time <= 48 && _endGameTwoPointAddition != 0) {
+                    twoTendancy = tendancy.TwoPointTendancy + _endGameTwoPointAddition;
+                    
+                    if (tendancy.PassTendancy < _endGameTwoPointAddition) {
+                        passTendancy = 0;
+                        int remainder = _endGameTwoPointAddition - tendancy.PassTendancy;
+                        twoTendancy = tendancy.TwoPointTendancy - remainder;
+                    } else {
+                        passTendancy = tendancy.PassTendancy - _endGameTwoPointAddition;
+                    }
+                }
+
+                int twoSection = twoTendancy;
+                int threeSection = (twoTendancy + threeTendancy);
+                int foulSection = (twoTendancy + threeTendancy + tendancy.FouledTendancy + foulBonusValue);
+                int turnoverSection = (twoTendancy + threeTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy);
+
+                // int twoSection = tendancy.TwoPointTendancy;
+                // int threeSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy);
+                // int foulSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + tendancy.FouledTendancy + foulBonusValue);
+                // int turnoverSection = (tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy);
+
+                if (shotClockBonus > 0 || _endGameShotClockBonus > 0)
                 {
+                    if (_quarter > 3 && _time <= 48) {
+                        shotClockBonus = _endGameShotClockBonus;
+                    }
                     // Then we have some bonus to work out
-                    int total = tendancy.TwoPointTendancy + tendancy.ThreePointTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy;
+                    int total = twoTendancy + threeTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy;
 
                     double twoUpgrade = (double) tendancy.TwoPointTendancy / total;
                     double threeUpgrade = (double) tendancy.ThreePointTendancy / total;
@@ -644,13 +718,17 @@ namespace ABASim.api.Controllers
                     int foulBonus = (int) (shotClockBonus * foulUpgrade);
                     int turnoverBonus = (int) (shotClockBonus * turnoverUpgrade);
 
-                    twoSection = tendancy.TwoPointTendancy + twoPointBonus;
-                    threeSection = tendancy.ThreePointTendancy + threePointBonus + twoSection;
+                    twoSection = twoTendancy + twoPointBonus;
+                    threeSection = threeTendancy + threePointBonus + twoSection;
                     foulSection = tendancy.FouledTendancy + foulBonusValue + foulBonus + threeSection;
                     turnoverSection = tendancy.TurnoverTendancy + turnoverBonus + foulSection;
                 } else {
-                    if (shotClockBonus != 0) {
-                        int total = tendancy.TwoPointTendancy + tendancy.ThreePointTendancy;
+                    if (shotClockBonus != 0 || _endGameShotClockBonus != 0) {
+                        if (_quarter > 3 && _time <= 48) {
+                            shotClockBonus = _endGameShotClockBonus;
+                        }
+
+                        int total = twoTendancy + threeTendancy;
 
                         double twoUpgrade = (double) tendancy.TwoPointTendancy / total;
                         double threeUpgrade = (double) tendancy.ThreePointTendancy / total;
@@ -658,8 +736,8 @@ namespace ABASim.api.Controllers
                         int twoPointBonus = (int) (shotClockBonus * twoUpgrade);
                         int threePointBonus = (int) (shotClockBonus * threeUpgrade);
 
-                        twoSection = tendancy.TwoPointTendancy + twoPointBonus;
-                        threeSection = tendancy.ThreePointTendancy + threePointBonus + twoSection;
+                        twoSection = twoTendancy + twoPointBonus;
+                        threeSection = threeTendancy + threePointBonus + twoSection;
                         foulSection = tendancy.FouledTendancy + foulBonusValue + threeSection;
                         turnoverSection = tendancy.TurnoverTendancy + foulSection;
                     }
@@ -1201,6 +1279,7 @@ namespace ABASim.api.Controllers
                 int drpmValue = GetDrpmValue(defence);
 
                 result = result - orpmValue + drpmValue;
+                result = result + _endGameResultIncrease;
 
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
@@ -1403,6 +1482,7 @@ namespace ABASim.api.Controllers
                 int drpmValue = GetDrpmValue(defence);
 
                 result = result - orpmValue + drpmValue;
+                result = result + _endGameResultIncrease;
 
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
@@ -2074,6 +2154,11 @@ namespace ABASim.api.Controllers
         public int StealCheck()
         {
             PlayerRating currentRating = GetCurrentPlayersRatings();
+            int stealBonus = 0;
+
+            if (_endGameStealAddition > 0) {
+                stealBonus = _endGameStealAddition;
+            }
 
             if (_teamPossession == 0)
             {
@@ -2094,7 +2179,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = awayRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 1, checking.StealRating);
-                    int result = _random.Next(1, 4501); // This is times 5 to account for all 5 players pn the court
+                    int result = _random.Next(1, (4501 - stealBonus)); // This is times 5 to account for all 5 players pn the court
 
                     if (result <= rating)
                     {
@@ -2164,7 +2249,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = homeRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 0, checking.StealRating);
-                    int result = _random.Next(1, 5001);
+                    int result = _random.Next(1, (4501 - stealBonus));
 
                     if (result <= rating)
                     {
@@ -2689,6 +2774,261 @@ namespace ABASim.api.Controllers
 
             // Inbounds the ball to continue on
             Inbounds();
+        }
+
+        public void EndGameShootBonus()
+        {
+            int diff = 0;
+            if (_teamPossession == 0) {
+                diff = _awayScore - _homeScore;
+
+                if (diff < 0) {
+                    // home team is winning
+                    if (_time > 16 || _shotClock > 16) {
+                        _endGameShotClockBonus = -200;
+                    } else if (_time > 12 || _shotClock > 12) {
+                        _endGameShotClockBonus = -100;
+                    } else if (_time > 8 || _shotClock > 8) {
+                        _endGameShotClockBonus = 100;
+                    } else if (_time > 4 || _shotClock > 4) {
+                        _endGameShotClockBonus = 300;
+                    } else {
+                        _endGameShotClockBonus = 500;
+                    }
+                    
+                    if (diff <= 3) {
+                        // Defensive teams actions
+                        // increased steal chance
+                        _endGameStealAddition = 500;
+    
+                        // much increased in fouls
+                        _endGameFoulAddition = 800;
+                    }
+                } else if (diff > 0) {
+                    // home team is losing
+                    // losing margins
+                    if (diff == 5 || diff == 6) {
+                        // Shooting liklihood is increase significantly and 3's are increased most
+                        // team will shoot quicker
+                        if (_time > 16 || _shotClock > 16) {
+                            _endGameShotClockBonus = 50;
+                        } else if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = 150;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 200;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 300;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 400;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 500;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+
+                        // increase in 3s taken
+                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
+
+                        // Result increase by 15% due to tough shots
+                        _endGameResultIncrease = 150;
+
+                        // Apply winning to team
+                        // no changes for defensive team
+                    } else if (diff == 4) {
+                        // team will shoot quicker
+                        if (_time > 16 || _shotClock > 16) {
+                            _endGameShotClockBonus = 50;
+                        } else if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = 150;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 200;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 300;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 400;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 500;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+                        
+                        // random between 5 and 10% added to shot result
+                        _endGameResultIncrease = (_random.Next(50, 101));
+
+                        // No change for the defensive team
+                    } else if (diff == 3) {
+                        // 33% increase of shooting the 3 ball
+                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
+                        // increase is shot overall
+                        if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = 0;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = 50;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 150;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 250;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 450;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+
+                        // no defensive change
+                    } else if (diff <= 2) {
+                        // normal tendancies
+                        // increase shot bonus as time runs out
+                        if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = -100;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = -50;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 0;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 250;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 450;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+
+                        // no defencive change
+                    }
+                }
+            } else {
+                diff = _homeScore - _awayScore;
+
+                if (diff < 0) {
+                    // away team is winning
+                    if (_time > 16 || _shotClock > 16) {
+                        _endGameShotClockBonus = -200;
+                    } else if (_time > 12 || _shotClock > 12) {
+                        _endGameShotClockBonus = -100;
+                    } else if (_time > 8 || _shotClock > 8) {
+                        _endGameShotClockBonus = 100;
+                    } else if (_time > 4 || _shotClock > 4) {
+                        _endGameShotClockBonus = 300;
+                    } else {
+                        _endGameShotClockBonus = 500;
+                    }
+
+                    
+                    if (diff <= 3 && (_shotClock > _time)) {
+                        // Defensive teams actions
+                        // increased steal chance
+                        _endGameStealAddition = 500;
+    
+                        // much increased in fouls
+                        _endGameFoulAddition = 800;
+                    }
+                } else if (diff > 0) {
+                    // away team is losing
+                    // losing margins
+                    if (diff == 5 || diff == 6) {
+                        // Shooting liklihood is increase significantly and 3's are increased most
+                        // team will shoot quicker
+                        if (_time > 16 || _shotClock > 16) {
+                            _endGameShotClockBonus = 50;
+                        } else if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = 150;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 200;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 300;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 400;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 500;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+
+                        // increase in 3s taken
+                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
+
+                        // Result increase by 15% due to tough shots
+                        _endGameResultIncrease = 150;
+
+                        // Apply winning to team
+                        // no changes for defensive team
+                    } else if (diff == 4) {
+                        // team will shoot quicker
+                        if (_time > 16 || _shotClock > 16) {
+                            _endGameShotClockBonus = 50;
+                        } else if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = 150;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 200;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 300;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 400;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 500;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+                        
+                        // random between 5 and 10% added to shot result
+                        _endGameResultIncrease = (_random.Next(50, 101));
+
+                        // No change for the defensive team
+                    } else if (diff == 3) {
+                        // 33% increase of shooting the 3 ball
+                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
+                        // increase is shot overall
+                        if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = 0;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = 50;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 150;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 250;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 450;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+
+                        // no defensive change
+                    } else if (diff <= 2) {
+                        // normal tendancies
+                        // increase shot bonus as time runs out
+                        if (_time > 14 || _shotClock > 14) {
+                            _endGameShotClockBonus = -100;
+                        } else if (_time > 12 || _shotClock > 12) {
+                            _endGameShotClockBonus = -50;
+                        } else if (_time > 10 || _shotClock > 10) {
+                            _endGameShotClockBonus = 0;
+                        } else if (_time > 8 || _shotClock > 8) {
+                            _endGameShotClockBonus = 100;
+                        } else if (_time > 6 || _shotClock > 6) {
+                            _endGameShotClockBonus = 250;
+                        } else if (_time > 4 || _shotClock > 4) {
+                            _endGameShotClockBonus = 450;
+                        } else {
+                            _endGameShotClockBonus = 600;
+                        }
+
+                        // no defencive change
+                    }
+                } 
+            }
         }
 
         public int ShotClockShootBonus()
@@ -4977,7 +5317,40 @@ namespace ABASim.api.Controllers
 
         public int EndGameDecisions()
         {
-            return 0;
+            int decision = 0;
+            int diff = ScoreDiffCheck();
+
+            if (diff == 0) {
+                // returns to normal
+                decision = GetPlayerDecision();
+            } else {
+                if (_teamPossession == 0 && diff < 0) {
+                    // Home team is winning and has the ball
+                } else if (_teamPossession == 1 && diff > 0) {
+                    // Away Team is winning and has the ball
+                } else {
+                    // Whoever has the ball is losing
+                    if (_teamPossession == 0 && diff > 0) {
+                        // home has the ball and is losing
+                        if (diff <= 2) {
+
+                        }
+
+                    } else if (_teamPossession == 1 && diff < 0) {
+                        // away has the ball and is losing
+                        if (diff <= -2) {
+                            
+                        }
+                    }
+                }
+            }
+
+            return decision;
+        }
+
+        public int ScoreDiffCheck()
+        {
+            return _awayScore - _homeScore;
         }
 
         // STATS & TRACKING
