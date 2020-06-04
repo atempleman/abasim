@@ -37,6 +37,13 @@ namespace ABASim.api.Controllers
             return Ok(team);
         }
 
+        [HttpGet("getextendedroster/{teamId}")]
+        public async Task<IActionResult> GetExtendedRoster(int teamId)
+        {
+            var team = await _repo.GetExtendPlayersForTeam(teamId);
+            return Ok(team);
+        }
+
         [HttpGet("getrosterforteam/{teamId}")]
         public async Task<IActionResult> GetRosterForTeam(int teamId)
         {

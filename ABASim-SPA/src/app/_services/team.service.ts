@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Team } from '../_models/team';
 import { DepthChart } from '../_models/depthChart';
 import { environment } from 'src/environments/environment';
+import { ExtendedPlayer } from '../_models/extendedPlayer';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class TeamService {
 
   getRosterForTeam(teamId: number): Observable<Player[]> {
     return this.http.get<Player[]>(this.baseUrl + 'getrosterforteam/' + teamId);
+  }
+
+  getExtendedRosterForTeam(teamId: number): Observable<ExtendedPlayer[]> {
+    return this.http.get<ExtendedPlayer[]>(this.baseUrl + 'getextendedroster/' + teamId);
   }
 
   getTeamForUserId(userId: number) {

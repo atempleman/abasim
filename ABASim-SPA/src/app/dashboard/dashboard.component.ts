@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
   }
 
   goToRoster() {
-    this.router.navigate(['/roster']);
+    this.router.navigate(['/team']);
   }
 
   goToDraft() {

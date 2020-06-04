@@ -38,6 +38,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { ViewPlayerComponent } from './view-player/view-player.component';
 import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
 import { AdmintestengineComponent } from './admintestengine/admintestengine.component';
+import { TeamComponent } from './team/team.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -73,7 +74,8 @@ export function tokenGetter() {
       InitialDraftComponent,
       ViewPlayerComponent,
       AdminpreseasonComponent,
-      AdmintestengineComponent
+      AdmintestengineComponent,
+      TeamComponent
    ],
    imports: [
       BrowserModule,
