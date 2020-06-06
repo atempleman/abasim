@@ -6,6 +6,7 @@ import { Team } from '../_models/team';
 import { DepthChart } from '../_models/depthChart';
 import { environment } from 'src/environments/environment';
 import { ExtendedPlayer } from '../_models/extendedPlayer';
+import { WaivedPlayer } from '../_models/waivedPlayer';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,10 @@ export class TeamService {
 
   rosterSpotCheck(teamId: number) {
     return this.http.get<boolean>(this.baseUrl + 'rosterSpotCheck/' + teamId);
+  }
+
+  waivePlayer(waivedPlayer: WaivedPlayer) {
+    return this.http.post(this.baseUrl + 'waiveplayer', waivedPlayer);
   }
 
 }

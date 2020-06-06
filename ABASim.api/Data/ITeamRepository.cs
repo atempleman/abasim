@@ -24,5 +24,7 @@ namespace ABASim.api.Data
          Task<bool> RosterSpotCheck(int teamId);
 
          Task<IEnumerable<ExtendedPlayerDto>> GetExtendPlayersForTeam(int teamId);
+
+         Task<bool> WaivePlayer(WaivePlayerDto waived);
     }
 }

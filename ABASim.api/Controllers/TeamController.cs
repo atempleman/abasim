@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using ABASim.api.Data;
+using ABASim.api.Dtos;
 using ABASim.api.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -77,6 +78,13 @@ namespace ABASim.api.Controllers
         {
             var result = await _repo.RosterSpotCheck(teamId);
             return Ok(result);
+        }
+
+        [HttpPost("waiveplayer")]
+        public async Task<IActionResult> WaivePlayer(WaivePlayerDto waived)
+        {
+            var added = await _repo.WaivePlayer(waived);
+            return Ok(added);
         }
     }
 }

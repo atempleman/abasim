@@ -41,5 +41,12 @@ namespace ABASim.api.Controllers
             var players = await _repo.GetFreeAgents();
             return Ok(players);
         }
+
+        [HttpGet("getcompleteplayer/{playerId}")]
+        public async Task<IActionResult> GetCompletePlayer(int playerId)
+        {
+            var player = await _repo.GetCompletePlayer(playerId);
+            return Ok(player);
+        }
     }
 }

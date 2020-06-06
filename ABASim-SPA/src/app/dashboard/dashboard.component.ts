@@ -90,11 +90,9 @@ export class DashboardComponent implements OnInit {
   }
 
   goToPlayers() {
-    
   }
 
   runGame() {
-    
   }
 
   watchGame() {

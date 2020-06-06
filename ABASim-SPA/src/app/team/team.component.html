@@ -117,10 +117,8 @@
 							{{ player.intangiblesGrade }}
 						</td>
 						<td class="text-center">
-							<a href="#"
-							  class="btn btn-info btn-xs tablebutton"><span class="glyphicon glyphicon-edit"></span> View</a>
-							<a href="#"
-							  class="btn btn-danger btn-xs tablebutton"><span class="glyphicon glyphicon-remove"></span> Waive</a>
+							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
+							<button class="btn btn-danger btn-xs tablebutton" (click)="openModal(waive, player)"><span class="glyphicon glyphicon-remove"></span> Waive</button>
 						</td>
 					</tr>
 				</tbody>
@@ -128,3 +126,31 @@
 		</div>
 	</div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- WAIVE MODAL -->
+<ng-template #waive>
+	<div class="modal-header">
+	  <h5 class="modal-title">Waive Player</h5>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #draftlotteryForm>
+		<div class="modal-body">
+      <p>Are you sure you want to waive {{ this.selectedPlayer.firstName }} {{ this.selectedPlayer.surname }}?</p>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary" (click)="confirmedWaived()">Waive</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		  </div>
+	</form>
+</ng-template> 

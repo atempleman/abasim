@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DraftPlayer } from '../_models/draftPlayer';
 import { Player } from '../_models/player';
 import { environment } from 'src/environments/environment';
+import { CompletePlayer } from '../_models/completePlayer';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,9 @@ export class PlayerService {
 
   getFreeAgents(): Observable<Player[]> {
     return this.http.get<Player[]>(this.baseUrl + 'getfreeagents');
+  }
+
+  playerForPlayerProfileById(playerId: number) {
+    return this.http.get<CompletePlayer>(this.baseUrl + 'getcompleteplayer/' + playerId);
   }
 }

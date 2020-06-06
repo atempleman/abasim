@@ -75,7 +75,8 @@ export function tokenGetter() {
       ViewPlayerComponent,
       AdminpreseasonComponent,
       AdmintestengineComponent,
-      TeamComponent
+      TeamComponent,
+      ViewPlayerComponent
    ],
    imports: [
       BrowserModule,

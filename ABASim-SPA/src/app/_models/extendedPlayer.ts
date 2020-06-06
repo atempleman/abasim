@@ -7,15 +7,15 @@ export interface ExtendedPlayer {
     sfPosition: number;
     pfPosition: number;
     cPosition: number;
-    twoGrade: string;
-    threeGrade: string;
-    ftGrade: string;
-    oRebGrade: string;
-    dRebGrade: string;
-    handlingGrade: string;
-    stealGrade: string;
-    blockGrade: string;
-    staminaGrade: string;
-    passingGrade: string;
-    intangiblesGrade: string;
+    twoGrade: number;
+    threeGrade: number;
+    ftGrade: number;
+    oRebGrade: number;
+    dRebGrade: number;
+    handlingGrade: number;
+    stealGrade: number;
+    blockGrade: number;
+    staminaGrade: number;
+    passingGrade: number;
+    intangiblesGrade: number;
 }

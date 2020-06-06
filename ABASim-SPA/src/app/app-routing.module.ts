@@ -23,12 +23,14 @@ import { InitialDraftComponent } from './initial-draft/initial-draft.component';
 import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
 import { AdmintestengineComponent } from './admintestengine/admintestengine.component';
 import { TeamComponent } from './team/team.component';
+import { ViewPlayerComponent } from './view-player/view-player.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'team', component: TeamComponent, canActivate: [AuthGuard] },
+  { path: 'view-player', component: ViewPlayerComponent, canActivate: [AuthGuard] },
   { path: 'roster', component: RosterComponent, canActivate: [AuthGuard] },
   { path: 'players', component: PlayersComponent, canActivate: [AuthGuard] },
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },

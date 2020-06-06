@@ -140,5 +140,19 @@ namespace ABASim.api.Data
             }
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> WaivePlayer(WaivePlayerDto waived)
+        {
+            // need to remove from teams roster
+            var rosterRecord = await _context.Rosters.FirstOrDefaultAsync(x => x.PlayerId == waived.PlayerId && x.TeamId == waived.TeamId);
+            _context.Rosters.Remove(rosterRecord);
+
+            // need to update playerteam record to 0
+            var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == waived.PlayerId);
+            playerTeam.TeamId = 0;
+            _context.PlayerTeams.Update(playerTeam);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

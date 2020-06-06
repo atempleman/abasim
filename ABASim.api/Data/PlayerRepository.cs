@@ -20,6 +20,55 @@ namespace ABASim.api.Data
             return players;
         }
 
+        public async Task<CompletePlayerDto> GetCompletePlayer(int playerId)
+        {
+            var playerDetails = await _context.Players.FirstOrDefaultAsync(x => x.Id == playerId);
+            var playerRatings = await _context.PlayerRatings.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+            var playerTendancies = await _context.PlayerTendancies.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+            var playerGrades = await _context.PlayerGradings.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+
+            CompletePlayerDto player = new CompletePlayerDto
+            {
+                PlayerId = playerId,
+                FirstName = playerDetails.FirstName,
+                Surname = playerDetails.Surname,
+                PGPosition = playerDetails.PGPosition,
+                SGPosition = playerDetails.SGPosition,
+                SFPosition = playerDetails.SFPosition,
+                PFPosition = playerDetails.PGPosition,
+                CPosition = playerDetails.CPosition,
+                TwoGrade = playerGrades.TwoGrade,
+                ThreeGrade = playerGrades.ThreeGrade,
+                FTGrade = playerGrades.FTGrade,
+                ORebGrade = playerGrades.ORebGrade,
+                DRebGrade = playerGrades.DRebGrade,
+                StealGrade = playerGrades.StealGrade,
+                BlockGrade = playerGrades.BlockGrade,
+                StaminaGrade = playerGrades.StaminaGrade,
+                HandlingGrade = playerGrades.HandlingGrade,
+                TwoPointTendancy = playerTendancies.TwoPointTendancy,
+                ThreePointTendancy = playerTendancies.ThreePointTendancy,
+                PassTendancy = playerTendancies.PassTendancy,
+                FouledTendancy = playerTendancies.FouledTendancy,
+                TurnoverTendancy = playerTendancies.TurnoverTendancy,
+                TwoRating = playerRatings.TwoRating,
+                ThreeRating = playerRatings.ThreeRating,
+                FtRating = playerRatings.FTRating,
+                OrebRating = playerRatings.ORebRating,
+                DrebRating = playerRatings.DRebRating,
+                AssistRating = playerRatings.AssitRating,
+                PassAssistRating = playerRatings.PassAssistRating,
+                StealRating = playerRatings.StealRating,
+                BlockRating = playerRatings.BlockRating,
+                UsageRating = playerRatings.UsageRating,
+                OrpmRating = playerRatings.ORPMRating,
+                DrpmRating = playerRatings.DRPMRating,
+                PassingGrade = playerGrades.PassingGrade,
+                IntangiblesGrade = playerGrades.IntangiblesGrade
+            };
+            return player;
+        }
+
         public async Task<IEnumerable<Player>> GetFreeAgents()
         {
             List<Player> freeAgents = new List<Player>();
