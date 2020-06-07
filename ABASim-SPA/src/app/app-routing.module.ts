@@ -26,6 +26,7 @@ import { TeamComponent } from './team/team.component';
 import { ViewPlayerComponent } from './view-player/view-player.component';
 import { CoachingComponent } from './coaching/coaching.component';
 import { DepthchartComponent } from './depthchart/depthchart.component';
+import { FreeagentsComponent } from './freeagents/freeagents.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,6 +36,9 @@ const routes: Routes = [
   { path: 'view-player', component: ViewPlayerComponent, canActivate: [AuthGuard] },
   { path: 'coaching', component: CoachingComponent, canActivate: [AuthGuard] },
   { path: 'depthchart', component: DepthchartComponent, canActivate: [AuthGuard] },
+  { path: 'freeagents', component: FreeagentsComponent, canActivate: [AuthGuard] },
+
+
 
   { path: 'roster', component: RosterComponent, canActivate: [AuthGuard] },
   { path: 'players', component: PlayersComponent, canActivate: [AuthGuard] },

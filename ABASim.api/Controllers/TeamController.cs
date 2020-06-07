@@ -87,6 +87,13 @@ namespace ABASim.api.Controllers
             return Ok(added);
         }
 
+        [HttpPost("signplayer")]
+        public async Task<IActionResult> SignPlayer(SignedPlayerDto signed)
+        {
+            var added = await _repo.SignPlayer(signed);
+            return Ok(added);
+        }
+
         [HttpGet("getcoachsettings/{teamId}")]
         public async Task<IActionResult> GetCoachSettingsFormTeamId(int teamId)
         {

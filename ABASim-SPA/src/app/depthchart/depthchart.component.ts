@@ -57,6 +57,10 @@ export class DepthchartComponent implements OnInit {
     this.router.navigate(['/team']);
   }
 
+  goToFreeAgents() {
+    this.router.navigate(['/freeagents']);
+  }
+
   editDepthChart() {
     this.isEdit = 1;
   }

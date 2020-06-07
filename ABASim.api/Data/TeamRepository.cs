@@ -165,6 +165,23 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> SignPlayer(SignedPlayerDto signed)
+        {
+            Roster rosterRecord = new Roster
+            {
+                TeamId = signed.TeamId,
+                PlayerId = signed.PlayerId
+            };
+            await _context.AddAsync(rosterRecord);
+
+            // need to update playerteam record to team id
+            var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == signed.PlayerId);
+            playerTeam.TeamId = signed.TeamId;
+            _context.PlayerTeams.Update(playerTeam);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> WaivePlayer(WaivePlayerDto waived)
         {
             // need to remove from teams roster

@@ -1,7 +1,100 @@
-<div *ngIf="this.league?.stateId != 1">
-  Free Agents display
+<link rel="stylesheet" type="text/css"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<div class="jumbotron">
+	<h3 class="display">FREE AGENTS</h3>
 </div>
 
-<div *ngIf="this.league?.stateId == 1">
-  Free Agents are not yet available
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-users fa-2x"></i><span
+						class="header-card ml-3"><strong>TEAM</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the players on your team, stats, ratings, tendancies.</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToTeam()">Go to Team</button>
+				</div>
+      </div>
+      
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>COACHING</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Modify your team's strategy and coach them to victory.</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToCoaching()">Coaching</button>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-address-book fa-2x"></i><span
+						class="header-card ml-3"><strong>DEPTH CHART</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Manage your team's depth chart. Decide who plays at every position,</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToDepthCharts()">Set Depth Chart</button>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>TRADES</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Improve your team. Offer other teams trades.</p>
+					<button type="button" class="btn btn-link text-left">Make Trades</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
+<div class="box">
+  <table class="table table-hover roster-table">
+    <thead>
+        <tr>
+          <th>Name</th>
+          <th>Position</th>
+          <th></th>
+        </tr>
+      </thead>
+    <tbody>
+        <tr class="table-secondary" *ngFor="let player of this.freeAgents">
+            <td>
+                {{ player.firstName }} {{ player.surname }}
+            </td>
+            <td>
+              <ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
+							<ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
+							<ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
+							<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
+							<ng-container *ngIf="player.cPosition == 1">C </ng-container>
+            </td>
+            <td class="text-center">
+							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
+              <button class="btn btn-success btn-xs tablebutton" (click)="openModal(sign, player)" *ngIf="this.rosterSpotAvailable == true"><span class="glyphicon glyphicon-remove"></span> Sign</button>
+              <label class="ml-3" *ngIf="!this.rosterSpotAvailable">No Roster Spots Available</label>
+						</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+
+
+
+<!-- SIGN MODAL -->
+<ng-template #sign>
+	<div class="modal-header">
+	  <h5 class="modal-title">Sign Player</h5>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #draftlotteryForm>
+		<div class="modal-body">
+      <p>Are you sure you want to sign {{ this.selectedPlayer.firstName }} {{ this.selectedPlayer.surname }} to your team?</p>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-success" (click)="signPlayer()">Sign</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		  </div>
+	</form>
+</ng-template> 

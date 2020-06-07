@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { ExtendedPlayer } from '../_models/extendedPlayer';
 import { WaivedPlayer } from '../_models/waivedPlayer';
 import { CoachSetting } from '../_models/coachSetting';
+import { SignedPlayer } from '../_models/signedPlayer';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +57,10 @@ export class TeamService {
 
   waivePlayer(waivedPlayer: WaivedPlayer) {
     return this.http.post(this.baseUrl + 'waiveplayer', waivedPlayer);
+  }
+
+  signPlayer(signedPlayer: SignedPlayer) {
+    return this.http.post(this.baseUrl + 'signplayer', signedPlayer);
   }
 
   getCoachingSettings(teamId: number) {

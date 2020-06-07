@@ -27,6 +27,8 @@ namespace ABASim.api.Data
 
          Task<bool> WaivePlayer(WaivePlayerDto waived);
 
+         Task<bool> SignPlayer(SignedPlayerDto signed);
+
          Task<CoachSetting> GetCoachSettingForTeamId(int teamId);
 
          Task<bool> SaveCoachingSetting(CoachSetting setting);

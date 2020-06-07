@@ -92,4 +92,7 @@ export class CoachingComponent implements OnInit {
     this.router.navigate(['/depthchart']);
   }
 
+  goToFreeAgents() {
+    this.router.navigate(['/freeagents']);
+  }
 }

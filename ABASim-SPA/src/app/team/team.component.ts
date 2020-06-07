@@ -94,4 +94,8 @@ export class TeamComponent implements OnInit {
     this.router.navigate(['/depthchart']);
   }
 
+  goToFreeAgents() {
+    this.router.navigate(['/freeagents']);
+  }
+
 }
