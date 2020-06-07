@@ -27,6 +27,7 @@ import { ViewPlayerComponent } from './view-player/view-player.component';
 import { CoachingComponent } from './coaching/coaching.component';
 import { DepthchartComponent } from './depthchart/depthchart.component';
 import { FreeagentsComponent } from './freeagents/freeagents.component';
+import { TradesComponent } from './trades/trades.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -37,7 +38,7 @@ const routes: Routes = [
   { path: 'coaching', component: CoachingComponent, canActivate: [AuthGuard] },
   { path: 'depthchart', component: DepthchartComponent, canActivate: [AuthGuard] },
   { path: 'freeagents', component: FreeagentsComponent, canActivate: [AuthGuard] },
-
+  { path: 'trades', component: TradesComponent, canActivate: [AuthGuard] },
 
 
   { path: 'roster', component: RosterComponent, canActivate: [AuthGuard] },

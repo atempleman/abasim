@@ -97,4 +97,8 @@ export class FreeagentsComponent implements OnInit {
   goToCoaching() {
     this.router.navigate(['/coaching']);
   }
+
+  goToTrades() {
+    this.router.navigate(['/trades']);
+  }
 }

@@ -1,7 +1,54 @@
-<div *ngIf="this.league?.stateId != 1">
-  Trades display
+<link rel="stylesheet" type="text/css"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<div class="jumbotron">
+	<h3 class="display">TRADES</h3>
 </div>
 
-<div *ngIf="this.league?.stateId == 1">
-  Trades are not yet available
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-users fa-2x"></i><span
+						class="header-card ml-3"><strong>TEAM</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the players on your team, stats, ratings, tendancies.</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToTeam()">Go to Team</button>
+				</div>
+      </div>
+      
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>COACHING</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Modify your team's strategy and coach them to victory.</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToCoaching()">Coaching</button>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-address-book fa-2x"></i><span
+						class="header-card ml-3"><strong>DEPTH CHART</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Manage your team's depth chart. Decide who plays at every position,</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToDepthCharts()">Set Depth Chart</button>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>FREE AGENTS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the available free agents and sign players.</p>
+					<button type="button" class="btn btn-link text-left" (click)="goToFreeAgents()">Go to Free Agents</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="box">
+  <h4 class="display">Trades are not yet available</h4>
 </div>

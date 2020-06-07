@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { League } from '../_models/league';
 import { LeagueService } from '../_services/league.service';
 import { AlertifyService } from '../_services/alertify.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trades',
@@ -11,13 +12,25 @@ import { AlertifyService } from '../_services/alertify.service';
 export class TradesComponent implements OnInit {
   league: League;
 
-  constructor(private leagueService: LeagueService, private alertify: AlertifyService) { }
+  constructor(private alertify: AlertifyService, private router: Router) { }
 
   ngOnInit() {
-    this.leagueService.getLeague().subscribe(result => {
-      this.league = result;
-    }, error => {
-      this.alertify.error('Error getting league');
-    });
+
+  }
+
+  goToCoaching() {
+    this.router.navigate(['/coaching']);
+  }
+
+  goToDepthCharts() {
+    this.router.navigate(['/depthchart']);
+  }
+
+  goToFreeAgents() {
+    this.router.navigate(['/freeagents']);
+  }
+
+  goToTeam() {
+    this.router.navigate(['/team']);
   }
 }

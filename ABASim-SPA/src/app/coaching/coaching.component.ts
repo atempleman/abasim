@@ -95,4 +95,8 @@ export class CoachingComponent implements OnInit {
   goToFreeAgents() {
     this.router.navigate(['/freeagents']);
   }
+
+  goToTrades() {
+    this.router.navigate(['/trades']);
+  }
 }

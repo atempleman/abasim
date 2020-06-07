@@ -61,6 +61,10 @@ export class DepthchartComponent implements OnInit {
     this.router.navigate(['/freeagents']);
   }
 
+  goToTrades() {
+    this.router.navigate(['/trades']);
+  }
+
   editDepthChart() {
     this.isEdit = 1;
   }

@@ -98,4 +98,8 @@ export class TeamComponent implements OnInit {
     this.router.navigate(['/freeagents']);
   }
 
+  goToTrades() {
+    this.router.navigate(['/trades']);
+  }
+
 }
