@@ -71,9 +71,10 @@ export class CoachingComponent implements OnInit {
 
     // Now pass this through to ther servie
     this.teamService.saveCoachingSettings(this.coachSetting).subscribe(result => {
-
     }, error => {
       this.alertify.error('Error saving Coaching Settings');
+    }, () => {
+      this.alertify.success('Coach Settings saved successfully');
     });
 
     this.isEdit = 0;
@@ -81,6 +82,14 @@ export class CoachingComponent implements OnInit {
 
   cancelCoaching() {
     this.isEdit = 0;
+  }
+
+  goToTeam() {
+    this.router.navigate(['/team']);
+  }
+
+  goToDepthCharts() {
+    this.router.navigate(['/depthchart']);
   }
 
 }

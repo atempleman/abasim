@@ -90,4 +90,8 @@ export class TeamComponent implements OnInit {
     this.router.navigate(['/coaching']);
   }
 
+  goToDepthCharts() {
+    this.router.navigate(['/depthchart']);
+  }
+
 }
