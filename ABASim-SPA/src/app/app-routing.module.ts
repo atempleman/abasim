@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ContactComponent } from './contact/contact.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { RosterComponent } from './roster/roster.component';
 import { PlayersComponent } from './players/players.component';
 import { DraftComponent } from './draft/draft.component';
 import { AdminComponent } from './admin/admin.component';
@@ -41,7 +40,6 @@ const routes: Routes = [
   { path: 'trades', component: TradesComponent, canActivate: [AuthGuard] },
 
 
-  { path: 'roster', component: RosterComponent, canActivate: [AuthGuard] },
   { path: 'players', component: PlayersComponent, canActivate: [AuthGuard] },
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
   { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },

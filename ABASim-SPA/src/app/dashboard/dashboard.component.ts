@@ -52,7 +52,6 @@ export class DashboardComponent implements OnInit {
     if (this.league.stateId === 6 && this.league.day !== 0) {
       this.leagueService.getPreseasonGamesForToday().subscribe(result => {
         this.todaysGames = result;
-        console.log(this.todaysGames);
       }, error => {
         this.alertify.error('Error getting todays events');
       });
@@ -64,9 +63,7 @@ export class DashboardComponent implements OnInit {
     if (this.league.stateId === 6) {
       // Need to get the games for the day
       this.leagueService.getPreseasonGamesForTomorrow().subscribe(result => {
-        console.log(result);
         this.upcomingGames = result;
-        console.log(this.upcomingGames);
       }, error => {
         this.alertify.error('Error getting upcoming games');
       });

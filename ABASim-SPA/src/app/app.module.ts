@@ -14,7 +14,6 @@ import { ContactComponent } from './contact/contact.component';
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
 import { AlertifyService } from './_services/alertify.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { RosterComponent } from './roster/roster.component';
 import { PlayersComponent } from './players/players.component';
 import { DraftComponent } from './draft/draft.component';
 import { AdminComponent } from './admin/admin.component';
@@ -22,7 +21,6 @@ import { StatsComponent } from './stats/stats.component';
 import { StandingsComponent } from './standings/standings.component';
 import { ScheduleandresultsComponent } from './scheduleandresults/scheduleandresults.component';
 import { FinancesComponent } from './finances/finances.component';
-import { TeamRosterComponent } from './team-roster/team-roster.component';
 import { CoachingComponent } from './coaching/coaching.component';
 import { FreeagentsComponent } from './freeagents/freeagents.component';
 import { TradesComponent } from './trades/trades.component';
@@ -52,7 +50,6 @@ export function tokenGetter() {
       HomeComponent,
       ContactComponent,
       DashboardComponent,
-      RosterComponent,
       PlayersComponent,
       DraftComponent,
       AdminComponent,
@@ -60,7 +57,6 @@ export function tokenGetter() {
       StandingsComponent,
       ScheduleandresultsComponent,
       FinancesComponent,
-      TeamRosterComponent,
       CoachingComponent,
       FreeagentsComponent,
       TradesComponent,
