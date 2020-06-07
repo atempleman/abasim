@@ -55,5 +55,7 @@ namespace ABASim.api.Data
         public DbSet<PreseasonSchedule> PreseasonSchedules { get; set; }
 
         public DbSet<PreseasonGameResult> PreseasonGameResults { get; set; }
+
+        public DbSet<CoachSetting> CoachSettings { get; set; }
     }
 }

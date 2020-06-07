@@ -1,3 +1,119 @@
-<div>
-  Coaching features are coming soon! Soon you will be able to set your teams player to best suit your players.
+<link rel="stylesheet" type="text/css"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<div class="jumbotron">
+	<h3 class="display">COACHING SETTINGS</h3>
+</div>
+
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-users fa-2x"></i><span
+						class="header-card ml-3"><strong>TEAM</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the players on your team, stats, ratings, tendancies.</p>
+					<button type="button" class="btn btn-link text-left">Go to Team</button>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-address-book fa-2x"></i><span
+						class="header-card ml-3"><strong>DEPTH CHART</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Manage your team's depth chart. Decide who plays at every position,</p>
+					<button type="button" class="btn btn-link text-left">Set Depth Chart</button>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>TRADES</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Improve your team. Offer other teams trades.</p>
+					<button type="button" class="btn btn-link text-left">Make Trades</button>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>FREE AGENTS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the available free agents and sign players.</p>
+					<button type="button" class="btn btn-link text-left">Go to Free Agents</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="box content-class">
+	<div class="row">
+		<div class="col">
+			<table class="table table-hover roster-table">
+				<thead>
+					<tr>
+					  <th>Go To Player #1</th>
+					  <th>Go To Player #2</th>
+					  <th>Go To Player #3</th>
+					</tr>
+				  </thead>
+				<tbody>
+					<tr class="table-secondary">
+						<td *ngIf="this.coachSetting?.goToPlayerOne == 0 && this.isEdit == 0">
+							No player set
+						</td>
+						<td *ngIf="this.coachSetting?.goToPlayerOne != 0 && this.isEdit == 0">
+							{{ this.getPlayerName(this.coachSetting?.goToPlayerOne) }}
+						</td>
+						<td *ngIf="this.isEdit == 1">
+							<select [(ngModel)]="gotoOne">
+								<option [value]="0"></option>
+								<option *ngFor="let player of this.extendedPlayers" [value]="player.id">
+									{{ this.getPlayerName(player.id) }}
+								</option>
+							</select>
+						</td>
+						<td *ngIf="this.coachSetting?.goToPlayerTwo == 0 && this.isEdit == 0">
+							No player set
+						</td>
+						<td *ngIf="this.coachSetting?.goToPlayerTwo != 0 && this.isEdit == 0">
+							{{ this.getPlayerName(this.coachSetting?.goToPlayerTwo) }}
+						</td>
+						<td *ngIf="this.isEdit == 1">
+							<select [(ngModel)]="gotoTwo">
+								<option [value]="0"></option>
+								<option *ngFor="let player of this.extendedPlayers" [value]="player.id">
+									{{ this.getPlayerName(player.id) }}
+								</option>
+							</select>
+						</td>
+						<td *ngIf="this.coachSetting?.goToPlayerThree == 0 && this.isEdit == 0">
+							No player set
+						</td>
+						<td *ngIf="this.coachSetting?.goToPlayerThree != 0 && this.isEdit == 0">
+							{{ this.getPlayerName(this.coachSetting?.goToPlayerThree) }}
+						</td>
+						<td *ngIf="this.isEdit == 1">
+							<select [(ngModel)]="gotoThree">
+								<option [value]="0"></option>
+								<option *ngFor="let player of this.extendedPlayers" [value]="player.id">
+									{{ this.getPlayerName(player.id) }}
+								</option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+    </div>
+  </div>
+  <div class="row edit-button" *ngIf="this.isEdit == 0">
+    <button type="button" class="btn btn-primary" (click)="editCoaching()">Edit</button>
+  </div>
+  <div class="row editing-buttons" *ngIf="this.isEdit == 1">
+	<button type="button" class="btn btn-primary" (click)="saveCoaching()">Save</button>
+	<button type="button" class="btn btn-danger ml-3" (click)="cancelCoaching()">Cancel</button>
+  </div>
 </div>

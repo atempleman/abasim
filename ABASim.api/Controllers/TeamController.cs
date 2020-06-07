@@ -86,5 +86,19 @@ namespace ABASim.api.Controllers
             var added = await _repo.WaivePlayer(waived);
             return Ok(added);
         }
+
+        [HttpGet("getcoachsettings/{teamId}")]
+        public async Task<IActionResult> GetCoachSettingsFormTeamId(int teamId)
+        {
+            var coachSetting = await _repo.GetCoachSettingForTeamId(teamId);
+            return Ok(coachSetting);
+        }
+
+        [HttpPost("savecoachsetting")]
+        public async Task<IActionResult> SaveCoachSetting(CoachSetting setting)
+        {
+            var result = await _repo.SaveCoachingSetting(setting);
+            return Ok(result);
+        }
     }
 }

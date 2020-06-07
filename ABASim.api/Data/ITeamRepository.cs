@@ -26,5 +26,9 @@ namespace ABASim.api.Data
          Task<IEnumerable<ExtendedPlayerDto>> GetExtendPlayersForTeam(int teamId);
 
          Task<bool> WaivePlayer(WaivePlayerDto waived);
+
+         Task<CoachSetting> GetCoachSettingForTeamId(int teamId);
+
+         Task<bool> SaveCoachingSetting(CoachSetting setting);
     }
 }

@@ -86,4 +86,8 @@ export class TeamComponent implements OnInit {
     this.router.navigate(['/view-player']);
   }
 
+  goToCoaching() {
+    this.router.navigate(['/coaching']);
+  }
+
 }

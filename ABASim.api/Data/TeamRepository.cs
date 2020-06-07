@@ -31,6 +31,24 @@ namespace ABASim.api.Data
             return allTeams;
         }
 
+        public async Task<CoachSetting> GetCoachSettingForTeamId(int teamId)
+        {
+            var coachingSetting = await _context.CoachSettings.FirstOrDefaultAsync(x => x.TeamId == teamId);
+
+            if (coachingSetting == null) {
+                coachingSetting = new CoachSetting
+                {
+                    Id = 0,
+                    GoToPlayerOne = 0,
+                    GoToPlayerTwo = 0,
+                    GoToPlayerThree = 0,
+                    TeamId = teamId
+                };
+            }
+
+            return coachingSetting;
+        }
+
         public async Task<IEnumerable<DepthChart>> GetDepthChartForTeam(int teamId)
         {
             var deptchCharts = await _context.DepthCharts.Where(x => x.TeamId == teamId).ToListAsync();
@@ -107,6 +125,12 @@ namespace ABASim.api.Data
             } else {
                 return false;
             }
+        }
+
+        public async Task<bool> SaveCoachingSetting(CoachSetting setting)
+        {
+            _context.Update(setting);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SaveDepthChartForTeam(DepthChart[] charts)

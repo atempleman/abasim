@@ -7,6 +7,7 @@ import { DepthChart } from '../_models/depthChart';
 import { environment } from 'src/environments/environment';
 import { ExtendedPlayer } from '../_models/extendedPlayer';
 import { WaivedPlayer } from '../_models/waivedPlayer';
+import { CoachSetting } from '../_models/coachSetting';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,16 @@ export class TeamService {
 
   waivePlayer(waivedPlayer: WaivedPlayer) {
     return this.http.post(this.baseUrl + 'waiveplayer', waivedPlayer);
+  }
+
+  getCoachingSettings(teamId: number) {
+    return this.http.get<CoachSetting>(this.baseUrl + 'getcoachsettings/' + teamId);
+  }
+
+  saveCoachingSettings(setting: CoachSetting) {
+    console.log('test');
+    console.log(setting);
+    return this.http.post(this.baseUrl + 'savecoachsetting', setting);
   }
 
 }
