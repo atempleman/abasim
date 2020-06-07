@@ -17,6 +17,11 @@ export class ViewPlayerComponent implements OnInit {
   playerId: number;
   detailedPlayer: CompletePlayer;
 
+  statusStats = true;
+  statusGrades = false;
+  statusRatings = false;
+  statusTendancies = false;
+
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private transferService: TransferService,
               private playerService: PlayerService) { }
@@ -25,9 +30,37 @@ export class ViewPlayerComponent implements OnInit {
     this.playerId = this.transferService.getData();
     this.playerService.playerForPlayerProfileById(this.playerId).subscribe(result => {
       this.detailedPlayer = result;
-      console.log(this.detailedPlayer)
+      console.log(this.detailedPlayer);
     }, error => {
       this.alertify.error('Error getting player profile');
     });
+  }
+
+  gradesClick() {
+    this.statusStats = false;
+    this.statusRatings = false;
+    this.statusTendancies = false;
+    this.statusGrades = true;
+  }
+
+  statisticsClick() {
+    this.statusRatings = false;
+    this.statusTendancies = false;
+    this.statusGrades = false;
+    this.statusStats = true;
+  }
+
+  ratingsClick() {
+    this.statusTendancies = false;
+    this.statusGrades = false;
+    this.statusStats = false;
+    this.statusRatings = true;
+  }
+
+  tendanciesClick() {
+    this.statusGrades = false;
+    this.statusStats = false;
+    this.statusRatings = false;
+    this.statusTendancies = true;
   }
 }

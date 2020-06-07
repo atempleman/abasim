@@ -1,43 +1,290 @@
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
+<!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> -->
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 <!------ Include the above in your HEAD tag ---------->
-VIEW PLAYER
-<!-- <div class="container">
-    <div class="page-header">
-        <h1>PLAYER NAME</h1>
-    </div>
+
+
+<!-- <link rel="stylesheet" href="https://bootswatch.com/4/simplex/bootstrap.min.css"/> -->
+
+
+<div class="container">
     <div class="row">
-        <div class="col">
-            <div class="panel with-nav-tabs panel-primary">
-                <div class="panel-heading">
-                    <ul class="nav nav-tabs">
-                        <li><button (click)="playerDetails()">Details</button></li>
-                        <li><button (click)="statistics()">Statistics</button></li>
-                        <li><button (click)="gradings()">Grades</button></li>
-                        <li><button (click)="ratings()">Ratings</button></li>
-                        <li><button (click)="tendacies()">Tendancies</button></li>
-                    </ul>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title mb-4">
+                        <div class="d-flex justify-content-start">
+                            <div class="image-container">
+                                <img src="http://placehold.it/150x150" id="imgProfile"
+                                    style="width: 150px; height: 150px" class="img-thumbnail" />
+                            </div>
+                            <div class="userData ml-3">
+                                <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold">
+                                    {{ this.detailedPlayer.firstName }} {{ this.detailedPlayer.surname }}</h2>
+                                <h6 class="d-block">Team: </h6>
+                                <h6 class="d-block">Position: </h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link" [routerLink]="" [ngClass]="this.statusStats ? 'active' : ''" (click)="statisticsClick()">Statistics</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" [routerLink]="" [ngClass]="this.statusGrades ? 'active' : ''" (click)="gradesClick()">Grades</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" [routerLink]="" [ngClass]="this.statusRatings ? 'active' : ''" (click)="ratingsClick()">Ratings</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" [routerLink]="" [ngClass]="this.statusTendancies ? 'active' : ''" (click)="tendanciesClick()">Tendancies</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content ml-1" id="myTabContent">
+                                <table class="table table-hover roster-table" *ngIf="this.statusStats">
+                                    <thead>
+                                        <tr>
+                                          <th>G</th>
+                                          <th>MP</th>
+                                          <th>FG</th>
+                                          <th>FGA</th>
+                                          <th>FG%</th>
+                                          <th>3P</th>
+                                          <th>3PA</th>
+                                          <th>3P%</th>
+                                          <th>FT</th>
+                                          <th>FTA</th>
+                                          <th>FT%</th>
+                                          <th>ORB</th>
+                                          <th>DRB</th>
+                                          <th>TRB</th>
+                                          <th>AST</th>
+                                          <th>STL</th>
+                                          <th>BLK</th>
+                                          <th>TOV</th>
+                                          <th>PF</th>
+                                          <th>PTS</th>
+                                        </tr>
+                                      </thead>
+                                    <tbody>
+                                        <tr class="table-secondary">
+                                            <td>
+                                                33
+                                            </td>
+                                            <td>
+                                                31.2
+                                            </td>
+                                            <td>
+                                                6.9
+                                            </td>
+                                            <td>
+                                                15.3
+                                            </td>
+                                            <td>
+                                                .450
+                                            </td>
+                                            <td>
+                                                0.4
+                                            </td>
+                                            <td>
+                                                1.3
+                                            </td>
+                                            <td>
+                                                .288
+                                            </td>
+                                            <td>
+                                                4.1
+                                            </td>
+                                            <td>
+                                                5.4
+                                            </td>
+                                            <td>
+                                                .761
+                                            </td>
+                                            <td>
+                                                1.9
+                                            </td>
+                                            <td>
+                                                3.8
+                                            </td>
+                                            <td>
+                                                5.7
+                                            </td>
+                                            <td>
+                                                3.0
+                                            </td>
+                                            <td>
+                                                1.1
+                                            </td>
+                                            <td>
+                                                1.5
+                                            </td>
+                                            <td>
+                                                2.2
+                                            </td>
+                                            <td>
+                                                2.8
+                                            </td>
+                                            <td>
+                                                18.3
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-hover roster-table" *ngIf="this.statusGrades">
+                                    <thead>
+                                        <tr>
+                                          <th>2pt</th>
+                                          <th>3pt</th>
+                                          <th>Ft</th>
+                                          <th>O-Reb</th>
+                                          <th>D-Reb</th>
+                                          <th>Handling</th>
+                                          <th>Passing</th>
+                                          <th>Block</th>
+                                          <th>Steal</th>
+                                          <th>Stamina</th>
+                                          <th>Intangibles</th>
+                                        </tr>
+                                      </thead>
+                                    <tbody>
+                                        <tr class="table-secondary">
+                                            <td>
+                                                {{ this.detailedPlayer.twoGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.threeGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.ftGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.oRebGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.dRebGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.handlingGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.passingGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.blockGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.stealGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.staminaGrade }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.intangiblesGrade }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-hover roster-table" *ngIf="this.statusRatings">
+                                    <thead>
+                                        <tr>
+                                          <th>2pt</th>
+                                          <th>3pt</th>
+                                          <th>Ft</th>
+                                          <th>O-Reb</th>
+                                          <th>D-Reb</th>
+                                          <th>Assist</th>
+                                          <th>Steal</th>
+                                          <th>Block</th>
+                                          <th>Usage</th>
+                                          <th>Stamina</th>
+                                          <th>ORPM</th>
+                                          <th>DRPM</th>
+                                        </tr>
+                                      </thead>
+                                    <tbody>
+                                        <tr class="table-secondary">
+                                            <td>
+                                                {{ this.detailedPlayer.twoRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.threeRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.ftRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.orebRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.drebRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.assistRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.stealRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.blockRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.usageRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.staminaRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.orpmRating }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.drpmRating }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-hover roster-table" *ngIf="this.statusTendancies">
+                                    <thead>
+                                        <tr>
+                                          <th>2pt</th>
+                                          <th>3pt</th>
+                                          <th>Pass</th>
+                                          <th>Fouled</th>
+                                          <th>Turnover</th>
+                                        </tr>
+                                      </thead>
+                                    <tbody>
+                                        <tr class="table-secondary">
+                                            <td>
+                                                {{ this.detailedPlayer.twoPointTendancy }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.threePointTendancy }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.passTendancy }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.fouledTendancy }}
+                                            </td>
+                                            <td>
+                                                {{ this.detailedPlayer.turnoverTendancy }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-      <div class="panel-body">
-        <div *ngIf="this.detailsDisplayed == 1" class="tab-pane" id="rostertab">
-            Details
-        </div>
-        <div *ngIf="this.statisticsDisplayed == 1" class="tab-pane" id="coachingtab">
-            Statisticss
-        </div>
-        <div *ngIf="this.gradingDisplayed == 1" class="tab-pane" id="depthcharttab">
-            Grading
-        </div>
-        <div *ngIf="this.ratingsDisplayed == 1" class="tab-pane" id="tradestab">
-            Ratings
-        </div>
-        <div *ngIf="this.tendanciesDisplayed == 1" class="tab-pane" id="freeagentstab">
-            Tendancies
-        </div>
-      </div>
 </div>
-<br/> -->

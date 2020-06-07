@@ -61,6 +61,8 @@ namespace ABASim.api.Dtos
 
         public int UsageRating { get; set; }
 
+        public int StaminaRating { get; set; }
+
         public int OrpmRating { get; set; }
 
         public int DrpmRating { get; set; }

@@ -32,6 +32,7 @@ export interface CompletePlayer {
     passAssistRating: number;
     stealRating: number;
     blockRating: number;
+    staminaRating: number;
     usageRating: number;
     orpmRating: number;
     drpmRating: number;

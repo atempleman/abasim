@@ -61,6 +61,7 @@ namespace ABASim.api.Data
                 StealRating = playerRatings.StealRating,
                 BlockRating = playerRatings.BlockRating,
                 UsageRating = playerRatings.UsageRating,
+                StaminaRating = playerRatings.StaminaRating,
                 OrpmRating = playerRatings.ORPMRating,
                 DrpmRating = playerRatings.DRPMRating,
                 PassingGrade = playerGrades.PassingGrade,
