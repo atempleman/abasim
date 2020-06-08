@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { AlertifyService } from '../_services/alertify.service';
 import { PlayerService } from '../_services/player.service';
 import { Player } from '../_models/player';
+import { TransferService } from '../_services/transfer.service';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-players',
@@ -12,7 +14,8 @@ import { Player } from '../_models/player';
 export class PlayersComponent implements OnInit {
   allPlayers: Player[] = [];
 
-  constructor(private router: Router, private alertify: AlertifyService, private playerService: PlayerService) { }
+  constructor(private router: Router, private alertify: AlertifyService, private authService: AuthService,
+              private transferService: TransferService, private playerService: PlayerService) { }
 
   ngOnInit() {
     this.playerService.getAllPlayers().subscribe(result => {
@@ -22,5 +25,8 @@ export class PlayersComponent implements OnInit {
     });
   }
 
-
+  viewPlayer(player: Player) {
+    this.transferService.setData(player.id);
+    this.router.navigate(['/view-player']);
+  }
 }

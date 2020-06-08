@@ -76,5 +76,7 @@ namespace ABASim.api.Dtos
         public string PassingGrade { get; set; }
 
         public string IntangiblesGrade { get; set; }
+
+        public string TeamName { get; set; }
     }
 }

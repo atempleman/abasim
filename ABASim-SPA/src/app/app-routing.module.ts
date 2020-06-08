@@ -38,9 +38,9 @@ const routes: Routes = [
   { path: 'depthchart', component: DepthchartComponent, canActivate: [AuthGuard] },
   { path: 'freeagents', component: FreeagentsComponent, canActivate: [AuthGuard] },
   { path: 'trades', component: TradesComponent, canActivate: [AuthGuard] },
-
-
   { path: 'players', component: PlayersComponent, canActivate: [AuthGuard] },
+
+
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
   { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
   { path: 'draftplayerpool', component: DraftPlayerPoolComponent, canActivate: [AuthGuard] },

@@ -12,8 +12,15 @@
                             <div class="userData ml-3">
                                 <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold">
                                     {{ this.detailedPlayer.firstName }} {{ this.detailedPlayer.surname }}</h2>
-                                <h6 class="d-block">Team: </h6>
-                                <h6 class="d-block">Position: </h6>
+                                <h6 class="d-block">Team: {{ this.detailedPlayer.teamName }}</h6>
+                                <h6 class="d-block">
+                                    Position: 
+                                    <ng-container  *ngIf="this.detailedPlayer.pgPosition == 1">PG </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer.sgPosition == 1">SG </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer.sfPosition == 1">SF </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer.pfPosition == 1">PF </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer.cPosition == 1">C </ng-container>
+                                </h6>
                             </div>
                         </div>
                     </div>

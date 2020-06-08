@@ -87,6 +87,7 @@ export class DashboardComponent implements OnInit {
   }
 
   goToPlayers() {
+    this.router.navigate(['/players']);
   }
 
   runGame() {

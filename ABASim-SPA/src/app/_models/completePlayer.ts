@@ -36,4 +36,5 @@ export interface CompletePlayer {
     usageRating: number;
     orpmRating: number;
     drpmRating: number;
+    teamName: string;
 }

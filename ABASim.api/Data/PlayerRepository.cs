@@ -27,6 +27,10 @@ namespace ABASim.api.Data
             var playerTendancies = await _context.PlayerTendancies.FirstOrDefaultAsync(x => x.PlayerId == playerId);
             var playerGrades = await _context.PlayerGradings.FirstOrDefaultAsync(x => x.PlayerId == playerId);
 
+            // need to get the players team
+            var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
             CompletePlayerDto player = new CompletePlayerDto
             {
                 PlayerId = playerId,
@@ -65,7 +69,8 @@ namespace ABASim.api.Data
                 OrpmRating = playerRatings.ORPMRating,
                 DrpmRating = playerRatings.DRPMRating,
                 PassingGrade = playerGrades.PassingGrade,
-                IntangiblesGrade = playerGrades.IntangiblesGrade
+                IntangiblesGrade = playerGrades.IntangiblesGrade,
+                TeamName = team.Teamname + " " + team.Mascot
             };
             return player;
         }
