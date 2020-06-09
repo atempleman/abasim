@@ -37,6 +37,7 @@ import { ViewPlayerComponent } from './view-player/view-player.component';
 import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
 import { AdmintestengineComponent } from './admintestengine/admintestengine.component';
 import { TeamComponent } from './team/team.component';
+import { LeagueComponent } from './league/league.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -68,6 +69,7 @@ export function tokenGetter() {
       DraftPlayerPoolComponent,
       DraftboardComponent,
       InitialDraftComponent,
+      LeagueComponent,
       ViewPlayerComponent,
       AdminpreseasonComponent,
       AdmintestengineComponent,

@@ -1,0 +1,121 @@
+<div class="jumbotron">
+	<h3 class="display">LEAGUE</h3>
+	<span class="badge badge-danger"
+		*ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-info"
+		*ngIf="this.league?.stateId == 2 || this.league?.stateId == 6">{{ this.league?.state }}</span>
+	<span class="badge badge-success"
+		*ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5 || this.league?.stateId == 11 || this.league?.stateId == 13 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
+	<span class="badge badge-warning"
+		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
+  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+  <span *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14"> - Day #{{ this.league?.day }}</span>
+</div>
+
+
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list-ol fa-2x"></i><span
+						class="header-card ml-3"><strong>STANDINGS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the league standings for league, conference or division.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Standings</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-signal fa-2x"></i><span
+						class="header-card ml-3"><strong>STATISTICS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the statistics of players and teams.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to Statistics</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the league schedule, upcoming and past games.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Schedule</button>
+					</div>
+				</div>
+			</div>
+      
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to Transactions</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="box">
+	<div class="row event-row">
+		<div class="col-lg-6 events" *ngIf="this.league?.day != 0">
+			<h4>TODAY'S RESULTS</h4>
+			<p class="text-success" *ngIf="this.league?.stateId == 5">Beginning of the Preseason</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 6">Preason Day #{{ this.league?.day }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 7">Regular Season Day #{{ this.league?.day }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 8">Playoffs - Round 1 Day #{{ this.league?.day }}
+			</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 9">Playoffs - Conference Semi Finals Day
+				#{{ this.league?.day }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 10">Playoffs - Conference Finals
+				#{{ this.league?.day }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 11">Playoffs - ABA Finals #{{ this.league?.day }}
+			</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day }}</p>
+
+			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
+				<tbody>
+					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
+						<td>
+							{{ game.awayTeamName }} @ {{ game.homeTeamName }} 
+							<button *ngIf="this.isAdmin == 1 && game.completed == -1" type="button" class="btn btn-link" (click)="runGame()">Run Game</button>
+							<button *ngIf="game.completed == 0" type="button" class="btn btn-link" (click)="watchGame()">LIVE!</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-lg-6 events upcoming">
+			<h4>UPCOMING EVENTS</h4>
+			<p class="text-success" *ngIf="this.league?.stateId == 6">Preason Day #{{ this.league?.day + 1 }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 7">Regular Season Day #{{ this.league?.day + 1 }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 8">Playoffs - Round 1 Day #{{ this.league?.day + 1 }}
+			</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 9">Playoffs - Conference Semi Finals Day
+				#{{ this.league?.day + 1 }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 10">Playoffs - Conference Finals
+				#{{ this.league?.day + 1 }}</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 11">Playoffs - ABA Finals #{{ this.league?.day + 1 }}
+			</p>
+			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day + 1 }}</p>
+
+			
+
+			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
+				<tbody>
+					<tr class="table-secondary" *ngFor="let game of this.upcomingGames">
+						<td>{{ game.awayTeamName }} @ {{ game.homeTeamName }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
