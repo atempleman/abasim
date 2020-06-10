@@ -59,6 +59,107 @@ namespace ABASim.api.Data
             return nextGamesList;
         }
 
+        public async Task<IEnumerable<StandingsDto>> GetStandingsForConference(int conference)
+        {
+            List<StandingsDto> standings = new List<StandingsDto>();
+            List<Team> teams = new List<Team>();
+            if (conference == 1) {
+                // east
+                teams = await _context.Teams.Where(x => x.Division == 1 || x.Division == 2 || x.Division == 3).ToListAsync();
+            } else {
+                // west
+                teams = await _context.Teams.Where(x => x.Division == 1 || x.Division == 2 || x.Division == 3).ToListAsync();
+            }
+
+            var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
+            foreach (var team in teams)
+            {
+                foreach (var ls in leagueStandings)
+                {
+                    if (ls.TeamId == team.Id) 
+                    {
+                        StandingsDto standing = new StandingsDto
+                        {
+                            Team = team.Teamname + " " + team.Mascot,
+                            GamesPlayed = ls.GamesPlayed,
+                            Wins = ls.Wins,
+                            Losses = ls.Losses,
+                            HomeWins = ls.HomeWins,
+                            HomeLosses = ls.HomeLosses,
+                            RoadWins = ls.RoadWins,
+                            RoadLosses = ls.RoadLosses,
+                            ConfWins = ls.ConfWins,
+                            ConfLosses = ls.ConfLosses
+                        };
+                        standings.Add(standing);
+                        break;
+                    }
+                }
+            }
+            return standings;
+        }
+
+        public async Task<IEnumerable<StandingsDto>> GetStandingsForDivision(int division)
+        {
+            List<StandingsDto> standings = new List<StandingsDto>();
+            var teams = await _context.Teams.Where(x => x.Division == division).ToListAsync();
+            var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
+
+            foreach (var team in teams)
+            {
+                foreach (var ls in leagueStandings)
+                {
+                    if (ls.TeamId == team.Id) 
+                    {
+                        StandingsDto standing = new StandingsDto
+                        {
+                            Team = team.Teamname + " " + team.Mascot,
+                            GamesPlayed = ls.GamesPlayed,
+                            Wins = ls.Wins,
+                            Losses = ls.Losses,
+                            HomeWins = ls.HomeWins,
+                            HomeLosses = ls.HomeLosses,
+                            RoadWins = ls.RoadWins,
+                            RoadLosses = ls.RoadLosses,
+                            ConfWins = ls.ConfWins,
+                            ConfLosses = ls.ConfLosses
+                        };
+                        standings.Add(standing);
+                        break;
+                    }
+                }
+            }
+            return standings;
+        }
+
+        public async Task<IEnumerable<StandingsDto>> GetStandingsForLeague()
+        {
+            List<StandingsDto> standings = new List<StandingsDto>();
+            var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
+
+            foreach (var ls in leagueStandings)
+            {
+                var teamId = ls.TeamId;
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
+                StandingsDto standing = new StandingsDto
+                {
+                    Team = team.Teamname + " " + team.Mascot,
+                    GamesPlayed = ls.GamesPlayed,
+                    Wins = ls.Wins,
+                    Losses = ls.Losses,
+                    HomeWins = ls.HomeWins,
+                    HomeLosses = ls.HomeLosses,
+                    RoadWins = ls.RoadWins,
+                    RoadLosses = ls.RoadLosses,
+                    ConfWins = ls.ConfWins,
+                    ConfLosses = ls.ConfLosses
+                };
+                standings.Add(standing);
+            }
+
+            return standings;
+        }
+
         public async Task<IEnumerable<CurrentDayGamesDto>> GetTodaysGamesForPreason()
         {
             var league = await _context.Leagues.FirstOrDefaultAsync();

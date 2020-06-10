@@ -1,6 +1,6 @@
 export interface Standing {
     id: number;
-    teamId: number;
+    team: string;
     gamesPlayed: number;
     wins: number;
     losses: number;

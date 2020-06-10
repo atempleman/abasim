@@ -63,5 +63,26 @@ namespace ABASim.api.Controllers
             var nextGames = await _repo.GetTodaysGamesForPreason();
             return Ok(nextGames);
         }
+
+        [HttpGet("getstandingsforleague")]
+        public async Task<IActionResult> GetStandingsForLeague()
+        {
+            var standings = await _repo.GetStandingsForLeague();
+            return Ok(standings);
+        }
+
+        [HttpGet("getstandingsforconference/{conference}")]
+        public async Task<IActionResult> GetStandingsForConference(int conference)
+        {
+            var standings = await _repo.GetStandingsForConference(conference);
+            return Ok(standings);
+        }
+
+        [HttpGet("getstandingsfordivision/{division}")]
+        public async Task<IActionResult> GetStandingsForDivision(int division)
+        {
+            var standings = await _repo.GetStandingsForDivision(division);
+            return Ok(standings);
+        }
     }
 }

@@ -83,7 +83,7 @@ export class DashboardComponent implements OnInit {
   }
 
   goToLeague() {
-
+    this.router.navigate(['/league']);
   }
 
   goToPlayers() {

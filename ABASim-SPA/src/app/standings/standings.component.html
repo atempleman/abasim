@@ -1,3 +1,437 @@
-<p>
-  standings works!
-</p>
+<div class="jumbotron">
+	<h3 class="display">STANDINGS</h3>
+</div>
+
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-home fa-2x"></i><span
+						class="header-card ml-3"><strong>LEAGUE HOME</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Go to the league page. View recent results and upcoming games.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to League</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-signal fa-2x"></i><span
+						class="header-card ml-3"><strong>STATISTICS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the statistics of players and teams.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to Statistics</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the league schedule, upcoming and past games.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Schedule</button>
+					</div>
+				</div>
+			</div>
+      
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to Transactions</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="box">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+          <ul class="nav nav-tabs">
+              <li class="nav-item">
+                  <a class="nav-link" [routerLink]="" [ngClass]="this.statusConference ? 'active' : ''" (click)="conferenceClick()">Conference</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" [routerLink]="" [ngClass]="this.statusDivision ? 'active' : ''" (click)="divisionClick()">Division</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" [routerLink]="" [ngClass]="this.statusLeague ? 'active' : ''" (click)="leagueClick()">League</a>
+              </li>
+          </ul>
+          <br />
+          <div class="tab-content ml-1" id="myTabContent">
+            <h4 *ngIf="this.statusConference">Eastern Conference</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusConference">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.eastStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 *ngIf="this.statusConference">Western Conference</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusConference">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.westStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <h4 *ngIf="this.statusDivision">Atlantic Division</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusDivision">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.atlanticStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 *ngIf="this.statusDivision">Central Division</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusDivision">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.centralstandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 *ngIf="this.statusDivision">South East Division</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusDivision">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.southeastStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 *ngIf="this.statusDivision">North West Division</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusDivision">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.northwestStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 *ngIf="this.statusDivision">Pacific Division</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusDivision">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.pacificStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 *ngIf="this.statusDivision">South West Division</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusDivision">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.southwestStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <h4 *ngIf="this.statusLeague">League Standings</h4>
+            <table class="table table-hover roster-table" *ngIf="this.statusLeague">
+                <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Wins</th>
+                      <th>Losses</th>
+                      <th>Home Wins</th>
+                      <th>Home Losses</th>
+                      <th>Road Wins</th>
+                      <th>Road Losses</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                    <tr class="table-secondary" *ngFor="let stand of this.allStandings">
+                        <td>
+                            {{ stand.team }}
+                        </td>
+                        <td>
+                          {{ stand.wins }}
+                        </td>
+                        <td>
+                          {{ stand.losses }}
+                        </td>
+                        <td>
+                          {{ stand.homeWins }}
+                        </td>
+                        <td>
+                          {{ stand.homeLosses }}
+                        </td>
+                        <td>
+                          {{ stand.roadWins }}
+                        </td>
+                        <td>
+                          {{ stand.roadLosses }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

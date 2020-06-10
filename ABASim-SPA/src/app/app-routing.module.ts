@@ -41,6 +41,7 @@ const routes: Routes = [
   { path: 'trades', component: TradesComponent, canActivate: [AuthGuard] },
   { path: 'players', component: PlayersComponent, canActivate: [AuthGuard] },
   { path: 'league', component: LeagueComponent, canActivate: [AuthGuard] },
+  { path: 'standings', component: StandingsComponent, canActivate: [AuthGuard] },
 
 
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
