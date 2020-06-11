@@ -3,6 +3,7 @@ import { AuthService } from '../_services/auth.service';
 import { LeagueService } from '../_services/league.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Standing } from '../_models/standing';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-standings',
@@ -27,7 +28,7 @@ export class StandingsComponent implements OnInit {
   southwestStandings: Standing[] = [];
 
   constructor(private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService) { }
+              private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.leagueService.getConferenceStandings(1).subscribe(result => {
@@ -113,6 +114,14 @@ export class StandingsComponent implements OnInit {
     this.statusConference = false;
     this.statusDivision = false;
     this.statusLeague = true;
+  }
+
+  goToStats() {
+    this.router.navigate(['/stats']);
+  }
+
+  goToLeague() {
+    this.router.navigate(['/league']);
   }
 
 }

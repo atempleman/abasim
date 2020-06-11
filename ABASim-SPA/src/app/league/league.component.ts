@@ -68,4 +68,8 @@ export class LeagueComponent implements OnInit {
     this.router.navigate(['/standings']);
   }
 
+  goToStats() {
+    this.router.navigate(['/stats']);
+  }
+
 }

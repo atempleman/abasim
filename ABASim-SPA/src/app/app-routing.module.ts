@@ -42,6 +42,7 @@ const routes: Routes = [
   { path: 'players', component: PlayersComponent, canActivate: [AuthGuard] },
   { path: 'league', component: LeagueComponent, canActivate: [AuthGuard] },
   { path: 'standings', component: StandingsComponent, canActivate: [AuthGuard] },
+  { path: 'stats', component: StatsComponent, canActivate: [AuthGuard] },
 
 
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
@@ -52,8 +53,6 @@ const routes: Routes = [
   { path: 'adminleague', component: AdminleagueComponent, canActivate: [AdminAuthGuard] },
   { path: 'adminteam', component: AdminteamComponent, canActivate: [AdminAuthGuard] },
   { path: 'admindraft', component: AdmindraftComponent, canActivate: [AdminAuthGuard] },
-  { path: 'stats', component: StatsComponent, canActivate: [AuthGuard] },
-  { path: 'standings', component: StandingsComponent, canActivate: [AuthGuard] },
   { path: 'initial-draft', component: InitialDraftComponent, canActivate: [AuthGuard] },
   { path: 'scheduleandresults', component: ScheduleandresultsComponent, canActivate: [AuthGuard] },
   { path: 'finances', component: FinancesComponent, canActivate: [AuthGuard] },

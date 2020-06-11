@@ -1,0 +1,186 @@
+<div class="jumbotron">
+  <h3 class="display">STATISTICS</h3>
+</div>
+
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-home fa-2x"></i><span
+						class="header-card ml-3"><strong>LEAGUE HOME</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Go to the league page. View recent results and upcoming games.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToLeague()">Go to League</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list-ol fa-2x"></i><span
+						class="header-card ml-3"><strong>STANDINGS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the league standings for league, conference or division.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToStandings()">Standings</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the league schedule, upcoming and past games.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Schedule</button>
+					</div>
+				</div>
+			</div>
+      
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to Transactions</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="box">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.scoringSelection ? 'active' : ''" (click)="this.scoringClick()">Scoring & Passing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.reboundingSelection ? 'active' : ''" (click)="this.reboundingClick()">Rebounding</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.defenceSelection ? 'active' : ''" (click)="this.defenceClick()">Defence</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.shootingSelection ? 'active' : ''" (click)="this.shootingClick()">Shooting %'s</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.otherSelection ? 'active' : ''" (click)="this.otherClick()">Other</a>
+          </li>
+        </ul>
+
+        <br />
+
+        <div class="col-12" *ngIf="this.scoringSelection">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.pointsSelection ? 'active' : ''" (click)="pointsClick()">Points</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.assistsSelection ? 'active' : ''" (click)="assistsClick()">Assists</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.fgmSelection ? 'active' : ''" (click)="fgmClick()">FGM</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.fgaSelection ? 'active' : ''" (click)="fgaClick()">FGA</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.threefgmSelection ? 'active' : ''" (click)="threefgmClick()">3FGM</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.threefmaselection ? 'active' : ''" (click)="threefgaClick()">3FGA</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.ftmSelection ? 'active' : ''" (click)="ftmClick()">FTM</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.ftaSelection ? 'active' : ''" (click)="ftaClick()">FTA</a>
+            </li>
+          </ul>
+          <br />
+          <div class="row statstext" *ngIf="this.league?.stateId < 6 || (this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
+            <h5>Stats are not yet available.</h5>
+          </div>
+        </div>
+
+        <div class="col-12" *ngIf="this.reboundingSelection">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.totalRebSelection ? 'active' : ''" (click)="totelRebClick()">Total Rebounds</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.oRebSelection ? 'active' : ''" (click)="oRebClick()">Offensive Rebounds</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.dRebSelection ? 'active' : ''" (click)="dRebClick()">Defensive Rebounds</a>
+            </li>
+          </ul>
+          <br />
+          <div class="row statstext">
+            <h5>Stats are not yet available.</h5>
+          </div>
+        </div>
+
+        <div class="col-12" *ngIf="this.defenceSelection">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.stealsSelection ? 'active' : ''" (click)="stealsClick()">Steals</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.blocksSelection ? 'active' : ''" (click)="blocksClick()">Blocks</a>
+            </li>
+          </ul>
+          <br />
+          <div class="row statstext">
+            <h5>Stats are not yet available.</h5>
+          </div>
+        </div>
+
+        <div class="col-12" *ngIf="this.shootingSelection">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.fgpSelection ? 'active' : ''" (click)="fgpClick()">FG%</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.threefgpSelection ? 'active' : ''" (click)="threepClick()">3FG%</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.ftpSelection ? 'active' : ''" (click)="ftpClick()">FT%</a>
+            </li>
+          </ul>
+          <br />
+          <div class="row statstext">
+            <h5>Stats are not yet available.</h5>
+          </div>
+        </div>
+
+        <div class="col-12" *ngIf="this.otherSelection">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.turnoversSelection ? 'active' : ''" (click)="turnoverClick()">Turnovers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.foulsSelection ? 'active' : ''" (click)="foulsClick()">Fouls</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="" [ngClass]="this.minuteSelection ? 'active' : ''" (click)="mintuesClick()">Minutes</a>
+            </li>
+          </ul>
+          <br />
+          <div class="row statstext">
+            <h5>Stats are not yet available.</h5>
+          </div>
+        </div>
+
+        
+      </div>
+    </div>
+  </div>
+</div>
+
