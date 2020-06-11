@@ -72,4 +72,8 @@ export class LeagueComponent implements OnInit {
     this.router.navigate(['/stats']);
   }
 
+  goToSchedule() {
+    this.router.navigate(['/schedule']);
+  }
+
 }

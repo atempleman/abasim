@@ -278,4 +278,8 @@ export class StatsComponent implements OnInit {
     this.router.navigate(['/league']);
   }
 
+  goToSchedule() {
+    this.router.navigate(['/schedule']);
+  }
+
 }

@@ -124,4 +124,8 @@ export class StandingsComponent implements OnInit {
     this.router.navigate(['/league']);
   }
 
+  goToSchedule() {
+    this.router.navigate(['/schedule']);
+  }
+
 }
