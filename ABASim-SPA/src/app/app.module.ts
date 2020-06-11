@@ -19,8 +19,6 @@ import { DraftComponent } from './draft/draft.component';
 import { AdminComponent } from './admin/admin.component';
 import { StatsComponent } from './stats/stats.component';
 import { StandingsComponent } from './standings/standings.component';
-import { ScheduleandresultsComponent } from './scheduleandresults/scheduleandresults.component';
-import { FinancesComponent } from './finances/finances.component';
 import { CoachingComponent } from './coaching/coaching.component';
 import { FreeagentsComponent } from './freeagents/freeagents.component';
 import { TradesComponent } from './trades/trades.component';
@@ -34,7 +32,6 @@ import { DraftboardComponent } from './draftboard/draftboard.component';
 import { InitialDraftComponent } from './initial-draft/initial-draft.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { ViewPlayerComponent } from './view-player/view-player.component';
-import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
 import { AdmintestengineComponent } from './admintestengine/admintestengine.component';
 import { TeamComponent } from './team/team.component';
 import { LeagueComponent } from './league/league.component';
@@ -56,8 +53,6 @@ export function tokenGetter() {
       AdminComponent,
       StatsComponent,
       StandingsComponent,
-      ScheduleandresultsComponent,
-      FinancesComponent,
       CoachingComponent,
       FreeagentsComponent,
       TradesComponent,
@@ -71,7 +66,6 @@ export function tokenGetter() {
       InitialDraftComponent,
       LeagueComponent,
       ViewPlayerComponent,
-      AdminpreseasonComponent,
       AdmintestengineComponent,
       TeamComponent,
       ViewPlayerComponent,

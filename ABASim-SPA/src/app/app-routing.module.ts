@@ -8,8 +8,6 @@ import { DraftComponent } from './draft/draft.component';
 import { AdminComponent } from './admin/admin.component';
 import { StatsComponent } from './stats/stats.component';
 import { StandingsComponent } from './standings/standings.component';
-import { ScheduleandresultsComponent } from './scheduleandresults/scheduleandresults.component';
-import { FinancesComponent } from './finances/finances.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { AdminleagueComponent } from './adminleague/adminleague.component';
 import { AdminteamComponent } from './adminteam/adminteam.component';
@@ -19,7 +17,6 @@ import { InitiallotteryComponent } from './initiallottery/initiallottery.compone
 import { DraftPlayerPoolComponent } from './draft-player-pool/draft-player-pool.component';
 import { DraftboardComponent } from './draftboard/draftboard.component';
 import { InitialDraftComponent } from './initial-draft/initial-draft.component';
-import { AdminpreseasonComponent } from './adminpreseason/adminpreseason.component';
 import { AdmintestengineComponent } from './admintestengine/admintestengine.component';
 import { TeamComponent } from './team/team.component';
 import { ViewPlayerComponent } from './view-player/view-player.component';
@@ -54,9 +51,6 @@ const routes: Routes = [
   { path: 'adminteam', component: AdminteamComponent, canActivate: [AdminAuthGuard] },
   { path: 'admindraft', component: AdmindraftComponent, canActivate: [AdminAuthGuard] },
   { path: 'initial-draft', component: InitialDraftComponent, canActivate: [AuthGuard] },
-  { path: 'scheduleandresults', component: ScheduleandresultsComponent, canActivate: [AuthGuard] },
-  { path: 'finances', component: FinancesComponent, canActivate: [AuthGuard] },
-  { path: 'adminpreseason', component: AdminpreseasonComponent, canActivate: [AuthGuard] },
   { path: 'admintestengine', component: AdmintestengineComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

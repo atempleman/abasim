@@ -25,10 +25,6 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/admindraft']);
   }
 
-  goToPreseaon() {
-    this.router.navigate(['/adminpreseason']);
-  }
-
   runEngine() {
     this.router.navigate(['/admintestengine']);
   }
