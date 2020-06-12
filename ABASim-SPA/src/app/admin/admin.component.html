@@ -9,8 +9,10 @@
 	<span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
 	<span class="badge badge-warning"
 		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
-  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
-  <span *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14"> - Day #{{ this.league?.day }}</span>
+	<span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+	<span
+		*ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+		- Day #{{ this.league?.day }}</span>
 </div>
 
 <br />
@@ -24,7 +26,8 @@
 				<div class="card-body">
 					<p class="card-text">Change League Status the League. Transition from one state to the next.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="openModal(status, 0)">League Status</button>
+						<button type="button" class="btn btn-link text-left" (click)="openModal(status, 0)">League
+							Status</button>
 					</div>
 				</div>
 			</div>
@@ -35,149 +38,78 @@
 				<div class="card-body">
 					<p class="card-text">Remove the registration of an existing user and opening up a free slot.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="openModal(removeRego, 1)">Remove User</button>
+						<button type="button" class="btn btn-link text-left" (click)="openModal(removeRego, 1)">Remove
+							User</button>
 					</div>
 				</div>
 			</div>
 
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
+				<div class="card-header"><i class="fa fa-play-circle fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Test Game Engine</strong></span></div>
 				<div class="card-body">
-					<p class="card-text">View the league schedule, upcoming and past games.</p>
+					<p class="card-text">Run the game engine and test various games. A one off game.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left">Schedule</button>
-					</div>
-				</div>
-			</div>
-      
-      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left">Go to Transactions</button>
+						<button type="button" class="btn btn-link text-left" (click)="runEngine()">Run Engine</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
 
 
-
-
-
-
-
-
-<div class="box">
-    <div class="container">
-     	<div class="row">							
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-               
-					<div class="box-part text-center">
-                        
-                        <i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
-                        
-						<div class="title">
-							<h4>Draft</h4>
-						</div>
-                        
-						<div class="text">
-							<span>Manage the Draft</span>
-						</div>
-                        
-						<a (click)="gotToDraft()">Go to Draft Admin</a>
-                        
-					 </div>
-				</div>
-
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-               
-					<div class="box-part text-center">
-                        
-                        <i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
-                        
-						<div class="title">
-							<h4>Test Engine</h4>
-						</div>
-                        
-						<div class="text">
-							<span>Test the Game Engine</span>
-						</div>
-                        
-						<a (click)="runEngine()">Run Engine</a>
-                        
-					 </div>
-				</div>
-		
-		</div>		
-    </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-<ng-template #status>
-	<div class="modal-header">
-	  <h4 class="modal-title">Manage League</h4>
-	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
-	</div>
-	<form #league (ngSubmit)="updateLeagueStatus()">
-		<div class="modal-body">
-			<div class="form-group">
-				<label class="col-md-6 control-label" for="textinput">Current: {{ this.currentStatus }}</label>
-				<br />
-				<label class="col-md-6 control-label" for="textinput">Status: </label>
-				<span>
-					<select name="leagueStatus" [(ngModel)]="statusSelection">
-					  <option *ngFor="let state of this.leagueStates" [value]="state.id">{{ state.state }}</option>
-					</select>
-				  </span>
-			</div>
+	<ng-template #status>
+		<div class="modal-header">
+			<h4 class="modal-title">Manage League</h4>
+			<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
 		</div>
-		<div class="modal-footer form-group text-center">
-			<button type="submit" class="btn btn-primary">Select</button>
-			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
-		  </div>
-	</form>
-</ng-template>
-
-
-
-
-<ng-template #removeRego>
-	<div class="modal-header">
-	  <h4 class="modal-title">Remove Team Registration</h4>
-	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
-	</div>
-	<form #leagueStatusForm (ngSubmit)="removeTeamRegistration()">
-		<div class="modal-body">
-			<div class="form-group">
-				<label class="col-md-6 control-label" for="textinput">Select Team to De-register</label>
-				<br />
-				<label class="col-md-6 control-label" for="textinput">Teams: </label>
-				<span>
-					<select name="leagueStatus" [(ngModel)]="this.teamSelected">
-					  <option *ngFor="let team of this.teams" [value]="team.id">{{ team.teamname }} {{ team.mascot }}</option>
-					</select>
-				  </span>
+		<form #league (ngSubmit)="updateLeagueStatus()">
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="col-md-6 control-label" for="textinput">Current: {{ this.currentStatus }}</label>
+					<br />
+					<label class="col-md-6 control-label" for="textinput">Status: </label>
+					<span>
+						<select name="leagueStatus" [(ngModel)]="statusSelection">
+							<option *ngFor="let state of this.leagueStates" [value]="state.id">{{ state.state }}
+							</option>
+						</select>
+					</span>
+				</div>
 			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Select</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			</div>
+		</form>
+	</ng-template>
+
+
+
+
+	<ng-template #removeRego>
+		<div class="modal-header">
+			<h4 class="modal-title">Remove Team Registration</h4>
+			<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
 		</div>
-		<div class="modal-footer form-group text-center">
-			<button type="submit" class="btn btn-primary">Select</button>
-			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
-		  </div>
-	</form>
-</ng-template>  
+		<form #leagueStatusForm (ngSubmit)="removeTeamRegistration()">
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="col-md-6 control-label" for="textinput">Select Team to De-register</label>
+					<br />
+					<label class="col-md-6 control-label" for="textinput">Teams: </label>
+					<span>
+						<select name="leagueStatus" [(ngModel)]="this.teamSelected">
+							<option *ngFor="let team of this.teams" [value]="team.id">{{ team.teamname }}
+								{{ team.mascot }}</option>
+						</select>
+					</span>
+				</div>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Select</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			</div>
+		</form>
+	</ng-template>

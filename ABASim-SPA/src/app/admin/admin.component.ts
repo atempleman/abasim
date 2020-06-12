@@ -42,14 +42,6 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  goToLeagueAdmin() {
-    this.router.navigate(['/adminleague']);
-  }
-
-  goToTeamAdmin() {
-    this.router.navigate(['/adminteam']);
-  }
-
   gotToDraft() {
     this.router.navigate(['/admindraft']);
   }
