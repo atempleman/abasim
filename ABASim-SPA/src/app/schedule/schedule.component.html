@@ -1,5 +1,5 @@
 <div class="jumbotron">
-	<h3 class="display">LEAGUE</h3>
+	<h3 class="display">REGULAR SEASON SCHEDULE</h3>
 	<span class="badge badge-danger"
 		*ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
 	<span class="badge badge-info"
@@ -60,5 +60,51 @@
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+
+<br/>
+
+<div class="box">
+	<div class="jumbotron">
+		<h4>{{ this.getDaysViewing() }}</h4>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table table-hover roster-table">
+				<thead>
+					<tr>
+					  <th>Game Day</th>
+					  <th>Away Team</th>
+					  <th>Home Team</th>
+					  <th>Result</th>
+					</tr>
+				  </thead>
+				<tbody>
+					<tr class="table-secondary" *ngFor="let game of this.schedules">
+						<td>
+							Day #{{ game.day }}
+						</td>
+						<td>
+							{{ game.awayTeam }}
+						</td>
+						<td>
+							{{ game.homeTeam }}
+						</td>
+						<td>
+							<button type="button" class="btn btn-link text-left" (click)="viewBoxScore(game)">{{ game.awayScore }} - {{ game.homeScore }}</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col colleft">
+		<button type="button" class="btn btn-primary" (click)="getPrevDays()">PREVIOUS</button>
+	</div>
+	<div class="col colright">
+		<button type="button" class="btn btn-primary" (click)="getNextDays()">NEXT</button>
 	</div>
 </div>

@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { GameDisplay } from '../_models/gameDisplay';
 import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
 import { Standing } from '../_models/standing';
+import { Schedule } from '../_models/schedule';
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +48,9 @@ export class LeagueService {
 
   getLeagueStandings(): Observable<Standing[]> {
     return this.http.get<Standing[]>(this.baseUrl + 'getstandingsforleague');
+  }
+
+  getScheduleGames(day: number): Observable<Schedule[]> {
+    return this.http.get<Schedule[]>(this.baseUrl + 'getscheduledisplay/' + day);
   }
 }

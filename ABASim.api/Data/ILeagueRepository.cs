@@ -22,5 +22,7 @@ namespace ABASim.api.Data
          Task<IEnumerable<StandingsDto>> GetStandingsForConference(int conference);
 
          Task<IEnumerable<StandingsDto>> GetStandingsForDivision(int division);
+
+         Task<IEnumerable<ScheduleDto>> GetScheduleForDisplay(int day);
     }
 }

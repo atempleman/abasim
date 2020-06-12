@@ -102,7 +102,6 @@ export class HomeComponent implements OnInit {
   }
 
   login() {
-    console.log(this.loginModel.value);
     this.loginModel = Object.assign({}, this.loginForm.value);
     this.authService.login(this.loginModel).subscribe(next => {
       this.alertify.success('logged in successfully - ' + this.authService.decodedToken.nameid);
@@ -122,7 +121,6 @@ export class HomeComponent implements OnInit {
         this.alertify.success('Registration successful');
       }, error => {
         this.alertify.error(error);
-        console.log(error);
       }, () => {
         // Need to update the user passed in
         this.authService.login(this.user).subscribe(() => {

@@ -59,6 +59,53 @@ namespace ABASim.api.Data
             return nextGamesList;
         }
 
+        public async Task<IEnumerable<ScheduleDto>> GetScheduleForDisplay(int day)
+        {
+            List<ScheduleDto> schedules = new List<ScheduleDto>();
+            int startDay = day - 2;
+            int endDay = day + 2;
+
+            if (startDay < 0)
+                startDay = 0;
+
+            if (endDay > 150)
+                endDay = 150;
+
+            // Get all of the games for the period passed in
+            var scheduledGames = await _context.Schedules.Where(x => x.GameDay >= startDay && x.GameDay <= endDay).ToListAsync();
+
+            // Now need to massage to the correct structure
+            foreach (var game in scheduledGames)
+            {
+                GameResult result = new GameResult();
+                int awayScore = 0;
+                int homeScore = 0;
+
+                // Need to call the GameResults table if GameDay < day
+                if (game.GameDay < day) {
+                    result = await _context.GameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
+                    if (result != null) {
+                        awayScore = result.AwayScore;
+                        homeScore = result.HomeScore;
+                    }
+                }
+
+                var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayTeamId);
+                var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeTeamId);
+
+                ScheduleDto scheduleGame = new ScheduleDto {
+                    GameId = game.Id,
+                    AwayTeam = awayTeam.Teamname + " " + awayTeam.Mascot,
+                    HomeTeam = homeTeam.Teamname + " " + homeTeam.Mascot,
+                    AwayScore = awayScore,
+                    HomeScore = homeScore,
+                    Day = game.GameDay
+                };
+                schedules.Add(scheduleGame);
+            }
+            return schedules;
+        }
+
         public async Task<IEnumerable<StandingsDto>> GetStandingsForConference(int conference)
         {
             List<StandingsDto> standings = new List<StandingsDto>();

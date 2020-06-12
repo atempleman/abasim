@@ -84,5 +84,12 @@ namespace ABASim.api.Controllers
             var standings = await _repo.GetStandingsForDivision(division);
             return Ok(standings);
         }
+
+        [HttpGet("getscheduledisplay/{day}")]
+        public async Task<IActionResult> GetScheduleForDisplay(int day)
+        {
+            var schedules = await _repo.GetScheduleForDisplay(day);
+            return Ok(schedules);
+        }
     }
 }
