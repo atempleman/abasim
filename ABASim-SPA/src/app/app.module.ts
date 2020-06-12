@@ -23,8 +23,6 @@ import { CoachingComponent } from './coaching/coaching.component';
 import { FreeagentsComponent } from './freeagents/freeagents.component';
 import { TradesComponent } from './trades/trades.component';
 import { DepthchartComponent } from './depthchart/depthchart.component';
-import { AdminleagueComponent } from './adminleague/adminleague.component';
-import { AdminteamComponent } from './adminteam/adminteam.component';
 import { AdmindraftComponent } from './admindraft/admindraft.component';
 import { InitiallotteryComponent } from './initiallottery/initiallottery.component';
 import { DraftPlayerPoolComponent } from './draft-player-pool/draft-player-pool.component';
@@ -59,8 +57,6 @@ export function tokenGetter() {
       FreeagentsComponent,
       TradesComponent,
       DepthchartComponent,
-      AdminleagueComponent,
-      AdminteamComponent,
       AdmindraftComponent,
       InitiallotteryComponent,
       DraftPlayerPoolComponent,

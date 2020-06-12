@@ -24,18 +24,18 @@
 				<div class="card-body">
 					<p class="card-text">Change League Status the League. Transition from one state to the next.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="openModal(status)">League Status</button>
+						<button type="button" class="btn btn-link text-left" (click)="openModal(status, 0)">League Status</button>
 					</div>
 				</div>
 			</div>
 
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-signal fa-2x"></i><span
-						class="header-card ml-3"><strong>STATISTICS</strong></span></div>
+				<div class="card-header"><i class="fa fa-user-times fa-2x"></i><span
+						class="header-card ml-3"><strong>REMOVE TEAM REGISTRATION</strong></span></div>
 				<div class="card-body">
-					<p class="card-text">View the statistics of players and teams.</p>
+					<p class="card-text">Remove the registration of an existing user and opening up a free slot.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left">Go to Statistics</button>
+						<button type="button" class="btn btn-link text-left" (click)="openModal(removeRego, 1)">Remove User</button>
 					</div>
 				</div>
 			</div>
@@ -75,25 +75,7 @@
 
 <div class="box">
     <div class="container">
-     	<div class="row">				
-				 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-               
-					<div class="box-part text-center">
-					  <i class="fa fa-users fa-3x" aria-hidden="true"></i>
-                    
-						<div class="title">
-							<h4>Teams</h4>
-						</div>
-                        
-						<div class="text">
-							<span>Manage the Teams.</span>
-						</div>
-                        
-						<a (click)="goToTeamAdmin()">Go to Team Admin</a>
-                        
-					 </div>
-				</div>	 
-				
+     	<div class="row">							
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                
 					<div class="box-part text-center">
@@ -171,3 +153,31 @@
 		  </div>
 	</form>
 </ng-template>
+
+
+
+
+<ng-template #removeRego>
+	<div class="modal-header">
+	  <h4 class="modal-title">Remove Team Registration</h4>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #leagueStatusForm (ngSubmit)="removeTeamRegistration()">
+		<div class="modal-body">
+			<div class="form-group">
+				<label class="col-md-6 control-label" for="textinput">Select Team to De-register</label>
+				<br />
+				<label class="col-md-6 control-label" for="textinput">Teams: </label>
+				<span>
+					<select name="leagueStatus" [(ngModel)]="this.teamSelected">
+					  <option *ngFor="let team of this.teams" [value]="team.id">{{ team.teamname }} {{ team.mascot }}</option>
+					</select>
+				  </span>
+			</div>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary">Select</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		  </div>
+	</form>
+</ng-template>  

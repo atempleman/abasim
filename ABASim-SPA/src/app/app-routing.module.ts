@@ -9,8 +9,6 @@ import { AdminComponent } from './admin/admin.component';
 import { StatsComponent } from './stats/stats.component';
 import { StandingsComponent } from './standings/standings.component';
 import { AuthGuard } from './_guards/auth.guard';
-import { AdminleagueComponent } from './adminleague/adminleague.component';
-import { AdminteamComponent } from './adminteam/adminteam.component';
 import { AdmindraftComponent } from './admindraft/admindraft.component';
 import { AdminAuthGuard } from './_guards/adminauth.guard';
 import { InitiallotteryComponent } from './initiallottery/initiallottery.component';
@@ -44,15 +42,12 @@ const routes: Routes = [
   { path: 'stats', component: StatsComponent, canActivate: [AuthGuard] },
   { path: 'schedule', component: ScheduleComponent, canActivate: [AuthGuard] },
   { path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuard] },
-
+  { path: 'admin', component: AdminComponent, canActivate: [AdminAuthGuard] },
 
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
   { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
   { path: 'draftplayerpool', component: DraftPlayerPoolComponent, canActivate: [AuthGuard] },
   { path: 'draftboard', component: DraftboardComponent, canActivate: [AuthGuard] },
-  { path: 'admin', component: AdminComponent, canActivate: [AdminAuthGuard] },
-  { path: 'adminleague', component: AdminleagueComponent, canActivate: [AdminAuthGuard] },
-  { path: 'adminteam', component: AdminteamComponent, canActivate: [AdminAuthGuard] },
   { path: 'admindraft', component: AdmindraftComponent, canActivate: [AdminAuthGuard] },
   { path: 'initial-draft', component: InitialDraftComponent, canActivate: [AuthGuard] },
   { path: 'admintestengine', component: AdmintestengineComponent, canActivate: [AuthGuard] },
