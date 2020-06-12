@@ -179,6 +179,18 @@ namespace ABASim.api.Data
             playerTeam.TeamId = signed.TeamId;
             _context.PlayerTeams.Update(playerTeam);
 
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+
+            // Now need to record a transaction
+            Transaction trans = new Transaction
+            {
+                TeamId = signed.TeamId,
+                PlayerId = signed.PlayerId,
+                TransactionType = 1,
+                Day = league.Day
+            };
+            await _context.AddAsync(trans);
+
             return await _context.SaveChangesAsync() > 0;
         }
 
@@ -192,6 +204,18 @@ namespace ABASim.api.Data
             var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == waived.PlayerId);
             playerTeam.TeamId = 0;
             _context.PlayerTeams.Update(playerTeam);
+
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+
+            // Now need to record a transaction
+            Transaction trans = new Transaction
+            {
+                TeamId = waived.TeamId,
+                PlayerId = waived.PlayerId,
+                TransactionType = 2,
+                Day = league.Day
+            };
+            await _context.AddAsync(trans);
 
             return await _context.SaveChangesAsync() > 0;
         }

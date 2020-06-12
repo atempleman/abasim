@@ -76,4 +76,8 @@ export class LeagueComponent implements OnInit {
     this.router.navigate(['/schedule']);
   }
 
+  goToTransactions() {
+    this.router.navigate(['/transactions']);
+  }
+
 }

@@ -8,6 +8,7 @@ import { GameDisplay } from '../_models/gameDisplay';
 import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
 import { Standing } from '../_models/standing';
 import { Schedule } from '../_models/schedule';
+import { Transaction } from '../_models/transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +53,9 @@ export class LeagueService {
 
   getScheduleGames(day: number): Observable<Schedule[]> {
     return this.http.get<Schedule[]>(this.baseUrl + 'getscheduledisplay/' + day);
+  }
+
+  getTransactions(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(this.baseUrl + 'gettransactions');
   }
 }

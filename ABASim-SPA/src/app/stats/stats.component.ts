@@ -282,4 +282,8 @@ export class StatsComponent implements OnInit {
     this.router.navigate(['/schedule']);
   }
 
+  goToTransactions() {
+    this.router.navigate(['/transactions']);
+  }
+
 }

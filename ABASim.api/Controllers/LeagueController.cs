@@ -91,5 +91,12 @@ namespace ABASim.api.Controllers
             var schedules = await _repo.GetScheduleForDisplay(day);
             return Ok(schedules);
         }
+
+        [HttpGet("gettransactions")]
+        public async Task<IActionResult> GetTransactions()
+        {
+            var transactions = await _repo.GetTransactions();
+            return Ok(transactions);
+        }
     }
 }

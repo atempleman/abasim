@@ -247,5 +247,35 @@ namespace ABASim.api.Data
             }
             return nextGamesList;
         }
+
+        public async Task<IEnumerable<TransactionDto>> GetTransactions()
+        {
+            List<TransactionDto> transactions = new List<TransactionDto>();
+
+            var trans = await _context.Transactions.ToListAsync();
+
+            foreach (var tran in trans)
+            {
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == tran.TeamId);
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == tran.PlayerId);
+                var type = "";
+                if (tran.TransactionType == 1) {
+                    type = "Signed";
+                } else if (tran.TransactionType == 2) {
+                    type = "Waived";
+                }
+
+                TransactionDto t = new TransactionDto
+                {
+                    TeamMascot = team.Mascot,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    PlayerId = tran.PlayerId,
+                    TransactionType = type,
+                    Day = tran.Day
+                };
+                transactions.Add(t);
+            }
+            return transactions;
+        }
     }
 }

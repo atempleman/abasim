@@ -109,4 +109,8 @@ export class ScheduleComponent implements OnInit {
     this.router.navigate(['/league']);
   }
 
+  goToTransactions() {
+    this.router.navigate(['/transactions']);
+  }
+
 }

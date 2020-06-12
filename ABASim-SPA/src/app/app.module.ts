@@ -36,6 +36,7 @@ import { AdmintestengineComponent } from './admintestengine/admintestengine.comp
 import { TeamComponent } from './team/team.component';
 import { LeagueComponent } from './league/league.component';
 import { ScheduleComponent } from './schedule/schedule.component';
+import { TransactionsComponent } from './transactions/transactions.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -71,7 +72,8 @@ export function tokenGetter() {
       TeamComponent,
       ViewPlayerComponent,
       StandingsComponent,
-      ScheduleComponent
+      ScheduleComponent,
+      TransactionsComponent
    ],
    imports: [
       BrowserModule,
