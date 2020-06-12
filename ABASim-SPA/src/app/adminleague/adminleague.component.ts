@@ -58,7 +58,11 @@ export class AdminleagueComponent implements OnInit {
       this.alertify.success('League Status updated.');
       this.modalRef.hide();
       this.league.stateId = this.statusSelection;
-
+      console.log(this.league.state);
+      
+      console.log(this.league.state);
     });
   }
+
+  
 }

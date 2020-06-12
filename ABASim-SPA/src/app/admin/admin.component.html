@@ -1,31 +1,85 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
+<div class="jumbotron">
+	<h3 class="display">ADMIN</h3>
+	<span class="badge badge-danger"
+		*ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-info"
+		*ngIf="this.league?.stateId == 2 || this.league?.stateId == 6">{{ this.league?.state }}</span>
+	<span class="badge badge-success"
+		*ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5 || this.league?.stateId == 11 || this.league?.stateId == 13 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
+	<span class="badge badge-warning"
+		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
+  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+  <span *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14"> - Day #{{ this.league?.day }}</span>
+</div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<br />
+
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-question-circle fa-2x"></i><span
+						class="header-card ml-3"><strong>LEAGUE STATUS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Change League Status the League. Transition from one state to the next.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(status)">League Status</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-signal fa-2x"></i><span
+						class="header-card ml-3"><strong>STATISTICS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the statistics of players and teams.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to Statistics</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the league schedule, upcoming and past games.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Schedule</button>
+					</div>
+				</div>
+			</div>
+      
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left">Go to Transactions</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
 <div class="box">
     <div class="container">
-     	<div class="row">
-			    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-					<div class="box-part text-center">
-            <i class="fa fa-list fa-3x" aria-hidden="true"></i>
-						<div class="title">
-							<h4>League</h4>
-						</div>
-						<div class="text">
-							<span>Manage the League</span>
-						</div>
-						<a (click)="goToLeagueAdmin()">Go to League Admin</a>
-					 </div>
-				</div>	 
-				
+     	<div class="row">				
 				 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                
 					<div class="box-part text-center">
-					    
-					    <!--<i class="fa fa-twitter fa-3x" aria-hidden="true"></i>-->
-					    <i class="fa fa-users fa-3x" aria-hidden="true"></i>
+					  <i class="fa fa-users fa-3x" aria-hidden="true"></i>
                     
 						<div class="title">
 							<h4>Teams</h4>
@@ -81,3 +135,39 @@
 		</div>		
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<ng-template #status>
+	<div class="modal-header">
+	  <h4 class="modal-title">Manage League</h4>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #league (ngSubmit)="updateLeagueStatus()">
+		<div class="modal-body">
+			<div class="form-group">
+				<label class="col-md-6 control-label" for="textinput">Current: {{ this.currentStatus }}</label>
+				<br />
+				<label class="col-md-6 control-label" for="textinput">Status: </label>
+				<span>
+					<select name="leagueStatus" [(ngModel)]="statusSelection">
+					  <option *ngFor="let state of this.leagueStates" [value]="state.id">{{ state.state }}</option>
+					</select>
+				  </span>
+			</div>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary">Select</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		  </div>
+	</form>
+</ng-template>
