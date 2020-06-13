@@ -5,6 +5,7 @@ import { AlertifyService } from '../_services/alertify.service';
 import { TransferService } from '../_services/transfer.service';
 import { GameDetails } from '../_models/gameDetails';
 import { PlayByPlay } from '../_models/playByPlay';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-watch-game',
@@ -23,11 +24,10 @@ export class WatchGameComponent implements OnInit {
   displayBoxScoresButtons = 0;
 
   constructor(private alertify: AlertifyService, private authService: AuthService, private leagueService: LeagueService,
-              private transferService: TransferService) { }
+              private transferService: TransferService, private router: Router) { }
 
   ngOnInit() {
     this.gameId = this.transferService.getData();
-    console.log(this.gameId);
 
     this.leagueService.getGameDetailsPreseason(this.gameId).subscribe(result => {
       this.gameDetails = result;
@@ -42,7 +42,7 @@ export class WatchGameComponent implements OnInit {
     this.leagueService.getPlayByPlaysForId(this.gameId).subscribe(result => {
       this.playByPlays = result;
       const element = this.playByPlays[this.playByPlays.length - 1];
-      this.numberOfPlays = element.playNumber;
+      this.numberOfPlays = element.ordering;
 
       this.playByPlays.sort((n1, n2) => {
         if (n1.ordering > n2.ordering) {
@@ -65,11 +65,12 @@ export class WatchGameComponent implements OnInit {
       // }, 10000);
       const refreshId = setInterval(() => {
         this.displayPlays();
-        if (this.numberOfPlays === this.playNumber) {
-          clearInterval(refreshId);
+        console.log(this.numberOfPlays);
+        if (this.numberOfPlays === this.playNo) {
           this.displayBoxScoresButtons = 1;
+          clearInterval(refreshId);
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -106,6 +107,11 @@ export class WatchGameComponent implements OnInit {
     });
 
     this.playNumber++;
+  }
+
+  viewBoxScore(gameId: number) {
+    this.transferService.setData(gameId);
+    this.router.navigate(['/box-score']);
   }
 
 }

@@ -138,4 +138,9 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/watch-game']);
   }
 
+  viewBoxScore(gameId: number) {
+    this.transferService.setData(gameId);
+    this.router.navigate(['/box-score']);
+  }
+
 }

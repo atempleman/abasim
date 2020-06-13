@@ -1,0 +1,158 @@
+
+
+
+
+
+
+<div class="jumbotron">
+	<h3 class="display">{{ this.gameDetails?.awayTeam }} vs {{ this.gameDetails?.homeTeam }} </h3>
+</div>
+
+<div class="box">
+	<div class="container">
+    <div class="row">
+      <div class="col">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Away Box Score</h3>
+          </div>
+          <div class="panel-body">
+            <div class="panel-body">
+              <table *ngIf="this.awayBoxScores?.length != 0" class="table table-striped custab">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Minutes</th>
+                    <th>Points</th>
+                    <th>Rebounds</th>
+                    <th>Assists</th>
+                    <th>Steals</th>
+                    <th>Blocks</th>
+                    <th>BA</th>
+                    <th>Turnovers</th>
+                    <th>FGM-FGA</th>
+                    <th>3FGM-3FGA</th>
+                    <th>FTM-FTA</th>
+                    <th>ORebs</th>
+                    <th>DRebs</th>
+                    <th>Fouls</th>
+                    <th>+/-</th>
+                  </tr>
+                </thead>
+                <tr *ngFor="let player of this.awayBoxScores">
+                  <td>{{ player.firstName }} {{ player.lastName }}</td>
+                  <td>{{ (player.minutes / 60).toFixed(0) }}:{{ player.minutes % 60 }}</td>
+                  <td>{{ player.points }}</td>
+                  <td>{{ player.rebounds }}</td>
+                  <td>{{ player.assists }}</td>
+                  <td>{{ player.steals }}</td>
+                  <td>{{ player.blocks }}</td>
+                  <td>{{ player.blockedAttempts }}</td>
+                  <td>{{ player.turnovers }}</td>
+                  <td>{{ player.fgm }}-{{ player.fga }}</td>
+                  <td>{{ player.threeFGM }}-{{ player.threeFGA }}</td>
+                  <td>{{ player.ftm }}-{{ player.fta }}</td>
+                  <td>{{ player.oRebs }}</td>
+                  <td>{{ player.dRebs }}</td>
+                  <td>{{ player.fouls }}</td>
+                  <td>{{ player.plusMinus }}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>{{ this.awayMinutes }}</td>
+                  <td>{{ this.awayPoints }}</td>
+                  <td>{{ this.awayRebounds }}</td>
+                  <td>{{ this.awayAssists }}</td>
+                  <td>{{ this.awaySteals }}</td>
+                  <td>{{ this.awayBlocks }}</td>
+                  <td>{{ this.awayBlockedAttempts }}</td>
+                  <td>{{ this.awayTurnovers }}</td>
+                  <td>{{ this.awayFGM }}-{{ this.awayFGA }}</td>
+                  <td>{{ this.away3FGM }}-{{ this.away3FGA }}</td>
+                  <td>{{ this.awayFTM }}-{{ this.awayFTA }}</td>
+                  <td></td>
+                  <td></td>
+                  <td>{{ this.awayFouls }}</td>
+                  <td></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Home Box Score</h3>
+          </div>
+          <div class="panel-body">
+            <div class="panel-body">
+              <table *ngIf="this.homeBoxScores?.length != 0" class="table table-striped custab">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Minutes</th>
+                    <th>Points</th>
+                    <th>Rebounds</th>
+                    <th>Assists</th>
+                    <th>Steals</th>
+                    <th>Blocks</th>
+                    <th>BA</th>
+                    <th>Turnovers</th>
+                    <th>FGM-FGA</th>
+                    <th>3FGM-3FGA</th>
+                    <th>FTM-FTA</th>
+                    <th>ORebs</th>
+                    <th>DRebs</th>
+                    <th>Fouls</th>
+                    <th>+/-</th>
+                  </tr>
+                </thead>
+                <tr *ngFor="let player of this.homeBoxScores">
+                  <td>{{ player.firstName }} {{ player.lastName }}</td>
+                  <td>{{ (player.minutes / 60).toFixed(0) }}:{{ player.minutes % 60 }}</td>
+                  <td>{{ player.points }}</td>
+                  <td>{{ player.rebounds }}</td>
+                  <td>{{ player.assists }}</td>
+                  <td>{{ player.steals }}</td>
+                  <td>{{ player.blocks }}</td>
+                  <td>{{ player.blockedAttempts }}</td>
+                  <td>{{ player.turnovers }}</td>
+                  <td>{{ player.fgm }}-{{ player.fga }}</td>
+                  <td>{{ player.threeFGM }}-{{ player.threeFGA }}</td>
+                  <td>{{ player.ftm }}-{{ player.fta }}</td>
+                  <td>{{ player.oRebs }}</td>
+                  <td>{{ player.dRebs }}</td>
+                  <td>{{ player.fouls }}</td>
+                  <td>{{ player.plusMinus }}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>{{ this.homeMinutes }}</td>
+                  <td>{{ this.homePoints }}</td>
+                  <td>{{ this.homeRebounds }}</td>
+                  <td>{{ this.homeAssists }}</td>
+                  <td>{{ this.homeSteals }}</td>
+                  <td>{{ this.homeBlocks }}</td>
+                  <td>{{ this.homeBlockedAttempts }}</td>
+                  <td>{{ this.homeTurnovers }}</td>
+                  <td>{{ this.homeFGM }}-{{ this.homeFGA }}</td>
+                  <td>{{ this.home3FGM }}-{{ this.home3FGA }}</td>
+                  <td>{{ this.homeFTM }}-{{ this.homeFTA }}</td>
+                  <td></td>
+                  <td></td>
+                  <td>{{ this.homeFouls }}</td>
+                  <td></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

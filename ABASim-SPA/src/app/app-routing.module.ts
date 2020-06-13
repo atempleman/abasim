@@ -26,6 +26,7 @@ import { LeagueComponent } from './league/league.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { WatchGameComponent } from './watch-game/watch-game.component';
+import { BoxScoreComponent } from './box-score/box-score.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -45,6 +46,7 @@ const routes: Routes = [
   { path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [AdminAuthGuard] },
   { path: 'watch-game', component: WatchGameComponent, canActivate: [AdminAuthGuard] },
+  { path: 'box-score', component: BoxScoreComponent, canActivate: [AdminAuthGuard] },
 
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
   { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
