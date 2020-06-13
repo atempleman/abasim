@@ -86,8 +86,9 @@
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
 						<td>
 							{{ game.awayTeamName }} @ {{ game.homeTeamName }} 
-							<button *ngIf="this.isAdmin == 1 && game.completed == -1" type="button" class="btn btn-link" (click)="runGame()">Run Game</button>
-							<button *ngIf="game.completed == 0" type="button" class="btn btn-link" (click)="watchGame()">LIVE!</button>
+							<button *ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 7" type="button" class="btn btn-link" (click)="runGameSeason(game)">Run Game</button>
+							<button *ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6" type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
+							<button *ngIf="game.completed == 1" type="button" class="btn btn-link" (click)="watchGame(game.id)">Watch Game</button>
 						</td>
 					</tr>
 				</tbody>

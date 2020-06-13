@@ -28,5 +28,9 @@ namespace ABASim.api.Data
          Task<IEnumerable<TransactionDto>> GetTransactions();
 
          Task<IEnumerable<PlayByPlay>> GetGamePlayByPlay(int gameId);
+
+         Task<GameDetailsDto> GetPreseasonGameDetails(int gameId);
+
+         Task<GameDetailsDto> GetSeasonGameDetails(int gameId);
     }
 }

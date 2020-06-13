@@ -10,9 +10,11 @@ namespace ABASim.api.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminRepository _repo;
-        public AdminController(IAdminRepository repo)
+        private readonly IGameEngineRepository _gameRepo;
+        public AdminController(IAdminRepository repo, IGameEngineRepository gameRepo)
         {
             _repo = repo;
+            _gameRepo = gameRepo;
         }
 
         // [HttpPost("updateleaguestatus")]

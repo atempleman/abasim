@@ -95,8 +95,8 @@ namespace ABASim.api.Controllers
             _repo = repo;
         }
 
-        [HttpPost("startGame")]
-        public async Task<IActionResult> StartGame(SimGameDto game)
+        
+        public async void StartGame(SimGameDto game)
         {
             _game = game;
             _awayScore = 0;
@@ -143,22 +143,12 @@ namespace ABASim.api.Controllers
             {
                 RunOvertime();
             }
+        }
 
-            // commentaryData.Add("Number of blocks - " + blockCounter);
-            // commentaryData.Add("Number of steals - " + stealCounter);
-            // commentaryData.Add("Number of turnovers - " + turnoverCounter);
-            // commentaryData.Add("Number of fouls - " + foulCounter);
-            // commentaryData.Add("Number of shot clocks - " + shotClockCounter);
-            // commentaryData.Add("Number of assists - " + assistCounter);
-            // commentaryData.Add("Number of assist chances - " + assistCounterChance);
-            // commentaryData.Add("Number of twos taken - " + twosTaken);
-            // commentaryData.Add("Number of threes taken - " + threesTaken);
-            // commentaryData.Add("Number of time in game - " + timeCounter);
-
-            // Now need to save the box scores
-            // get the latest game id
-            // int gameId = await _repo.GetLatestGameId();
-            // gameId++;
+        [HttpPost("startGame")]
+        public async Task<IActionResult> StartTestGame(SimGameDto game)
+        {
+            StartGame(game);
 
             // Will need to update the play by play saving here TODO
             bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
@@ -169,7 +159,64 @@ namespace ABASim.api.Controllers
             // Now we have a game id, now to save the home box scores
             saved = await _repo.SaveTeamsBoxScore(_game.GameId, _homeBoxScores);
 
+            // Need to save the game in the database
+
             return Ok(commentaryData);
+        }
+
+        [HttpPost("startPreseasonGame")]
+        public async Task<IActionResult> StartPreseasonGame(SimGameDto game)
+        {
+            StartGame(game);
+
+            // Will need to update the play by play saving here TODO
+            bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
+
+            // Now we have a game id, now to save the away box scores
+            bool saved = await _repo.SaveTeamsBoxScore(_game.GameId, _awayBoxScores);
+
+            // Now we have a game id, now to save the home box scores
+            saved = await _repo.SaveTeamsBoxScore(_game.GameId, _homeBoxScores);
+
+            // Need to save the game in the database
+             // Need to save the game in the database
+            int winningTeamId = 0;
+            if (_awayScore > _homeScore) {
+                winningTeamId = _awayTeam.Id;
+            } else {
+                winningTeamId = _homeTeam.Id;
+            }
+            bool savedGame = await _repo.SavePreseasonResult(_awayScore, _homeScore, winningTeamId, game.GameId);
+            return Ok(true);
+        }
+
+        [HttpPost("startSeasonGame")]
+        public async Task<IActionResult> StartSeasonGame(SimGameDto game)
+        {
+            StartGame(game);
+
+            // Will need to update the play by play saving here TODO
+            bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
+
+            // Now we have a game id, now to save the away box scores
+            bool saved = await _repo.SaveTeamsBoxScore(_game.GameId, _awayBoxScores);
+
+            // Now we have a game id, now to save the home box scores
+            saved = await _repo.SaveTeamsBoxScore(_game.GameId, _homeBoxScores);
+
+            // Need to save the game in the database
+            int winningTeamId = 0;
+            int losingTeamId = 0;
+            if (_awayScore > _homeScore) {
+                winningTeamId = _awayTeam.Id;
+                losingTeamId = _homeTeam.Id;
+            } else {
+                winningTeamId = _homeTeam.Id;
+                losingTeamId = _awayTeam.Id;
+            }
+            bool savedGame = await _repo.SaveSeasonResult(_awayScore, _homeScore, winningTeamId, game.GameId, losingTeamId);
+
+            return Ok(true);
         }
 
 

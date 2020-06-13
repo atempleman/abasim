@@ -6,6 +6,10 @@ import { AuthService } from '../_services/auth.service';
 import { League } from '../_models/league';
 import { GameDisplay } from '../_models/gameDisplay';
 import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
+import { AdminService } from '../_services/admin.service';
+import { SimGame } from '../_models/simGame';
+import { GameEngineService } from '../_services/game-engine.service';
+import { TransferService } from '../_services/transfer.service';
 
 @Component({
   selector: 'app-league',
@@ -19,7 +23,8 @@ export class LeagueComponent implements OnInit {
   todaysGames: GameDisplayCurrent[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService) { }
+              private authService: AuthService, private adminService: AdminService, private gameEngine: GameEngineService,
+              private transferService: TransferService) { }
 
   ngOnInit() {
     // Check to see if the user is an admin user
@@ -57,11 +62,44 @@ export class LeagueComponent implements OnInit {
     }
   }
 
-  runGame() {
+  runGame(game: GameDisplayCurrent) {
+    const simGame: SimGame = {
+      awayId:  game.awayTeamId,
+      homeId:  game.homeTeamId,
+      gameId:  game.id,
+    };
+
+    this.gameEngine.startPreseasonGame(simGame).subscribe(result => {
+    }, error => {
+      this.alertify.error(error);
+    }, () => {
+      // Need to pass feedback and re-get the days games
+      this.alertify.success('Game run successfully');
+      this.getTodaysEvents();
+    });
   }
 
-  watchGame() {
+  runGameSeason(game: GameDisplayCurrent) {
+    const simGame: SimGame = {
+      awayId:  game.awayTeamId,
+      homeId:  game.homeTeamId,
+      gameId:  game.id,
+    };
 
+    this.gameEngine.startSeasonGame(simGame).subscribe(result => {
+    }, error => {
+      this.alertify.error(error);
+    }, () => {
+      // Need to pass feedback and re-get the days games
+      this.alertify.success('Game run successfully');
+      this.getTodaysEvents();
+    });
+  }
+
+  watchGame(gameId: number) {
+    console.log(gameId);
+    this.transferService.setData(gameId);
+    this.router.navigate(['/watch-game']);
   }
 
   goToStandings() {

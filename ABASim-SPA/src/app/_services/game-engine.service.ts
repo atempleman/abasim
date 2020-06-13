@@ -19,6 +19,14 @@ export class GameEngineService {
     return this.http.post(this.baseUrl + 'startGame', game);
   }
 
+  startPreseasonGame(game: SimGame) {
+    return this.http.post(this.baseUrl + 'startPreseasonGame', game);
+  }
+
+  startSeasonGame(game: SimGame) {
+    return this.http.post(this.baseUrl + 'startSeasonGame', game);
+  }
+
   getBoxScoreForGameId(gameId: number): Observable<BoxScore[]> {
     return this.http.get<BoxScore[]>(this.baseUrl + 'getboxscoresforgameid/' + gameId);
   }

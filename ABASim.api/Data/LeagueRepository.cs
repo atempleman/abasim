@@ -15,6 +15,38 @@ namespace ABASim.api.Data
             _context = context;
         }
 
+        public async Task<GameDetailsDto> GetPreseasonGameDetails(int gameId)
+        {
+            var game = await _context.PreseasonSchedules.FirstOrDefaultAsync(x => x.Id == gameId); 
+            var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayId);
+            var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeId);
+            GameDetailsDto details = new GameDetailsDto
+            {
+                GameId = game.Id,
+                AwayTeam = awayTeam.Teamname + " " + awayTeam.Mascot,
+                AwayTeamId = game.AwayId,
+                HomeTeam = homeTeam.Teamname + " " + homeTeam.Mascot,
+                HomeTeamId = game.HomeId
+            };
+            return details;
+        }
+
+        public async Task<GameDetailsDto> GetSeasonGameDetails(int gameId)
+        {
+            var game = await _context.Schedules.FirstOrDefaultAsync(x => x.Id == gameId); 
+            var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayTeamId);
+            var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeTeamId);
+            GameDetailsDto details = new GameDetailsDto
+            {
+                GameId = game.Id,
+                AwayTeam = awayTeam.Teamname + " " + awayTeam.Mascot,
+                AwayTeamId = game.AwayTeamId,
+                HomeTeam = homeTeam.Teamname + " " + homeTeam.Mascot,
+                HomeTeamId = game.HomeTeamId
+            };
+            return details;
+        }
+
         public async Task<IEnumerable<PlayByPlay>> GetGamePlayByPlay(int gameId)
         {
             var playByPlay = await _context.PlayByPlays.Where(x => x.GameId == gameId).ToListAsync();
@@ -227,7 +259,7 @@ namespace ABASim.api.Data
 
                 int awayScore = 0;
                 int homeScore = 0;
-                int completed = -1;
+                int completed = 0;
 
                 if (gameResult != null)
                 {

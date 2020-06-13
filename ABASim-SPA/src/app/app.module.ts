@@ -35,6 +35,7 @@ import { TeamComponent } from './team/team.component';
 import { LeagueComponent } from './league/league.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { TransactionsComponent } from './transactions/transactions.component';
+import { WatchGameComponent } from './watch-game/watch-game.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -69,7 +70,8 @@ export function tokenGetter() {
       ViewPlayerComponent,
       StandingsComponent,
       ScheduleComponent,
-      TransactionsComponent
+      TransactionsComponent,
+      WatchGameComponent
    ],
    imports: [
       BrowserModule,

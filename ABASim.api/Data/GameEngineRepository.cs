@@ -113,6 +113,45 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> SavePreseasonResult(int awayScore, int homeScore, int winningTeamId, int gameId)
+        {
+            PreseasonGameResult gr = new PreseasonGameResult
+            {
+                GameId = gameId,
+                AwayScore = awayScore,
+                HomeScore = homeScore,
+                WinningTeamId = winningTeamId,
+                Completed = 1
+            };
+            await _context.AddAsync(gr);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> SaveSeasonResult(int awayScore, int homeScore, int winningTeamId, int gameId, int losingTeamId)
+        {
+            GameResult gr = new GameResult
+            {
+                GameId = gameId,
+                AwayScore = awayScore,
+                HomeScore = homeScore,
+                WinningTeamId = winningTeamId,
+                Completed = 1
+            };
+            await _context.AddAsync(gr);
+
+            // Now need to add the win the standings
+            var winningStanding = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == winningTeamId);
+            winningStanding.Wins = winningStanding.Wins++;
+
+            var losingStanding = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == losingTeamId);
+            losingStanding.Losses = losingStanding.Losses++;
+
+            _context.Update(winningStanding);
+            _context.Update(losingStanding);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores)
         {
             for (int i = 0; i < boxScores.Count; i++) {

@@ -10,6 +10,7 @@ import { Standing } from '../_models/standing';
 import { Schedule } from '../_models/schedule';
 import { Transaction } from '../_models/transaction';
 import { PlayByPlay } from '../_models/playByPlay';
+import { GameDetails } from '../_models/gameDetails';
 
 @Injectable({
   providedIn: 'root'
@@ -62,5 +63,13 @@ export class LeagueService {
 
   getPlayByPlaysForId(gameId: number): Observable<PlayByPlay[]> {
     return this.http.get<PlayByPlay[]>(this.baseUrl + 'getgameplaybyplay/' + gameId);
+  }
+
+  getGameDetailsPreseason(gameId: number) {
+    return this.http.get<GameDetails>(this.baseUrl + 'getpreseasongamedetails/ ' + gameId);
+  }
+
+  getGameDetailsSeason(gameId: number) {
+    return this.http.get<GameDetails>(this.baseUrl + 'getseasongamedetails/ ' + gameId);
   }
 }
