@@ -98,5 +98,12 @@ namespace ABASim.api.Controllers
             var transactions = await _repo.GetTransactions();
             return Ok(transactions);
         }
+
+        [HttpGet("getgameplaybyplay/{gameId}")]
+        public async Task<IActionResult> GetGamePlayByPlay(int gameId)
+        {
+            var playByPlay = await _repo.GetGamePlayByPlay(gameId);
+            return Ok(playByPlay);
+        }
     }
 }

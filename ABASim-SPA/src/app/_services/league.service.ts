@@ -9,6 +9,7 @@ import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
 import { Standing } from '../_models/standing';
 import { Schedule } from '../_models/schedule';
 import { Transaction } from '../_models/transaction';
+import { PlayByPlay } from '../_models/playByPlay';
 
 @Injectable({
   providedIn: 'root'
@@ -57,5 +58,9 @@ export class LeagueService {
 
   getTransactions(): Observable<Transaction[]> {
     return this.http.get<Transaction[]>(this.baseUrl + 'gettransactions');
+  }
+
+  getPlayByPlaysForId(gameId: number): Observable<PlayByPlay[]> {
+    return this.http.get<PlayByPlay[]>(this.baseUrl + 'getgameplaybyplay/' + gameId);
   }
 }

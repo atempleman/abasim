@@ -15,6 +15,12 @@ namespace ABASim.api.Data
             _context = context;
         }
 
+        public async Task<IEnumerable<PlayByPlay>> GetGamePlayByPlay(int gameId)
+        {
+            var playByPlay = await _context.PlayByPlays.Where(x => x.GameId == gameId).ToListAsync();
+            return playByPlay;
+        }
+
         public async Task<League> GetLeague()
         {
             var league = await _context.Leagues.FirstOrDefaultAsync();
