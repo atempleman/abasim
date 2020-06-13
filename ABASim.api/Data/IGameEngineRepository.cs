@@ -25,5 +25,7 @@ namespace ABASim.api.Data
          Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores);
 
          Task<IEnumerable<BoxScore>> GetBoxScoresForGameId(int gameId);
+
+         Task<bool> SavePlayByPlays(List<PlayByPlay> playByPlays);
     }
 }

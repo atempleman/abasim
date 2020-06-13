@@ -85,6 +85,11 @@ namespace ABASim.api.Controllers
         int _endGameStealAddition = 0;
         int _endGameResultIncrease = 0;
 
+
+        List<PlayByPlay> _playByPlays = new List<PlayByPlay>();
+        int _ordering = 0;
+        int _playNumber = 0;
+
         public GameEngineController(IGameEngineRepository repo)
         {
             _repo = repo;
@@ -107,11 +112,16 @@ namespace ABASim.api.Controllers
             var result3 = await GetPlayerDetails();
             SetStartingLineups();
 
-            commentaryData.Add(comm.GetGameIntroCommentry(_awayTeam, _homeTeam));
+            commentaryData.Add(comm.GetGameIntroCommentry(_awayTeam, _homeTeam)); // Need a way to block this out when run games for real
             commentaryData.Add(comm.GetStartingLineupsCommentary(awayPG, awaySG, awaySF, awayPF, awayC));
             commentaryData.Add(comm.GetStartingLineupsCommentary(homePG, homeSG, homeSF, homePF, homeC));
             commentaryData.Add("It's now time for the opening tip");
             
+            PlayByPlayTracker(comm.GetGameIntroCommentry(_awayTeam, _homeTeam) , 0);
+            PlayByPlayTracker(comm.GetStartingLineupsCommentary(awayPG, awaySG, awaySF, awayPF, awayC), 0);
+            PlayByPlayTracker(comm.GetStartingLineupsCommentary(homePG, homeSG, homeSF, homePF, homeC), 0);
+            PlayByPlayTracker("It's now time for the opening tip", 1);
+
             Jumpball();
             _initialPossession = _teamPossession;
 
@@ -134,21 +144,24 @@ namespace ABASim.api.Controllers
                 RunOvertime();
             }
 
-            commentaryData.Add("Number of blocks - " + blockCounter);
-            commentaryData.Add("Number of steals - " + stealCounter);
-            commentaryData.Add("Number of turnovers - " + turnoverCounter);
-            commentaryData.Add("Number of fouls - " + foulCounter);
-            commentaryData.Add("Number of shot clocks - " + shotClockCounter);
-            commentaryData.Add("Number of assists - " + assistCounter);
-            commentaryData.Add("Number of assist chances - " + assistCounterChance);
-            commentaryData.Add("Number of twos taken - " + twosTaken);
-            commentaryData.Add("Number of threes taken - " + threesTaken);
-            commentaryData.Add("Number of time in game - " + timeCounter);
+            // commentaryData.Add("Number of blocks - " + blockCounter);
+            // commentaryData.Add("Number of steals - " + stealCounter);
+            // commentaryData.Add("Number of turnovers - " + turnoverCounter);
+            // commentaryData.Add("Number of fouls - " + foulCounter);
+            // commentaryData.Add("Number of shot clocks - " + shotClockCounter);
+            // commentaryData.Add("Number of assists - " + assistCounter);
+            // commentaryData.Add("Number of assist chances - " + assistCounterChance);
+            // commentaryData.Add("Number of twos taken - " + twosTaken);
+            // commentaryData.Add("Number of threes taken - " + threesTaken);
+            // commentaryData.Add("Number of time in game - " + timeCounter);
 
             // Now need to save the box scores
             // get the latest game id
             // int gameId = await _repo.GetLatestGameId();
             // gameId++;
+
+            // Will need to update the play by play saving here TODO
+            bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
 
             // Now we have a game id, now to save the away box scores
             bool saved = await _repo.SaveTeamsBoxScore(_game.GameId, _awayBoxScores);
@@ -477,6 +490,7 @@ namespace ABASim.api.Controllers
 
             // Need to do the commentary
             commentaryData.Add(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+            PlayByPlayTracker(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
             int timeValue = _random.Next(1, 5);
 
@@ -552,6 +566,7 @@ namespace ABASim.api.Controllers
                             StaminaUpdates(1);
                             UpdateTimeInBoxScores(1);
                             commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                             break;
                         default:
                             break;
@@ -609,6 +624,7 @@ namespace ABASim.api.Controllers
                             StaminaUpdates(1);
                             UpdateTimeInBoxScores(1);
                             commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                             break;
                         default:
                             break;
@@ -1239,7 +1255,8 @@ namespace ABASim.api.Controllers
 
                 // COMMENTARY
                 commentaryData.Add(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                Console.WriteLine(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                PlayByPlayTracker(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                // Console.WriteLine(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
             }
         }
 
@@ -1379,7 +1396,8 @@ namespace ABASim.api.Controllers
 
                     // Comm
                     commentaryData.Add(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
-                    Console.WriteLine(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    // Console.WriteLine(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    PlayByPlayTracker(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName), 0);
 
                     if (_teamPossession == 0)
                     {
@@ -1431,7 +1449,8 @@ namespace ABASim.api.Controllers
 
                     // Commentary
                     commentaryData.Add(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetTwoPointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
                     // Go to the Rebound
                     Rebound();
@@ -1593,7 +1612,8 @@ namespace ABASim.api.Controllers
 
                     // Comm
                     commentaryData.Add(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
-                    Console.WriteLine(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    // Console.WriteLine(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    PlayByPlayTracker(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName), 0);
 
                     if (_teamPossession == 0)
                     {
@@ -1648,7 +1668,8 @@ namespace ABASim.api.Controllers
 
                     // Commentary
                     commentaryData.Add(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetThreePointMissCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
                     // Go to the Rebound
                     Rebound();
@@ -1726,7 +1747,8 @@ namespace ABASim.api.Controllers
 
                         // Commentary
                         commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
                         return 1;
                     }
@@ -1791,7 +1813,8 @@ namespace ABASim.api.Controllers
 
                         // Commentary
                         commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
                         return 1;
                     }
@@ -1919,7 +1942,8 @@ namespace ABASim.api.Controllers
 
                     // Commentary for Offensive Rebound
                     commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                 }
                 else
                 {
@@ -1989,7 +2013,8 @@ namespace ABASim.api.Controllers
 
                     // Display Defensive Rebound Commentary
                     commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                 }
             } else {
                 int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.DRebRating);
@@ -2076,7 +2101,8 @@ namespace ABASim.api.Controllers
 
                     // Commentary for Offensive Rebound
                     commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                 }
                 else
                 {
@@ -2146,7 +2172,8 @@ namespace ABASim.api.Controllers
 
                     // Display Defensive Rebound Commentary
                     commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                 }
             }
         }
@@ -2222,7 +2249,8 @@ namespace ABASim.api.Controllers
 
                         // Commentary
                         commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
                         _teamPossession = 1;
                         _playerPossession = _random.Next(1, 6); // not sure how to make this correct
@@ -2292,9 +2320,10 @@ namespace ABASim.api.Controllers
 
                         // Commentary
                         commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
-                        _teamPossession = 1;
+                        _teamPossession = 0;
                         _playerPossession = _random.Next(1, 6);
 
                         _playerPassed = null;
@@ -2361,7 +2390,8 @@ namespace ABASim.api.Controllers
                 {
                     // Commentary
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     _homeFoulBonus++;
                     teamWhichFouled = 0;
 
@@ -2369,7 +2399,8 @@ namespace ABASim.api.Controllers
                     {
                         // Commentary
                         commentaryData.Add(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                         isFreeThrows = 1;
                     }
                 }
@@ -2377,7 +2408,8 @@ namespace ABASim.api.Controllers
                 {
                     // Commentary
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     _awayFoulBonus++;
                     teamWhichFouled = 1;
 
@@ -2385,7 +2417,8 @@ namespace ABASim.api.Controllers
                     {
                         // Commentary
                         commentaryData.Add(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                         isFreeThrows = 1;
                     }
                 }
@@ -2408,7 +2441,8 @@ namespace ABASim.api.Controllers
                     }
                         
                     commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                 }
                 //  else if (sub == 6) {
                 //     // player has fouled out
@@ -2470,7 +2504,8 @@ namespace ABASim.api.Controllers
                 {
                     // Commentary
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
                     // Need to check if there are any subs to be made
                     SubCheckFT();
@@ -2498,7 +2533,8 @@ namespace ABASim.api.Controllers
                 {
                     // Commentary
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
                     // Need to check if there are any subs to be made
                     SubCheckFT();
@@ -2566,7 +2602,8 @@ namespace ABASim.api.Controllers
 
                     // commentary
                     commentaryData.Add(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                 } 
                 else
                 {
@@ -2578,7 +2615,8 @@ namespace ABASim.api.Controllers
 
                     // commentary
                     commentaryData.Add(comm.GetMissedFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    Console.WriteLine(comm.GetMissedFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    // Console.WriteLine(comm.GetMissedFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetMissedFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
                     // box score
                     if (_teamPossession == 0)
@@ -2675,7 +2713,8 @@ namespace ABASim.api.Controllers
                         string inPlayer = GetPlayerFullNameForPositionForFouler(0, GetPlayerIdForPosition(0, fouler));
                             
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     } 
                     // else if (sub == 6) {
                     //     // player has fouled out
@@ -2692,7 +2731,8 @@ namespace ABASim.api.Controllers
 
                 // commentary
                 commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                // Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                PlayByPlayTracker(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
                 // change possession
                 _teamPossession = 1;
@@ -2722,7 +2762,8 @@ namespace ABASim.api.Controllers
                         string inPlayer = GetPlayerFullNameForPositionForFouler(1, GetPlayerIdForPosition(1, fouler));
                             
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     } 
                     // else if (sub == 6) {
                     //     // player has fouled out
@@ -2739,7 +2780,8 @@ namespace ABASim.api.Controllers
 
                 // commentary
                 commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                // Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                PlayByPlayTracker(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
                 // change possession
                 _teamPossession = 0;
@@ -2767,7 +2809,8 @@ namespace ABASim.api.Controllers
 
             // Need to add the commentary here
             commentaryData.Add(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-            Console.WriteLine(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+            // Console.WriteLine(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+            PlayByPlayTracker(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
             // Now it would go to check for SUBS
             SubCheck();
@@ -3078,7 +3121,8 @@ namespace ABASim.api.Controllers
         public void EndOfQuarter()
         {
             commentaryData.Add(comm.EndOfQuarterCommtary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-            Console.WriteLine(comm.EndOfQuarterCommtary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+            // Console.WriteLine(comm.EndOfQuarterCommtary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+            PlayByPlayTracker(comm.EndOfQuarterCommtary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
             _playerPassed = null;
             _playerRatingPassed = null;
@@ -3109,7 +3153,8 @@ namespace ABASim.api.Controllers
                     } else {
                         // End of Game commentary
                         commentaryData.Add(comm.EndGameCommentary(_awayTeam, _homeTeam, _awayScore, _homeScore));
-                        Console.WriteLine(comm.EndGameCommentary(_awayTeam, _homeTeam, _awayScore, _homeScore));
+                        // Console.WriteLine(comm.EndGameCommentary(_awayTeam, _homeTeam, _awayScore, _homeScore));
+                        PlayByPlayTracker(comm.EndGameCommentary(_awayTeam, _homeTeam, _awayScore, _homeScore), 0);
                     }
                     break;
                 default:
@@ -4398,8 +4443,8 @@ namespace ABASim.api.Controllers
                         }
                         
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-
+                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                     }
                 }
 
@@ -4468,7 +4513,8 @@ namespace ABASim.api.Controllers
                                 break;
                         }
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                        Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                     }
                 }
             }
@@ -4633,6 +4679,7 @@ namespace ABASim.api.Controllers
                             }
 
                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                         }
                     }
                 }
@@ -4704,13 +4751,11 @@ namespace ABASim.api.Controllers
                                     break;
                             }
                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                         }
                     }
                 }
             }
-
-
-            
         }
 
         public void SubToStarter(int team, int position)
@@ -4840,6 +4885,7 @@ namespace ABASim.api.Controllers
                         break;
                 }
                 commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
             } else {
                 if (position == 1) {
                     current = awayPG;
@@ -4956,6 +5002,7 @@ namespace ABASim.api.Controllers
                         break;
                 }
                 commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
             }
         }
 
@@ -6238,6 +6285,24 @@ namespace ABASim.api.Controllers
         {
             var boxScores = await _repo.GetBoxScoresForGameId(gameId);
             return boxScores;
+        }
+
+        public void PlayByPlayTracker(string commentary, int endOfPlay)
+        {
+            PlayByPlay pbp = new PlayByPlay
+            {
+                GameId = _game.GameId,
+                Ordering = _ordering,
+                PlayNumber = _playNumber,
+                Commentary = commentary
+            };
+            _playByPlays.Add(pbp);
+
+            _ordering++;
+
+            if (endOfPlay == 1) {
+                _playNumber++;
+            }
         }
     }
 }

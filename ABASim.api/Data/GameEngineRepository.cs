@@ -104,6 +104,15 @@ namespace ABASim.api.Data
             return team;
         }
 
+        public async Task<bool> SavePlayByPlays(List<PlayByPlay> playByPlays)
+        {
+            foreach (var play in playByPlays)
+            {
+                await _context.AddAsync(play);
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores)
         {
             for (int i = 0; i < boxScores.Count; i++) {
