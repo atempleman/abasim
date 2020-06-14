@@ -47,7 +47,6 @@ export class TeamService {
   }
 
   saveDepthCharts(depthCharts: DepthChart[]) {
-    console.log(depthCharts);
     return this.http.post(this.baseUrl + 'savedepthchart', depthCharts);
   }
 

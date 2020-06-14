@@ -4,6 +4,7 @@ using ABASim.api.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System;
+using ABASim.api.Dtos;
 
 namespace ABASim.api.Data
 {
@@ -79,6 +80,119 @@ namespace ABASim.api.Data
             _context.Update(league);
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RunDayRollOver()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+
+            // Need to update player stats
+            if (league.StateId == 7) {
+                var todaysGames = await _context.Schedules.Where(x => x.GameDay == (league.Day)).ToListAsync();
+
+                foreach (var game in todaysGames)
+                {
+                    // Now need to get the boxscores for the game
+                    var boxScores = await _context.GameBoxScores.Where(x => x.GameId == game.Id).ToListAsync();
+
+                    foreach (var bs in boxScores)
+                    {
+                        // Now need to see if the player stat record exists for the player
+                        var playerStats = await _context.PlayerStats.FirstOrDefaultAsync(x => x.PlayerId == bs.PlayerId);
+                        if (playerStats != null) {
+                            // Player already has a player stats record
+                            playerStats.Assists = playerStats.Assists + bs.Assists;
+                            playerStats.Blocks = playerStats.Blocks + bs.Blocks;
+                            playerStats.DRebs = playerStats.DRebs + bs.DRebs;
+                            playerStats.FieldGoalsAttempted = playerStats.FieldGoalsAttempted + bs.FieldGoalsAttempted;
+                            playerStats.FieldGoalsMade = playerStats.FieldGoalsMade + bs.FieldGoalsMade;
+                            playerStats.Fouls = playerStats.Fouls + bs.Fouls;
+                            playerStats.FreeThrowsAttempted = playerStats.FreeThrowsAttempted + bs.FreeThrowsAttempted;
+                            playerStats.FreeThrowsMade = playerStats.FreeThrowsMade + bs.FreeThrowsMade;
+                            playerStats.GamesPlayed = playerStats.GamesPlayed + 1;
+                            playerStats.Minutes = playerStats.Minutes + bs.Minutes;
+                            playerStats.ORebs = playerStats.ORebs + bs.ORebs;
+                            playerStats.Points = playerStats.Points + bs.Points;
+                            playerStats.Rebounds = playerStats.Rebounds + bs.Rebounds;
+                            playerStats.Steals = playerStats.Steals + bs.Steals;
+                            playerStats.ThreeFieldGoalsAttempted = playerStats.ThreeFieldGoalsAttempted + bs.ThreeFieldGoalsAttempted;
+                            playerStats.ThreeFieldGoalsMade = playerStats.ThreeFieldGoalsMade + bs.ThreeFieldGoalsMade;
+                            playerStats.Turnovers = playerStats.Turnovers + bs.Turnovers;
+
+                            _context.PlayerStats.Update(playerStats);
+                        } else {
+                            PlayerStat newPlayerStats = new PlayerStat
+                            {
+                                Assists = bs.Assists,
+                                Blocks = bs.Blocks,
+                                DRebs = bs.DRebs,
+                                FieldGoalsAttempted = bs.FieldGoalsAttempted,
+                                FieldGoalsMade = bs.FieldGoalsMade,
+                                Fouls = bs.Fouls,
+                                FreeThrowsAttempted = bs.FreeThrowsAttempted,
+                                FreeThrowsMade = bs.FreeThrowsMade,
+                                GamesPlayed = 1,
+                                Minutes = bs.Minutes,
+                                ORebs = bs.ORebs,
+                                Points = bs.Points,
+                                PlayerId = bs.PlayerId,
+                                Rebounds = bs.Rebounds,
+                                Steals = bs.Steals,
+                                ThreeFieldGoalsAttempted = bs.ThreeFieldGoalsAttempted,
+                                ThreeFieldGoalsMade = bs.ThreeFieldGoalsMade,
+                                Turnovers = bs.Turnovers
+                            };
+                            await _context.AddAsync(newPlayerStats);
+                        }
+                    }
+                }
+            }
+
+            // Need to rollover the day to the next day
+            league.Day = league.Day + 1;
+            _context.Update(league);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> CheckGamesRun()
+        {
+            int gameNotRun = 0;
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            
+            if (league.StateId == 6) {
+                var todaysGames = await _context.PreseasonSchedules.Where(x => x.Day == (league.Day)).ToListAsync();
+                if (todaysGames.Count != 0) {
+                    foreach (var game in todaysGames)
+                    {
+                        var gameResult = await _context.PreseasonGameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
+                        if (gameResult != null) {
+                            if (gameResult.Completed == 0) {
+                                gameNotRun = 1;
+                            }
+                        }
+                    }
+                }
+            } else if (league.StateId == 7) {
+                var todaysGames = await _context.Schedules.Where(x => x.GameDay == (league.Day)).ToListAsync();
+                if (todaysGames.Count != 0) {
+                    foreach (var game in todaysGames)
+                    {
+                        var gameResult = await _context.GameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
+                        if (gameResult != null) {
+                            if (gameResult.Completed == 1) {
+                                gameNotRun = 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (gameNotRun == 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 

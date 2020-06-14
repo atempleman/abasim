@@ -10,6 +10,7 @@ import { FormGroup } from '@angular/forms';
 import { AdminService } from '../_services/admin.service';
 import { Team } from '../_models/team';
 import { TeamService } from '../_services/team.service';
+import { CheckGame } from '../_models/checkGame';
 
 @Component({
   selector: 'app-admin',
@@ -24,6 +25,8 @@ export class AdminComponent implements OnInit {
   currentStatus = '';
   leagueStates: LeagueState[] = [];
   // statusForm: FormGroup;
+  gamesAllRun = 0;
+  rolloverResult = false;
 
   // removeRegoForm: FormGroup;
   teams: Team[] = [];
@@ -52,14 +55,14 @@ export class AdminComponent implements OnInit {
 
   // League Status
   public openModal(template: TemplateRef<any>, selection: number) {
-    console.log(selection);
-
     if (selection === 0) {
       // League status
       this.getLeagueStatusData();
     } else if (selection === 1) {
       // Remove team rego
       this.getRemoveTeamRegoData();
+    } else if (selection === 2) {
+      this.rollOverDay();
     }
     this.modalRef = this.modalService.show(template);
   }
@@ -113,6 +116,42 @@ export class AdminComponent implements OnInit {
     }, () => {
       this.alertify.success('Team Rego updated.');
       this.modalRef.hide();
+    });
+  }
+
+  rollOverDay() {
+    // tslint:disable-next-line: prefer-const
+    let value = false;
+    this.adminService.checkAllGamesRun().subscribe(result => {
+      value = result;
+    }, error => {
+      this.alertify.error('Error checking if games are run');
+    }, () => {
+      if (value) {
+        // Now run the roll over process
+        this.alertify.success('Games are run');
+        this.gamesAllRun = 1;
+      } else {
+        this.alertify.error('Not all games are run');
+      }
+    });
+  }
+
+  confirmRollOverDay() {
+    console.log('here1');
+    this.adminService.rolloverDay().subscribe(result => {
+      console.log('here2');
+      this.rolloverResult = result;
+    }, error => {
+      this.alertify.error('Error rolling over day');
+    }, () => {
+      if (this.rolloverResult) {
+        this.alertify.success('Day Rolled over successfully');
+        this.modalRef.hide();
+        this.league.day = this.league.day + 1;
+      } else {
+        this.alertify.error('Error rolling over day');
+      }
     });
   }
 

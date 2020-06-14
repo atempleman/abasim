@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using ABASim.api.Dtos;
 using ABASim.api.Models;
 
 namespace ABASim.api.Data
@@ -10,5 +11,9 @@ namespace ABASim.api.Data
          Task<bool> RemoveTeamRegistration(int teamId);
 
          Task<bool> RunInitialDraftLottery();
+
+         Task<bool> RunDayRollOver();
+
+         Task<bool> CheckGamesRun();
     }
 }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using ABASim.api.Data;
+using ABASim.api.Dtos;
 using ABASim.api.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +44,20 @@ namespace ABASim.api.Controllers
         {
             var runLottery = await _repo.RunInitialDraftLottery();
             return runLottery;
+        }
+
+        [HttpGet("checkgamesrun")]
+        public async Task<IActionResult> CheckDaysGamesRun()
+        {
+            var result = await _repo.CheckGamesRun();
+            return Ok(result);
+        }
+
+        [HttpGet("rolloverday")]
+        public async Task<bool> RollOverDay()
+        {
+            var result = await _repo.RunDayRollOver();
+            return result;
         }
     }
 }
