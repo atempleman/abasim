@@ -70,7 +70,7 @@ export class WatchGameComponent implements OnInit {
           this.displayBoxScoresButtons = 1;
           clearInterval(refreshId);
         }
-      }, 100);
+      }, 900);
     });
   }
 

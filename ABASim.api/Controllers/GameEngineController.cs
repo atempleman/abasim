@@ -96,7 +96,7 @@ namespace ABASim.api.Controllers
         }
 
         
-        public async void StartGame(SimGameDto game)
+        public async Task<IActionResult> StartGame(SimGameDto game)
         {
             _game = game;
             _awayScore = 0;
@@ -143,12 +143,14 @@ namespace ABASim.api.Controllers
             {
                 RunOvertime();
             }
+
+            return Ok(true);
         }
 
         [HttpPost("startGame")]
         public async Task<IActionResult> StartTestGame(SimGameDto game)
         {
-            StartGame(game);
+            await StartGame(game);
 
             // Will need to update the play by play saving here TODO
             bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
@@ -167,7 +169,7 @@ namespace ABASim.api.Controllers
         [HttpPost("startPreseasonGame")]
         public async Task<IActionResult> StartPreseasonGame(SimGameDto game)
         {
-            StartGame(game);
+            await StartGame(game);
 
             // Will need to update the play by play saving here TODO
             bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
@@ -187,13 +189,14 @@ namespace ABASim.api.Controllers
                 winningTeamId = _homeTeam.Id;
             }
             bool savedGame = await _repo.SavePreseasonResult(_awayScore, _homeScore, winningTeamId, game.GameId);
+
             return Ok(true);
         }
 
         [HttpPost("startSeasonGame")]
         public async Task<IActionResult> StartSeasonGame(SimGameDto game)
         {
-            StartGame(game);
+            await StartGame(game);
 
             // Will need to update the play by play saving here TODO
             bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
