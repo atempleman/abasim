@@ -6,6 +6,7 @@ import { TransferService } from '../_services/transfer.service';
 import { GameDetails } from '../_models/gameDetails';
 import { PlayByPlay } from '../_models/playByPlay';
 import { Router } from '@angular/router';
+import { League } from '../_models/league';
 
 @Component({
   selector: 'app-watch-game',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./watch-game.component.css']
 })
 export class WatchGameComponent implements OnInit {
+  league: League;
   gameId: number;
   gameDetails: GameDetails;
   gameBegun = 0;
@@ -29,11 +31,29 @@ export class WatchGameComponent implements OnInit {
   ngOnInit() {
     this.gameId = this.transferService.getData();
 
-    this.leagueService.getGameDetailsPreseason(this.gameId).subscribe(result => {
-      this.gameDetails = result;
+    this.leagueService.getLeague().subscribe(result => {
+      this.league = result;
     }, error => {
-      this.alertify.error('Error getting game details');
+      this.alertify.error('Error getting league');
+    }, () => {
+      this.getGameDetails();
     });
+  }
+
+  getGameDetails() {
+    if (this.league.stateId === 6) {
+      this.leagueService.getGameDetailsPreseason(this.gameId).subscribe(result => {
+        this.gameDetails = result;
+      }, error => {
+        this.alertify.error('Error getting game details');
+      });
+    } else if (this.league.stateId === 7) {
+      this.leagueService.getGameDetailsSeason(this.gameId).subscribe(result => {
+        this.gameDetails = result;
+      }, error => {
+        this.alertify.error('Error getting game details');
+      });
+    }
   }
 
   beginGame() {
@@ -70,7 +90,7 @@ export class WatchGameComponent implements OnInit {
           this.displayBoxScoresButtons = 1;
           clearInterval(refreshId);
         }
-      }, 900);
+      }, 1000);
     });
   }
 

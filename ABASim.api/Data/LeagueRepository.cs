@@ -97,6 +97,32 @@ namespace ABASim.api.Data
             return nextGamesList;
         }
 
+        public async Task<IEnumerable<NextDaysGameDto>> GetNextDaysGamesForSeason()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var nextGames = await _context.Schedules.Where(x => x.GameDay == (league.Day + 1)).ToListAsync();
+
+            List<NextDaysGameDto> nextGamesList = new List<NextDaysGameDto>();
+            foreach (var game in nextGames)
+            {
+                var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayTeamId);
+                var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeTeamId);
+                
+                NextDaysGameDto ng = new NextDaysGameDto
+                {
+                    Id = game.Id,
+                    AwayTeamId = awayTeam.Id,
+                    AwayTeamName = awayTeam.Teamname + " " + awayTeam.Mascot,
+                    HomeTeamId = homeTeam.Id,
+                    HomeTeamName = homeTeam.Teamname + " " + homeTeam.Mascot,
+                    Day = league.Day + 1
+                };
+
+                nextGamesList.Add(ng);
+            }
+            return nextGamesList;
+        }
+
         public async Task<IEnumerable<ScheduleDto>> GetScheduleForDisplay(int day)
         {
             List<ScheduleDto> schedules = new List<ScheduleDto>();
@@ -120,7 +146,7 @@ namespace ABASim.api.Data
                 int homeScore = 0;
 
                 // Need to call the GameResults table if GameDay < day
-                if (game.GameDay < day) {
+                if (game.GameDay <= day) {
                     result = await _context.GameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
                     if (result != null) {
                         awayScore = result.AwayScore;
@@ -256,6 +282,47 @@ namespace ABASim.api.Data
                 var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayId);
                 var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeId);
                 var gameResult = await _context.PreseasonGameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
+
+                int awayScore = 0;
+                int homeScore = 0;
+                int completed = 0;
+
+                if (gameResult != null)
+                {
+                    awayScore = gameResult.AwayScore;
+                    homeScore = gameResult.HomeScore;
+                    completed = gameResult.Completed;
+                }
+                
+                CurrentDayGamesDto ng = new CurrentDayGamesDto
+                {
+                    Id = game.Id,
+                    AwayTeamId = awayTeam.Id,
+                    AwayTeamName = awayTeam.Teamname + " " + awayTeam.Mascot,
+                    HomeTeamId = homeTeam.Id,
+                    HomeTeamName = homeTeam.Teamname + " " + homeTeam.Mascot,
+                    Day = league.Day + 1,
+                    awayScore = awayScore,
+                    homeScore = homeScore,
+                    Completed = completed
+                };
+
+                nextGamesList.Add(ng);
+            }
+            return nextGamesList;
+        }
+
+        public async Task<IEnumerable<CurrentDayGamesDto>> GetTodaysGamesForSeason()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var todaysGames = await _context.Schedules.Where(x => x.GameDay == (league.Day)).ToListAsync();
+
+            List<CurrentDayGamesDto> nextGamesList = new List<CurrentDayGamesDto>();
+            foreach (var game in todaysGames)
+            {
+                var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayTeamId);
+                var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeTeamId);
+                var gameResult = await _context.GameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
 
                 int awayScore = 0;
                 int homeScore = 0;

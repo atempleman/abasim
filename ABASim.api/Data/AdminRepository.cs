@@ -24,6 +24,10 @@ namespace ABASim.api.Data
             var league = await _context.Leagues.FirstOrDefaultAsync(x => x.Id == 1);
             league.StateId = newState;
 
+            if (newState == 7) {
+                league.Day = 0;
+            }
+
             _context.Update(league);
             return await _context.SaveChangesAsync() > 0;
         }
@@ -180,7 +184,7 @@ namespace ABASim.api.Data
                     {
                         var gameResult = await _context.GameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
                         if (gameResult != null) {
-                            if (gameResult.Completed == 1) {
+                            if (gameResult.Completed == 0) {
                                 gameNotRun = 1;
                             }
                         }

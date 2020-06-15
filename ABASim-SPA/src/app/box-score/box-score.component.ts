@@ -6,6 +6,7 @@ import { TransferService } from '../_services/transfer.service';
 import { GameDetails } from '../_models/gameDetails';
 import { GameEngineService } from '../_services/game-engine.service';
 import { BoxScore } from '../_models/boxScore';
+import { League } from '../_models/league';
 
 @Component({
   selector: 'app-box-score',
@@ -18,6 +19,7 @@ export class BoxScoreComponent implements OnInit {
   boxScores: BoxScore[] = [];
   homeBoxScores: BoxScore[] = [];
   awayBoxScores: BoxScore[] = [];
+  league: League;
 
   // Totals
   awayPoints = 0;
@@ -57,14 +59,35 @@ export class BoxScoreComponent implements OnInit {
   ngOnInit() {
     this.gameId = this.transferService.getData();
 
-    this.leagueService.getGameDetailsPreseason(this.gameId).subscribe(result => {
-      this.gameDetails = result;
+    this.leagueService.getLeague().subscribe(result => {
+      this.league = result;
     }, error => {
-      this.alertify.error('Error getting game details');
+      this.alertify.error('Error getting league');
     }, () => {
-      this.retrieveBoxScoreData();
-      this.calculateTeamTotals();
+      this.getGameDetails();
     });
+  }
+
+  getGameDetails() {
+    if (this.league.stateId === 6) {
+      this.leagueService.getGameDetailsPreseason(this.gameId).subscribe(result => {
+        this.gameDetails = result;
+      }, error => {
+        this.alertify.error('Error getting game details');
+      }, () => {
+        this.retrieveBoxScoreData();
+        this.calculateTeamTotals();
+      });
+    } else if (this.league.stateId === 7) {
+      this.leagueService.getGameDetailsSeason(this.gameId).subscribe(result => {
+        this.gameDetails = result;
+      }, error => {
+        this.alertify.error('Error getting game details');
+      }, () => {
+        this.retrieveBoxScoreData();
+        this.calculateTeamTotals();
+      });
+    }
   }
 
   retrieveBoxScoreData() {

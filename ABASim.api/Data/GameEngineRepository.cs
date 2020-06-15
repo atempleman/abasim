@@ -139,14 +139,23 @@ namespace ABASim.api.Data
             };
             await _context.AddAsync(gr);
 
-            // Now need to add the win the standings
+            // Now need to add the win the standings - this is not working
             var winningStanding = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == winningTeamId);
-            winningStanding.Wins = winningStanding.Wins++;
+            int wins = winningStanding.Wins;
+            wins = wins + 1;
+            int gamesPlayed = winningStanding.GamesPlayed;
+            gamesPlayed = gamesPlayed + 1;
+            winningStanding.Wins = wins;
+            winningStanding.GamesPlayed = gamesPlayed;
+            _context.Update(winningStanding);
 
             var losingStanding = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == losingTeamId);
-            losingStanding.Losses = losingStanding.Losses++;
-
-            _context.Update(winningStanding);
+            int Losses = losingStanding.Losses;
+            Losses = Losses + 1;
+            int gp = losingStanding.GamesPlayed;
+            gp = gp + 1;
+            losingStanding.Losses = Losses;
+            losingStanding.GamesPlayed = gp;
             _context.Update(losingStanding);
 
             return await _context.SaveChangesAsync() > 0;

@@ -72,4 +72,12 @@ export class LeagueService {
   getGameDetailsSeason(gameId: number) {
     return this.http.get<GameDetails>(this.baseUrl + 'getseasongamedetails/ ' + gameId);
   }
+
+  getSeasonGamesForTomorrow(): Observable<GameDisplay[]> {
+    return this.http.get<GameDisplay[]>(this.baseUrl + 'getgamesfortomorrowseason');
+  }
+
+  getSeasonGamesForToday(): Observable<GameDisplayCurrent[]> {
+    return this.http.get<GameDisplayCurrent[]>(this.baseUrl + 'getgamesfortodayseason');
+  }
 }

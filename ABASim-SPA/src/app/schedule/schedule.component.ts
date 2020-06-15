@@ -5,6 +5,7 @@ import { LeagueService } from '../_services/league.service';
 import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Schedule } from '../_models/schedule';
+import { TransferService } from '../_services/transfer.service';
 
 @Component({
   selector: 'app-schedule',
@@ -18,7 +19,7 @@ export class ScheduleComponent implements OnInit {
   gameDayViewing = 0;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService) { }
+              private authService: AuthService, private transferService: TransferService) { }
 
   ngOnInit() {
     this.leagueService.getLeague().subscribe(result => {
@@ -46,7 +47,8 @@ export class ScheduleComponent implements OnInit {
     if (game.awayScore === 0 || game.homeScore === 0) {
       this.alertify.error('Game has not been played yet');
     } else {
-      console.log('calling box score - TODO');
+      this.transferService.setData(game.gameId);
+      this.router.navigate(['/box-score']);
     }
   }
 

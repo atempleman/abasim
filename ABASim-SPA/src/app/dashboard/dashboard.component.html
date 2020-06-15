@@ -114,7 +114,7 @@
 			<p class="text-success" *ngIf="this.league?.stateId == 14">Draft</p>
 			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day }}</p>
 
-			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
+			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6 || this.league?.stateId == 7">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
 						<td>
@@ -153,7 +153,7 @@
 
 			
 
-			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
+			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6 || this.league?.stateId == 7">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.upcomingGames">
 						<td>{{ game.awayTeamName }} @ {{ game.homeTeamName }}</td>

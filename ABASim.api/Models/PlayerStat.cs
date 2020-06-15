@@ -20,8 +20,6 @@ namespace ABASim.api.Models
 
         public int Blocks { get; set; }
 
-        public int BlockedAttempts { get; set; }
-
         public int FieldGoalsMade { get; set; }
 
         public int FieldGoalsAttempted { get; set; }
@@ -41,7 +39,5 @@ namespace ABASim.api.Models
         public int Turnovers { get; set; }
 
         public int Fouls { get; set; }
-
-        public int PlusMinus { get; set; }
     }
 }

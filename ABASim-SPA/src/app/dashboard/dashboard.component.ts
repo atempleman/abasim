@@ -63,6 +63,12 @@ export class DashboardComponent implements OnInit {
       }, error => {
         this.alertify.error('Error getting todays events');
       });
+    } else if (this.league.stateId === 7 && this.league.day !== 0) {
+      this.leagueService.getSeasonGamesForToday().subscribe(result => {
+        this.todaysGames = result;
+      }, error => {
+        this.alertify.error('Error getting todays events');
+      });
     }
   }
 
@@ -71,6 +77,12 @@ export class DashboardComponent implements OnInit {
     if (this.league.stateId === 6) {
       // Need to get the games for the day
       this.leagueService.getPreseasonGamesForTomorrow().subscribe(result => {
+        this.upcomingGames = result;
+      }, error => {
+        this.alertify.error('Error getting upcoming games');
+      });
+    } else if (this.league.stateId === 7) {
+      this.leagueService.getSeasonGamesForTomorrow().subscribe(result => {
         this.upcomingGames = result;
       }, error => {
         this.alertify.error('Error getting upcoming games');
