@@ -37,4 +37,20 @@ export interface CompletePlayer {
     orpmRating: number;
     drpmRating: number;
     teamName: string;
+    gamesStats: number;
+    minutesStats: number;
+    fgmStats: number;
+    fgaStats: number;
+    threeFgmStats: number;
+    threeFgaStats: number;
+    ftmStats: number;
+    ftaStats: number;
+    orebsStats: number;
+    drebsStats: number;
+    astStats: number;
+    stlStats: number;
+    blkStats: number;
+    flsStats: number;
+    toStats: number;
+    ptsStats: number;
 }

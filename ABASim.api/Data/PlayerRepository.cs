@@ -26,6 +26,7 @@ namespace ABASim.api.Data
             var playerRatings = await _context.PlayerRatings.FirstOrDefaultAsync(x => x.PlayerId == playerId);
             var playerTendancies = await _context.PlayerTendancies.FirstOrDefaultAsync(x => x.PlayerId == playerId);
             var playerGrades = await _context.PlayerGradings.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+            var playerStats = await _context.PlayerStats.FirstOrDefaultAsync(x => x.PlayerId == playerId);
 
             // need to get the players team
             var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
@@ -70,7 +71,23 @@ namespace ABASim.api.Data
                 DrpmRating = playerRatings.DRPMRating,
                 PassingGrade = playerGrades.PassingGrade,
                 IntangiblesGrade = playerGrades.IntangiblesGrade,
-                TeamName = team.Teamname + " " + team.Mascot
+                TeamName = team.Teamname + " " + team.Mascot,
+                GamesStats = playerStats.GamesPlayed,
+                MinutesStats = playerStats.Minutes,
+                FgmStats = playerStats.FieldGoalsMade,
+                FgaStats = playerStats.FieldGoalsAttempted,
+                ThreeFgmStats = playerStats.ThreeFieldGoalsMade,
+                ThreeFgaStats = playerStats.ThreeFieldGoalsAttempted,
+                FtmStats = playerStats.FreeThrowsMade,
+                FtaStats = playerStats.FreeThrowsAttempted,
+                OrebsStats = playerStats.ORebs,
+                DrebsStats = playerStats.DRebs,
+                AstStats = playerStats.Assists,
+                StlStats = playerStats.Steals,
+                BlkStats = playerStats.Blocks,
+                FlsStats = playerStats.Fouls,
+                ToStats = playerStats.Turnovers,
+                PtsStats = playerStats.Points
             };
             return player;
         }

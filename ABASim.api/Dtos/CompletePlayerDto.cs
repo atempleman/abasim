@@ -78,5 +78,37 @@ namespace ABASim.api.Dtos
         public string IntangiblesGrade { get; set; }
 
         public string TeamName { get; set; }
+
+        public int GamesStats { get; set; }
+
+        public int MinutesStats { get; set; }
+
+        public int FgmStats { get; set; }
+        
+        public int FgaStats { get; set; }
+
+        public int ThreeFgmStats { get; set; }
+
+        public int ThreeFgaStats { get; set; }
+    
+        public int FtmStats { get; set; }
+
+        public int FtaStats { get; set; }
+    
+        public int OrebsStats { get; set; }
+
+        public int DrebsStats { get; set; }
+    
+        public int AstStats { get; set; }
+
+        public int StlStats { get; set; }
+
+        public int BlkStats { get; set; }
+
+        public int FlsStats { get; set; }
+
+        public int ToStats { get; set; }
+
+        public int PtsStats { get; set; }
     }
 }
