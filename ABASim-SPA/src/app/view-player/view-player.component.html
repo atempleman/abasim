@@ -11,15 +11,15 @@
                             </div>
                             <div class="userData ml-3">
                                 <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold">
-                                    {{ this.detailedPlayer.firstName }} {{ this.detailedPlayer.surname }}</h2>
-                                <h6 class="d-block">Team: {{ this.detailedPlayer.teamName }}</h6>
+                                    {{ this.detailedPlayer?.firstName }} {{ this.detailedPlayer?.surname }}</h2>
+                                <h6 class="d-block">Team: {{ this.detailedPlayer?.teamName }}</h6>
                                 <h6 class="d-block">
                                     Position: 
-                                    <ng-container  *ngIf="this.detailedPlayer.pgPosition == 1">PG </ng-container>
-							        <ng-container *ngIf="this.detailedPlayer.sgPosition == 1">SG </ng-container>
-							        <ng-container *ngIf="this.detailedPlayer.sfPosition == 1">SF </ng-container>
-							        <ng-container *ngIf="this.detailedPlayer.pfPosition == 1">PF </ng-container>
-							        <ng-container *ngIf="this.detailedPlayer.cPosition == 1">C </ng-container>
+                                    <ng-container  *ngIf="this.detailedPlayer?.pgPosition == 1">PG </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer?.sgPosition == 1">SG </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer?.sfPosition == 1">SF </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer?.pfPosition == 1">PF </ng-container>
+							        <ng-container *ngIf="this.detailedPlayer?.cPosition == 1">C </ng-container>
                                 </h6>
                             </div>
                         </div>
@@ -71,7 +71,7 @@
                                     <tbody>
                                         <tr class="table-secondary">
                                             <td>
-                                                {{ this.detailedPlayer.gamesStats }}
+                                                {{ this.detailedPlayer?.gamesStats }}
                                             </td>
                                             <td>
                                                 {{ getMinutesAverage() }}
@@ -153,37 +153,37 @@
                                     <tbody>
                                         <tr class="table-secondary">
                                             <td>
-                                                {{ this.detailedPlayer.twoGrade }}
+                                                {{ this.detailedPlayer?.twoGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.threeGrade }}
+                                                {{ this.detailedPlayer?.threeGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.ftGrade }}
+                                                {{ this.detailedPlayer?.ftGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.oRebGrade }}
+                                                {{ this.detailedPlayer?.oRebGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.dRebGrade }}
+                                                {{ this.detailedPlayer?.dRebGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.handlingGrade }}
+                                                {{ this.detailedPlayer?.handlingGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.passingGrade }}
+                                                {{ this.detailedPlayer?.passingGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.blockGrade }}
+                                                {{ this.detailedPlayer?.blockGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.stealGrade }}
+                                                {{ this.detailedPlayer?.stealGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.staminaGrade }}
+                                                {{ this.detailedPlayer?.staminaGrade }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.intangiblesGrade }}
+                                                {{ this.detailedPlayer?.intangiblesGrade }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -209,40 +209,40 @@
                                     <tbody>
                                         <tr class="table-secondary">
                                             <td>
-                                                {{ this.detailedPlayer.twoRating }}
+                                                {{ this.detailedPlayer?.twoRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.threeRating }}
+                                                {{ this.detailedPlayer?.threeRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.ftRating }}
+                                                {{ this.detailedPlayer?.ftRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.orebRating }}
+                                                {{ this.detailedPlayer?.orebRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.drebRating }}
+                                                {{ this.detailedPlayer?.drebRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.assistRating }}
+                                                {{ this.detailedPlayer?.assistRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.stealRating }}
+                                                {{ this.detailedPlayer?.stealRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.blockRating }}
+                                                {{ this.detailedPlayer?.blockRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.usageRating }}
+                                                {{ this.detailedPlayer?.usageRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.staminaRating }}
+                                                {{ this.detailedPlayer?.staminaRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.orpmRating }}
+                                                {{ this.detailedPlayer?.orpmRating }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.drpmRating }}
+                                                {{ this.detailedPlayer?.drpmRating }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -261,19 +261,19 @@
                                     <tbody>
                                         <tr class="table-secondary">
                                             <td>
-                                                {{ this.detailedPlayer.twoPointTendancy }}
+                                                {{ this.detailedPlayer?.twoPointTendancy }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.threePointTendancy }}
+                                                {{ this.detailedPlayer?.threePointTendancy }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.passTendancy }}
+                                                {{ this.detailedPlayer?.passTendancy }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.fouledTendancy }}
+                                                {{ this.detailedPlayer?.fouledTendancy }}
                                             </td>
                                             <td>
-                                                {{ this.detailedPlayer.turnoverTendancy }}
+                                                {{ this.detailedPlayer?.turnoverTendancy }}
                                             </td>
                                         </tr>
                                     </tbody>

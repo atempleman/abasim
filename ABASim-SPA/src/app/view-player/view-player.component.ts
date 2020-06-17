@@ -30,6 +30,7 @@ export class ViewPlayerComponent implements OnInit {
     this.playerId = this.transferService.getData();
     this.playerService.playerForPlayerProfileById(this.playerId).subscribe(result => {
       this.detailedPlayer = result;
+      console.log(result);
       console.log(this.detailedPlayer);
     }, error => {
       this.alertify.error('Error getting player profile');
@@ -37,6 +38,8 @@ export class ViewPlayerComponent implements OnInit {
   }
 
   getMinutesAverage() {
+    console.log('here');
+    console.log(this.detailedPlayer.minutesStats);
     const value = ((this.detailedPlayer.minutesStats / this.detailedPlayer.gamesStats) / 60);
     const display = value.toFixed(1);
     return display;

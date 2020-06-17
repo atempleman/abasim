@@ -207,6 +207,8 @@ namespace ABASim.api.Data
                     }
                 }
             }
+            // Need to order properly
+            standings = standings.OrderByDescending(x => x.Wins).ToList();
             return standings;
         }
 
@@ -240,6 +242,8 @@ namespace ABASim.api.Data
                     }
                 }
             }
+            // Need to order properly
+            standings = standings.OrderByDescending(x => x.Wins).ToList();
             return standings;
         }
 
@@ -267,7 +271,8 @@ namespace ABASim.api.Data
                 };
                 standings.Add(standing);
             }
-
+            // Need to order properly
+            standings = standings.OrderByDescending(x => x.Wins).ToList();
             return standings;
         }
 
