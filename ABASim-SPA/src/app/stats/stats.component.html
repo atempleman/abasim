@@ -3,53 +3,54 @@
 </div>
 
 <div class="box">
-	<div class="container">
-		<div class="row cards-row">
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-home fa-2x"></i><span
-						class="header-card ml-3"><strong>LEAGUE HOME</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Go to the league page. View recent results and upcoming games.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToLeague()">Go to League</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-list-ol fa-2x"></i><span
-						class="header-card ml-3"><strong>STANDINGS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the league standings for league, conference or division.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToStandings()">Standings</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the league schedule, upcoming and past games.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToSchedule()">Schedule</button>
-					</div>
-				</div>
-			</div>
-      
+  <div class="container">
+    <div class="row cards-row">
       <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToTransactions()">Go to Transactions</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="card-header"><i class="fa fa-home fa-2x"></i><span class="header-card ml-3"><strong>LEAGUE
+              HOME</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">Go to the league page. View recent results and upcoming games.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="goToLeague()">Go to League</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-list-ol fa-2x"></i><span
+            class="header-card ml-3"><strong>STANDINGS</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View the league standings for league, conference or division.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="goToStandings()">Standings</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View the league schedule, upcoming and past games.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="goToSchedule()">Schedule</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="goToTransactions()">Go to
+              Transactions</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="box">
@@ -58,19 +59,24 @@
       <div class="col-12">
         <ul class="nav nav-tabs">
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="" [ngClass]="this.scoringSelection ? 'active' : ''" (click)="this.scoringClick()">Scoring & Passing</a>
+            <a class="nav-link" [routerLink]="" [ngClass]="this.scoringSelection ? 'active' : ''"
+              (click)="this.scoringClick()">Scoring & Passing</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="" [ngClass]="this.reboundingSelection ? 'active' : ''" (click)="this.reboundingClick()">Rebounding</a>
+            <a class="nav-link" [routerLink]="" [ngClass]="this.reboundingSelection ? 'active' : ''"
+              (click)="this.reboundingClick()">Rebounding</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="" [ngClass]="this.defenceSelection ? 'active' : ''" (click)="this.defenceClick()">Defence</a>
+            <a class="nav-link" [routerLink]="" [ngClass]="this.defenceSelection ? 'active' : ''"
+              (click)="this.defenceClick()">Defence</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="" [ngClass]="this.shootingSelection ? 'active' : ''" (click)="this.shootingClick()">Shooting %'s</a>
+            <a class="nav-link" [routerLink]="" [ngClass]="this.shootingSelection ? 'active' : ''"
+              (click)="this.shootingClick()">Shooting %'s</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="" [ngClass]="this.otherSelection ? 'active' : ''" (click)="this.otherClick()">Other</a>
+            <a class="nav-link" [routerLink]="" [ngClass]="this.otherSelection ? 'active' : ''"
+              (click)="this.otherClick()">Other</a>
           </li>
         </ul>
 
@@ -79,108 +85,512 @@
         <div class="col-12" *ngIf="this.scoringSelection">
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.pointsSelection ? 'active' : ''" (click)="pointsClick()">Points</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.pointsSelection ? 'active' : ''"
+                (click)="pointsClick()">Points</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.assistsSelection ? 'active' : ''" (click)="assistsClick()">Assists</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.assistsSelection ? 'active' : ''"
+                (click)="assistsClick()">Assists</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.fgmSelection ? 'active' : ''" (click)="fgmClick()">FGM</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.fgmSelection ? 'active' : ''"
+                (click)="fgmClick()">FGM</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.fgaSelection ? 'active' : ''" (click)="fgaClick()">FGA</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.fgaSelection ? 'active' : ''"
+                (click)="fgaClick()">FGA</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.threefgmSelection ? 'active' : ''" (click)="threefgmClick()">3FGM</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.threefgmSelection ? 'active' : ''"
+                (click)="threefgmClick()">3FGM</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.threefmaselection ? 'active' : ''" (click)="threefgaClick()">3FGA</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.threefmaselection ? 'active' : ''"
+                (click)="threefgaClick()">3FGA</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.ftmSelection ? 'active' : ''" (click)="ftmClick()">FTM</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.ftmSelection ? 'active' : ''"
+                (click)="ftmClick()">FTM</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.ftaSelection ? 'active' : ''" (click)="ftaClick()">FTA</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.ftaSelection ? 'active' : ''"
+                (click)="ftaClick()">FTA</a>
             </li>
           </ul>
           <br />
-          <div class="row statstext" *ngIf="this.league?.stateId < 6 || (this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
+          <div class="row statstext"
+            *ngIf="(this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
             <h5>Stats are not yet available.</h5>
+          </div>
+          <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7)">
+            <table *ngIf="this.pointsStats?.length != 0 && this.pointsSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Points Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.pointsStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.points / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.assistStats?.length != 0 && this.assistsSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Assists Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.assistStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.assists / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.fgmStats?.length != 0 && this.fgmSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Field Goals Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.fgmStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.fgm / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.fgaStats?.length != 0 && this.fgaSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Field Goals Attempted Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.fgaStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.fga / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.ftmStats?.length != 0 && this.ftmSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Field Throws Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.ftmStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.ftm / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.ftaStats?.length != 0 && this.ftaSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Field Throws Attempted Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.ftaStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.fta / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.threefgmStats?.length != 0 && this.threefgmSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>3pt Field Goals Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.threefgmStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.threeFgm / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.threefgaStats?.length != 0 && this.threefmaselection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>3pt Field Goals Attempted Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.threefgaStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.threeFga / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
           </div>
         </div>
 
         <div class="col-12" *ngIf="this.reboundingSelection">
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.totalRebSelection ? 'active' : ''" (click)="totelRebClick()">Total Rebounds</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.totalRebSelection ? 'active' : ''"
+                (click)="totelRebClick()">Total Rebounds</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.oRebSelection ? 'active' : ''" (click)="oRebClick()">Offensive Rebounds</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.oRebSelection ? 'active' : ''"
+                (click)="oRebClick()">Offensive Rebounds</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.dRebSelection ? 'active' : ''" (click)="dRebClick()">Defensive Rebounds</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.dRebSelection ? 'active' : ''"
+                (click)="dRebClick()">Defensive Rebounds</a>
             </li>
           </ul>
           <br />
-          <div class="row statstext">
+          <div class="row statstext" *ngIf="(this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
             <h5>Stats are not yet available.</h5>
+          </div>
+          <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7)">
+            <table *ngIf="this.drebStats ?.length != 0 && this.dRebSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Defensive Rebounds Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.drebStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.defensiveRebounds / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.orebsStats ?.length != 0 && this.oRebSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>OFfensive Rebounds Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.orebsStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.offensiveRebounds / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.totalRebsStats ?.length != 0 && this.totalRebSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Total Rebounds Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.totalRebsStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.totalRebounds / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
           </div>
         </div>
 
         <div class="col-12" *ngIf="this.defenceSelection">
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.stealsSelection ? 'active' : ''" (click)="stealsClick()">Steals</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.stealsSelection ? 'active' : ''"
+                (click)="stealsClick()">Steals</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.blocksSelection ? 'active' : ''" (click)="blocksClick()">Blocks</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.blocksSelection ? 'active' : ''"
+                (click)="blocksClick()">Blocks</a>
             </li>
           </ul>
           <br />
-          <div class="row statstext">
+          <div class="row statstext" *ngIf="(this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
             <h5>Stats are not yet available.</h5>
+          </div>
+          <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7)">
+            <table *ngIf="this.stealsStats ?.length != 0 && this.stealsSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Steals Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.stealsStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.steal / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.blocksStats ?.length != 0 && this.blocksSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Blocks Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.blocksStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.block / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
           </div>
         </div>
 
         <div class="col-12" *ngIf="this.shootingSelection">
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.fgpSelection ? 'active' : ''" (click)="fgpClick()">FG%</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.fgpSelection ? 'active' : ''"
+                (click)="fgpClick()">FG%</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.threefgpSelection ? 'active' : ''" (click)="threepClick()">3FG%</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.threefgpSelection ? 'active' : ''"
+                (click)="threepClick()">3FG%</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.ftpSelection ? 'active' : ''" (click)="ftpClick()">FT%</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.ftpSelection ? 'active' : ''"
+                (click)="ftpClick()">FT%</a>
             </li>
           </ul>
           <br />
-          <div class="row statstext">
+          <div class="row statstext" *ngIf="(this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
             <h5>Stats are not yet available.</h5>
+          </div>
+          <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7)">
+            <table *ngIf="this.twoperc ?.length != 0 && this.fgpSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Fielg Goal %</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.twoperc">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.fgm / player.fga).toFixed(3) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.threeperc ?.length != 0 && this.threefgpSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>3pt Fielg Goal %</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.twoperc">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.threeFgm / player.threeFga).toFixed(3) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.ftperc ?.length != 0 && this.ftpSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Free Throw %</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.ftperc">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.ftm / player.fta).toFixed(3) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
           </div>
         </div>
 
         <div class="col-12" *ngIf="this.otherSelection">
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.turnoversSelection ? 'active' : ''" (click)="turnoverClick()">Turnovers</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.turnoversSelection ? 'active' : ''"
+                (click)="turnoverClick()">Turnovers</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.foulsSelection ? 'active' : ''" (click)="foulsClick()">Fouls</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.foulsSelection ? 'active' : ''"
+                (click)="foulsClick()">Fouls</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="" [ngClass]="this.minuteSelection ? 'active' : ''" (click)="mintuesClick()">Minutes</a>
+              <a class="nav-link" [routerLink]="" [ngClass]="this.minuteSelection ? 'active' : ''"
+                (click)="mintuesClick()">Minutes</a>
             </li>
           </ul>
           <br />
-          <div class="row statstext">
+          <div class="row statstext" *ngIf="(this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
             <h5>Stats are not yet available.</h5>
+          </div>
+          <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7)">
+            <table *ngIf="this.turnoverStats ?.length != 0 && this.turnoversSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Turnovers Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.turnoverStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.turnovers / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.foulStats ?.length != 0 && this.foulsSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Fouls Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.turnoverStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ (player.fouls / player.gamesPlayed).toFixed(2) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
+
+            <table *ngIf="this.minutesStats ?.length != 0 && this.minuteSelection" class="table table-striped custab">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Minutes Per Game</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tr *ngFor="let player of this.minutesStats">
+                <td></td>
+                <td>{{ player.playerName }}</td>
+                <td>{{ player.teamShortCode }}</td>
+                <td>{{ ((player.minutes / player.gamesPlayed) / 60).toFixed(0) }}: {{ ((player.minutes / player.gamesPlayed) % 60).toFixed(0) }}</td>
+                <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                      class="glyphicon glyphicon-edit"></span> View</button></td>
+              </tr>
+            </table>
           </div>
         </div>
 
-        
+
       </div>
     </div>
   </div>
 </div>
-

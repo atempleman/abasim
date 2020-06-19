@@ -101,52 +101,54 @@ namespace ABASim.api.Data
 
                     foreach (var bs in boxScores)
                     {
-                        // Now need to see if the player stat record exists for the player
-                        var playerStats = await _context.PlayerStats.FirstOrDefaultAsync(x => x.PlayerId == bs.PlayerId);
-                        if (playerStats != null) {
-                            // Player already has a player stats record
-                            playerStats.Assists = playerStats.Assists + bs.Assists;
-                            playerStats.Blocks = playerStats.Blocks + bs.Blocks;
-                            playerStats.DRebs = playerStats.DRebs + bs.DRebs;
-                            playerStats.FieldGoalsAttempted = playerStats.FieldGoalsAttempted + bs.FieldGoalsAttempted;
-                            playerStats.FieldGoalsMade = playerStats.FieldGoalsMade + bs.FieldGoalsMade;
-                            playerStats.Fouls = playerStats.Fouls + bs.Fouls;
-                            playerStats.FreeThrowsAttempted = playerStats.FreeThrowsAttempted + bs.FreeThrowsAttempted;
-                            playerStats.FreeThrowsMade = playerStats.FreeThrowsMade + bs.FreeThrowsMade;
-                            playerStats.GamesPlayed = playerStats.GamesPlayed + 1;
-                            playerStats.Minutes = playerStats.Minutes + bs.Minutes;
-                            playerStats.ORebs = playerStats.ORebs + bs.ORebs;
-                            playerStats.Points = playerStats.Points + bs.Points;
-                            playerStats.Rebounds = playerStats.Rebounds + bs.Rebounds;
-                            playerStats.Steals = playerStats.Steals + bs.Steals;
-                            playerStats.ThreeFieldGoalsAttempted = playerStats.ThreeFieldGoalsAttempted + bs.ThreeFieldGoalsAttempted;
-                            playerStats.ThreeFieldGoalsMade = playerStats.ThreeFieldGoalsMade + bs.ThreeFieldGoalsMade;
-                            playerStats.Turnovers = playerStats.Turnovers + bs.Turnovers;
+                        if (bs.Minutes != 0) {
+                            // Now need to see if the player stat record exists for the player
+                            var playerStats = await _context.PlayerStats.FirstOrDefaultAsync(x => x.PlayerId == bs.PlayerId);
+                            if (playerStats != null) {
+                                // Player already has a player stats record
+                                playerStats.Assists = playerStats.Assists + bs.Assists;
+                                playerStats.Blocks = playerStats.Blocks + bs.Blocks;
+                                playerStats.DRebs = playerStats.DRebs + bs.DRebs;
+                                playerStats.FieldGoalsAttempted = playerStats.FieldGoalsAttempted + bs.FieldGoalsAttempted;
+                                playerStats.FieldGoalsMade = playerStats.FieldGoalsMade + bs.FieldGoalsMade;
+                                playerStats.Fouls = playerStats.Fouls + bs.Fouls;
+                                playerStats.FreeThrowsAttempted = playerStats.FreeThrowsAttempted + bs.FreeThrowsAttempted;
+                                playerStats.FreeThrowsMade = playerStats.FreeThrowsMade + bs.FreeThrowsMade;
+                                playerStats.GamesPlayed = playerStats.GamesPlayed + 1;
+                                playerStats.Minutes = playerStats.Minutes + bs.Minutes;
+                                playerStats.ORebs = playerStats.ORebs + bs.ORebs;
+                                playerStats.Points = playerStats.Points + bs.Points;
+                                playerStats.Rebounds = playerStats.Rebounds + bs.Rebounds;
+                                playerStats.Steals = playerStats.Steals + bs.Steals;
+                                playerStats.ThreeFieldGoalsAttempted = playerStats.ThreeFieldGoalsAttempted + bs.ThreeFieldGoalsAttempted;
+                                playerStats.ThreeFieldGoalsMade = playerStats.ThreeFieldGoalsMade + bs.ThreeFieldGoalsMade;
+                                playerStats.Turnovers = playerStats.Turnovers + bs.Turnovers;
 
-                            _context.PlayerStats.Update(playerStats);
-                        } else {
-                            PlayerStat newPlayerStats = new PlayerStat
-                            {
-                                Assists = bs.Assists,
-                                Blocks = bs.Blocks,
-                                DRebs = bs.DRebs,
-                                FieldGoalsAttempted = bs.FieldGoalsAttempted,
-                                FieldGoalsMade = bs.FieldGoalsMade,
-                                Fouls = bs.Fouls,
-                                FreeThrowsAttempted = bs.FreeThrowsAttempted,
-                                FreeThrowsMade = bs.FreeThrowsMade,
-                                GamesPlayed = 1,
-                                Minutes = bs.Minutes,
-                                ORebs = bs.ORebs,
-                                Points = bs.Points,
-                                PlayerId = bs.PlayerId,
-                                Rebounds = bs.Rebounds,
-                                Steals = bs.Steals,
-                                ThreeFieldGoalsAttempted = bs.ThreeFieldGoalsAttempted,
-                                ThreeFieldGoalsMade = bs.ThreeFieldGoalsMade,
-                                Turnovers = bs.Turnovers
-                            };
-                            await _context.AddAsync(newPlayerStats);
+                                _context.PlayerStats.Update(playerStats);
+                            } else {
+                                PlayerStat newPlayerStats = new PlayerStat
+                                {
+                                    Assists = bs.Assists,
+                                    Blocks = bs.Blocks,
+                                    DRebs = bs.DRebs,
+                                    FieldGoalsAttempted = bs.FieldGoalsAttempted,
+                                    FieldGoalsMade = bs.FieldGoalsMade,
+                                    Fouls = bs.Fouls,
+                                    FreeThrowsAttempted = bs.FreeThrowsAttempted,
+                                    FreeThrowsMade = bs.FreeThrowsMade,
+                                    GamesPlayed = 1,
+                                    Minutes = bs.Minutes,
+                                    ORebs = bs.ORebs,
+                                    Points = bs.Points,
+                                    PlayerId = bs.PlayerId,
+                                    Rebounds = bs.Rebounds,
+                                    Steals = bs.Steals,
+                                    ThreeFieldGoalsAttempted = bs.ThreeFieldGoalsAttempted,
+                                    ThreeFieldGoalsMade = bs.ThreeFieldGoalsMade,
+                                    Turnovers = bs.Turnovers
+                                };
+                                await _context.AddAsync(newPlayerStats);
+                            }
                         }
                     }
                 }

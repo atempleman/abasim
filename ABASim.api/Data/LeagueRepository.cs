@@ -387,5 +387,113 @@ namespace ABASim.api.Data
             }
             return transactions;
         }
+
+        public async Task<IEnumerable<LeaguePointsDto>> GetLeagueScoring()
+        {
+            List<LeaguePointsDto> listOfScoring = new List<LeaguePointsDto>();
+            var playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).ToListAsync();
+
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+                
+                LeaguePointsDto lpDto = new LeaguePointsDto
+                {
+                    PlayerId = ps.PlayerId,
+                    TeamShortCode = team.ShortCode,
+                    Points = ps.Points,
+                    GamesPlayed = ps.GamesPlayed,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    Assists = ps.Assists,
+                    Fga = ps.FieldGoalsAttempted,
+                    Fgm = ps.FieldGoalsMade,
+                    Fta = ps.FreeThrowsAttempted,
+                    Ftm = ps.FreeThrowsMade,
+                    ThreeFga = ps.ThreeFieldGoalsAttempted,
+                    ThreeFgm = ps.ThreeFieldGoalsMade
+                };
+                listOfScoring.Add(lpDto);
+            }
+            return listOfScoring;
+        }
+
+        public async Task<IEnumerable<LeagueReboundingDto>> GetLeagueRebounding()
+        {
+            List<LeagueReboundingDto> listOfRebounding = new List<LeagueReboundingDto>();
+            var playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).ToListAsync();
+
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+                
+                LeagueReboundingDto rebDto = new LeagueReboundingDto
+                {
+                    PlayerId = ps.PlayerId,
+                    TeamShortCode = team.ShortCode,
+                    OffensiveRebounds = ps.ORebs,
+                    DefensiveRebounds = ps.DRebs,
+                    TotalRebounds = ps.ORebs + ps.DRebs,
+                    GamesPlayed = ps.GamesPlayed,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                };
+                listOfRebounding.Add(rebDto);
+            }
+            return listOfRebounding;
+        }
+
+        public async Task<IEnumerable<LeagueDefenceDto>> GetLeagueDefence()
+        {
+            List<LeagueDefenceDto> listOfDefence = new List<LeagueDefenceDto>();
+            var playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).ToListAsync();
+
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+                
+                LeagueDefenceDto defDto = new LeagueDefenceDto
+                {
+                    PlayerId = ps.PlayerId,
+                    TeamShortCode = team.ShortCode,
+                    Steal = ps.Steals,
+                    Block = ps.Blocks,
+                    GamesPlayed = ps.GamesPlayed,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                };
+                listOfDefence.Add(defDto);
+            }
+            return listOfDefence;
+        }
+
+        public async Task<IEnumerable<LeagueOtherDto>> GetLeagueOther()
+        {
+            List<LeagueOtherDto> listOfOther = new List<LeagueOtherDto>();
+            var playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).ToListAsync();
+
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+                
+                LeagueOtherDto otherDto = new LeagueOtherDto
+                {
+                    PlayerId = ps.PlayerId,
+                    TeamShortCode = team.ShortCode,
+                    Minutes = ps.Minutes,
+                    Turnovers = ps.Turnovers,
+                    Fouls = ps.Fouls,
+                    GamesPlayed = ps.GamesPlayed,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                };
+                listOfOther.Add(otherDto);
+            }
+            return listOfOther;
+        }
     }
 }

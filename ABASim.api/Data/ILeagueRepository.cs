@@ -36,5 +36,13 @@ namespace ABASim.api.Data
          Task<GameDetailsDto> GetPreseasonGameDetails(int gameId);
 
          Task<GameDetailsDto> GetSeasonGameDetails(int gameId);
+
+         Task<IEnumerable<LeaguePointsDto>> GetLeagueScoring();
+
+         Task<IEnumerable<LeagueReboundingDto>> GetLeagueRebounding();
+
+         Task<IEnumerable<LeagueDefenceDto>> GetLeagueDefence();
+
+         Task<IEnumerable<LeagueOtherDto>> GetLeagueOther();
     }
 }

@@ -11,6 +11,10 @@ import { Schedule } from '../_models/schedule';
 import { Transaction } from '../_models/transaction';
 import { PlayByPlay } from '../_models/playByPlay';
 import { GameDetails } from '../_models/gameDetails';
+import { LeagueScoring } from '../_models/leagueScoring';
+import { LeagueRebounding } from '../_models/leagueRebounding';
+import { LeagueOther } from '../_models/leagueOther';
+import { LeagueDefence } from '../_models/leagueDefence';
 
 @Injectable({
   providedIn: 'root'
@@ -79,5 +83,21 @@ export class LeagueService {
 
   getSeasonGamesForToday(): Observable<GameDisplayCurrent[]> {
     return this.http.get<GameDisplayCurrent[]>(this.baseUrl + 'getgamesfortodayseason');
+  }
+
+  getLeagueScoring(): Observable<LeagueScoring[]> {
+    return this.http.get<LeagueScoring[]>(this.baseUrl + 'getleaguescoring');
+  }
+
+  getLeagueRebounding(): Observable<LeagueRebounding[]> {
+    return this.http.get<LeagueRebounding[]>(this.baseUrl + 'getleaguerebounding');
+  }
+
+  getLeagueOther(): Observable<LeagueOther[]> {
+    return this.http.get<LeagueOther[]>(this.baseUrl + 'getleagueother');
+  }
+
+  getLeagueDefence(): Observable<LeagueDefence[]> {
+    return this.http.get<LeagueDefence[]>(this.baseUrl + 'getleaguedefence');
   }
 }
