@@ -7,6 +7,7 @@ import { GameDetails } from '../_models/gameDetails';
 import { GameEngineService } from '../_services/game-engine.service';
 import { BoxScore } from '../_models/boxScore';
 import { League } from '../_models/league';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-box-score',
@@ -54,7 +55,7 @@ export class BoxScoreComponent implements OnInit {
   home3FGM = 0;
 
   constructor(private alertify: AlertifyService, private authService: AuthService, private leagueService: LeagueService,
-              private transferService: TransferService, private engineService: GameEngineService) { }
+              private transferService: TransferService, private engineService: GameEngineService, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.gameId = this.transferService.getData();
@@ -70,6 +71,7 @@ export class BoxScoreComponent implements OnInit {
 
   getGameDetails() {
     if (this.league.stateId === 6) {
+      this.spinner.show();
       this.leagueService.getGameDetailsPreseason(this.gameId).subscribe(result => {
         this.gameDetails = result;
       }, error => {
@@ -77,8 +79,10 @@ export class BoxScoreComponent implements OnInit {
       }, () => {
         this.retrieveBoxScoreData();
         this.calculateTeamTotals();
+        this.spinner.hide();
       });
     } else if (this.league.stateId === 7) {
+      this.spinner.show();
       this.leagueService.getGameDetailsSeason(this.gameId).subscribe(result => {
         this.gameDetails = result;
       }, error => {
@@ -86,6 +90,7 @@ export class BoxScoreComponent implements OnInit {
       }, () => {
         this.retrieveBoxScoreData();
         this.calculateTeamTotals();
+        this.spinner.hide();
       });
     }
   }

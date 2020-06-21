@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "launchUrl": "api/league",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "ABASim.api": {
@@ -23,7 +23,7 @@
       "launchUrl": "api/league",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { TransferService } from '../_services/transfer.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { SignedPlayer } from '../_models/signedPlayer';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-freeagents',
@@ -27,7 +28,7 @@ export class FreeagentsComponent implements OnInit {
 
   constructor(private alertify: AlertifyService, private playerService: PlayerService, private teamService: TeamService,
               private authService: AuthService, private router: Router, private transferService: TransferService,
-              private modalService: BsModalService) { }
+              private modalService: BsModalService, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
@@ -42,11 +43,15 @@ export class FreeagentsComponent implements OnInit {
   }
 
   GetFreeAgents() {
+    this.spinner.show();
+
     // Get the freeagents player listing
     this.playerService.getFreeAgents().subscribe(result => {
       this.freeAgents = result;
     }, error => {
       this.alertify.error('Error getting free agents');
+    }, () => {
+      this.spinner.hide();
     });
   }
 

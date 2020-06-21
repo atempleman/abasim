@@ -32,13 +32,17 @@ export class StandingsComponent implements OnInit {
 
   ngOnInit() {
     this.leagueService.getConferenceStandings(1).subscribe(result => {
-      this.eastStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.eastStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
+      // this.eastStandings = result;
     }, error => {
       this.alertify.success('Error getting eastern conference standings');
     });
 
     this.leagueService.getConferenceStandings(2).subscribe(result => {
-      this.westStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.westStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
+      // this.westStandings = result;
     }, error => {
       this.alertify.success('Error getting western conference standings');
     });
@@ -46,13 +50,17 @@ export class StandingsComponent implements OnInit {
 
   conferenceClick() {
     this.leagueService.getConferenceStandings(1).subscribe(result => {
-      this.eastStandings = result;
+      // this.eastStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.eastStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting eastern conference standings');
     });
 
     this.leagueService.getConferenceStandings(2).subscribe(result => {
-      this.westStandings = result;
+      // this.westStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.westStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting western conference standings');
     });
@@ -64,37 +72,49 @@ export class StandingsComponent implements OnInit {
 
   divisionClick() {
     this.leagueService.getDivisionStandings(1).subscribe(result => {
-      this.atlanticStandings = result;
+      // this.atlanticStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.atlanticStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting division standings');
     });
 
     this.leagueService.getDivisionStandings(2).subscribe(result => {
-      this.centralstandings = result;
+      // this.centralstandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.centralstandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting division standings');
     });
 
     this.leagueService.getDivisionStandings(3).subscribe(result => {
-      this.southeastStandings = result;
+      // this.southeastStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.southeastStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting division standings');
     });
 
     this.leagueService.getDivisionStandings(4).subscribe(result => {
-      this.northwestStandings = result;
+      // this.northwestStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.northwestStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting division standings');
     });
 
     this.leagueService.getDivisionStandings(5).subscribe(result => {
-      this.pacificStandings = result;
+      // this.pacificStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.pacificStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting division standings');
     });
 
     this.leagueService.getDivisionStandings(6).subscribe(result => {
-      this.southwestStandings = result;
+      // this.southwestStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.southwestStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting division standings');
     });
@@ -106,7 +126,9 @@ export class StandingsComponent implements OnInit {
 
   leagueClick() {
     this.leagueService.getLeagueStandings().subscribe(result => {
-      this.allStandings = result;
+      // this.allStandings = result;
+      // tslint:disable-next-line: max-line-length
+      this.allStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
     }, error => {
       this.alertify.error('Error getting league standings');
     });
@@ -114,6 +136,10 @@ export class StandingsComponent implements OnInit {
     this.statusConference = false;
     this.statusDivision = false;
     this.statusLeague = true;
+  }
+
+  getWinPercantage(wins: number, played: number) {
+    return (wins / played).toFixed(3);
   }
 
   goToStats() {

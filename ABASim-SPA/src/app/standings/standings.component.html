@@ -76,10 +76,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -94,16 +91,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>
@@ -116,10 +104,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -134,17 +119,9 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
-                        </td>
+                        
                     </tr>
                 </tbody>
             </table>
@@ -157,10 +134,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -175,16 +149,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>
@@ -197,10 +162,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -215,16 +177,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>
@@ -237,10 +190,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -255,16 +205,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>
@@ -277,16 +218,13 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.northwestStandings">
                         <td>
-                            {{ stand.team }}
+                          {{ stand.team }}
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -295,16 +233,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>
@@ -317,10 +246,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -335,16 +261,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>
@@ -357,10 +274,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -375,16 +289,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>
@@ -398,10 +303,7 @@
                       <th>Team</th>
                       <th>Wins</th>
                       <th>Losses</th>
-                      <th>Home Wins</th>
-                      <th>Home Losses</th>
-                      <th>Road Wins</th>
-                      <th>Road Losses</th>
+                      <th>Win %</th>
                     </tr>
                   </thead>
                 <tbody>
@@ -416,16 +318,7 @@
                           {{ stand.losses }}
                         </td>
                         <td>
-                          {{ stand.homeWins }}
-                        </td>
-                        <td>
-                          {{ stand.homeLosses }}
-                        </td>
-                        <td>
-                          {{ stand.roadWins }}
-                        </td>
-                        <td>
-                          {{ stand.roadLosses }}
+                          {{ this.getWinPercantage(stand.wins, stand.gamesPlayed) }}
                         </td>
                     </tr>
                 </tbody>

@@ -91,6 +91,9 @@
 
 
 <div class="box">
+	<ngx-spinner [fullScreen]="false" type="pacman" size="medium">
+		<p class="loading">Loading Free Agents...</p>
+	</ngx-spinner>
 	<div class="row event-row">
 		<div class="col-lg-6 events" *ngIf="this.league?.day != 0">
 			<h4>TODAY'S RESULTS</h4>
