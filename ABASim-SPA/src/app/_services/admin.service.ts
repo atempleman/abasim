@@ -32,4 +32,8 @@ export class AdminService {
   rolloverDay() {
     return this.http.get<boolean>(this.baseUrl + 'rolloverday');
   }
+
+  changeDay(day: number) {
+    return this.http.get<boolean>(this.baseUrl + 'changeday/' + day);
+  }
 }

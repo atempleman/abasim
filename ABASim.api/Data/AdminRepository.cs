@@ -189,6 +189,8 @@ namespace ABASim.api.Data
                             if (gameResult.Completed == 0) {
                                 gameNotRun = 1;
                             }
+                        } else {
+                            gameNotRun = 1;
                         }
                     }
                 }
@@ -199,6 +201,14 @@ namespace ABASim.api.Data
             } else {
                 return false;
             }
+        }
+
+        public async Task<bool> ChangeDay(int day)
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            league.Day = day;
+            _context.Update(league);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 

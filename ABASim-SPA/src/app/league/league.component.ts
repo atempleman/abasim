@@ -21,6 +21,7 @@ export class LeagueComponent implements OnInit {
   isAdmin = 0;
   upcomingGames: GameDisplay[] = [];
   todaysGames: GameDisplayCurrent[] = [];
+  noRun = 0;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private adminService: AdminService, private gameEngine: GameEngineService,
@@ -63,6 +64,7 @@ export class LeagueComponent implements OnInit {
   }
 
   runGame(game: GameDisplayCurrent) {
+    this.noRun = 1;
     const simGame: SimGame = {
       awayId:  game.awayTeamId,
       homeId:  game.homeTeamId,
@@ -72,14 +74,17 @@ export class LeagueComponent implements OnInit {
     this.gameEngine.startPreseasonGame(simGame).subscribe(result => {
     }, error => {
       this.alertify.error(error);
+      this.noRun = 0;
     }, () => {
       // Need to pass feedback and re-get the days games
       this.alertify.success('Game run successfully');
       this.getTodaysEvents();
+      this.noRun = 0;
     });
   }
 
   runGameSeason(game: GameDisplayCurrent) {
+    this.noRun = 1;
     const simGame: SimGame = {
       awayId:  game.awayTeamId,
       homeId:  game.homeTeamId,
@@ -89,9 +94,11 @@ export class LeagueComponent implements OnInit {
     this.gameEngine.startSeasonGame(simGame).subscribe(result => {
     }, error => {
       this.alertify.error(error);
+      this.noRun = 0;
     }, () => {
       // Need to pass feedback and re-get the days games
       this.alertify.success('Game run successfully');
+      this.noRun = 0;
       this.getTodaysEvents();
     });
   }

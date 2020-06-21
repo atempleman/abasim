@@ -15,5 +15,7 @@ namespace ABASim.api.Data
          Task<bool> RunDayRollOver();
 
          Task<bool> CheckGamesRun();
+
+         Task<bool> ChangeDay(int day);
     }
 }

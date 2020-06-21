@@ -65,6 +65,17 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Change Day</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Change the day if required. Should be used sparingly.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(changeday, 3)">Change Day</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -139,7 +150,27 @@
 				</div>
 			</div>
 			<div class="modal-footer form-group text-center">
-				<button type="submit" class="btn btn-primary" *ngIf="this.gamesAllRun == 1">Select</button>
+				<button type="submit" class="btn btn-primary" *ngIf="this.gamesAllRun == 1 && this.run == 0">Select</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			</div>
+		</form>
+	</ng-template>
+
+	<ng-template #changeday>
+		<div class="modal-header">
+			<h4 class="modal-title">Change Day</h4>
+			<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+		</div>
+		<form [formGroup]="dayForm" (ngSubmit)="changeDay()">
+			<div class="modal-body">
+				<div class="form-group">
+					<span>
+						<input class="form-control" placeholder="Day #" name="updateDay" type="text" formControlName="updateDay" [(ngModel)]="this.dayEntered">
+					</span>
+				</div>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Change</button>
 				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
 			</div>
 		</form>

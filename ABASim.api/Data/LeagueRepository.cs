@@ -179,7 +179,7 @@ namespace ABASim.api.Data
                 teams = await _context.Teams.Where(x => x.Division == 1 || x.Division == 2 || x.Division == 3).ToListAsync();
             } else {
                 // west
-                teams = await _context.Teams.Where(x => x.Division == 1 || x.Division == 2 || x.Division == 3).ToListAsync();
+                teams = await _context.Teams.Where(x => x.Division == 4 || x.Division == 5 || x.Division == 6).ToListAsync();
             }
 
             var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();

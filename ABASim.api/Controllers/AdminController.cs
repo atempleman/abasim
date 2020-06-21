@@ -59,5 +59,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.RunDayRollOver();
             return result;
         }
+
+        [HttpGet("changeday/{day}")]
+        public async Task<bool> ChangeDay(int day)
+        {
+            var result = await _repo.ChangeDay(day);
+            return result;
+        }
     }
 }
