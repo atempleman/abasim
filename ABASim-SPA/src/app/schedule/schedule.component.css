@@ -33,3 +33,9 @@ table {
     padding: 30px 0;
     position: relative;
 }
+
+.cards-row {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}

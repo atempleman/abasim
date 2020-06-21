@@ -12,3 +12,9 @@ table {
 .tablebutton {
     margin-left:5px;
 }
+
+.cards-row {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}
