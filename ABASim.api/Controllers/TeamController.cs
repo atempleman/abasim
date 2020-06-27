@@ -135,5 +135,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.SaveTradeProposal(trade);
             return Ok(result);
         }
+
+        [HttpGet("acceptradeproposal/{tradeId}")]
+        public async Task<IActionResult> AcceptTradeProposal(int tradeId)
+        {
+            var result = await _repo.AcceptTradeProposal(tradeId);
+            return Ok(result);
+        }
     }
 }

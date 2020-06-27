@@ -82,9 +82,11 @@ export class TeamService {
   }
 
   saveTradeProposal(trade: Trade[]) {
-    console.log('inside servce');
-    console.log(trade);
     return this.http.post(this.baseUrl + 'savetradeproposal', trade);
+  }
+
+  acceptTradeProposal(tradeId: number) {
+    return this.http.get<boolean>(this.baseUrl + 'acceptradeproposal/' + tradeId);
   }
 
 }

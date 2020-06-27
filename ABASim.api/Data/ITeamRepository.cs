@@ -42,5 +42,13 @@ namespace ABASim.api.Data
         Task<IEnumerable<TradeDto>> GetTradeOffers(int teamId);
 
          Task<bool> SaveTradeProposal(TradeDto[] trades);
+
+         Task<bool> RejectTradeProposal(TradeMessageDto message);
+
+        Task<bool> AcceptTradeProposal(int tradeId);
+
+        Task<bool> PullTradeProposal(int tradeId);
+
+
     }
 }

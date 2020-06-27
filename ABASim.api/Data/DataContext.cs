@@ -65,5 +65,7 @@ namespace ABASim.api.Data
         public DbSet<PlayerStat> PlayerStats { get; set; }
 
         public DbSet<Trade> Trades { get; set; }
+
+        public DbSet<TradeMessage> TradeMessages { get; set; }
     }
 }

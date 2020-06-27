@@ -158,6 +158,22 @@ export class TradesComponent implements OnInit {
     }
   }
 
+  acceptTrade(tradeId: number) {
+    let tradeResult = false;
+    this.teamService.acceptTradeProposal(tradeId).subscribe(result => {
+      tradeResult = result;
+    }, error => {
+      this.alertify.error('Error accepting trade');
+    }, () => {
+      if (!tradeResult) {
+        this.alertify.error('Error accepting trade');
+      } else {
+        this.alertify.success('Trade completed!');
+        this.goToTeam();
+      }
+    });
+  }
+
   addToTrade(player: Player, side: number) {
     if (side === 0) {
       // its your team

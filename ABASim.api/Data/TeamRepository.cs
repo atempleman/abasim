@@ -15,6 +15,83 @@ namespace ABASim.api.Data
             _context = context;
         }
 
+        public async Task<bool> AcceptTradeProposal(int tradeId)
+        {
+            var tradePieces = await _context.Trades.Where(x => x.TradeId == tradeId).ToListAsync();
+
+            foreach (var tp in tradePieces)
+            {
+                var playerId = tp.PlayerId;
+                var newTeamId = tp.ReceivingTeam;
+                var oldTeamId = tp.TradingTeam;
+
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+                playerTeam.TeamId = newTeamId;
+                _context.Update(playerTeam);
+
+                var rosterRecord = await _context.Rosters.FirstOrDefaultAsync(x => x.TeamId == oldTeamId && x.PlayerId == playerId);
+                _context.Remove(rosterRecord);
+
+                // Need to create the new roster record for the player going to the new team
+                Roster newRosterRecord = new Roster
+                {
+                    TeamId = newTeamId,
+                    PlayerId = playerId
+                };
+                await _context.AddAsync(newRosterRecord);
+
+                // Now need to make sure the player is not in a coach setting record
+                var csRecord = await _context.CoachSettings.FirstOrDefaultAsync(x => x.TeamId == oldTeamId && (x.GoToPlayerOne == playerId || x.GoToPlayerTwo == playerId || x.GoToPlayerThree == playerId));
+
+                if (csRecord != null) {
+                    // Player needs to be removed from CS - in this case updated with any player on the team
+                    var newCSPlayer = await _context.Rosters.FirstOrDefaultAsync(x => x.TeamId == oldTeamId);
+                    
+                    if (csRecord.GoToPlayerOne == playerId)
+                    {
+                        csRecord.GoToPlayerOne = newCSPlayer.PlayerId;
+                    } else if (csRecord.GoToPlayerTwo == playerId)
+                    {
+                        csRecord.GoToPlayerTwo = newCSPlayer.PlayerId;
+                    } else if (csRecord.GoToPlayerThree == playerId)
+                    {
+                        csRecord.GoToPlayerThree = newCSPlayer.PlayerId;
+                    }
+                    
+                    _context.Update(csRecord);
+                }
+
+                var depthChart = await _context.DepthCharts.Where(x => x.TeamId == oldTeamId && x.PlayerId == playerId).ToListAsync();
+
+                if (depthChart != null)
+                {
+                    // Get the last roster id
+                    var rr = await _context.Rosters.OrderByDescending(x => x.PlayerId).FirstOrDefaultAsync(x => x.TeamId == oldTeamId);
+                    foreach (var dc in depthChart)
+                    {
+                        dc.PlayerId = rr.PlayerId;
+                        _context.Update(dc);
+                    }
+                }
+
+                // Now need to record a transaction
+                var league = await _context.Leagues.FirstOrDefaultAsync();
+                Transaction trans = new Transaction
+                {
+                    TeamId = newTeamId,
+                    PlayerId = playerId,
+                    TransactionType = 3,
+                    Day = league.Day
+                };
+                await _context.AddAsync(trans);
+
+                tp.Status = 1;
+                _context.Update(tp);
+            }
+
+            return await  _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> CheckForAvailableTeams()
         {
             if (await _context.Teams.AnyAsync(x => x.UserId == 0))
@@ -220,6 +297,16 @@ namespace ABASim.api.Data
                 tradesList.Add(newTrade);
             }
             return tradesList;
+        }
+
+        public Task<bool> PullTradeProposal(int tradeId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<bool> RejectTradeProposal(TradeMessageDto message)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task<bool> RosterSpotCheck(int teamId)

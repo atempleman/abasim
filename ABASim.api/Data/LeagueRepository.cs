@@ -373,6 +373,8 @@ namespace ABASim.api.Data
                     type = "Signed";
                 } else if (tran.TransactionType == 2) {
                     type = "Waived";
+                } else if (tran.TransactionType == 3) {
+                    type = "Traded";
                 }
 
                 TransactionDto t = new TransactionDto

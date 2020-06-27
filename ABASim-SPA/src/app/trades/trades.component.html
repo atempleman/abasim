@@ -229,7 +229,7 @@
 		</div>
 	</div>
 	<div class="modal-footer form-group text-center">
-		<button type="submit" class="btn btn-primary" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam">Accept</button>
+		<button type="submit" class="btn btn-primary" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam" (click)="acceptTrade(this.tradeDisplay[0].tradeId)">Accept</button>
 		<button type="submit" class="btn btn-primary" (click)="modalRef.hide()">Close</button>
 		<button type="button" class="btn btn-danger" *ngIf="this.team.id == this.tradeDisplay[0].tradingTeam">Cancel Offer</button>
 		<button type="button" class="btn btn-danger" (click)="modalRef.hide()" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam">Reject</button>
