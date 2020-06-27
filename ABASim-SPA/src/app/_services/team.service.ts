@@ -89,4 +89,8 @@ export class TeamService {
     return this.http.get<boolean>(this.baseUrl + 'acceptradeproposal/' + tradeId);
   }
 
+  pullTradeProposal(tradeId: number) {
+    return this.http.get<boolean>(this.baseUrl + 'pullradeproposal/' + tradeId);
+  }
+
 }

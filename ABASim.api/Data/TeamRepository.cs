@@ -299,9 +299,14 @@ namespace ABASim.api.Data
             return tradesList;
         }
 
-        public Task<bool> PullTradeProposal(int tradeId)
+        public async Task<bool> PullTradeProposal(int tradeId)
         {
-            throw new System.NotImplementedException();
+            var tradeRecords = await _context.Trades.Where(x => x.TradeId == tradeId).ToListAsync();
+            foreach (var trade in tradeRecords)
+            {
+                _context.Remove(trade);
+            }
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public Task<bool> RejectTradeProposal(TradeMessageDto message)

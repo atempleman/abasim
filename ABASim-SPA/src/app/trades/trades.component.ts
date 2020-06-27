@@ -168,8 +168,26 @@ export class TradesComponent implements OnInit {
       if (!tradeResult) {
         this.alertify.error('Error accepting trade');
       } else {
+        this.modalRef.hide();
         this.alertify.success('Trade completed!');
         this.goToTeam();
+      }
+    });
+  }
+
+  pullTrade(tradeId: number) {
+    let tradeResult = false;
+    this.teamService.pullTradeProposal(tradeId).subscribe(result => {
+      tradeResult = result;
+    }, error => {
+      this.alertify.error('Error pulling trade');
+    }, () => {
+      if (!tradeResult) {
+        this.alertify.error('Error pulling trade');
+      } else {
+        this.modalRef.hide();
+        this.alertify.success('Trade has been cancelled!');
+        window.location.reload();
       }
     });
   }
