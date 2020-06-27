@@ -9,6 +9,7 @@ import { ExtendedPlayer } from '../_models/extendedPlayer';
 import { WaivedPlayer } from '../_models/waivedPlayer';
 import { CoachSetting } from '../_models/coachSetting';
 import { SignedPlayer } from '../_models/signedPlayer';
+import { Trade } from '../_models/trade';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,20 @@ export class TeamService {
     console.log('test');
     console.log(setting);
     return this.http.post(this.baseUrl + 'savecoachsetting', setting);
+  }
+
+  getAllTeamsExceptUsers(teamId: number): Observable<Team[]> {
+    return this.http.get<Team[]>(this.baseUrl + 'getallteamsexceptusers/' + teamId);
+  }
+
+  getTradeOffers(teamId: number): Observable<Trade[]> {
+    return this.http.get<Trade[]>(this.baseUrl + 'gettradeoffers/' + teamId);
+  }
+
+  saveTradeProposal(trade: Trade[]) {
+    console.log('inside servce');
+    console.log(trade);
+    return this.http.post(this.baseUrl + 'savetradeproposal', trade);
   }
 
 }

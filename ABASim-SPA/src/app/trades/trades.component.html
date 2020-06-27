@@ -58,5 +58,180 @@
 
 
 <div class="box">
-  <h4 class="display">Trades are not yet available</h4>
+	<div class="container">
+		<div class="row cards-row">
+			<h3>TRADE OFFERS</h3>
+		</div>
+		<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngFor="let trade of this.tradesToDisplay">
+			<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+					class="header-card ml-3"><strong>Trade Offer for {{ trade.tradingTeamName }} & {{ trade.receivingTeamName }}</strong></span></div>
+			<div class="card-body">
+				<!-- <p class="card-text"></p> -->
+				<div style="text-align: right;">
+					<button type="button" class="btn btn-link text-left" (click)="openModal(trademodal, trade.tradeId)">View Trade</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
+
+<div class="box">
+	<div class="container">
+		<div class="row cards-row">
+			<h4>Trade Proposal</h4>
+			<div class="divider"></div>
+		</div>
+		<div class="row cards-row">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>YOU RECEIVE</strong></span></div>
+				<div class="card-body">
+					<p *ngIf="this.proposedTradeReceiving.length == 0">No assets added</p>
+					<div class="row" *ngIf="this.proposedTradeReceiving.length != 0">
+						<table class="table table-hover events-table">
+							<tbody>
+								<tr class="table-secondary" *ngFor="let trade of this.proposedTradeReceiving">
+									<td>
+										{{ trade.playerName }}
+									</td>
+									<td>
+										<i class="fa fa-minus-circle" (click)="removePlayer(trade, 0)"></i>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>THEY RECEIVE</strong></span></div>
+				<div class="card-body">
+					<p *ngIf="this.proposedTradeSending.length == 0">No assets added</p>
+					<div class="row" *ngIf="this.proposedTradeSending.length != 0">
+						<table class="table table-hover events-table">
+							<tbody>
+								<tr class="table-secondary" *ngFor="let trade of this.proposedTradeSending">
+									<td>
+										{{ trade.playerName }}
+									</td>
+									<td>
+										<i class="fa fa-minus-circle" (click)="removePlayer(trade, 1)"></i>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row cards-row">
+			<button class="btn btn-info btn-xs" (click)="proposeTrade()"><span class="glyphicon glyphicon-edit"></span> Propose Trade</button>
+		</div>
+		<div class="tradedisplay">
+			<form #tradeWithTeamForm (ngSubmit)="getTeamsPlayers()">
+				<div class="form-group">
+					<h4>Select a Team to Trade with</h4>
+					<br />
+					<select name="leagueStatus" [(ngModel)]="this.teamSelected">
+							<option *ngFor="let team of this.allOtherTeams" [value]="team.id">{{ team.teamname }}
+								{{ team.mascot }}</option>
+					</select>
+					<div class="divider"></div>
+					<button type="submit" class="btn btn-primary">Select</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="box" *ngIf="this.displayTeams == 1">
+	<ngx-spinner [fullScreen]="false" type="pacman" size="medium">
+		<p class="loading">Loading Teams...</p>
+	</ngx-spinner>
+	<div class="row event-row">
+		<div class="col-lg-6 events" *ngIf="this.league?.day != 0">
+			<h4>{{ this.team?.teamname }} {{ this.team?.mascot }}</h4>
+			<table class="table table-hover events-table">
+				<tbody>
+					<tr class="table-secondary" *ngFor="let player of this.yourTeamRoster">
+						<td>
+							{{ player.firstName }} {{ player.surname }}
+						</td>
+						<td>
+							<ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
+							<ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
+							<ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
+							<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
+							<ng-container *ngIf="player.cPosition == 1">C </ng-container>
+						</td>
+						<td class="text-center">
+							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
+							<div class="divider"></div>
+							<button class="btn btn-danger btn-xs tablebutton" (click)="addToTrade(player, 0)"><span class="glyphicon glyphicon-remove"></span> Trade</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-lg-6 events upcoming">
+			<h4>{{ this.tradeTeam?.teamname }} {{ this.tradeTeam?.mascot }}</h4>
+			<table class="table table-hover events-table">
+				<tbody>
+					<tr class="table-secondary" *ngFor="let player of this.selectedTeamRoster">
+						<td>
+							{{ player.firstName }} {{ player.surname }}
+						</td>
+						<td>
+							<ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
+							<ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
+							<ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
+							<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
+							<ng-container *ngIf="player.cPosition == 1">C </ng-container>
+						</td>
+						<td class="text-center">
+							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
+							<div class="divider"></div>
+							<button class="btn btn-danger btn-xs tablebutton" (click)="addToTrade(player, 1)"><span class="glyphicon glyphicon-remove"></span> Trade</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+
+<ng-template #trademodal>
+	<div class="modal-header">
+		<h4 class="modal-title">Trade Offer</h4>
+		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<div class="modal-body">
+		<div>
+			<h4>{{ this.team.mascot }} Receive:</h4>
+			<div class="row ml-2" *ngFor="let trade of this.tradeDisplay">
+				<p class="mt-1" *ngIf="trade.receivingTeam == this.team.id">{{ trade.playerName }}</p>
+				<div class="divider"></div>
+				<i class="fa fa-info-circle" *ngIf="trade.receivingTeam == this.team.id" (click)="viewPlayerForId(trade.playerId)"></i>
+			</div>
+			<br />
+			<h4>{{ this.recevingTeamText }} Receive:</h4>
+			<div class="row ml-2" *ngFor="let trade of this.tradeDisplay">
+				<p class="mt-1" *ngIf="trade.receivingTeam != this.team.id">{{ trade.playerName }}</p>
+				<div class="divider"></div>
+				<i class="fa fa-info-circle" *ngIf="trade.receivingTeam != this.team.id" (click)="viewPlayerForId(trade.playerId)"></i>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer form-group text-center">
+		<button type="submit" class="btn btn-primary" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam">Accept</button>
+		<button type="submit" class="btn btn-primary" (click)="modalRef.hide()">Close</button>
+		<button type="button" class="btn btn-danger" *ngIf="this.team.id == this.tradeDisplay[0].tradingTeam">Cancel Offer</button>
+		<button type="button" class="btn btn-danger" (click)="modalRef.hide()" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam">Reject</button>
+	</div>
+</ng-template>

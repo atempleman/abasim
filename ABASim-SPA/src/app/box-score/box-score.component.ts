@@ -87,6 +87,7 @@ export class BoxScoreComponent implements OnInit {
         this.gameDetails = result;
       }, error => {
         this.alertify.error('Error getting game details');
+        this.spinner.hide();
       }, () => {
         this.retrieveBoxScoreData();
         this.calculateTeamTotals();

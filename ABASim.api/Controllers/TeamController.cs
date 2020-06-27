@@ -107,5 +107,33 @@ namespace ABASim.api.Controllers
             var result = await _repo.SaveCoachingSetting(setting);
             return Ok(result);
         }
+
+        [HttpGet("getallteamsexceptusers/{teamId}")]
+        public async Task<IActionResult> GetAllTeamsExceptUsers(int teamId)
+        {
+            var result = await _repo.GetAllTeamsExceptUsers(teamId);
+            return Ok(result);
+        }
+
+        // [HttpGet("gettradesreceived/{teamId}")]
+        // public async Task<IActionResult> GetTradesReceived(int teamId)
+        // {
+        //     var trades = await _repo.GetAllReceivedTradeOffers(teamId);
+        //     return Ok(trades);
+        // }
+
+        [HttpGet("gettradeoffers/{teamId}")]
+        public async Task<IActionResult> GetTradeOffers(int teamId)
+        {
+            var trades = await _repo.GetTradeOffers(teamId);
+            return Ok(trades);
+        }
+
+        [HttpPost("savetradeproposal")]
+        public async Task<IActionResult> SaveTradeProposal(TradeDto[] trade)
+        {
+            var result = await _repo.SaveTradeProposal(trade);
+            return Ok(result);
+        }
     }
 }

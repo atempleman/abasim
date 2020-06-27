@@ -15,3 +15,24 @@
     display: flex;
     justify-content: center;
 }
+
+.divider {
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+
+.tradedisplay {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
+}
+
+.events {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-body {
+    text-align: center;
+}

@@ -24,10 +24,82 @@ namespace ABASim.api.Data
 
         }
 
+        public async Task<IEnumerable<TradeDto>> GetAllOfferedTrades(int teamId)
+        {
+            List<TradeDto> tradesList = new List<TradeDto>();
+            var trades = await _context.Trades.Where(x => x.TradingTeam == teamId && x.Status == 0).ToListAsync();
+
+            foreach (var trade in trades)
+            {
+                var tradingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.TradingTeam);
+                var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
+
+                var playerName = "";
+                if (trade.PlayerId != 0) {
+                    var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
+                    playerName = player.FirstName + " " + player.Surname;
+                }
+
+                TradeDto newTrade = new TradeDto
+                {
+                    TradingTeam = trade.TradingTeam,
+                    TradingTeamName = tradingTeam.Mascot,
+                    ReceivingTeam = trade.ReceivingTeam,
+                    ReceivingTeamName = receivingTeam.Mascot,
+                    TradeId = trade.TradeId,
+                    PlayerId = trade.PlayerId,
+                    PlayerName = playerName,
+                    Pick = trade.Pick,
+                    Status = trade.Status
+                };
+                tradesList.Add(newTrade);
+            }
+            return tradesList;
+        }
+
+        public async Task<IEnumerable<TradeDto>> GetAllReceivedTradeOffers(int teamId)
+        {
+            List<TradeDto> tradesList = new List<TradeDto>();
+            var trades = await _context.Trades.Where(x => x.ReceivingTeam == teamId && x.Status == 0).ToListAsync();
+
+            foreach (var trade in trades)
+            {
+                var tradingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.TradingTeam);
+                var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
+
+                var playerName = "";
+                if (trade.PlayerId != 0) {
+                    var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
+                    playerName = player.FirstName + " " + player.Surname;
+                }
+
+                TradeDto newTrade = new TradeDto
+                {
+                    TradingTeam = trade.TradingTeam,
+                    TradingTeamName = tradingTeam.Mascot,
+                    ReceivingTeam = trade.ReceivingTeam,
+                    ReceivingTeamName = receivingTeam.Mascot,
+                    TradeId = trade.TradeId,
+                    PlayerId = trade.PlayerId,
+                    PlayerName = playerName,
+                    Pick = trade.Pick,
+                    Status = trade.Status
+                };
+                tradesList.Add(newTrade);
+            }
+            return tradesList;
+        }
+
         public async Task<IEnumerable<Team>> GetAllTeams()
         {
             // List<Team> teams = new List<Team>();
             var allTeams = await _context.Teams.ToListAsync();
+            return allTeams;
+        }
+
+        public async Task<IEnumerable<Team>> GetAllTeamsExceptUsers(int teamId)
+        {
+            var allTeams = await _context.Teams.Where(x => x.Id != teamId).ToListAsync();
             return allTeams;
         }
 
@@ -117,6 +189,39 @@ namespace ABASim.api.Data
             return team;
         }
 
+        public async Task<IEnumerable<TradeDto>> GetTradeOffers(int teamId)
+        {
+            List<TradeDto> tradesList = new List<TradeDto>();
+            var trades = await _context.Trades.Where(x => (x.ReceivingTeam == teamId || x.TradingTeam == teamId) && x.Status == 0).ToListAsync();
+
+            foreach (var trade in trades)
+            {
+                var tradingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.TradingTeam);
+                var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
+
+                var playerName = "";
+                if (trade.PlayerId != 0) {
+                    var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
+                    playerName = player.FirstName + " " + player.Surname;
+                }
+
+                TradeDto newTrade = new TradeDto
+                {
+                    TradingTeam = trade.TradingTeam,
+                    TradingTeamName = tradingTeam.Mascot,
+                    ReceivingTeam = trade.ReceivingTeam,
+                    ReceivingTeamName = receivingTeam.Mascot,
+                    TradeId = trade.TradeId,
+                    PlayerId = trade.PlayerId,
+                    PlayerName = playerName,
+                    Pick = trade.Pick,
+                    Status = trade.Status
+                };
+                tradesList.Add(newTrade);
+            }
+            return tradesList;
+        }
+
         public async Task<bool> RosterSpotCheck(int teamId)
         {
             var rosterSpotsUsed = await _context.Rosters.Where(x => x.TeamId == teamId).ToListAsync();
@@ -161,6 +266,34 @@ namespace ABASim.api.Data
                     };
                     await _context.AddAsync(depth);
                 }
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> SaveTradeProposal(TradeDto[] trades)
+        {
+            // Need to get the latest id for the TradeId
+            // Need to check if Trades contains any records
+            var tradesNullCheck = await _context.Trades.FirstOrDefaultAsync();
+
+            int lastTradeId = 0;
+            if (tradesNullCheck != null) {
+                lastTradeId = await _context.Trades.MaxAsync(x => x.TradeId);
+            }
+
+            // Need to go through each trade component and create a new Trade record and then add to database
+            foreach (var trade in trades)
+            {
+                Trade t = new Trade
+                {
+                    TradingTeam = trade.TradingTeam,
+                    ReceivingTeam = trade.ReceivingTeam,
+                    PlayerId = trade.PlayerId,
+                    Pick = trade.Pick,
+                    TradeId = lastTradeId + 1,
+                    Status = 0
+                };
+                await _context.AddAsync(t);
             }
             return await _context.SaveChangesAsync() > 0;
         }

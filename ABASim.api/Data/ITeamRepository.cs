@@ -32,5 +32,15 @@ namespace ABASim.api.Data
          Task<CoachSetting> GetCoachSettingForTeamId(int teamId);
 
          Task<bool> SaveCoachingSetting(CoachSetting setting);
+
+         Task<IEnumerable<Team>> GetAllTeamsExceptUsers(int teamId);
+
+        //  Task<IEnumerable<TradeDto>> GetAllReceivedTradeOffers(int teamId);
+
+        //  Task<IEnumerable<TradeDto>> GetAllOfferedTrades(int teamId);
+
+        Task<IEnumerable<TradeDto>> GetTradeOffers(int teamId);
+
+         Task<bool> SaveTradeProposal(TradeDto[] trades);
     }
 }
