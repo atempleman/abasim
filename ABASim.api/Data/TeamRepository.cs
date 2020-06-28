@@ -266,10 +266,22 @@ namespace ABASim.api.Data
             return team;
         }
 
+        public async Task<TradeMessageDto> GetTradeMessage(int tradeId)
+        {
+            var message = await _context.TradeMessages.FirstOrDefaultAsync(x => x.TradeId == tradeId);
+            TradeMessageDto tmDto = new TradeMessageDto
+            {
+                TradeId = message.TradeId,
+                IsMessage = message.IsMessage,
+                Message = message.Message
+            };
+            return tmDto;
+        }
+
         public async Task<IEnumerable<TradeDto>> GetTradeOffers(int teamId)
         {
             List<TradeDto> tradesList = new List<TradeDto>();
-            var trades = await _context.Trades.Where(x => (x.ReceivingTeam == teamId || x.TradingTeam == teamId) && x.Status == 0).ToListAsync();
+            var trades = await _context.Trades.Where(x => (x.ReceivingTeam == teamId || x.TradingTeam == teamId) && (x.Status == 0 || x.Status == 2)).ToListAsync();
 
             foreach (var trade in trades)
             {
@@ -309,9 +321,31 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<bool> RejectTradeProposal(TradeMessageDto message)
+        public async Task<bool> RejectTradeProposal(TradeMessageDto message)
         {
-            throw new System.NotImplementedException();
+            var tradeRecords = await _context.Trades.Where(x => x.TradeId == message.TradeId).ToListAsync();
+            foreach (var tr in tradeRecords)
+            {
+                tr.Status = 2;
+                _context.Update(tr);
+            }
+
+            var messageString = "";
+            if (message.IsMessage == 1) {
+                messageString = message.Message;
+            }
+
+            // Now need to set up the trade message
+            TradeMessage tm = new TradeMessage
+            {
+                TradeId = message.TradeId,
+                IsMessage = message.IsMessage,
+                Message = messageString
+            };
+
+            await _context.AddAsync(tm);
+
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> RosterSpotCheck(int teamId)

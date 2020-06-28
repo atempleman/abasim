@@ -10,6 +10,7 @@ import { WaivedPlayer } from '../_models/waivedPlayer';
 import { CoachSetting } from '../_models/coachSetting';
 import { SignedPlayer } from '../_models/signedPlayer';
 import { Trade } from '../_models/trade';
+import { TradeMessage } from '../_models/tradeMessage';
 
 @Injectable({
   providedIn: 'root'
@@ -91,6 +92,14 @@ export class TeamService {
 
   pullTradeProposal(tradeId: number) {
     return this.http.get<boolean>(this.baseUrl + 'pullradeproposal/' + tradeId);
+  }
+
+  rejectTradeProposal(trade: TradeMessage) {
+    return this.http.post(this.baseUrl + 'rejecttradeproposal', trade);
+  }
+
+  getTradeMessageForTradeId(tradeId: number) {
+    return this.http.get<TradeMessage>(this.baseUrl + 'gettrademessage/' + tradeId);
   }
 
 }

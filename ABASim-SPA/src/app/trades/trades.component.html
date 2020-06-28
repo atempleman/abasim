@@ -6,7 +6,7 @@
 	<h3 class="display">TRADES</h3>
 </div>
 
-<div class="box">
+<!-- <div class="box">
 	<div class="container">
 		<div class="row cards-row">
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
@@ -54,24 +54,22 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->
 
 
 <div class="box">
 	<div class="container">
-		<div class="row cards-row">
-			<h3>TRADE OFFERS</h3>
-		</div>
-		<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngFor="let trade of this.tradesToDisplay">
+		<div *ngFor="let trade of this.tradesToDisplay">
+		<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="trade?.tradingTeam == this.team.id">
 			<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
 					class="header-card ml-3"><strong>Trade Offer for {{ trade.tradingTeamName }} & {{ trade.receivingTeamName }}</strong></span></div>
 			<div class="card-body">
-				<!-- <p class="card-text"></p> -->
 				<div style="text-align: right;">
 					<button type="button" class="btn btn-link text-left" (click)="openModal(trademodal, trade.tradeId)">View Trade</button>
 				</div>
 			</div>
 		</div>
+	</div>
 	</div>
 </div>
 
@@ -128,7 +126,7 @@
 			</div>
 		</div>
 		<div class="row cards-row">
-			<button class="btn btn-info btn-xs" (click)="proposeTrade()"><span class="glyphicon glyphicon-edit"></span> Propose Trade</button>
+			<button class="btn btn-info btn-xs" (click)="proposeTrade()" *ngIf="this.showPropose"><span class="glyphicon glyphicon-edit"></span> Propose Trade</button>
 		</div>
 		<div class="tradedisplay">
 			<form #tradeWithTeamForm (ngSubmit)="getTeamsPlayers()">
@@ -212,7 +210,12 @@
 		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
 	</div>
 	<div class="modal-body">
-		<div>
+		<div *ngIf="!this.tmDisplay">
+			<div class="row" *ngIf="this.tradeDisplay[0]?.status == 2 && this.team.id == this.tradeDisplay[0]?.tradingTeam">
+				<p class="ml-2">Trade has been rejected. Please pull the offer and try another trade</p>
+				<br />
+				<p class="ml-2" *ngIf="this.tradeDisplay[0]?.status == 2 && this.tradeMessage?.isMessage == 1">Trade Message - {{ this.tradeMessage?.message }}</p>
+			</div>
 			<h4>{{ this.team.mascot }} Receive:</h4>
 			<div class="row ml-2" *ngFor="let trade of this.tradeDisplay">
 				<p class="mt-1" *ngIf="trade.receivingTeam == this.team.id">{{ trade.playerName }}</p>
@@ -227,11 +230,24 @@
 				<i class="fa fa-info-circle" *ngIf="trade.receivingTeam != this.team.id" (click)="viewPlayerForId(trade.playerId)"></i>
 			</div>
 		</div>
+		<form [formGroup]="tmForm" (ngSubmit)="submitTradeMessage()" *ngIf="this.tmDisplay">
+			<div class="modal-body">
+				<div class="form-group">
+					<span>
+						<input class="form-control" placeholder="Send Message (optional)" name="message" type="text" formControlName="message" [(ngModel)]="this.tradeText">
+					</span>
+				</div>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Reject</button>
+				<button type="button" class="btn btn-danger" (click)="backToTrade()">Back</button>
+			</div>
+		</form>
 	</div>
 	<div class="modal-footer form-group text-center">
-		<button type="submit" class="btn btn-primary" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam" (click)="acceptTrade(this.tradeDisplay[0].tradeId)">Accept</button>
-		<button type="submit" class="btn btn-primary" (click)="modalRef.hide()">Close</button>
-		<button type="button" class="btn btn-danger" *ngIf="this.team.id == this.tradeDisplay[0].tradingTeam" (click)="pullTrade(this.tradeDisplay[0].tradeId)">Cancel Offer</button>
-		<button type="button" class="btn btn-danger" (click)="modalRef.hide()" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam">Reject</button>
+		<button type="submit" class="btn btn-primary" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam && !this.tmDisplay && this.tradeDisplay[0].status != 2" (click)="acceptTrade(this.tradeDisplay[0].tradeId)">Accept</button>
+		<button type="submit" class="btn btn-primary" (click)="modalRef.hide()" *ngIf="!this.tmDisplay">Close</button>
+		<button type="button" class="btn btn-danger" *ngIf="this.team.id == this.tradeDisplay[0].tradingTeam && !this.tmDisplay" (click)="pullTrade(this.tradeDisplay[0].tradeId)">Cancel Offer</button>
+		<button type="button" class="btn btn-danger" (click)="rejectTrade()" *ngIf="this.team.id == this.tradeDisplay[0].receivingTeam && !this.tmDisplay && this.tradeDisplay[0].status != 2">Reject</button>
 	</div>
 </ng-template>

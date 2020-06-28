@@ -9,6 +9,8 @@ import { Player } from '../_models/player';
 import { TransferService } from '../_services/transfer.service';
 import { Trade } from '../_models/trade';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { TradeMessage } from '../_models/tradeMessage';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-trades',
@@ -38,10 +40,18 @@ export class TradesComponent implements OnInit {
   displayTeams = 0;
   recevingTeamText = '';
 
+  tmForm: FormGroup;
+  tmDisplay = false;
+  tradeText = '';
+  tradeMessage: TradeMessage;
+
+  showPropose = false;
+
   public modalRef: BsModalRef;
 
   constructor(private alertify: AlertifyService, private router: Router, private teamService: TeamService,
-              private transferService: TransferService, private modalService: BsModalService) { }
+              private transferService: TransferService, private modalService: BsModalService,
+              private fb: FormBuilder) { }
 
   ngOnInit() {
     const teamId = +localStorage.getItem('teamId');
@@ -91,7 +101,12 @@ export class TradesComponent implements OnInit {
   }
 
   getTeamsPlayers() {
-    // console.log(this.teamSelected);
+    this.showPropose = true;
+
+    // tslint:disable-next-line: triple-equals
+    const temp = this.allOtherTeams.filter(x => x.id == this.teamSelected);
+    this.tradeTeam = temp[0];
+
     this.teamService.getRosterForTeam(this.teamSelected).subscribe(result => {
       this.selectedTeamRoster = result;
     }, error => {
@@ -113,25 +128,27 @@ export class TradesComponent implements OnInit {
   }
 
   proposeTrade() {
-    // Now need to create an array to pass through into API
-    this.proposedTradeSending.forEach(element => {
-      this.actualTradeOffer.push(element);
-    });
+    if (this.proposedTradeSending.length !== 0 || this.proposedTradeReceiving.length !== 0) {
+      // Now need to create an array to pass through into API
+      this.proposedTradeSending.forEach(element => {
+        this.actualTradeOffer.push(element);
+      });
 
-    this.proposedTradeReceiving.forEach(element => {
-      this.actualTradeOffer.push(element);
-    });
+      this.proposedTradeReceiving.forEach(element => {
+        this.actualTradeOffer.push(element);
+      });
 
-    // Now need to pass into the service
-    this.teamService.saveTradeProposal(this.actualTradeOffer).subscribe(result => {
+      // Now need to pass into the service
+      this.teamService.saveTradeProposal(this.actualTradeOffer).subscribe(result => {
 
-    }, error => {
-      this.alertify.error('Error making trade offer');
-    }, () => {
-      this.alertify.success('Trade offer has been made');
-      // Now need to update the screen back to its original state - do this with a page reload
-      window.location.reload();
-    });
+      }, error => {
+        this.alertify.error('Error making trade offer');
+      }, () => {
+        this.alertify.success('Trade offer has been made');
+        // Now need to update the screen back to its original state - do this with a page reload
+        window.location.reload();
+      });
+    }
   }
 
   removePlayer(player: Trade, side: number) {
@@ -190,6 +207,41 @@ export class TradesComponent implements OnInit {
         window.location.reload();
       }
     });
+  }
+
+  rejectTrade() {
+    // let tradeId = this.tradeDisplay[0].tradeId;
+    this.tmForm = this.fb.group({
+      message: ['']
+    });
+    this.tmDisplay = true;
+  }
+
+  submitTradeMessage() {
+    let ism = 0;
+    if (this.tradeText) {
+      ism = 1;
+    }
+    const tradeMessage: TradeMessage = {
+      tradeId: this.tradeDisplay[0].tradeId,
+      isMessage: ism,
+      message: this.tradeText
+    };
+
+    // let rejectResult = false;
+    this.teamService.rejectTradeProposal(tradeMessage).subscribe(result => {
+      // rejectResult = result;
+    }, error => {
+      this.alertify.error('Error rejecting trade');
+    }, () => {
+      this.alertify.success('Trade has been rejected');
+      this.modalRef.hide();
+      window.location.reload();
+    });
+  }
+
+  backToTrade() {
+    this.tmDisplay = false;
   }
 
   addToTrade(player: Player, side: number) {
@@ -261,7 +313,18 @@ export class TradesComponent implements OnInit {
     } else if (this.team.id !== this.tradeDisplay[0].tradingTeam) {
       this.recevingTeamText = this.tradesToDisplay[0].tradingTeamName;
     }
-    console.log(this.tradeDisplay);
-    this.modalRef = this.modalService.show(template);
+    // console.log(this.tradeDisplay);
+    if (this.tradeDisplay[0].status === 2) {
+      this.teamService.getTradeMessageForTradeId(this.tradeDisplay[0].tradeId).subscribe(result => {
+        console.log(result);
+        this.tradeMessage = result;
+      }, error => {
+        this.alertify.error('Error getting trade message');
+      }, () => {
+        this.modalRef = this.modalService.show(template);
+      });
+    } else {
+      this.modalRef = this.modalService.show(template);
+    }
   }
 }
