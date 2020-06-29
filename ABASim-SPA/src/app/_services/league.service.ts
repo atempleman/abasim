@@ -15,6 +15,14 @@ import { LeagueScoring } from '../_models/leagueScoring';
 import { LeagueRebounding } from '../_models/leagueRebounding';
 import { LeagueOther } from '../_models/leagueOther';
 import { LeagueDefence } from '../_models/leagueDefence';
+import { LeagueLeadersPoints } from '../_models/leagueLeadersPoints';
+import { LeagueLeadersAssists } from '../_models/leagueLeadersAssists';
+import { LeagueLeadersRebounds } from '../_models/leagueLeadersRebounds';
+import { LeagueLeadersBlocks } from '../_models/leagueLeadersBlocks';
+import { LeagueLeadersSteals } from '../_models/leagueLeadersSteals';
+import { LeagueLeadersTurnover } from '../_models/leagueLeadersTurnovers';
+import { LeagueLeadersFouls } from '../_models/leagueLeadersFouls';
+import { LeagueLeadersMinutes } from '../_models/leagueLeadersMinutes';
 
 @Injectable({
   providedIn: 'root'
@@ -99,5 +107,41 @@ export class LeagueService {
 
   getLeagueDefence(): Observable<LeagueDefence[]> {
     return this.http.get<LeagueDefence[]>(this.baseUrl + 'getleaguedefence');
+  }
+
+  getPointsLeagueLeadersForPage(page: number): Observable<LeagueLeadersPoints[]> {
+    return this.http.get<LeagueLeadersPoints[]>(this.baseUrl + 'leagueleaderspoints/' + page);
+  }
+
+  getCountOfPointsLeagueLeaders() {
+    return this.http.get<number>(this.baseUrl + 'getcountofpointsleaders');
+  }
+
+  getAssistsLeagueLeadersForPage(page: number): Observable<LeagueLeadersAssists[]> {
+    return this.http.get<LeagueLeadersAssists[]>(this.baseUrl + 'leagueleadersassists/' + page);
+  }
+
+  getReboundsLeagueLeadersForPage(page: number): Observable<LeagueLeadersRebounds[]> {
+    return this.http.get<LeagueLeadersRebounds[]>(this.baseUrl + 'leagueleadersrebounds/' + page);
+  }
+
+  getBlocksLeagueLeadersForPage(page: number): Observable<LeagueLeadersBlocks[]> {
+    return this.http.get<LeagueLeadersBlocks[]>(this.baseUrl + 'leagueleadersblocks/' + page);
+  }
+
+  getStealsLeagueLeadersForPage(page: number): Observable<LeagueLeadersSteals[]> {
+    return this.http.get<LeagueLeadersSteals[]>(this.baseUrl + 'leagueleaderssteals/' + page);
+  }
+
+  getTurnoversLeagueLeadersForPage(page: number): Observable<LeagueLeadersTurnover[]> {
+    return this.http.get<LeagueLeadersTurnover[]>(this.baseUrl + 'leagueleadersturnovers/' + page);
+  }
+
+  getFoulsLeagueLeadersForPage(page: number): Observable<LeagueLeadersFouls[]> {
+    return this.http.get<LeagueLeadersFouls[]>(this.baseUrl + 'leagueleadersfouls/' + page);
+  }
+
+  getMinutesLeagueLeadersForPage(page: number): Observable<LeagueLeadersMinutes[]> {
+    return this.http.get<LeagueLeadersMinutes[]>(this.baseUrl + 'leagueleadersminutes/' + page);
   }
 }

@@ -390,6 +390,36 @@ namespace ABASim.api.Data
             return transactions;
         }
 
+        public async Task<IEnumerable<LeagueLeaderPointsDto>> GetPointsLeagueLeaders(int page)
+        {
+            List<LeagueLeaderPointsDto> pointsList = new List<LeagueLeaderPointsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Points / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Points / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderPointsDto points = new LeagueLeaderPointsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Points = ps.Points
+                };
+                pointsList.Add(points);
+            }
+            return pointsList;
+        }
+
         public async Task<IEnumerable<LeaguePointsDto>> GetLeagueScoring()
         {
             List<LeaguePointsDto> listOfScoring = new List<LeaguePointsDto>();
@@ -496,6 +526,222 @@ namespace ABASim.api.Data
                 listOfOther.Add(otherDto);
             }
             return listOfOther;
+        }
+
+        public int GetCountOfPointsLeagueLeaders()
+        {
+            var count =  _context.PlayerStats.Where(x => x.GamesPlayed > 0).Count();
+            return count;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderAssistsDto>> GetAssistsLeagueLeaders(int page)
+        {
+            List<LeagueLeaderAssistsDto> assitsList = new List<LeagueLeaderAssistsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Assists / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Assists / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderAssistsDto assist = new LeagueLeaderAssistsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Assists = ps.Assists
+                };
+                assitsList.Add(assist);
+            }
+            return assitsList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderReboundsDto>> GetReboundsLeagueLeaders(int page)
+        {
+            List<LeagueLeaderReboundsDto> reboundsList = new List<LeagueLeaderReboundsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Rebounds / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Rebounds / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderReboundsDto rebound = new LeagueLeaderReboundsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Rebounds = ps.Rebounds
+                };
+                reboundsList.Add(rebound);
+            }
+            return reboundsList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderBlocksDto>> GetBlocksLeagueLeaders(int page)
+        {
+            List<LeagueLeaderBlocksDto> blocksList = new List<LeagueLeaderBlocksDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Blocks / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Blocks / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderBlocksDto block = new LeagueLeaderBlocksDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Blocks = ps.Blocks
+                };
+                blocksList.Add(block);
+            }
+            return blocksList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderStealsDto>> GetStealsLeagueLeaders(int page)
+        {
+            List<LeagueLeaderStealsDto> stealsList = new List<LeagueLeaderStealsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Steals / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Steals / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderStealsDto steal = new LeagueLeaderStealsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Steals = ps.Steals
+                };
+                stealsList.Add(steal);
+            }
+            return stealsList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderMinutesDto>> GetMinutesLeagueLeaders(int page)
+        {
+            List<LeagueLeaderMinutesDto> minutesList = new List<LeagueLeaderMinutesDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Minutes / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Minutes / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderMinutesDto minutes = new LeagueLeaderMinutesDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Minutes = ps.Minutes
+                };
+                minutesList.Add(minutes);
+            }
+            return minutesList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderFoulsDto>> GetFoulsLeagueLeaders(int page)
+        {
+            List<LeagueLeaderFoulsDto> foulsList = new List<LeagueLeaderFoulsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Fouls / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Fouls / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderFoulsDto foul = new LeagueLeaderFoulsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Fouls = ps.Fouls
+                };
+                foulsList.Add(foul);
+            }
+            return foulsList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderTurnoversDto>> GetTurnoversLeagueLeaders(int page)
+        {
+            List<LeagueLeaderTurnoversDto> turnoversList = new List<LeagueLeaderTurnoversDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            if (page == 1) {
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Turnovers / x.GamesPlayed)).Take(25).ToListAsync();
+            } else {
+                var amountToSkip = (page * 25) - 25;
+                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Turnovers / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
+            }
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderTurnoversDto to = new LeagueLeaderTurnoversDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Turnovers = ps.Turnovers
+                };
+                turnoversList.Add(to);
+            }
+            return turnoversList;
         }
     }
 }

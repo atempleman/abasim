@@ -161,5 +161,69 @@ namespace ABASim.api.Controllers
             var rebounding = await _repo.GetLeagueRebounding();
             return Ok(rebounding);
         }
+
+        [HttpGet("leagueleaderspoints/{page}")]
+        public async Task<IActionResult> GetPointLeagueLeaders(int page)
+        {
+            var points = await _repo.GetPointsLeagueLeaders(page);
+            return Ok(points);
+        }
+
+        [HttpGet("getcountofpointsleaders")]
+        public async Task<IActionResult> GetCountOfLeagueLeaders()
+        {
+            // var count = await Task.Run(_repo.GetCountOfPointsLeagueLeaders());
+            var count = _repo.GetCountOfPointsLeagueLeaders();
+            return Ok(count);
+        }
+
+        [HttpGet("leagueleadersassists/{page}")]
+        public async Task<IActionResult> GetAssistLeagueLeaders(int page)
+        {
+            var assists = await _repo.GetAssistsLeagueLeaders(page);
+            return Ok(assists);
+        }
+
+        [HttpGet("leagueleadersrebounds/{page}")]
+        public async Task<IActionResult> GetReboundLeagueLeaders(int page)
+        {
+            var rebounds = await _repo.GetReboundsLeagueLeaders(page);
+            return Ok(rebounds);
+        }
+
+        [HttpGet("leagueleadersblocks/{page}")]
+        public async Task<IActionResult> GetBlockLeagueLeaders(int page)
+        {
+            var blocks = await _repo.GetBlocksLeagueLeaders(page);
+            return Ok(blocks);
+        }
+
+        [HttpGet("leagueleaderssteals/{page}")]
+        public async Task<IActionResult> GetStealLeagueLeaders(int page)
+        {
+            var steals = await _repo.GetStealsLeagueLeaders(page);
+            return Ok(steals);
+        }
+
+        [HttpGet("leagueleadersfouls/{page}")]
+        public async Task<IActionResult> GetFoulLeagueLeaders(int page)
+        {
+            var fouls = await _repo.GetFoulsLeagueLeaders(page);
+            return Ok(fouls);
+        }
+
+        [HttpGet("leagueleadersminutes/{page}")]
+        public async Task<IActionResult> GetMinutesLeagueLeaders(int page)
+        {
+            var minutes = await _repo.GetMinutesLeagueLeaders(page);
+            return Ok(minutes);
+        }
+
+        [HttpGet("leagueleadersturnovers/{page}")]
+        public async Task<IActionResult> GetTurnoversLeagueLeaders(int page)
+        {
+            var tos = await _repo.GetTurnoversLeagueLeaders(page);
+            return Ok(tos);
+        }
     }
 }
