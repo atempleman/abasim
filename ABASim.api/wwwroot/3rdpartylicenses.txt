@@ -824,6 +824,9 @@ ngx-bootstrap/positioning
 
 ngx-bootstrap/utils
 
+ngx-spinner
+MIT
+
 punycode
 MIT
 Copyright Mathias Bynens <https://mathiasbynens.be/>

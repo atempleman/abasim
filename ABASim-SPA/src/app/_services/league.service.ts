@@ -93,21 +93,21 @@ export class LeagueService {
     return this.http.get<GameDisplayCurrent[]>(this.baseUrl + 'getgamesfortodayseason');
   }
 
-  getLeagueScoring(): Observable<LeagueScoring[]> {
-    return this.http.get<LeagueScoring[]>(this.baseUrl + 'getleaguescoring');
-  }
+  // getLeagueScoring(): Observable<LeagueScoring[]> {
+  //   return this.http.get<LeagueScoring[]>(this.baseUrl + 'getleaguescoring');
+  // }
 
-  getLeagueRebounding(): Observable<LeagueRebounding[]> {
-    return this.http.get<LeagueRebounding[]>(this.baseUrl + 'getleaguerebounding');
-  }
+  // getLeagueRebounding(): Observable<LeagueRebounding[]> {
+  //   return this.http.get<LeagueRebounding[]>(this.baseUrl + 'getleaguerebounding');
+  // }
 
-  getLeagueOther(): Observable<LeagueOther[]> {
-    return this.http.get<LeagueOther[]>(this.baseUrl + 'getleagueother');
-  }
+  // getLeagueOther(): Observable<LeagueOther[]> {
+  //   return this.http.get<LeagueOther[]>(this.baseUrl + 'getleagueother');
+  // }
 
-  getLeagueDefence(): Observable<LeagueDefence[]> {
-    return this.http.get<LeagueDefence[]>(this.baseUrl + 'getleaguedefence');
-  }
+  // getLeagueDefence(): Observable<LeagueDefence[]> {
+  //   return this.http.get<LeagueDefence[]>(this.baseUrl + 'getleaguedefence');
+  // }
 
   getPointsLeagueLeadersForPage(page: number): Observable<LeagueLeadersPoints[]> {
     return this.http.get<LeagueLeadersPoints[]>(this.baseUrl + 'leagueleaderspoints/' + page);

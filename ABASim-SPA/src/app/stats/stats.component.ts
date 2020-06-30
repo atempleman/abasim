@@ -88,13 +88,65 @@ export class StatsComponent implements OnInit {
       this.pager = this.pager - 1;
     }
 
-    this.leagueService.getPointsLeagueLeadersForPage(this.pager).subscribe(result => {
-      this.pointsStats = result;
-    }, error => {
-      this.alertify.error('Error getting scoring stats');
-    }, () => {
-      this.spinner.hide();
-    });
+    if (this.pointsSelection) {
+      this.leagueService.getPointsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.pointsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.assistsSelection) {
+      this.leagueService.getAssistsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.assistsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.reboundsSelection) {
+      this.leagueService.getReboundsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.reboundStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.stealsSelection) {
+      this.leagueService.getStealsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.stealsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.blocksSelection) {
+      this.leagueService.getBlocksLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.blocksStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.turnoversSelection) {
+
+    } else if (this.foulsSelection) {
+      this.leagueService.getFoulsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.foulsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.minutesSelection) {
+      this.leagueService.getMinutesLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.minutesStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    }
   }
 
   pagerPrev() {
@@ -105,13 +157,65 @@ export class StatsComponent implements OnInit {
       this.pager = this.pager + 1;
     }
 
-    this.leagueService.getPointsLeagueLeadersForPage(this.pager).subscribe(result => {
-      this.pointsStats = result;
-    }, error => {
-      this.alertify.error('Error getting scoring stats');
-    }, () => {
-      this.spinner.hide();
-    });
+    if (this.pointsSelection) {
+      this.leagueService.getPointsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.pointsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.assistsSelection) {
+      this.leagueService.getAssistsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.assistsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.reboundsSelection) {
+      this.leagueService.getReboundsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.reboundStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.stealsSelection) {
+      this.leagueService.getStealsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.stealsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.blocksSelection) {
+      this.leagueService.getBlocksLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.blocksStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.turnoversSelection) {
+
+    } else if (this.foulsSelection) {
+      this.leagueService.getFoulsLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.foulsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.minutesSelection) {
+      this.leagueService.getMinutesLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.minutesStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.spinner.hide();
+      });
+    }
   }
 
   pointsClick() {
@@ -138,6 +242,8 @@ export class StatsComponent implements OnInit {
   }
 
   blocksClick() {
+    this.spinner.show();
+
     this.assistsSelection = false;
     this.reboundsSelection = false;
     this.foulsSelection = false;
@@ -159,6 +265,8 @@ export class StatsComponent implements OnInit {
   }
 
   assistsClick() {
+    this.spinner.show();
+
     this.blocksSelection = false;
     this.reboundsSelection = false;
     this.foulsSelection = false;
@@ -180,6 +288,8 @@ export class StatsComponent implements OnInit {
   }
 
   reboundsClick() {
+    this.spinner.show();
+
     this.blocksSelection = false;
     this.assistsSelection = false;
     this.foulsSelection = false;
@@ -201,6 +311,8 @@ export class StatsComponent implements OnInit {
   }
 
   stealsClick() {
+    this.spinner.show();
+
     this.blocksSelection = false;
     this.assistsSelection = false;
     this.foulsSelection = false;
@@ -222,6 +334,8 @@ export class StatsComponent implements OnInit {
   }
 
   minutesClick() {
+    this.spinner.show();
+
     this.blocksSelection = false;
     this.assistsSelection = false;
     this.foulsSelection = false;
@@ -243,6 +357,8 @@ export class StatsComponent implements OnInit {
   }
 
   foulsClick() {
+    this.spinner.show();
+
     this.blocksSelection = false;
     this.assistsSelection = false;
     this.minutesSelection = false;
@@ -264,6 +380,8 @@ export class StatsComponent implements OnInit {
   }
 
   turnoversClick() {
+    this.spinner.show();
+
     this.blocksSelection = false;
     this.assistsSelection = false;
     this.foulsSelection = false;
