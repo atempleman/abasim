@@ -80,7 +80,7 @@
                     </tr>
                   </thead>
                 <tbody>
-                    <tr class="table-secondary" *ngFor="let stand of this.eastStandings">
+                    <tr *ngFor="let stand of this.eastStandings; let i = index" [ngClass]="i < 8 ? 'table-primary' : 'table-secondary'">
                         <td>
                             {{ stand.team }}
                         </td>
@@ -108,7 +108,7 @@
                     </tr>
                   </thead>
                 <tbody>
-                    <tr class="table-secondary" *ngFor="let stand of this.westStandings">
+                    <tr *ngFor="let stand of this.westStandings; let i = index" [ngClass]="i < 8 ? 'table-primary' : 'table-secondary'">
                         <td>
                             {{ stand.team }}
                         </td>

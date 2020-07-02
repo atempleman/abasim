@@ -10,6 +10,7 @@ import { AdminService } from '../_services/admin.service';
 import { SimGame } from '../_models/simGame';
 import { GameEngineService } from '../_services/game-engine.service';
 import { TransferService } from '../_services/transfer.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-league',
@@ -25,7 +26,7 @@ export class LeagueComponent implements OnInit {
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private adminService: AdminService, private gameEngine: GameEngineService,
-              private transferService: TransferService) { }
+              private transferService: TransferService, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     // Check to see if the user is an admin user
@@ -36,6 +37,7 @@ export class LeagueComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {
+      this.spinner.show();
       this.getTodaysEvents();
       this.getUpcomingEvents();
     });
@@ -47,6 +49,16 @@ export class LeagueComponent implements OnInit {
         this.todaysGames = result;
       }, error => {
         this.alertify.error('Error getting todays events');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.league.stateId === 7 && this.league.day !== 0) {
+      this.leagueService.getSeasonGamesForToday().subscribe(result => {
+        this.todaysGames = result;
+      }, error => {
+        this.alertify.error('Error getting todays events');
+      }, () => {
+        this.spinner.hide();
       });
     }
   }
@@ -56,6 +68,12 @@ export class LeagueComponent implements OnInit {
     if (this.league.stateId === 6) {
       // Need to get the games for the day
       this.leagueService.getPreseasonGamesForTomorrow().subscribe(result => {
+        this.upcomingGames = result;
+      }, error => {
+        this.alertify.error('Error getting upcoming games');
+      });
+    } else if (this.league.stateId === 7) {
+      this.leagueService.getSeasonGamesForTomorrow().subscribe(result => {
         this.upcomingGames = result;
       }, error => {
         this.alertify.error('Error getting upcoming games');

@@ -4818,256 +4818,309 @@ namespace ABASim.api.Controllers
             onCourtIds.Add(homeC.Id); // TODO add the check // TODO add foul trouble check
 
             Player current = new Player();
-
+            var subbed = 0;
 
             if (team == 0) {
-                var bs = _homeBoxScores.FirstOrDefault(x => x.Id == current.Id);
-                
-                if (bs.Fouls < 6) {
 
                     if (position == 1) {
                         current = homePG;
 
                         // Get the player from the depth chart
                         var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
+                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Now need to check if the player has not fouled out
+                        if (bs.Fouls < 6) {
+                            homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            subbed = 1;
+                        }
                     } else if (position == 2) {
                         current = homeSG;
 
                         // Get the player from the depth chart
                         var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
-                        homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                         var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                        if (bs.Fouls < 6) {    
+                            homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     } else if (position == 3) {
                         current = homeSF;
 
                         // Get the player from the depth chart
                         var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
-                        homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                         var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     } else if (position == 4) {
                         current = homePF;
 
                         // Get the player from the depth chart
                         var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
-                        homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                         var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     } else if (position == 5) {
                         current = homeC;
 
                         // Get the player from the depth chart
                         var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
-                        homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
 
-                    // Now need to sort out the sub commentary
-                    string outPlayer = current.FirstName + " " + current.Surname;
-                    string inPlayer = "";
+                    if (subbed == 1) {
+                        // Now need to sort out the sub commentary
+                        string outPlayer = current.FirstName + " " + current.Surname;
+                        string inPlayer = "";
 
-                    switch (position)
-                    {
-                        case 1:
-                            inPlayer = homePG.FirstName + " " + homePG.Surname;
-                            break;
-                        case 2:
-                            inPlayer = homeSG.FirstName + " " + homeSG.Surname;
-                            break;
-                        case 3:
-                            inPlayer = homeSF.FirstName + " " + homeSF.Surname;
-                            break;
-                        case 4:
-                            inPlayer = homePF.FirstName + " " + homePF.Surname;
-                            break;
-                        case 5:
-                            inPlayer = homeC.FirstName + " " + homeC.Surname;
-                            break;
+                        switch (position)
+                        {
+                            case 1:
+                                inPlayer = homePG.FirstName + " " + homePG.Surname;
+                                break;
+                            case 2:
+                                inPlayer = homeSG.FirstName + " " + homeSG.Surname;
+                                break;
+                            case 3:
+                                inPlayer = homeSF.FirstName + " " + homeSF.Surname;
+                                break;
+                            case 4:
+                                inPlayer = homePF.FirstName + " " + homePF.Surname;
+                                break;
+                            case 5:
+                                inPlayer = homeC.FirstName + " " + homeC.Surname;
+                                break;
+                        }
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                     }
-                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
-                }
             } else {
-                var bs = _awayBoxScores.FirstOrDefault(x => x.Id == current.Id);
-                
-                if (bs.Fouls < 6) {
-
                     if (position == 1) {
                         current = awayPG;
 
                         // Get the player from the depth chart
                         var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
-                        awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     } else if (position == 2) {
                         current = awaySG;
 
                         // Get the player from the depth chart
                         var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
-                        awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     } else if (position == 3) {
                         current = awaySF;
 
                         // Get the player from the depth chart
                         var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
-                        awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     } else if (position == 4) {
                         current = awayPF;
 
                         // Get the player from the depth chart
                         var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
-                        awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     } else if (position == 5) {
                         current = awayC;
 
                         // Get the player from the depth chart
                         var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
-                        awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6) {
+                            awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
 
-                    // Now need to sort out the sub commentary
-                    string outPlayer = current.FirstName + " " + current.Surname;
-                    string inPlayer = "";
+                    if (subbed == 1) {
+                        // Now need to sort out the sub commentary
+                        string outPlayer = current.FirstName + " " + current.Surname;
+                        string inPlayer = "";
 
-                    switch (position)
-                    {
-                        case 1:
-                            inPlayer = awayPG.FirstName + " " + awayPG.Surname;
-                            break;
-                        case 2:
-                            inPlayer = awaySG.FirstName + " " + awaySG.Surname;
-                            break;
-                        case 3:
-                            inPlayer = awaySF.FirstName + " " + awaySF.Surname;
-                            break;
-                        case 4:
-                            inPlayer = awayPF.FirstName + " " + awayPF.Surname;
-                            break;
-                        case 5:
-                            inPlayer = awayC.FirstName + " " + awayC.Surname;
-                            break;
+                        switch (position)
+                        {
+                            case 1:
+                                inPlayer = awayPG.FirstName + " " + awayPG.Surname;
+                                break;
+                            case 2:
+                                inPlayer = awaySG.FirstName + " " + awaySG.Surname;
+                                break;
+                            case 3:
+                                inPlayer = awaySF.FirstName + " " + awaySF.Surname;
+                                break;
+                            case 4:
+                                inPlayer = awayPF.FirstName + " " + awayPF.Surname;
+                                break;
+                            case 5:
+                                inPlayer = awayC.FirstName + " " + awayC.Surname;
+                                break;
+                        }
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                     }
-                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                 }
-            }
         }
 
         public void BackToStarters()

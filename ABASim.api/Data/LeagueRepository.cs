@@ -125,6 +125,7 @@ namespace ABASim.api.Data
 
         public async Task<IEnumerable<ScheduleDto>> GetScheduleForDisplay(int day)
         {
+            League league = await _context.Leagues.FirstOrDefaultAsync();
             List<ScheduleDto> schedules = new List<ScheduleDto>();
             int startDay = day - 2;
             int endDay = day + 2;
@@ -146,7 +147,7 @@ namespace ABASim.api.Data
                 int homeScore = 0;
 
                 // Need to call the GameResults table if GameDay < day
-                if (game.GameDay <= day) {
+                if (game.GameDay <= league.Day) {
                     result = await _context.GameResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
                     if (result != null) {
                         awayScore = result.AwayScore;
