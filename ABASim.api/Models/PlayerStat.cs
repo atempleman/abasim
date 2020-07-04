@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace ABASim.api.Models
 {
     public class PlayerStat
@@ -39,5 +41,29 @@ namespace ABASim.api.Models
         public int Turnovers { get; set; }
 
         public int Fouls { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Ppg { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Apg { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Rpg { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Spg { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Bpg { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Mpg { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Fpg { get; set; }
+
+        [Column(TypeName = "decimal(5, 2)")]
+        public decimal Tpg { get; set; }
     }
 }

@@ -31,6 +31,7 @@ export class TradesComponent implements OnInit {
   tradeIds: number[] = [];
   tradesToDisplay: Trade[] = [];
   tradeDisplay: Trade[] = [];
+  tradesReady = false;
 
   proposedTradeSending: Trade[] = [];
   proposedTradeReceiving: Trade[] = [];
@@ -75,20 +76,25 @@ export class TradesComponent implements OnInit {
 
     this.teamService.getTradeOffers(teamId).subscribe(result => {
       this.offeredTrades = result;
-      console.log(result);
+      // console.log('ash');
+      // console.log(result);
 
       this.offeredTrades.forEach(element => {
-        console.log(element.tradeId);
         const value = this.tradeIds.includes(element.tradeId);
-        console.log('value: ' + value);
         if (!value) {
+          console.log('test ash');
+          console.log(element);
           this.tradeIds.push(element.tradeId);
           this.tradesToDisplay.push(element);
         }
       });
-      console.log('check offered trades');
+      // console.log('check offered trades');
+      console.log(this.tradesToDisplay);
     }, error => {
       this.alertify.error('Error getting your offered trades');
+    }, () => {
+      // console.log(this.tradesToDisplay);
+      this.tradesReady = true;
     });
 
     // this.teamService.getTradesReceived(teamId).subscribe(result => {

@@ -395,12 +395,9 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderPointsDto> pointsList = new List<LeagueLeaderPointsDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Points / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Points / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Ppg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {
@@ -539,12 +536,8 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderAssistsDto> assitsList = new List<LeagueLeaderAssistsDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Assists / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Assists / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Apg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {
@@ -569,12 +562,8 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderReboundsDto> reboundsList = new List<LeagueLeaderReboundsDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Rebounds / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Rebounds / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Rpg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {
@@ -599,12 +588,8 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderBlocksDto> blocksList = new List<LeagueLeaderBlocksDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Blocks / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Blocks / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Bpg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {
@@ -629,12 +614,8 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderStealsDto> stealsList = new List<LeagueLeaderStealsDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Steals / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Steals / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Spg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {
@@ -659,12 +640,8 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderMinutesDto> minutesList = new List<LeagueLeaderMinutesDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Minutes / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Minutes / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Mpg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {
@@ -689,12 +666,8 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderFoulsDto> foulsList = new List<LeagueLeaderFoulsDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Fouls / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Fouls / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Fpg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {
@@ -719,12 +692,8 @@ namespace ABASim.api.Data
         {
             List<LeagueLeaderTurnoversDto> turnoversList = new List<LeagueLeaderTurnoversDto>();
             List<PlayerStat> playerStats = new List<PlayerStat>();
-            if (page == 1) {
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Turnovers / x.GamesPlayed)).Take(25).ToListAsync();
-            } else {
-                var amountToSkip = (page * 25) - 25;
-                playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0).OrderByDescending(x => (x.Turnovers / x.GamesPlayed)).Skip(amountToSkip).Take(25).ToListAsync();
-            }
+            var amountToSkip = (page * 25) - 25;
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Tpg).Skip(amountToSkip).Take(25).ToListAsync();
             
             foreach (var ps in playerStats)
             {

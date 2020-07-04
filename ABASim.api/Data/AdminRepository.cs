@@ -124,6 +124,16 @@ namespace ABASim.api.Data
                                 playerStats.ThreeFieldGoalsMade = playerStats.ThreeFieldGoalsMade + bs.ThreeFieldGoalsMade;
                                 playerStats.Turnovers = playerStats.Turnovers + bs.Turnovers;
 
+                                // Now need to update the averages
+                                playerStats.Ppg =  Decimal.Divide(playerStats.Points, playerStats.GamesPlayed);
+                                playerStats.Apg = Decimal.Divide(playerStats.Assists, playerStats.GamesPlayed);
+                                playerStats.Rpg = Decimal.Divide(playerStats.Rebounds, playerStats.GamesPlayed);
+                                playerStats.Spg = Decimal.Divide(playerStats.Steals, playerStats.GamesPlayed);
+                                playerStats.Bpg = Decimal.Divide(playerStats.Blocks, playerStats.GamesPlayed);
+                                playerStats.Mpg = Decimal.Divide(playerStats.Minutes, playerStats.GamesPlayed);
+                                playerStats.Fpg = Decimal.Divide(playerStats.Fouls, playerStats.GamesPlayed);
+                                playerStats.Tpg = Decimal.Divide(playerStats.Turnovers, playerStats.GamesPlayed);
+
                                 _context.PlayerStats.Update(playerStats);
                             } else {
                                 PlayerStat newPlayerStats = new PlayerStat
@@ -145,7 +155,15 @@ namespace ABASim.api.Data
                                     Steals = bs.Steals,
                                     ThreeFieldGoalsAttempted = bs.ThreeFieldGoalsAttempted,
                                     ThreeFieldGoalsMade = bs.ThreeFieldGoalsMade,
-                                    Turnovers = bs.Turnovers
+                                    Turnovers = bs.Turnovers,
+                                    Ppg = bs.Points / 1,
+                                    Apg = bs.Assists / 1,
+                                    Rpg = bs.Rebounds / 1,
+                                    Spg = bs.Steals / 1,
+                                    Bpg = bs.Blocks / 1,
+                                    Mpg = bs.Minutes / 1,
+                                    Fpg = bs.Fouls / 1,
+                                    Tpg = bs.Turnovers / 1
                                 };
                                 await _context.AddAsync(newPlayerStats);
                             }

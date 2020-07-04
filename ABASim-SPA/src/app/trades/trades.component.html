@@ -57,19 +57,31 @@
 </div> -->
 
 
-<div class="box">
+<div class="box" *ngIf="this.tradesReady">
 	<div class="container">
 		<div *ngFor="let trade of this.tradesToDisplay">
-		<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="trade?.tradingTeam == this.team.id">
-			<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
-					class="header-card ml-3"><strong>Trade Offer for {{ trade.tradingTeamName }} & {{ trade.receivingTeamName }}</strong></span></div>
-			<div class="card-body">
-				<div style="text-align: right;">
-					<button type="button" class="btn btn-link text-left" (click)="openModal(trademodal, trade.tradeId)">View Trade</button>
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="trade?.tradingTeam == this.team.id">
+				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Trade Offer for {{ trade.tradingTeamName }} & {{ trade.receivingTeamName }}</strong></span></div>
+				<div class="card-body">
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(trademodal, trade.tradeId)">View Trade</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+
+		<div *ngFor="let trade of this.tradesToDisplay">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="trade?.receivingTeam == this.team.id">
+				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Trade Offer for {{ trade.receivingTeamName }} & {{ trade.tradingTeamName }}</strong></span></div>
+				<div class="card-body">
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(trademodal, trade.tradeId)">View Trade</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
