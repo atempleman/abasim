@@ -144,4 +144,24 @@ export class LeagueService {
   getMinutesLeagueLeadersForPage(page: number): Observable<LeagueLeadersMinutes[]> {
     return this.http.get<LeagueLeadersMinutes[]>(this.baseUrl + 'leagueleadersminutes/' + page);
   }
+
+  getTopFivePoints(): Observable<LeagueLeadersPoints[]> {
+    return this.http.get<LeagueLeadersPoints[]>(this.baseUrl + 'gettopfivepoints');
+  }
+
+  getTopFiveAssists(): Observable<LeagueLeadersAssists[]> {
+    return this.http.get<LeagueLeadersAssists[]>(this.baseUrl + 'gettopfiveassists');
+  }
+
+  getTopFiveSteals(): Observable<LeagueLeadersSteals[]> {
+    return this.http.get<LeagueLeadersSteals[]>(this.baseUrl + 'gettopfivesteals');
+  }
+
+  getTopFiveRebounds(): Observable<LeagueLeadersRebounds[]> {
+    return this.http.get<LeagueLeadersRebounds[]>(this.baseUrl + 'gettopfiverebounds');
+  }
+
+  getTopFiveBlocks(): Observable<LeagueLeadersBlocks[]> {
+    return this.http.get<LeagueLeadersBlocks[]>(this.baseUrl + 'gettopfiveblocks');
+  }
 }

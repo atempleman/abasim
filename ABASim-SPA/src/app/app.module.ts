@@ -38,6 +38,7 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { WatchGameComponent } from './watch-game/watch-game.component';
 import { BoxScoreComponent } from './box-score/box-score.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -83,6 +84,7 @@ export function tokenGetter() {
       FormsModule,
       NgxSpinnerModule,
       NgbCollapseModule,
+      CarouselModule,
       ReactiveFormsModule,
       ModalModule.forRoot(),
       JwtModule.forRoot({

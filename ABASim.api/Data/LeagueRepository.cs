@@ -713,5 +713,131 @@ namespace ABASim.api.Data
             }
             return turnoversList;
         }
+
+        public async Task<IEnumerable<LeagueLeaderPointsDto>> GetTopFivePoints()
+        {
+            List<LeagueLeaderPointsDto> pointsList = new List<LeagueLeaderPointsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Ppg).Take(5).ToListAsync();
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderPointsDto points = new LeagueLeaderPointsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Points = ps.Points
+                };
+                pointsList.Add(points);
+            }
+            return pointsList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderAssistsDto>> GetTopFiveAssists()
+        {
+            List<LeagueLeaderAssistsDto> assitsList = new List<LeagueLeaderAssistsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Apg).Take(5).ToListAsync();
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderAssistsDto assist = new LeagueLeaderAssistsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Assists = ps.Assists
+                };
+                assitsList.Add(assist);
+            }
+            return assitsList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderReboundsDto>> GetTopFiveRebounds()
+        {
+            List<LeagueLeaderReboundsDto> reboundsList = new List<LeagueLeaderReboundsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Rpg).Take(5).ToListAsync();
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderReboundsDto rebound = new LeagueLeaderReboundsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Rebounds = ps.Rebounds
+                };
+                reboundsList.Add(rebound);
+            }
+            return reboundsList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderBlocksDto>> GetTopFiveBlocks()
+        {
+            List<LeagueLeaderBlocksDto> blocksList = new List<LeagueLeaderBlocksDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Bpg).Take(5).ToListAsync();
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderBlocksDto block = new LeagueLeaderBlocksDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Blocks = ps.Blocks
+                };
+                blocksList.Add(block);
+            }
+            return blocksList;
+        }
+
+        public async Task<IEnumerable<LeagueLeaderStealsDto>> GetTopFiveSteals()
+        {
+            List<LeagueLeaderStealsDto> stealsList = new List<LeagueLeaderStealsDto>();
+            List<PlayerStat> playerStats = new List<PlayerStat>();
+            playerStats = await _context.PlayerStats.Where(x => x.GamesPlayed > 0 && x.Minutes > 0).OrderByDescending(x => x.Spg).Take(5).ToListAsync();
+            
+            foreach (var ps in playerStats)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == ps.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeagueLeaderStealsDto steal = new LeagueLeaderStealsDto
+                {
+                    PlayerId = player.Id,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamShortCode = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Steals = ps.Steals
+                };
+                stealsList.Add(steal);
+            }
+            return stealsList;
+        }
     }
 }

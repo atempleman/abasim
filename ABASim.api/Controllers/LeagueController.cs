@@ -225,5 +225,40 @@ namespace ABASim.api.Controllers
             var tos = await _repo.GetTurnoversLeagueLeaders(page);
             return Ok(tos);
         }
+
+        [HttpGet("gettopfivepoints")]
+        public async Task<IActionResult> GetTopFivePoints()
+        {
+            var results = await _repo.GetTopFivePoints();
+            return Ok(results);
+        }
+
+        [HttpGet("gettopfiveassists")]
+        public async Task<IActionResult> GetTopFiveAssists()
+        {
+            var results = await _repo.GetTopFiveAssists();
+            return Ok(results);
+        }
+
+        [HttpGet("gettopfiverebounds")]
+        public async Task<IActionResult> GetTopFiveRebounds()
+        {
+            var results = await _repo.GetTopFiveRebounds();
+            return Ok(results);
+        }
+
+        [HttpGet("gettopfivesteals")]
+        public async Task<IActionResult> GetTopFiveSteals()
+        {
+            var results = await _repo.GetTopFiveSteals();
+            return Ok(results);
+        }
+
+        [HttpGet("gettopfiveblocks")]
+        public async Task<IActionResult> GetTopFiveBlocks()
+        {
+            var results = await _repo.GetTopFiveBlocks();
+            return Ok(results);
+        }
     }
 }

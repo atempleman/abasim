@@ -47,13 +47,23 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<LeagueLeaderPointsDto>> GetPointsLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderPointsDto>> GetTopFivePoints();
+
          Task<IEnumerable<LeagueLeaderAssistsDto>> GetAssistsLeagueLeaders(int page);
+
+         Task<IEnumerable<LeagueLeaderAssistsDto>> GetTopFiveAssists();
 
          Task<IEnumerable<LeagueLeaderReboundsDto>> GetReboundsLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderReboundsDto>> GetTopFiveRebounds();
+
          Task<IEnumerable<LeagueLeaderBlocksDto>> GetBlocksLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderBlocksDto>> GetTopFiveBlocks();
+
          Task<IEnumerable<LeagueLeaderStealsDto>> GetStealsLeagueLeaders(int page);
+
+         Task<IEnumerable<LeagueLeaderStealsDto>> GetTopFiveSteals();
 
          Task<IEnumerable<LeagueLeaderMinutesDto>> GetMinutesLeagueLeaders(int page);
 

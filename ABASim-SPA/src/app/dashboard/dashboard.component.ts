@@ -14,6 +14,11 @@ import { SimGame } from '../_models/simGame';
 import { GameEngineService } from '../_services/game-engine.service';
 import { TransferService } from '../_services/transfer.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { LeagueLeadersPoints } from '../_models/leagueLeadersPoints';
+import { LeagueLeadersRebounds } from '../_models/leagueLeadersRebounds';
+import { LeagueLeadersAssists } from '../_models/leagueLeadersAssists';
+import { LeagueLeadersSteals } from '../_models/leagueLeadersSteals';
+import { LeagueLeadersBlocks } from '../_models/leagueLeadersBlocks';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,6 +33,12 @@ export class DashboardComponent implements OnInit {
   todaysGames: GameDisplayCurrent[] = [];
   noRun = 0;
 
+  topFivePoints: LeagueLeadersPoints[] = [];
+  topFiveRebounds: LeagueLeadersRebounds[] = [];
+  topFiveAssists: LeagueLeadersAssists[] = [];
+  topFiveSteals: LeagueLeadersSteals[] = [];
+  topFiveBlocks: LeagueLeadersBlocks[] = [];
+
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private adminService: AdminService,
               private gameEngine: GameEngineService, private transferService: TransferService, private spinner: NgxSpinnerService) { }
@@ -37,13 +48,15 @@ export class DashboardComponent implements OnInit {
     this.isAdmin = this.authService.isAdmin();
     localStorage.setItem('isAdmin', this.isAdmin.toString());
 
+    this.spinner.show();
+    this.getLeagueLeaders();
+
     // get the league object - TODO - roll the league state into the object as a Dto and pass back
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {
-      this.spinner.show();
       this.getTodaysEvents();
       this.getUpcomingEvents();
     });
@@ -55,8 +68,43 @@ export class DashboardComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting your Team');
     });
+  }
 
+  viewPlayer(player: number) {
+    this.transferService.setData(player);
+    this.router.navigate(['/view-player']);
+  }
 
+  getLeagueLeaders() {
+    this.leagueService.getTopFivePoints().subscribe(result => {
+      this.topFivePoints = result;
+    }, error => {
+      this.alertify.error('Error getting points leaders');
+    });
+
+    this.leagueService.getTopFiveAssists().subscribe(result => {
+      this.topFiveAssists = result;
+    }, error => {
+      this.alertify.error('Error getting assists leaders');
+    });
+
+    this.leagueService.getTopFiveBlocks().subscribe(result => {
+      this.topFiveBlocks = result;
+    }, error => {
+      this.alertify.error('Error getting blocks leaders');
+    });
+
+    this.leagueService.getTopFiveRebounds().subscribe(result => {
+      this.topFiveRebounds = result;
+    }, error => {
+      this.alertify.error('Error getting rebounds leaders');
+    });
+
+    this.leagueService.getTopFiveSteals().subscribe(result => {
+      this.topFiveSteals = result;
+    }, error => {
+      this.alertify.error('Error getting steals leaders');
+    });
   }
 
   getTodaysEvents() {
@@ -166,6 +214,11 @@ export class DashboardComponent implements OnInit {
   viewBoxScore(gameId: number) {
     this.transferService.setData(gameId);
     this.router.navigate(['/box-score']);
+  }
+
+  goToStats(value: number) {
+    this.transferService.setData(value);
+    this.router.navigate(['/stats']);
   }
 
 }

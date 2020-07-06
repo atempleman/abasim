@@ -4,7 +4,18 @@
     position: relative;
 }
 
+.lead {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
+}
+
 .events {
+    padding: 20px;
+    text-align: center;
+}
+
+.stats {
     padding: 20px;
     text-align: center;
 }
@@ -27,6 +38,26 @@ table {
     border-spacing: 10px;
     border-collapse: separate;
 }
+
+.column {
+    float: left;
+  }
+  
+  .left {
+    width: 50%;
+  }
+  
+  .right {
+    width: 50%;
+  }
+
+  .carousel {
+    margin: 0 auto;
+  }
+/* 
+  .slideclass {
+
+  } */
 
 /* .border-info { */
     /* text-align: center;  centers all of the text - not how i want it*/

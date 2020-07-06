@@ -48,6 +48,8 @@ export class StatsComponent implements OnInit {
   turnoversSelection = false;
   minutesSelection = false;
 
+  selectedStat = 0;
+
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private transferService: TransferService, private spinner: NgxSpinnerService) { }
 
@@ -59,6 +61,30 @@ export class StatsComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting league');
     });
+
+    this.selectedStat = this.transferService.getData();
+
+    if (this.selectedStat === 0 || this.selectedStat === 1) {
+      this.leagueService.getPointsLeagueLeadersForPage(1).subscribe(result => {
+        this.pointsStats = result;
+      }, error => {
+        this.alertify.error('Error getting scoring stats');
+      }, () => {
+        this.getCountForPoints();
+      });
+    } else if (this.selectedStat === 2) {
+      this.getCountForPoints();
+      this.reboundsClick();
+    } else if (this.selectedStat === 3) {
+      this.getCountForPoints();
+      this.assistsClick();
+    } else if (this.selectedStat === 4) {
+      this.getCountForPoints();
+      this.stealsClick();
+    } else if (this.selectedStat === 5) {
+      this.getCountForPoints();
+      this.blocksClick();
+    }
 
     this.leagueService.getPointsLeagueLeadersForPage(1).subscribe(result => {
       this.pointsStats = result;

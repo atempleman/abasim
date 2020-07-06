@@ -816,6 +816,8 @@ SOFTWARE.
 
 
 
+ngx-bootstrap/carousel
+
 ngx-bootstrap/component-loader
 
 ngx-bootstrap/modal
