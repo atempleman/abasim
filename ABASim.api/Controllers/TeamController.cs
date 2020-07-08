@@ -162,5 +162,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.GetTradeMessage(tradeId);
             return Ok(result);
         }
+
+        [HttpGet("getteamsdraftpicks/{teamId}")]
+        public async Task<IActionResult> GetTeamsDraftPicks(int teamId)
+        {
+            var draftPicks = await _repo.GetTeamsDraftPicks(teamId);
+            return Ok(draftPicks);
+        }
     }
 }

@@ -50,5 +50,7 @@ namespace ABASim.api.Data
         Task<bool> PullTradeProposal(int tradeId);
 
         Task<TradeMessageDto> GetTradeMessage(int tradeId);
+
+        Task<IEnumerable<TeamDraftPickDto>> GetTeamsDraftPicks(int teamId);
     }
 }

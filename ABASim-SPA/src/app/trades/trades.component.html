@@ -102,8 +102,11 @@
 						<table class="table table-hover events-table">
 							<tbody>
 								<tr class="table-secondary" *ngFor="let trade of this.proposedTradeReceiving">
-									<td>
+									<td *ngIf="trade.playerId != 0">
 										{{ trade.playerName }}
+									</td>
+									<td *ngIf="trade.pick != 0">
+										{{ getPickDetails(1, trade.pick, trade.year, trade.originalTeamId) }}
 									</td>
 									<td>
 										<i class="fa fa-minus-circle" (click)="removePlayer(trade, 0)"></i>
@@ -124,8 +127,11 @@
 						<table class="table table-hover events-table">
 							<tbody>
 								<tr class="table-secondary" *ngFor="let trade of this.proposedTradeSending">
-									<td>
+									<td *ngIf="trade.playerId != 0">
 										{{ trade.playerName }}
+									</td>
+									<td *ngIf="trade.pick != 0">
+										{{ getPickDetails(0, trade.pick, trade.year, trade.originalTeamId) }}
 									</td>
 									<td>
 										<i class="fa fa-minus-circle" (click)="removePlayer(trade, 1)"></i>
@@ -164,7 +170,17 @@
 	<div class="row event-row">
 		<div class="col-lg-6 events" *ngIf="this.league?.day != 0">
 			<h4>{{ this.team?.teamname }} {{ this.team?.mascot }}</h4>
-			<table class="table table-hover events-table">
+			<div class="row event-row">	
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+					  <a class="nav-link" [routerLink]="" [ngClass]="this.yourPlayersSelection ? 'active' : ''" (click)="this.yourSelection(0)">Players</a>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link" [routerLink]="" [ngClass]="this.yourPicksSelection ? 'active' : ''" (click)="this.yourSelection(1)">Picks</a>
+					</li>
+				  </ul>
+			</div>
+			<table class="table table-hover events-table" *ngIf="this.yourPlayersSelection">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let player of this.yourTeamRoster">
 						<td>
@@ -185,10 +201,32 @@
 					</tr>
 				</tbody>
 			</table>
+			<table class="table table-hover events-table" *ngIf="this.yourPicksSelection">
+				<tbody>
+					<tr class="table-secondary" *ngFor="let pick of this.yourTeamPicks">
+						<td>
+							{{ pick.originalTeamName }} Year: {{ pick.year }} Round: {{ pick.round }}
+						</td>
+						<td class="text-center">
+							<button class="btn btn-danger btn-xs tablebutton" (click)="addPickToTrade(pick, 0)"><span class="glyphicon glyphicon-remove"></span> Trade</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		<div class="col-lg-6 events upcoming">
 			<h4>{{ this.tradeTeam?.teamname }} {{ this.tradeTeam?.mascot }}</h4>
-			<table class="table table-hover events-table">
+			<div class="row event-row">	
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+					  <a class="nav-link" [routerLink]="" [ngClass]="this.theirPlayersSelection ? 'active' : ''" (click)="this.theirSelection(0)">Players</a>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link" [routerLink]="" [ngClass]="this.theirPicksSelection ? 'active' : ''" (click)="this.theirSelection(1)">Picks</a>
+					</li>
+				  </ul>
+			</div>
+			<table class="table table-hover events-table" *ngIf="this.theirPlayersSelection">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let player of this.selectedTeamRoster">
 						<td>
@@ -205,6 +243,18 @@
 							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
 							<div class="divider"></div>
 							<button class="btn btn-danger btn-xs tablebutton" (click)="addToTrade(player, 1)"><span class="glyphicon glyphicon-remove"></span> Trade</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table table-hover events-table" *ngIf="this.theirPicksSelection">
+				<tbody>
+					<tr class="table-secondary" *ngFor="let pick of this.selectedTeamPicks">
+						<td>
+							{{ pick.originalTeamName }} Year: {{ pick.year }} Round: {{ pick.round }}
+						</td>
+						<td class="text-center">
+							<button class="btn btn-danger btn-xs tablebutton" (click)="addPickToTrade(pick, 1)"><span class="glyphicon glyphicon-remove"></span> Trade</button>
 						</td>
 					</tr>
 				</tbody>

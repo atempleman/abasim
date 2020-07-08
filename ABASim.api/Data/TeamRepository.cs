@@ -127,6 +127,8 @@ namespace ABASim.api.Data
                     PlayerId = trade.PlayerId,
                     PlayerName = playerName,
                     Pick = trade.Pick,
+                    Year = trade.Year,
+                    OriginalTeam = trade.OriginalTeam,
                     Status = trade.Status
                 };
                 tradesList.Add(newTrade);
@@ -160,6 +162,8 @@ namespace ABASim.api.Data
                     PlayerId = trade.PlayerId,
                     PlayerName = playerName,
                     Pick = trade.Pick,
+                    Year = trade.Year,
+                    OriginalTeam = trade.OriginalTeam,
                     Status = trade.Status
                 };
                 tradesList.Add(newTrade);
@@ -266,6 +270,47 @@ namespace ABASim.api.Data
             return team;
         }
 
+        public async Task<IEnumerable<TeamDraftPickDto>> GetTeamsDraftPicks(int teamId)
+        {
+            List<TeamDraftPickDto> draftPicks = new List<TeamDraftPickDto>();
+            Team currentTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
+
+            var tdps = await _context.TeamDraftPicks.Where(x => x.CurrentTeam == teamId).ToListAsync();
+
+            foreach (var item in tdps)
+            {
+                int origTeam = teamId;
+                Team originalTeam;
+                if (item.OriginalTeam != teamId)
+                {
+                    originalTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == item.OriginalTeam);
+                    TeamDraftPickDto dto = new TeamDraftPickDto
+                    {
+                        Year = item.Year,
+                        Round = item.Round,
+                        OriginalTeam = item.OriginalTeam,
+                        OriginalTeamName = originalTeam.ShortCode,
+                        CurrentTeam = item.CurrentTeam,
+                        CurrentTeamName = currentTeam.ShortCode
+                    };
+                    draftPicks.Add(dto);
+                } else 
+                {
+                    TeamDraftPickDto dto = new TeamDraftPickDto
+                    {
+                        Year = item.Year,
+                        Round = item.Round,
+                        OriginalTeam = item.OriginalTeam,
+                        OriginalTeamName = currentTeam.ShortCode,
+                        CurrentTeam = item.CurrentTeam,
+                        CurrentTeamName = currentTeam.ShortCode
+                    };
+                    draftPicks.Add(dto);
+                }
+            }
+            return draftPicks;
+        }
+
         public async Task<TradeMessageDto> GetTradeMessage(int tradeId)
         {
             var message = await _context.TradeMessages.FirstOrDefaultAsync(x => x.TradeId == tradeId);
@@ -304,6 +349,8 @@ namespace ABASim.api.Data
                     PlayerId = trade.PlayerId,
                     PlayerName = playerName,
                     Pick = trade.Pick,
+                    Year = trade.Year,
+                    OriginalTeam = trade.OriginalTeam,
                     Status = trade.Status
                 };
                 tradesList.Add(newTrade);
@@ -417,6 +464,8 @@ namespace ABASim.api.Data
                     PlayerId = trade.PlayerId,
                     Pick = trade.Pick,
                     TradeId = lastTradeId + 1,
+                    Year = trade.Year,
+                    OriginalTeam = trade.OriginalTeam,
                     Status = 0
                 };
                 await _context.AddAsync(t);

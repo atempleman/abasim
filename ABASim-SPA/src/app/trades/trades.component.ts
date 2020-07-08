@@ -11,6 +11,7 @@ import { Trade } from '../_models/trade';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { TradeMessage } from '../_models/tradeMessage';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { TeamDraftPick } from '../_models/teamDraftPick';
 
 @Component({
   selector: 'app-trades',
@@ -26,6 +27,12 @@ export class TradesComponent implements OnInit {
   playersInTrade: Player[] = [];
   team: Team;
   tradeTeam: Team;
+
+  selectedTeamPicks: TeamDraftPick[] = [];
+  yourTeamPicks: TeamDraftPick[] = [];
+  masterSelectedTeamPicks: TeamDraftPick[] = [];
+  masterYourTeamPicks: TeamDraftPick[] = [];
+  picksInTrade: TeamDraftPick[] = [];
 
   offeredTrades: Trade[] = [];
   tradeIds: number[] = [];
@@ -49,6 +56,11 @@ export class TradesComponent implements OnInit {
   showPropose = false;
 
   public modalRef: BsModalRef;
+
+  yourPlayersSelection = true;
+  yourPicksSelection = false;
+  theirPlayersSelection = true;
+  theirPicksSelection = false;
 
   constructor(private alertify: AlertifyService, private router: Router, private teamService: TeamService,
               private transferService: TransferService, private modalService: BsModalService,
@@ -76,9 +88,6 @@ export class TradesComponent implements OnInit {
 
     this.teamService.getTradeOffers(teamId).subscribe(result => {
       this.offeredTrades = result;
-      // console.log('ash');
-      // console.log(result);
-
       this.offeredTrades.forEach(element => {
         const value = this.tradeIds.includes(element.tradeId);
         if (!value) {
@@ -88,22 +97,21 @@ export class TradesComponent implements OnInit {
           this.tradesToDisplay.push(element);
         }
       });
-      // console.log('check offered trades');
       console.log(this.tradesToDisplay);
     }, error => {
       this.alertify.error('Error getting your offered trades');
     }, () => {
-      // console.log(this.tradesToDisplay);
       this.tradesReady = true;
     });
 
-    // this.teamService.getTradesReceived(teamId).subscribe(result => {
-    //   console.log('check received trades');
-    //   console.log(result);
-    //   this.receivedTrades = result;
-    // }, error => {
-    //   this.alertify.error('Error getting your received trades');
-    // });
+    this.teamService.getTeamDraftPicks(teamId).subscribe(result => {
+      this.yourTeamPicks = result;
+      // this.masterYourTeamPicks = result;
+      this.yourTeamPicks.forEach(val => this.masterYourTeamPicks.push(Object.assign({}, val)));
+      console.log(this.masterYourTeamPicks);
+    }, error => {
+      this.alertify.error('Error getting your teams picks');
+    });
   }
 
   getTeamsPlayers() {
@@ -119,6 +127,15 @@ export class TradesComponent implements OnInit {
       this.alertify.error('Error getting selected roster');
     }, () => {
       this.displayTeams = 1;
+    });
+
+    this.teamService.getTeamDraftPicks(this.teamSelected).subscribe(result => {
+      this.selectedTeamPicks = result;
+      // this.masterSelectedTeamPicks = result.map(x => Object.assign({}, x));
+      this.selectedTeamPicks.forEach(val => this.masterSelectedTeamPicks.push(Object.assign({}, val)));
+
+    }, error => {
+      this.alertify.error('Error getting selected teams picks');
     });
   }
 
@@ -159,25 +176,51 @@ export class TradesComponent implements OnInit {
 
   removePlayer(player: Trade, side: number) {
     if (side === 0) {
-      const index = this.proposedTradeReceiving.findIndex(x => x.playerId === player.playerId);
-      this.proposedTradeReceiving.splice(index, 1);
+      if (player.pick === 0) {
+        const index = this.proposedTradeReceiving.findIndex(x => x.playerId === player.playerId);
+        this.proposedTradeReceiving.splice(index, 1);
 
-      // Need to add the player back to the player lists
-      const idx = this.playersInTrade.findIndex(x => x.id === player.playerId);
-      const ply = this.playersInTrade[idx];
-      this.selectedTeamRoster.push(ply);
+        // Need to add the player back to the player lists
+        const idx = this.playersInTrade.findIndex(x => x.id === player.playerId);
+        const ply = this.playersInTrade[idx];
+        this.selectedTeamRoster.push(ply);
 
-      this.playersInTrade.splice(idx, 1);
+        this.playersInTrade.splice(idx, 1);
+      } else {
+        // Pick is being removed
+        const index = this.proposedTradeReceiving.findIndex(x => x.pick === player.pick);
+        this.proposedTradeReceiving.splice(index, 1);
+
+        // Need to add the pick back to the pick lists
+        const idx = this.picksInTrade.findIndex(x => x.round === player.pick);
+        const pck = this.picksInTrade[idx];
+        this.selectedTeamPicks.push(pck);
+
+        this.picksInTrade.splice(idx, 1);
+      }
     } else {
-      const index = this.proposedTradeSending.findIndex(x => x.playerId === player.playerId);
-      this.proposedTradeSending.splice(index, 1);
+      if (player.pick === 0) {
+        const index = this.proposedTradeSending.findIndex(x => x.playerId === player.playerId);
+        this.proposedTradeSending.splice(index, 1);
 
-      // Need to add the player back to the player lists
-      const idx = this.playersInTrade.findIndex(x => x.id === player.playerId);
-      const ply = this.playersInTrade[idx];
-      this.yourTeamRoster.push(ply);
+        // Need to add the player back to the player lists
+        const idx = this.playersInTrade.findIndex(x => x.id === player.playerId);
+        const ply = this.playersInTrade[idx];
+        this.yourTeamRoster.push(ply);
 
-      this.playersInTrade.splice(idx, 1);
+        this.playersInTrade.splice(idx, 1);
+      } else {
+        // Pick is being removed
+        const index = this.proposedTradeSending.findIndex(x => x.pick === player.pick);
+        this.proposedTradeSending.splice(index, 1);
+
+        // Need to add the pick back to the pick lists
+        const idx = this.picksInTrade.findIndex(x => x.round === player.pick);
+        const pck = this.picksInTrade[idx];
+        this.yourTeamPicks.push(pck);
+
+        this.picksInTrade.splice(idx, 1);
+      }
     }
   }
 
@@ -262,6 +305,8 @@ export class TradesComponent implements OnInit {
         playerId: player.id,
         playerName: player.firstName + ' ' + player.surname,
         pick: 0,
+        year: 0,
+        originalTeamId: 0,
         status: 0
       };
 
@@ -283,6 +328,8 @@ export class TradesComponent implements OnInit {
         playerId: player.id,
         playerName: player.firstName + ' ' + player.surname,
         pick: 0,
+        year: 0,
+        originalTeamId: 0,
         status: 0
       };
 
@@ -292,6 +339,63 @@ export class TradesComponent implements OnInit {
       this.playersInTrade.push(player);
       const index = this.selectedTeamRoster.findIndex(x => x.id === player.id);
       this.selectedTeamRoster.splice(index, 1);
+    }
+  }
+
+  addPickToTrade(pick: TeamDraftPick, side: number) {
+    console.log('trading pick');
+    console.log(pick);
+    if (side === 0) {
+      // its your team
+      const trade: Trade = {
+        tradingTeam: this.team.id,
+        tradingTeamName: this.team.mascot,
+        receivingTeam: +this.teamSelected,
+        receivingTeamName: '',
+        tradeId: 0,
+        playerId: 0,
+        playerName: '',
+        pick: pick.round,
+        year: pick.year,
+        originalTeamId: pick.originalTeam,
+        status: 0
+      };
+
+      this.proposedTradeSending.push(trade);
+
+      // Need to remove the player from the players list
+      this.picksInTrade.push(pick);
+      const index = this.yourTeamPicks.findIndex(x => x.round === pick.round && x.year === pick.year &&
+                                                x.originalTeam === pick.originalTeam);
+      console.log('b test');
+      console.log(this.masterYourTeamPicks);
+      this.yourTeamPicks.splice(index, 1);
+      console.log('a test');
+      console.log(this.masterYourTeamPicks);
+    } else {
+      // the selected team
+      // Create a new trade object
+      const trade: Trade = {
+        tradingTeam: +this.teamSelected,
+        tradingTeamName: '',
+        receivingTeam: this.team.id,
+        receivingTeamName: this.team.mascot,
+        tradeId: 0,
+        playerId: 0,
+        playerName: '',
+        pick: pick.round,
+        year: pick.year,
+        originalTeamId: pick.originalTeam,
+        status: 0
+      };
+
+      this.proposedTradeReceiving.push(trade);
+
+      // Need to remove the player from the players list
+      this.picksInTrade.push(pick);
+      const index = this.selectedTeamPicks.findIndex(x => x.round === pick.round && x.year === pick.year &&
+                                                     x.originalTeam === pick.originalTeam);
+      this.selectedTeamPicks.splice(index, 1);
     }
   }
 
@@ -309,6 +413,51 @@ export class TradesComponent implements OnInit {
 
   goToTeam() {
     this.router.navigate(['/team']);
+  }
+
+  yourSelection(value: number) {
+    if (value === 0) {
+      this.yourPicksSelection = false;
+      this.yourPlayersSelection = true;
+    } else {
+      this.yourPicksSelection = true;
+      this.yourPlayersSelection = false;
+    }
+  }
+
+  theirSelection(value: number) {
+    if (value === 0) {
+      this.theirPicksSelection = false;
+      this.theirPlayersSelection = true;
+    } else {
+      this.theirPicksSelection = true;
+      this.theirPlayersSelection = false;
+    }
+  }
+
+  getPickDetails(side: number, round: number, year: number, origTeam: number) {
+    // console.log(origTeam);
+    if (side === 0) {
+      // console.log(this.masterYourTeamPicks);
+      // console.log(year);
+      // console.log(round);
+      // console.log(origTeam);
+      const index = this.masterYourTeamPicks.findIndex(x => x.round === round && x.year === year &&
+        x.originalTeam === origTeam);
+      const value = this.masterYourTeamPicks[index];
+      // console.log(value.originalTeamName + ' Year: ' + value.year + ' Round: ' + value.round);
+      return value.originalTeamName + ' Year: ' + value.year + ' Round: ' + value.round;
+    } else {
+      // console.log(this.masterSelectedTeamPicks);
+      // console.log(round);
+      // console.log(year);
+      // console.log(origTeam);
+      const index = this.masterSelectedTeamPicks.findIndex(x => x.round === round && x.year === year &&
+        x.originalTeam === origTeam);
+      // console.log(index);
+      const value = this.masterSelectedTeamPicks[index];
+      return value.originalTeamName + ' Year: ' + value.year + ' Round: ' + value.round;
+    }
   }
 
   public openModal(template: TemplateRef<any>, tradeId: number) {

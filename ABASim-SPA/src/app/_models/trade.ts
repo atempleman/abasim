@@ -7,5 +7,7 @@ export interface Trade {
     playerId: number;
     playerName: string;
     pick: number;
+    year: number;
+    originalTeamId: number;
     status: number;
 }

@@ -11,6 +11,7 @@ import { CoachSetting } from '../_models/coachSetting';
 import { SignedPlayer } from '../_models/signedPlayer';
 import { Trade } from '../_models/trade';
 import { TradeMessage } from '../_models/tradeMessage';
+import { TeamDraftPick } from '../_models/teamDraftPick';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +101,10 @@ export class TeamService {
 
   getTradeMessageForTradeId(tradeId: number) {
     return this.http.get<TradeMessage>(this.baseUrl + 'gettrademessage/' + tradeId);
+  }
+
+  getTeamDraftPicks(teamId: number): Observable<TeamDraftPick[]> {
+    return this.http.get<TeamDraftPick[]>(this.baseUrl + 'getteamsdraftpicks/' + teamId);
   }
 
 }
