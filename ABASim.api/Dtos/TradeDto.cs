@@ -20,7 +20,7 @@ namespace ABASim.api.Dtos
 
         public int Year { get; set; }
 
-        public int OriginalTeam { get; set; }
+        public int OriginalTeamId { get; set; }
 
         public int Status { get; set; }
     }

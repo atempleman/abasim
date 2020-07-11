@@ -11,5 +11,9 @@ namespace ABASim.api.Models
         public int TransactionType { get; set; }
 
         public int Day { get; set; }
+
+        public int Pick { get; set; }
+
+        public string PickText { get; set; }
     }
 }

@@ -384,7 +384,9 @@ namespace ABASim.api.Data
                     PlayerName = player.FirstName + " " + player.Surname,
                     PlayerId = tran.PlayerId,
                     TransactionType = type,
-                    Day = tran.Day
+                    Day = tran.Day,
+                    Pick = tran.Pick,
+                    PickText = tran.PickText
                 };
                 transactions.Add(t);
             }

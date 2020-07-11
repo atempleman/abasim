@@ -48,6 +48,8 @@ export class TradesComponent implements OnInit {
   displayTeams = 0;
   recevingTeamText = '';
 
+  pickText = '';
+
   tmForm: FormGroup;
   tmDisplay = false;
   tradeText = '';
@@ -88,6 +90,7 @@ export class TradesComponent implements OnInit {
 
     this.teamService.getTradeOffers(teamId).subscribe(result => {
       this.offeredTrades = result;
+      console.log(result);
       this.offeredTrades.forEach(element => {
         const value = this.tradeIds.includes(element.tradeId);
         if (!value) {
@@ -150,6 +153,17 @@ export class TradesComponent implements OnInit {
     this.router.navigate(['/view-player']);
   }
 
+  getTeamShortCode(teamId: number) {
+    if (this.team.id === teamId) {
+      return this.team.shortCode;
+    } else {
+      console.log(this.allOtherTeams);
+      const team = this.allOtherTeams.find(x => x.id === teamId);
+      console.log(team);
+      return team.shortCode;
+    }
+  }
+
   proposeTrade() {
     if (this.proposedTradeSending.length !== 0 || this.proposedTradeReceiving.length !== 0) {
       // Now need to create an array to pass through into API
@@ -169,7 +183,7 @@ export class TradesComponent implements OnInit {
       }, () => {
         this.alertify.success('Trade offer has been made');
         // Now need to update the screen back to its original state - do this with a page reload
-        window.location.reload();
+        // window.location.reload();
       });
     }
   }
@@ -344,7 +358,8 @@ export class TradesComponent implements OnInit {
 
   addPickToTrade(pick: TeamDraftPick, side: number) {
     console.log('trading pick');
-    console.log(pick);
+    console.log('ashley');
+    console.log(+pick.originalTeam);
     if (side === 0) {
       // its your team
       const trade: Trade = {
@@ -360,18 +375,14 @@ export class TradesComponent implements OnInit {
         originalTeamId: pick.originalTeam,
         status: 0
       };
-
+      console.log(trade);
       this.proposedTradeSending.push(trade);
 
       // Need to remove the player from the players list
       this.picksInTrade.push(pick);
       const index = this.yourTeamPicks.findIndex(x => x.round === pick.round && x.year === pick.year &&
                                                 x.originalTeam === pick.originalTeam);
-      console.log('b test');
-      console.log(this.masterYourTeamPicks);
       this.yourTeamPicks.splice(index, 1);
-      console.log('a test');
-      console.log(this.masterYourTeamPicks);
     } else {
       // the selected team
       // Create a new trade object

@@ -84,6 +84,7 @@ export class TeamService {
   }
 
   saveTradeProposal(trade: Trade[]) {
+    console.log(trade);
     return this.http.post(this.baseUrl + 'savetradeproposal', trade);
   }
 

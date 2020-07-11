@@ -25,65 +25,94 @@ namespace ABASim.api.Data
                 var newTeamId = tp.ReceivingTeam;
                 var oldTeamId = tp.TradingTeam;
 
-                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
-                playerTeam.TeamId = newTeamId;
-                _context.Update(playerTeam);
+                if (playerId != 0) {
+                    // Player
+                    var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+                    playerTeam.TeamId = newTeamId;
+                    _context.Update(playerTeam);
 
-                var rosterRecord = await _context.Rosters.FirstOrDefaultAsync(x => x.TeamId == oldTeamId && x.PlayerId == playerId);
-                _context.Remove(rosterRecord);
+                    var rosterRecord = await _context.Rosters.FirstOrDefaultAsync(x => x.TeamId == oldTeamId && x.PlayerId == playerId);
+                    _context.Remove(rosterRecord);
 
-                // Need to create the new roster record for the player going to the new team
-                Roster newRosterRecord = new Roster
-                {
-                    TeamId = newTeamId,
-                    PlayerId = playerId
-                };
-                await _context.AddAsync(newRosterRecord);
-
-                // Now need to make sure the player is not in a coach setting record
-                var csRecord = await _context.CoachSettings.FirstOrDefaultAsync(x => x.TeamId == oldTeamId && (x.GoToPlayerOne == playerId || x.GoToPlayerTwo == playerId || x.GoToPlayerThree == playerId));
-
-                if (csRecord != null) {
-                    // Player needs to be removed from CS - in this case updated with any player on the team
-                    var newCSPlayer = await _context.Rosters.FirstOrDefaultAsync(x => x.TeamId == oldTeamId);
-                    
-                    if (csRecord.GoToPlayerOne == playerId)
+                    // Need to create the new roster record for the player going to the new team
+                    Roster newRosterRecord = new Roster
                     {
-                        csRecord.GoToPlayerOne = newCSPlayer.PlayerId;
-                    } else if (csRecord.GoToPlayerTwo == playerId)
-                    {
-                        csRecord.GoToPlayerTwo = newCSPlayer.PlayerId;
-                    } else if (csRecord.GoToPlayerThree == playerId)
-                    {
-                        csRecord.GoToPlayerThree = newCSPlayer.PlayerId;
+                        TeamId = newTeamId,
+                        PlayerId = playerId
+                    };
+                    await _context.AddAsync(newRosterRecord);
+
+                    // Now need to make sure the player is not in a coach setting record
+                    var csRecord = await _context.CoachSettings.FirstOrDefaultAsync(x => x.TeamId == oldTeamId && (x.GoToPlayerOne == playerId || x.GoToPlayerTwo == playerId || x.GoToPlayerThree == playerId));
+
+                    if (csRecord != null) {
+                        // Player needs to be removed from CS - in this case updated with any player on the team
+                        var newCSPlayer = await _context.Rosters.FirstOrDefaultAsync(x => x.TeamId == oldTeamId);
+                        
+                        if (csRecord.GoToPlayerOne == playerId)
+                        {
+                            csRecord.GoToPlayerOne = newCSPlayer.PlayerId;
+                        } else if (csRecord.GoToPlayerTwo == playerId)
+                        {
+                            csRecord.GoToPlayerTwo = newCSPlayer.PlayerId;
+                        } else if (csRecord.GoToPlayerThree == playerId)
+                        {
+                            csRecord.GoToPlayerThree = newCSPlayer.PlayerId;
+                        }
+                        
+                        _context.Update(csRecord);
                     }
-                    
-                    _context.Update(csRecord);
-                }
 
-                var depthChart = await _context.DepthCharts.Where(x => x.TeamId == oldTeamId && x.PlayerId == playerId).ToListAsync();
+                    var depthChart = await _context.DepthCharts.Where(x => x.TeamId == oldTeamId && x.PlayerId == playerId).ToListAsync();
 
-                if (depthChart != null)
-                {
-                    // Get the last roster id
-                    var rr = await _context.Rosters.OrderByDescending(x => x.PlayerId).FirstOrDefaultAsync(x => x.TeamId == oldTeamId);
-                    foreach (var dc in depthChart)
+                    if (depthChart != null)
                     {
-                        dc.PlayerId = rr.PlayerId;
-                        _context.Update(dc);
+                        // Get the last roster id
+                        var rr = await _context.Rosters.OrderByDescending(x => x.PlayerId).FirstOrDefaultAsync(x => x.TeamId == oldTeamId);
+                        foreach (var dc in depthChart)
+                        {
+                            dc.PlayerId = rr.PlayerId;
+                            _context.Update(dc);
+                        }
                     }
-                }
 
-                // Now need to record a transaction
-                var league = await _context.Leagues.FirstOrDefaultAsync();
-                Transaction trans = new Transaction
-                {
-                    TeamId = newTeamId,
-                    PlayerId = playerId,
-                    TransactionType = 3,
-                    Day = league.Day
-                };
-                await _context.AddAsync(trans);
+                    // Now need to record a transaction
+                    var league = await _context.Leagues.FirstOrDefaultAsync();
+                    Transaction trans = new Transaction
+                    {
+                        TeamId = newTeamId,
+                        PlayerId = playerId,
+                        TransactionType = 3,
+                        Day = league.Day,
+                        Pick = 0,
+                        PickText = ""
+                    };
+                    await _context.AddAsync(trans);
+                } else {
+                    // pick
+                    // Need to update the pick
+                    // var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+                    // playerTeam.TeamId = newTeamId;
+                    // _context.Update(playerTeam);
+                    var pickToUpdate = await _context.TeamDraftPicks.FirstOrDefaultAsync(x => x.Year == tp.Year && x.Round == tp.Pick && x.OriginalTeam == tp.OriginalTeam);
+                    pickToUpdate.CurrentTeam = newTeamId;
+                    _context.Update(pickToUpdate);
+
+                    var origTeamName = await _context.Teams.FirstOrDefaultAsync(x => x.Id == tp.OriginalTeam);
+
+                    // Now need to record a transaction
+                    var league = await _context.Leagues.FirstOrDefaultAsync();
+                    Transaction trans = new Transaction
+                    {
+                        TeamId = newTeamId,
+                        PlayerId = 0,
+                        TransactionType = 3,
+                        Day = league.Day,
+                        Pick = 1,
+                        PickText = origTeamName.ShortCode + " Year: " + tp.Year + " Round " + tp.Pick
+                    };
+                    await _context.AddAsync(trans);
+                }
 
                 tp.Status = 1;
                 _context.Update(tp);
@@ -128,7 +157,7 @@ namespace ABASim.api.Data
                     PlayerName = playerName,
                     Pick = trade.Pick,
                     Year = trade.Year,
-                    OriginalTeam = trade.OriginalTeam,
+                    OriginalTeamId = trade.OriginalTeam,
                     Status = trade.Status
                 };
                 tradesList.Add(newTrade);
@@ -163,7 +192,7 @@ namespace ABASim.api.Data
                     PlayerName = playerName,
                     Pick = trade.Pick,
                     Year = trade.Year,
-                    OriginalTeam = trade.OriginalTeam,
+                    OriginalTeamId = trade.OriginalTeam,
                     Status = trade.Status
                 };
                 tradesList.Add(newTrade);
@@ -350,7 +379,7 @@ namespace ABASim.api.Data
                     PlayerName = playerName,
                     Pick = trade.Pick,
                     Year = trade.Year,
-                    OriginalTeam = trade.OriginalTeam,
+                    OriginalTeamId = trade.OriginalTeam,
                     Status = trade.Status
                 };
                 tradesList.Add(newTrade);
@@ -465,7 +494,7 @@ namespace ABASim.api.Data
                     Pick = trade.Pick,
                     TradeId = lastTradeId + 1,
                     Year = trade.Year,
-                    OriginalTeam = trade.OriginalTeam,
+                    OriginalTeam = trade.OriginalTeamId,
                     Status = 0
                 };
                 await _context.AddAsync(t);
@@ -495,7 +524,9 @@ namespace ABASim.api.Data
                 TeamId = signed.TeamId,
                 PlayerId = signed.PlayerId,
                 TransactionType = 1,
-                Day = league.Day
+                Day = league.Day,
+                Pick = 0,
+                PickText = ""
             };
             await _context.AddAsync(trans);
 
@@ -521,7 +552,9 @@ namespace ABASim.api.Data
                 TeamId = waived.TeamId,
                 PlayerId = waived.PlayerId,
                 TransactionType = 2,
-                Day = league.Day
+                Day = league.Day,
+                Pick = 0,
+                PickText = ""
             };
             await _context.AddAsync(trans);
 

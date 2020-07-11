@@ -75,8 +75,11 @@
 						<td>
 							{{ tran.teamMascot }}
 						</td>
-						<td>
+						<td *ngIf="tran.playerId != 0">
 							{{ tran.playerName }}
+						</td>
+						<td *ngIf="tran.playerId == 0">
+							{{ tran.pickText }}
 						</td>
 						<td>
 							{{ tran.transactionType }}

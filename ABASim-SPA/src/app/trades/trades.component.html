@@ -280,14 +280,17 @@
 			</div>
 			<h4>{{ this.team.mascot }} Receive:</h4>
 			<div class="row ml-2" *ngFor="let trade of this.tradeDisplay">
-				<p class="mt-1" *ngIf="trade.receivingTeam == this.team.id">{{ trade.playerName }}</p>
+				<!-- <p class="mt-1" *ngIf="trade.receivingTeam == this.team.id">{{ trade.playerName }}</p> -->
+				<p class="mt-1" *ngIf="trade.receivingTeam == this.team.id && trade.playerId != 0">{{ trade.playerName }}</p>
+				<p class="mt-1" *ngIf="trade.receivingTeam == this.team.id && trade.playerId == 0">Pick - {{ getTeamShortCode(trade.originalTeamId) }} Year: {{ trade.year }} Round: {{ trade.pick }}</p>
 				<div class="divider"></div>
 				<i class="fa fa-info-circle" *ngIf="trade.receivingTeam == this.team.id" (click)="viewPlayerForId(trade.playerId)"></i>
 			</div>
 			<br />
 			<h4>{{ this.recevingTeamText }} Receive:</h4>
 			<div class="row ml-2" *ngFor="let trade of this.tradeDisplay">
-				<p class="mt-1" *ngIf="trade.receivingTeam != this.team.id">{{ trade.playerName }}</p>
+				<p class="mt-1" *ngIf="trade.receivingTeam != this.team.id && trade.playerId != 0">{{ trade.playerName }}</p>
+				<p class="mt-1" *ngIf="trade.receivingTeam != this.team.id && trade.playerId == 0">Pick - {{ getTeamShortCode(trade.originalTeamId) }} Year: {{ trade.year }} Round: {{ trade.pick }}</p>
 				<div class="divider"></div>
 				<i class="fa fa-info-circle" *ngIf="trade.receivingTeam != this.team.id" (click)="viewPlayerForId(trade.playerId)"></i>
 			</div>

@@ -4,4 +4,6 @@ export interface Transaction {
     playerId: number;
     transactionType: string;
     day: number;
+    pick: number;
+    pickText: string;
 }
