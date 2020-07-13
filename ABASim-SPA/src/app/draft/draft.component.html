@@ -1,46 +1,69 @@
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 <!------ Include the above in your HEAD tag ---------->
 
-<div class="container">
-    <div class="page-header">
-        <h1>DRAFT HEADQUARTERS</h1>
-    </div>
-    <div *ngIf="this.league?.stateId < 3" class="row mt-2 ml-5">
-		<p><i class="fa fa-exclamation-triangle"></i> League Administrator will run draft lottery soon.</p>
-	</div>
-    <div class="row">
-        <div class="col">
-            <div class="panel with-nav-tabs panel-primary">
-                <div class="panel-heading">
-                    <ul class="nav nav-tabs">
-                        <li><button (click)="draftClicked()">Draft</button></li>
-                        <li><button (click)="lotteryClicked()" *ngIf="this.league?.stateId < 5">Draft Lottery</button></li>
-                        <li><button (click)="playerPoolClicked()">Draft Player Pool</button></li>
-                        <li><button (click)="rankingsClicked()">Draftboard</button></li>
-                    </ul>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+
+<div class="jumbotron">
+    <h3 class="display">Draft Headquarters</h3>
+</div>
+
+
+
+
+<div class="box">
+    <div class="container">
+        <div class="row cards-row">
+            <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+                <div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+                        class="header-card ml-3"><strong>Player Pool</strong></span></div>
+                <div class="card-body">
+                    <p class="card-text">View the available players in the upcoming draft.</p>
+                    <div style="text-align: right;">
+                        <button type="button" class="btn btn-link text-left" (click)="playerPoolClicked()">Go to
+                            Player Pool</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+                <div class="card-header"><i class="fa fa-users fa-2x" aria-hidden="true"></i><span
+                        class="header-card ml-3"><strong>Draftboard</strong></span></div>
+                <div class="card-body">
+                    <p class="card-text">View your draftboard and order your auto-picks..</p>
+                    <div style="text-align: right;">
+                        <button type="button" class="btn btn-link text-left" (click)="rankingsClicked()">Go to
+                            Draftboard</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+                <div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
+                        class="header-card ml-3"><strong>Draft Lottery</strong></span></div>
+                <div class="card-body">
+                    <p class="card-text">View the draft lottery and see what the odds or draft order.</p>
+                    <div style="text-align: right;">
+                        <button type="button" class="btn btn-link text-left" (click)="lotteryClicked()">Go to Draft
+                            Lottery</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- <div class="row"> -->
-        <!-- <div class="col"> -->
-            <div class="panel-body">
-                <div class="tab-pane" id="drafttab" *ngIf="draftDisplayed == 1 && this.league?.stateId == 4">
-                    <app-initial-draft></app-initial-draft>
-                </div>
-                <div class="tab-pane" id="draftlotterytab" *ngIf="lotteryDisplayed == 1">
-                    <app-initiallottery></app-initiallottery>
-                </div>
-                <div class="tab-pane" id="draftplayerpooltab" *ngIf="playerPoolDisplayed == 1">
-                    <app-draft-player-pool></app-draft-player-pool>
-                </div>
-                <div class="tab-pane" id="draftrankingstab" *ngIf="rankingsDisplayed == 1">
-                    <app-draftboard></app-draftboard>
-                </div>
-            </div>
-        <!-- </div> -->
-    <!-- </div> -->
 </div>
-<br/>
+
+
+<div class="box">
+    <div class="container">
+        <div class="row cards-row" *ngIf="this.league?.stateId == 2">
+            <blockquote class="blockquote">
+                <p class="mb-0 text-warning">Initial Draft Lottery is awaiting to be run by the league administrator.</p>
+                <footer class="blockquote-footer">League Information
+                </footer>
+            </blockquote>
+        </div>
+    </div>
+</div>

@@ -76,6 +76,17 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 2">
+				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Run Initial Lottery</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Run the Initial Draft Lottery.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(runLottery, 4)">Run Lottery</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -175,3 +186,19 @@
 			</div>
 		</form>
 	</ng-template>
+
+	<ng-template #runLottery>
+		<div class="modal-header">
+		  <h4 class="modal-title">Run Initial Draft Lottery</h4>
+		  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+		</div>
+		<form #draftlotteryForm (ngSubmit)="runInitialDraftLottery()">
+			<div class="modal-body">
+		  <p>Click on run to perform the draft lottery</p>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Run</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			  </div>
+		</form>
+	</ng-template> 

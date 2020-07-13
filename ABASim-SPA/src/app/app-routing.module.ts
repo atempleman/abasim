@@ -47,11 +47,12 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent, canActivate: [AdminAuthGuard] },
   { path: 'watch-game', component: WatchGameComponent, canActivate: [AdminAuthGuard] },
   { path: 'box-score', component: BoxScoreComponent, canActivate: [AdminAuthGuard] },
-
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
-  { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
   { path: 'draftplayerpool', component: DraftPlayerPoolComponent, canActivate: [AuthGuard] },
   { path: 'draftboard', component: DraftboardComponent, canActivate: [AuthGuard] },
+
+
+  { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
   { path: 'admindraft', component: AdmindraftComponent, canActivate: [AdminAuthGuard] },
   { path: 'initial-draft', component: InitialDraftComponent, canActivate: [AuthGuard] },
   { path: 'admintestengine', component: AdmintestengineComponent, canActivate: [AuthGuard] },

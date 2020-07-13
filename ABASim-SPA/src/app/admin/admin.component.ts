@@ -38,8 +38,8 @@ export class AdminComponent implements OnInit {
   dayForm: FormGroup;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService, private modalService: BsModalService, private adminService: AdminService,
-              private teamService: TeamService, private fb: FormBuilder) { }
+    private authService: AuthService, private modalService: BsModalService, private adminService: AdminService,
+    private teamService: TeamService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.leagueService.getLeague().subscribe(result => {
@@ -195,4 +195,14 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  runInitialDraftLottery() {
+    this.adminService.runInitialDraftLottery().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error running initial draft lottery');
+    }, () => {
+      this.alertify.success('Initial Draft Lottery Run successfully');
+      this.league.stateId = 3;
+      this.modalRef.hide();
+    });
+  }
 }

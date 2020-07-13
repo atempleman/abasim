@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LeagueService } from '../_services/league.service';
 import { League } from '../_models/league';
 import { AlertifyService } from '../_services/alertify.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-draft',
@@ -10,12 +11,8 @@ import { AlertifyService } from '../_services/alertify.service';
 })
 export class DraftComponent implements OnInit {
   league: League;
-  lotteryDisplayed = 0;
-  playerPoolDisplayed = 0;
-  rankingsDisplayed = 0;
-  draftDisplayed = 1;
 
-  constructor(private leagueService: LeagueService, private alertify: AlertifyService) { }
+  constructor(private leagueService: LeagueService, private alertify: AlertifyService, private router: Router) { }
 
   ngOnInit() {
     this.leagueService.getLeague().subscribe(result => {
@@ -24,36 +21,18 @@ export class DraftComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {
-    //  this.getCurrentLeagueState();
     });
   }
 
   playerPoolClicked() {
-    this.draftDisplayed = 0;
-    this.lotteryDisplayed = 0;
-    this.rankingsDisplayed = 0;
-    this.playerPoolDisplayed = 1;
+    this.router.navigate(['/draftplayerpool']);
   }
 
   rankingsClicked() {
-    this.draftDisplayed = 0;
-    this.lotteryDisplayed = 0;
-    this.rankingsDisplayed = 1;
-    this.playerPoolDisplayed = 0;
+    this.router.navigate(['/draftboard']);
   }
 
   lotteryClicked() {
-    this.draftDisplayed = 0;
-    this.lotteryDisplayed = 1;
-    this.rankingsDisplayed = 0;
-    this.playerPoolDisplayed = 0;
+    this.router.navigate(['/initiallottery']);
   }
-
-  draftClicked() {
-    this.draftDisplayed = 1;
-    this.lotteryDisplayed = 0;
-    this.rankingsDisplayed = 0;
-    this.playerPoolDisplayed = 0;
-  }
-
 }
