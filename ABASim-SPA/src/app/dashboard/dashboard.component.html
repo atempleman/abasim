@@ -9,8 +9,10 @@
 	<span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
 	<span class="badge badge-warning"
 		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
-  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
-  <span *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14"> - Day #{{ this.league?.day }}</span>
+	<span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+	<span
+		*ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+		- Day #{{ this.league?.day }}</span>
 </div>
 
 
@@ -20,81 +22,66 @@
 	<div class="container">
 		<div class="row cards-row">
 			<!-- <div class="column left"> -->
-				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-					<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
-							class="header-card ml-3"><strong>LEAGUE</strong></span></div>
-					<div class="card-body">
-						<p class="card-text">View details about the league, standings, schedules, results, stats &
-							transactions.</p>
-						<div style="text-align: right;">
-							<button type="button" class="btn btn-link text-left" (click)="goToLeague()">Go to League</button>
-						</div>
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>LEAGUE</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View details about the league, standings, schedules, results, stats &
+						transactions.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToLeague()">Go to
+							League</button>
 					</div>
 				</div>
-	
-				<!-- To unhide when looking to implement -->
-				<!-- <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-					<div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
-							class="header-card ml-3"><strong>DRAFT</strong></span></div>
-					<div class="card-body">
-						<p class="card-text">View all information related to the draft. View the Player Pool and Lottery,
-							set your auto-draft and draft.</p>
-						<div style="text-align: right;">
-							<button type="button" class="btn btn-link text-left" (click)="goToDraft()">Go to Draft</button>
-						</div>
-					</div>
-				</div> -->
-	
-				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-					<div class="card-header"><i class="fa fa-users fa-2x" aria-hidden="true"></i><span
-							class="header-card ml-3"><strong>TEAM</strong></span></div>
-					<div class="card-body">
-						<p class="card-text">Manage your roster, depth charts, coaching and make trades and free agent
-							signings.</p>
-						<div style="text-align: right;">
-							<button type="button" class="btn btn-link text-left" (click)="goToRoster()">Go to Team</button>
-						</div>
-					</div>
-				</div>
+			</div>
 
-				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-					<div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
-							class="header-card ml-3"><strong>DRAFT</strong></span></div>
-					<div class="card-body">
-						<p class="card-text">View all information related to the draft. View the Player Pool and Lottery,
-							set your auto-draft and draft.</p>
-						<div style="text-align: right;">
-							<button type="button" class="btn btn-link text-left" (click)="goToDraft()">Go to Draft</button>
-						</div>
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-users fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>TEAM</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Manage your roster, depth charts, coaching and make trades and free agent
+						signings.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToRoster()">Go to Team</button>
 					</div>
 				</div>
-	
-				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-					<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
-							class="header-card ml-3"><strong>PLAYERS</strong></span></div>
-					<div class="card-body">
-						<p class="card-text">View all of the Players in league and view their details.</p>
-						<div style="text-align: right;">
-							<button type="button" class="btn btn-link text-left" (click)="goToPlayers()">View Players</button>
-						</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>DRAFT</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View all information related to the draft. View the Player Pool and Lottery,
+						set your auto-draft and draft.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToDraft()">Go to Draft</button>
 					</div>
 				</div>
-	
-				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-					<div class="card-header"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i><span
-							class="header-card ml-3"><strong>ADMIN</strong></span></div>
-					<div class="card-body">
-						<p class="card-text">View Administration Functions for the league.</p>
-						<div style="text-align: right;">
-							<button type="button" class="btn btn-link text-left" (click)="goToAdmin()">Go to Admin</button>
-						</div>
-						
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>PLAYERS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View all of the Players in league and view their details.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToPlayers()">View
+							Players</button>
 					</div>
 				</div>
-			<!-- </div> -->
-			<!-- <div class="column right">
-				
-			</div> -->
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>ADMIN</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View Administration Functions for the league.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToAdmin()">Go to Admin</button>
+					</div>
+
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -127,16 +114,23 @@
 			<p class="text-success" *ngIf="this.league?.stateId == 14">Draft</p>
 			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day }}</p>
 
-			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6 || this.league?.stateId == 7">
+			<table class="table table-hover events-table"
+				*ngIf="this.league?.stateId == 6 || this.league?.stateId == 7">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
 						<td>
-							{{ game.awayTeamName }} @ {{ game.homeTeamName }} 
-							<button *ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 7 && this.noRun == 0" type="button" class="btn btn-link" (click)="runGameSeason(game)">Run Game</button>
-							<button *ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0" type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
-							<button *ngIf="game.completed == 1" type="button" class="btn btn-link" (click)="watchGame(game.id)">Watch</button>
+							{{ game.awayTeamName }} @ {{ game.homeTeamName }}
+							<button
+								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 7 && this.noRun == 0"
+								type="button" class="btn btn-link" (click)="runGameSeason(game)">Run Game</button>
+							<button
+								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0"
+								type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
+							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
+								(click)="watchGame(game.id)">Watch</button>
 							&nbsp;
-							<button *ngIf="game.completed == 1" type="button" class="btn btn-link" (click)="viewBoxScore(game.id)">Box Scores</button>
+							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
+								(click)="viewBoxScore(game.id)">Box Scores</button>
 						</td>
 					</tr>
 				</tbody>
@@ -175,151 +169,161 @@
 			</table> -->
 			<carousel *ngIf="this.league.day != 0 && this.league.stateId == 7">
 				<slide class="slideclass center-block">
-				  <div class="text-center py-5 bg-dark text-white">
-					<h4>Points League Leaders</h4>
-					<div class="lead">
-						<div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFivePoints?.length != 0)">
-							<table class="table-secondary">
-								<thead>
-									<tr>
-									  <th>Rank</th>
-									  <th>Player</th>
-									  <th>Team</th>
-									  <th>PPG</th>
-									  <th></th>
+					<div class="text-center py-5 bg-dark text-white">
+						<h4>Points League Leaders</h4>
+						<div class="lead">
+							<div class="row stats"
+								*ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFivePoints?.length != 0)">
+								<table class="table-secondary">
+									<thead>
+										<tr>
+											<th>Rank</th>
+											<th>Player</th>
+											<th>Team</th>
+											<th>PPG</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tr *ngFor="let player of this.topFivePoints; let i = index">
+										<td>{{ i + 1 }}</td>
+										<td>{{ player.playerName }}</td>
+										<td>{{ player.teamShortCode }}</td>
+										<td>{{ (player.points / player.gamesPlayed).toFixed(1) }}</td>
+										<td><button class="btn btn-info btn-xs tablebutton"
+												(click)="viewPlayer(player.playerId)"><span
+													class="glyphicon glyphicon-edit"></span> View</button></td>
 									</tr>
-								</thead>
-								<tr *ngFor="let player of this.topFivePoints; let i = index">
-									<td>{{ i + 1 }}</td>
-									<td>{{ player.playerName }}</td>
-									<td>{{ player.teamShortCode }}</td>
-									<td>{{ (player.points / player.gamesPlayed).toFixed(1) }}</td>
-									<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-										  class="glyphicon glyphicon-edit"></span> View</button></td>
-								</tr>
-							</table>
+								</table>
+							</div>
 						</div>
+						<button class="btn btn-link" (click)="goToStats(1)">More</button>
 					</div>
-					<button class="btn btn-link" (click)="goToStats(1)">More</button>
-				  </div>
 				</slide>
 				<slide>
 					<div class="text-center py-5 bg-dark text-white">
-					  <h3>Rebounding League Leaders</h3>
-					  <div class="lead">
-						  <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveRebounds?.length != 0)">
-							  <table class="table-secondary">
-								  <thead>
-									  <tr>
-										<th>Rank</th>
-										<th>Player</th>
-										<th>Team</th>
-										<th>RPG</th>
-										<th></th>
-									  </tr>
-								  </thead>
-								  <tr *ngFor="let player of this.topFiveRebounds; let i = index">
-									  <td>{{ i + 1 }}</td>
-									  <td>{{ player.playerName }}</td>
-									  <td>{{ player.teamShortCode }}</td>
-									  <td>{{ (player.rebounds / player.gamesPlayed).toFixed(1) }}</td>
-									  <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-											class="glyphicon glyphicon-edit"></span> View</button></td>
-								  </tr>
-							  </table>
-						  </div>
-					  </div>
-					  <button class="btn btn-link" (click)="goToStats(2)">More</button>
+						<h4>Rebounding League Leaders</h4>
+						<div class="lead">
+							<div class="row stats"
+								*ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveRebounds?.length != 0)">
+								<table class="table-secondary">
+									<thead>
+										<tr>
+											<th>Rank</th>
+											<th>Player</th>
+											<th>Team</th>
+											<th>RPG</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tr *ngFor="let player of this.topFiveRebounds; let i = index">
+										<td>{{ i + 1 }}</td>
+										<td>{{ player.playerName }}</td>
+										<td>{{ player.teamShortCode }}</td>
+										<td>{{ (player.rebounds / player.gamesPlayed).toFixed(1) }}</td>
+										<td><button class="btn btn-info btn-xs tablebutton"
+												(click)="viewPlayer(player.playerId)"><span
+													class="glyphicon glyphicon-edit"></span> View</button></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<button class="btn btn-link" (click)="goToStats(2)">More</button>
 					</div>
-				  </slide>
-				  <slide>
+				</slide>
+				<slide>
 					<div class="text-center py-5 bg-dark text-white">
-					  <h3>Assists League Leaders</h3>
-					  <div class="lead">
-						  <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveAssists?.length != 0)">
-							  <table class="table-secondary">
-								  <thead>
-									  <tr>
-										<th>Rank</th>
-										<th>Player</th>
-										<th>Team</th>
-										<th>APG</th>
-										<th></th>
-									  </tr>
-								  </thead>
-								  <tr *ngFor="let player of this.topFiveAssists; let i = index">
-									  <td>{{ i + 1 }}</td>
-									  <td>{{ player.playerName }}</td>
-									  <td>{{ player.teamShortCode }}</td>
-									  <td>{{ (player.assists / player.gamesPlayed).toFixed(1) }}</td>
-									  <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-											class="glyphicon glyphicon-edit"></span> View</button></td>
-								  </tr>
-							  </table>
-						  </div>
-					  </div>
-					  <button class="btn btn-link" (click)="goToStats(3)">More</button>
+						<h4>Assists League Leaders</h4>
+						<div class="lead">
+							<div class="row stats"
+								*ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveAssists?.length != 0)">
+								<table class="table-secondary">
+									<thead>
+										<tr>
+											<th>Rank</th>
+											<th>Player</th>
+											<th>Team</th>
+											<th>APG</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tr *ngFor="let player of this.topFiveAssists; let i = index">
+										<td>{{ i + 1 }}</td>
+										<td>{{ player.playerName }}</td>
+										<td>{{ player.teamShortCode }}</td>
+										<td>{{ (player.assists / player.gamesPlayed).toFixed(1) }}</td>
+										<td><button class="btn btn-info btn-xs tablebutton"
+												(click)="viewPlayer(player.playerId)"><span
+													class="glyphicon glyphicon-edit"></span> View</button></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<button class="btn btn-link" (click)="goToStats(3)">More</button>
 					</div>
-				  </slide>
-				  <slide>
+				</slide>
+				<slide>
 					<div class="text-center py-5 bg-dark text-white">
-					  <h3>Steals League Leaders</h3>
-					  <div class="lead">
-						  <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveSteals?.length != 0)">
-							  <table class="table-secondary">
-								  <thead>
-									  <tr>
-										<th>Rank</th>
-										<th>Player</th>
-										<th>Team</th>
-										<th>SPG</th>
-										<th></th>
-									  </tr>
-								  </thead>
-								  <tr *ngFor="let player of this.topFiveSteals; let i = index">
-									  <td>{{ i + 1 }}</td>
-									  <td>{{ player.playerName }}</td>
-									  <td>{{ player.teamShortCode }}</td>
-									  <td>{{ (player.steals / player.gamesPlayed).toFixed(1) }}</td>
-									  <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-											class="glyphicon glyphicon-edit"></span> View</button></td>
-								  </tr>
-							  </table>
-						  </div>
-					  </div>
-					  <button class="btn btn-link" (click)="goToStats(4)">More</button>
+						<h4>Steals League Leaders</h4>
+						<div class="lead">
+							<div class="row stats"
+								*ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveSteals?.length != 0)">
+								<table class="table-secondary">
+									<thead>
+										<tr>
+											<th>Rank</th>
+											<th>Player</th>
+											<th>Team</th>
+											<th>SPG</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tr *ngFor="let player of this.topFiveSteals; let i = index">
+										<td>{{ i + 1 }}</td>
+										<td>{{ player.playerName }}</td>
+										<td>{{ player.teamShortCode }}</td>
+										<td>{{ (player.steals / player.gamesPlayed).toFixed(1) }}</td>
+										<td><button class="btn btn-info btn-xs tablebutton"
+												(click)="viewPlayer(player.playerId)"><span
+													class="glyphicon glyphicon-edit"></span> View</button></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<button class="btn btn-link" (click)="goToStats(4)">More</button>
 					</div>
-				  </slide>
-				  <slide>
+				</slide>
+				<slide>
 					<div class="text-center py-5 bg-dark text-white">
-					  <h3>Blocks League Leaders</h3>
-					  <div class="lead">
-						  <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveBlocks?.length != 0)">
-							  <table class="table-secondary">
-								  <thead>
-									  <tr>
-										<th>Rank</th>
-										<th>Player</th>
-										<th>Team</th>
-										<th>BPG</th>
-										<th></th>
-									  </tr>
-								  </thead>
-								  <tr *ngFor="let player of this.topFiveBlocks; let i = index">
-									  <td>{{ i + 1 }}</td>
-									  <td>{{ player.playerName }}</td>
-									  <td>{{ player.teamShortCode }}</td>
-									  <td>{{ (player.blocks / player.gamesPlayed).toFixed(1) }}</td>
-									  <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-											class="glyphicon glyphicon-edit"></span> View</button></td>
-								  </tr>
-							  </table>
-						  </div>
-					  </div>
-					  <button class="btn btn-link" (click)="goToStats(5)">More</button>
+						<h4>Blocks League Leaders</h4>
+						<div class="lead">
+							<div class="row stats"
+								*ngIf="(this.league?.day > 0 && this.league?.stateId == 7 && this.topFiveBlocks?.length != 0)">
+								<table class="table-secondary">
+									<thead>
+										<tr>
+											<th>Rank</th>
+											<th>Player</th>
+											<th>Team</th>
+											<th>BPG</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tr *ngFor="let player of this.topFiveBlocks; let i = index">
+										<td>{{ i + 1 }}</td>
+										<td>{{ player.playerName }}</td>
+										<td>{{ player.teamShortCode }}</td>
+										<td>{{ (player.blocks / player.gamesPlayed).toFixed(1) }}</td>
+										<td><button class="btn btn-info btn-xs tablebutton"
+												(click)="viewPlayer(player.playerId)"><span
+													class="glyphicon glyphicon-edit"></span> View</button></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<button class="btn btn-link" (click)="goToStats(5)">More</button>
 					</div>
-				  </slide>
-			  </carousel>
+				</slide>
+			</carousel>
 		</div>
 	</div>
 </div>
