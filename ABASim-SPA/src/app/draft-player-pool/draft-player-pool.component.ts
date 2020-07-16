@@ -17,6 +17,7 @@ export class DraftPlayerPoolComponent implements OnInit {
     draftPlayers: DraftPlayer[] = [];
     draftboardPlayers: DraftPlayer[] = [];
     team: Team;
+    pages = 1;
     // newRanking: AddDraftRank = {};
 
     constructor(private alertify: AlertifyService, private playerService: PlayerService, private teamService: TeamService,
@@ -51,8 +52,13 @@ export class DraftPlayerPoolComponent implements OnInit {
       }, error => {
         this.alertify.error('Error getting players available for the draft');
       }, () => {
-        console.log(this.draftPlayers);
+        this.pages = +(this.draftPlayers.length / 50).toFixed(0);
+        console.log('pages: ' + this.pages);
       });
+    }
+
+    counter(i: number) {
+      return new Array(i);
     }
 
     checkPlayer(playerId: number) {

@@ -1,15 +1,6 @@
-<!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
-<!------ Include the above in your HEAD tag ---------->
-
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-
 <div class="jumbotron">
     <h3 class="display">Draft Headquarters</h3>
 </div>
-
-
 
 
 <div class="box">
@@ -60,10 +51,50 @@
     <div class="container">
         <div class="row cards-row" *ngIf="this.league?.stateId == 2">
             <blockquote class="blockquote">
-                <p class="mb-0 text-warning">Initial Draft Lottery is awaiting to be run by the league administrator.</p>
+                <p class="mb-0 text-warning">Initial Draft Lottery is awaiting to be run by the league administrator.
+                </p>
                 <footer class="blockquote-footer">League Information
                 </footer>
             </blockquote>
+        </div>
+
+        <div class="row cards-row" *ngIf="this.league?.stateId == 3">
+            <h5 class="text-success">Draft - Round {{ this.currentRound }}</h5>
+        </div>
+
+        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
+            <table class="table-secondary">
+                <thead>
+                    <tr>
+                        <th>Pick</th>
+                        <th>Team</th>
+                        <th>Selection</th>
+                    </tr>
+                </thead>
+                <tr *ngFor="let picks of this.draftPicks; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ picks.teamName }}</td>
+                    <td>{{ picks.playerName }}</td>
+                    <td></td>
+                    <td>
+                        <!-- <ng-container *ngIf="round <= this.tracker.round">{{ getPlayerSelected(round, picks) }}
+                        </ng-container> -->
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link">&laquo;</a>
+                </li>
+                <li class="page-item" *ngFor="let page of counter(13); let i = index;">
+                    <a class="page-link">{{ i + 1 }}</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link">&raquo;</a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

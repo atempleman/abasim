@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { InitialDraftPicks } from '../_models/initialDraftPicks';
 import { Team } from '../_models/team';
 import { DraftSelection } from '../_models/draftSelection';
+import { DraftPick } from '../_models/draftPick';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -50,11 +51,14 @@ export class DraftService {
   }
 
   makeDraftPick(draftPick: DraftSelection) {
-    console.log(draftPick);
     return this.http.post(this.baseUrl + 'initialdraftselection', draftPick);
   }
 
   makeAutoPick(draftPick: DraftSelection) {
     return this.http.post(this.baseUrl + 'makeautopick', draftPick);
+  }
+
+  getDraftPicksForRound(page: number): Observable<DraftPick[]> {
+    return this.http.get<DraftPick[]>(this.baseUrl + 'getinitialdraftpicksforround/' + page);
   }
 }

@@ -54,6 +54,11 @@ table {
   .carousel {
     margin: 0 auto;
   }
+
+  table { 
+    border-spacing: 10px;
+    border-collapse: separate;
+}
 /* 
   .slideclass {
 

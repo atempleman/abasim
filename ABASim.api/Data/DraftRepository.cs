@@ -222,5 +222,37 @@ namespace ABASim.api.Data
             }
             return false;
         }
+
+        public async Task<IEnumerable<DraftPickDto>> GetInitialDraftPicksForPage(int page)
+        {
+            List<DraftPickDto> draftPicks = new List<DraftPickDto>();
+
+            var initalDraftPicks = await _context.InitialDrafts.Where(x => x.Round == page).OrderBy(x => x.Pick).ToListAsync();
+            var teams = await _context.Teams.ToListAsync();
+
+            foreach(var dp in initalDraftPicks)
+            {
+                var currentTeam = teams.FirstOrDefault(x => x.Id == dp.TeamId);
+
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == dp.PlayerId);
+                var playerName = "";
+                if (player != null)
+                {
+                    playerName =  player.FirstName + " " + player.Surname;
+                }
+
+                DraftPickDto dto = new DraftPickDto
+                {
+                    Round = dp.Round,
+                    Pick = dp.Pick,
+                    TeamId = dp.TeamId,
+                    TeamName = currentTeam.Teamname + " " + currentTeam.Mascot,
+                    PlayerId = dp.PlayerId,
+                    PlayerName = playerName
+                };
+                draftPicks.Add(dto);
+            }
+            return draftPicks;
+        }
     }
 }

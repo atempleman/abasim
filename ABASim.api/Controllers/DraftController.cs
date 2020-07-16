@@ -93,5 +93,12 @@ namespace ABASim.api.Controllers
             var draftPicks = await _repo.GetInitialDraftPicks();
             return Ok(draftPicks);
         }
+
+        [HttpGet("getinitialdraftpicksforround/{page}")]
+        public async Task<IActionResult> GetInitialDraftPicksForRound(int page)
+        {
+            var draftPicks = await _repo.GetInitialDraftPicksForPage(page);
+            return Ok(draftPicks);
+        }
     }
 }
