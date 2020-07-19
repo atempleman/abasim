@@ -1,50 +1,65 @@
-<h4>Daft Player Pool</h4>
-  <table *ngIf="this.draftPlayers?.length != 0" class="table table-striped custab">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Position(s)</th>
-        <th>2s</th>
-        <th>3s</th>
-        <th>FTs</th>
-        <th>O-Rebs</th>
-        <th>D-Rebs</th>
-        <th>Handles</th>
-        <th>Steals</th>
-        <th>Blocks</th>
-        <th>Stamina</th>
-        <th>Pass</th>
-        <th>Intangibles</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tr *ngFor="let player of this.draftPlayers; let i = index">
-      <td>{{ player.firstName }} {{ player.surname }}</td>
-      <td>
-        <ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
-        <ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
-        <ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
-        <ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
-        <ng-container *ngIf="player.cPosition == 1">C </ng-container>
-      </td>
-      <td>{{ player.twoGrade }}</td>
-      <td>{{ player.threeGrade }}</td>
-      <td>{{ player.ftGrade }}</td>
-      <td>{{ player.oRebGrade }}</td>
-      <td>{{ player.dRebGrade }}</td>
-      <td>{{ player.handlingGrade }}</td>
-      <td>{{ player.stealGrade }}</td>
-      <td>{{ player.blockGrade }}</td>
-      <td>{{ player.staminaGrade }}</td>
-      <td>{{ player.passingGrade }}</td>
-      <td>{{ player.intangiblesGrade }}</td>
-      <td class="text-center">
-        <a class="btn btn-danger btn-xs" (click)="removeDraftRanking(player)"><span class="fa fa-minus"></span></a>
-        <a class="btn btn-info btn-xs" *ngIf="i != 0" (click)="moveUp(player)"><span class="fa fa-arrow-up"></span></a>
-        <a class="btn btn-info btn-xs" *ngIf="i != this.draftPlayers?.length - 1" (click)="moveDown(player)"><span class="fa fa-arrow-down"></span></a>
-      </td>
-    </tr>
-  </table>
-  <div *ngIf="this.draftPlayers?.length == 0">
-    There are no players left on your draftboard. Add some through the draft draft pool. These will be used for Auto-picks if necessary.
+<div class="jumbotron">
+  <h3 class="display">Draftboard</h3>
+</div>
+
+<div class="box">
+  <ngx-spinner [fullScreen]="false" type="pacman" size="medium">
+		<p class="loading">Loading Draftboard...</p>
+	</ngx-spinner>
+  <div class="container">
+    <div class="row cards-row text-center">
+      <table *ngIf="this.draftPlayers?.length != 0" class="table table-striped custab">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Position(s)</th>
+            <th>2s</th>
+            <th>3s</th>
+            <th>FTs</th>
+            <th>O-Rebs</th>
+            <th>D-Rebs</th>
+            <th>Handles</th>
+            <th>Steals</th>
+            <th>Blocks</th>
+            <th>Stamina</th>
+            <th>Pass</th>
+            <th>Intangibles</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tr *ngFor="let player of this.draftPlayers; let i = index">
+          <td>{{ player.firstName }} {{ player.surname }}</td>
+          <td>
+            <ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
+            <ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
+            <ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
+            <ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
+            <ng-container *ngIf="player.cPosition == 1">C </ng-container>
+          </td>
+          <td>{{ player.twoGrade }}</td>
+          <td>{{ player.threeGrade }}</td>
+          <td>{{ player.ftGrade }}</td>
+          <td>{{ player.oRebGrade }}</td>
+          <td>{{ player.dRebGrade }}</td>
+          <td>{{ player.handlingGrade }}</td>
+          <td>{{ player.stealGrade }}</td>
+          <td>{{ player.blockGrade }}</td>
+          <td>{{ player.staminaGrade }}</td>
+          <td>{{ player.passingGrade }}</td>
+          <td>{{ player.intangiblesGrade }}</td>
+          <td class="text-center">
+            <a class="btn btn-danger btn-xs" (click)="removeDraftRanking(player)"><span class="fa fa-minus"></span></a>
+            <a class="btn btn-info btn-xs" *ngIf="i != 0" (click)="moveUp(player)"><span class="fa fa-arrow-up ml-1"></span></a>
+            <a class="btn btn-info btn-xs" *ngIf="i != this.draftPlayers?.length - 1" (click)="moveDown(player)"><span class="fa fa-arrow-down ml-1"></span></a>
+          </td>
+        </tr>
+      </table>
+      <div *ngIf="this.draftPlayers?.length == 0">
+        There are no players left on your draftboard. Add some through the draft draft pool. These will be used for Auto-picks if necessary.
+      </div>
+    </div>
   </div>
+</div>
+
+  
+  

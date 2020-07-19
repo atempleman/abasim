@@ -60,6 +60,8 @@
 
         <div class="row cards-row" *ngIf="this.league?.stateId == 3">
             <h5 class="text-success">Draft - Round {{ this.currentRound }}</h5>
+            <br />
+            <button class="btn btn-danger ml-3">Start Draft</button>
         </div>
 
         <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">

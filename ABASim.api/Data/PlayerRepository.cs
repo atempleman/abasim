@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ABASim.api.Dtos;
 using ABASim.api.Models;
@@ -155,6 +156,12 @@ namespace ABASim.api.Data
             }
         }
 
+        public int GetCountOfDraftPlayers()
+        {
+            var count =  _context.PlayerTeams.Where(x => x.TeamId == 0 || x.TeamId == 31).Count();
+            return count;
+        }
+
         public async Task<IEnumerable<Player>> GetFreeAgents()
         {
             List<Player> freeAgents = new List<Player>();
@@ -173,14 +180,18 @@ namespace ABASim.api.Data
             return freeAgents;
         }
 
-        public async Task<IEnumerable<DraftPlayerDto>> GetInitialDraftPlayerPool()
+        public async Task<IEnumerable<DraftPlayerDto>> GetInitialDraftPlayerPool(int page)
         {
             List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();
             // Get players
+            int start = (page * 50) - 50;
+            int end = (page * 50);
             var players = await _context.Players.ToListAsync();
 
-            foreach (var player in players)
+            // foreach (var player in players)- 1;
+            for (int i = start; i < end; i++)
             {
+                var player = players[i];
                 // NEED TO CHECK WHETHER THE PLAYER HAS BEEN DRAFTED
                 var playerTeamForPlayerId = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
 

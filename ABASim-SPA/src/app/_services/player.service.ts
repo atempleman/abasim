@@ -14,8 +14,12 @@ export class PlayerService {
 
   constructor(private http: HttpClient) { }
 
-  getInitialDraftPlayers(): Observable<DraftPlayer[]> {
-    return this.http.get<DraftPlayer[]>(this.baseUrl + 'getinitialdraftplayers');
+  getInitialDraftPlayers(page: number): Observable<DraftPlayer[]> {
+    return this.http.get<DraftPlayer[]>(this.baseUrl + 'getinitialdraftplayers/' + page);
+  }
+
+  getCountOfAvailableDraftPlayers() {
+    return this.http.get<number>(this.baseUrl + 'getcountofdraftplayers');
   }
 
   getPlayerForId(playerId: number) {

@@ -14,10 +14,10 @@ namespace ABASim.api.Controllers
             _repo = repo;
         }
 
-        [HttpGet("getinitialdraftplayers")]
-        public async Task<IActionResult> GetInitialDraftPlayerPool()
+        [HttpGet("getinitialdraftplayers/{page}")]
+        public async Task<IActionResult> GetInitialDraftPlayerPool(int page)
         {
-            var players = await _repo.GetInitialDraftPlayerPool();
+            var players = await _repo.GetInitialDraftPlayerPool(page);
             return Ok(players);
         }
 
@@ -47,6 +47,13 @@ namespace ABASim.api.Controllers
         {
             var player = await _repo.GetCompletePlayer(playerId);
             return Ok(player);
+        }
+
+        [HttpGet("getcountofdraftplayers")]
+        public async Task<IActionResult> GetCountOfDraftPlayers()
+        {
+            var count = _repo.GetCountOfDraftPlayers();
+            return Ok(count);
         }
     }
 }

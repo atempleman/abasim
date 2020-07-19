@@ -7,7 +7,7 @@ namespace ABASim.api.Data
 {
     public interface IPlayerRepository
     {
-         Task<IEnumerable<DraftPlayerDto>> GetInitialDraftPlayerPool();
+         Task<IEnumerable<DraftPlayerDto>> GetInitialDraftPlayerPool(int page);
 
          Task<Player> GetPlayerForId(int playerId);
 
@@ -16,5 +16,7 @@ namespace ABASim.api.Data
          Task<IEnumerable<Player>> GetFreeAgents();
 
          Task<CompletePlayerDto> GetCompletePlayer(int playerId);
+
+         int GetCountOfDraftPlayers();
     }
 }
