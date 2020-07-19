@@ -71,13 +71,13 @@ export class InitialDraftComponent implements OnInit {
 
     this.isAdmin = this.authService.isAdmin();
 
-    this.playerService.getInitialDraftPlayers().subscribe(result => {
-      this.draftablePlayers = result;
-    }, error => {
-      this.alertify.error('Error getting available players to draft');
-    }, () => {
-      this.loaded++;
-    });
+    // this.playerService.getInitialDraftPlayers().subscribe(result => {
+    //   this.draftablePlayers = result;
+    // }, error => {
+    //   this.alertify.error('Error getting available players to draft');
+    // }, () => {
+    //   this.loaded++;
+    // });
 
     this.playerService.getAllPlayers().subscribe(result => {
       this.players = result;
@@ -87,15 +87,15 @@ export class InitialDraftComponent implements OnInit {
   }
 
   refresh() {
-    this.playerService.getInitialDraftPlayers().subscribe(result => {
-      this.draftablePlayers = result;
-    }, error => {
-      this.alertify.error('Error getting available players to draft');
-    }, () => {
-      this.loaded++;
-    });
+    // this.playerService.getInitialDraftPlayers().subscribe(result => {
+    //   this.draftablePlayers = result;
+    // }, error => {
+    //   this.alertify.error('Error getting available players to draft');
+    // }, () => {
+    //   this.loaded++;
+    // });
 
-    this.getDraftDetails();
+    // this.getDraftDetails();
   }
 
   getDraftDetails() {

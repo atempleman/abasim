@@ -32,6 +32,12 @@ namespace ABASim.api.Data
             // need to get the players team
             var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
             var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+            string teamname = "Free Agent";
+
+            if(team != null)
+            {
+                teamname = team.Teamname + " " + team.Mascot;
+            }
 
             if (playerStats != null) {
                 CompletePlayerDto player = new CompletePlayerDto
@@ -73,7 +79,7 @@ namespace ABASim.api.Data
                     DrpmRating = playerRatings.DRPMRating,
                     PassingGrade = playerGrades.PassingGrade,
                     IntangiblesGrade = playerGrades.IntangiblesGrade,
-                    TeamName = team.Teamname + " " + team.Mascot,
+                    TeamName = teamname,
                     GamesStats = playerStats.GamesPlayed,
                     MinutesStats = playerStats.Minutes,
                     FgmStats = playerStats.FieldGoalsMade,
@@ -133,7 +139,7 @@ namespace ABASim.api.Data
                     DrpmRating = playerRatings.DRPMRating,
                     PassingGrade = playerGrades.PassingGrade,
                     IntangiblesGrade = playerGrades.IntangiblesGrade,
-                    TeamName = team.Teamname + " " + team.Mascot,
+                    TeamName = teamname,
                     GamesStats = 0,
                     MinutesStats = 0,
                     FgmStats = 0,
