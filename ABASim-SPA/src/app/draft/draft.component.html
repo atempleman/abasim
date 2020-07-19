@@ -58,10 +58,10 @@
             </blockquote>
         </div>
 
-        <div class="row cards-row" *ngIf="this.league?.stateId == 3">
+        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
             <h5 class="text-success">Draft - Round {{ this.currentRound }}</h5>
             <br />
-            <button class="btn btn-danger ml-3">Start Draft</button>
+            <button class="btn btn-danger ml-3" *ngIf="this.isAdmin == 1" (click)="beginDraft()">Start Draft</button>
         </div>
 
         <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">

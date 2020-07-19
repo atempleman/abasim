@@ -108,7 +108,7 @@ namespace ABASim.api.Data
         {
             // Get UTC time
             DateTime dt = DateTime.UtcNow.ToUniversalTime();
-            dt.AddMinutes(6);
+            dt.AddMinutes(10);
 
             string dateAndTime = dt.ToString("MM/dd/yyyy HH:mm:ss");
 

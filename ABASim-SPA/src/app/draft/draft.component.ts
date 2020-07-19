@@ -8,6 +8,7 @@ import { InitialDraftPicks } from '../_models/initialDraftPicks';
 import { TeamService } from '../_services/team.service';
 import { Team } from '../_models/team';
 import { DraftPick } from '../_models/draftPick';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-draft',
@@ -27,11 +28,14 @@ export class DraftComponent implements OnInit {
 
   roundPicks: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 , 30];
   loaded = 0;
+  isAdmin = 0;
 
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private router: Router,
-              private draftService: DraftService, private teamService: TeamService) { }
+              private draftService: DraftService, private teamService: TeamService, private authService: AuthService) { }
 
   ngOnInit() {
+    this.isAdmin = +localStorage.getItem('isAdmin');
+
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
     }, error => {
@@ -61,15 +65,15 @@ export class DraftComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting Draft Picks');
     });
+  }
 
-    // this.draftService.getInitialDraftPicks().subscribe(result => {
-    //   this.allDraftPicks = result;
-    //   this.roundDraftPicks = this.allDraftPicks.filter(x => x.round === this.currentRound);
-    // }, error => {
-    //   this.alertify.error('Error getting Draft Picks');
-    // }, () => {
-    //   console.log(this.roundDraftPicks);
-    // });
+  beginDraft() {
+    this.draftService.beginInitialDraft().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error starting the draft');
+    }, () => {
+      this.alertify.success('Initial Draft has begun!');
+    });
   }
 
   getTeamNameForSelection(round: number, pick: number) {
