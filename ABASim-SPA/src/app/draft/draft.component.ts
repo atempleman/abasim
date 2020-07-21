@@ -41,6 +41,12 @@ export class DraftComponent implements OnInit {
   teamId = 0;
   draftSelection = 0;
 
+  onClockLoaded = 0;
+
+  timeRemaining: number;
+  timeDisplay: string;
+  interval;
+
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private router: Router,
               private draftService: DraftService, private teamService: TeamService, private authService: AuthService,
               private modalService: BsModalService, private playerService: PlayerService) { }
@@ -81,6 +87,42 @@ export class DraftComponent implements OnInit {
     return new Array(i);
   }
 
+  getTeamOnClock() {
+    const pick = this.tracker.pick;
+    const round = this.tracker.round;
+    const dp = this.draftPicks.find(x => x.pick === pick && x.round === round);
+    if (dp) {
+      return ' - ' + dp.teamName + ' are on the clock';
+    } else {
+      return '';
+    }
+  }
+
+  timerDisplay() {
+    this.interval = setInterval(() => {
+      const time = this.tracker.dateTimeOfLastPick + ' UTC';
+      const dtPick = new Date(time);
+      const currentTime = new Date();
+
+      this.timeRemaining =  dtPick.getTime() - currentTime.getTime();
+      const value = (this.timeRemaining / 1000).toFixed(0);
+      this.timeRemaining = +value;
+
+      if (this.timeRemaining > 0) {
+        this.timeRemaining--;
+        this.timeDisplay = this.transform(this.timeRemaining);
+      } else {
+        this.timeRemaining = 0;
+        this.timeDisplay = 'Time Expired';
+      }
+    }, 1000);
+  }
+
+  transform(value: number): string {
+    const minutes: number = Math.floor(value / 60);
+    return minutes + ':' + (value - minutes * 60);
+ }
+
   getDraftTracker() {
     // Get the draft tracker
     this.draftService.getDraftTracker().subscribe(result => {
@@ -88,6 +130,8 @@ export class DraftComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting draft tracker');
     }, () => {
+      this.onClockLoaded++;
+      this.timerDisplay();
     });
   }
 
@@ -97,6 +141,8 @@ export class DraftComponent implements OnInit {
       this.draftPicks = result;
     }, error => {
       this.alertify.error('Error getting Draft Picks');
+    }, () => {
+      this.onClockLoaded++;
     });
   }
 
