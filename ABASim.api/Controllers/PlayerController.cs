@@ -21,6 +21,13 @@ namespace ABASim.api.Controllers
             return Ok(players);
         }
 
+        [HttpGet("getinitialdraftplayers")]
+        public async Task<IActionResult> GetInitialDraftPlayerPool()
+        {
+            var players = await _repo.GetInitialDraftPlayerPool();
+            return Ok(players);
+        }
+
         [HttpGet("getplayerforid/{playerId}")]
         public async Task<IActionResult> GetPlayerForId(int playerId)
         {

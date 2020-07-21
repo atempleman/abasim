@@ -18,6 +18,10 @@ export class PlayerService {
     return this.http.get<DraftPlayer[]>(this.baseUrl + 'getinitialdraftplayers/' + page);
   }
 
+  getAllInitialDraftPlayers(): Observable<DraftPlayer[]> {
+    return this.http.get<DraftPlayer[]>(this.baseUrl + 'getinitialdraftplayers');
+  }
+
   getCountOfAvailableDraftPlayers() {
     return this.http.get<number>(this.baseUrl + 'getcountofdraftplayers');
   }

@@ -1,5 +1,18 @@
 <div class="jumbotron">
     <h3 class="display">Draft Headquarters</h3>
+    <span class="badge badge-danger"
+		*ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-info"
+		*ngIf="this.league?.stateId == 2 || this.league?.stateId == 6">{{ this.league?.state }}</span>
+	<span class="badge badge-success"
+		*ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5 || this.league?.stateId == 11 || this.league?.stateId == 13 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
+	<span class="badge badge-warning"
+		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
+	<span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+	<span
+		*ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+		- Day #{{ this.league?.day }}</span>
 </div>
 
 
@@ -59,9 +72,28 @@
         </div>
 
         <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
-            <h5 class="text-success">Draft - Round {{ this.currentRound }}</h5>
+            <h4 class="text-success">Draft - Round {{ this.currentRound }}</h4>
             <br />
-            <button class="btn btn-danger ml-3" *ngIf="this.isAdmin == 1" (click)="beginDraft()">Start Draft</button>
+            <button class="btn btn-danger ml-3" *ngIf="this.isAdmin == 1 && this.league?.stateId == 3" (click)="beginDraft()">Start Draft</button>
+        </div>
+
+        <div class="row cards-row" *ngIf="this.league?.stateId == 4">
+            <h4 class="title">Current - Pick #{{ tracker?.pick }}</h4>
+            <!-- <p class="text">Time Remaining: {{ this.timeDisplay }}</p> -->
+            <div *ngIf="this.teamId == this.teamOnClock?.id">
+                <form #draftPlayerForm>
+                      <div class="modal-body">
+                            <p>The {{ this.team.teamname }} {{ this.team.mascot }} select:</p>
+                            <select name="leagueStatus" [(ngModel)]="this.draftSelection">
+                                <option *ngFor="let player of this.draftablePlayers" [value]="player.playerId">{{ player.surname }}, {{ player.firstName }}</option>
+                            </select>
+                            &nbsp;&nbsp;&nbsp;
+                            <span class="margin-left: 10px">
+                                <!-- <button type="submit" class="btn btn-primary" (click)="makeDraftPick()">Make Pick</button> -->
+                            </span>
+                      </div>
+                </form>
+          </div>
         </div>
 
         <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
@@ -79,8 +111,12 @@
                     <td>{{ picks.playerName }}</td>
                     <td></td>
                     <td>
-                        <!-- <ng-container *ngIf="round <= this.tracker.round">{{ getPlayerSelected(round, picks) }}
-                        </ng-container> -->
+                        <ng-container *ngIf="this.tracker.round == this.currentRound && this.tracker.pick == picks.pick && this.teamId == picks.teamId">
+                            <button type="submit" class="btn btn-primary" (click)="openModal(makePick)">Make Pick</button>
+                        </ng-container>
+                        <ng-container *ngIf="this.tracker.round == this.currentRound && this.tracker.pick == picks.pick && this.isAdmin == 1">
+                            <button type="submit" class="btn btn-danger ml-1">Auto Pick</button>
+                        </ng-container>
                     </td>
                 </tr>
             </table>
@@ -100,3 +136,24 @@
         </div>
     </div>
 </div>
+
+
+
+  <ng-template #makePick>
+	<div class="modal-header">
+	  <h4 class="modal-title">Make Draft Selection - Round #{{ this.tracker?.round }} Pick #{{ this.tracker?.pick }}</h4>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #draftPlayerForm>
+		<div class="modal-body">
+                  <p>The {{ this.team.teamname }} {{ this.team.mascot }} select:</p>
+                  <select name="leagueStatus" [(ngModel)]="this.draftSelection">
+                        <option *ngFor="let player of this.draftablePlayers" [value]="player.playerId">{{ player.surname }}, {{ player.firstName }}</option>
+                  </select>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary" (click)="makeDraftPick()">Select</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		  </div>
+	</form>
+</ng-template> 
