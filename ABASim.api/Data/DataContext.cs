@@ -34,6 +34,8 @@ namespace ABASim.api.Data
 
         public DbSet<Schedule> Schedules { get; set; }
 
+        public DbSet<Schedule> SchedulesPlayoffs { get; set; }
+
         public DbSet<Standing> Standings { get; set; }
 
         public DbSet<Team> Teams { get; set; }
@@ -63,6 +65,8 @@ namespace ABASim.api.Data
         public DbSet<PlayByPlay> PlayByPlays { get; set; }
 
         public DbSet<PlayerStat> PlayerStats { get; set; }
+
+        public DbSet<PlayerStatsPlayoff> PlayerStatsPlayoffs { get; set; }
 
         public DbSet<Trade> Trades { get; set; }
 
