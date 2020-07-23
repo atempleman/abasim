@@ -36,4 +36,8 @@ export class AdminService {
   changeDay(day: number) {
     return this.http.get<boolean>(this.baseUrl + 'changeday/' + day);
   }
+
+  beginPlayoffs() {
+    return this.http.get<boolean>(this.baseUrl + 'beginplayoffs');
+  }
 }

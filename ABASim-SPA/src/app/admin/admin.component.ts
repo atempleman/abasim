@@ -77,7 +77,14 @@ export class AdminComponent implements OnInit {
   }
 
   beginPlayoffs() {
-    
+    this.adminService.beginPlayoffs().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error beginning the playoffs');
+    }, () => {
+      this.alertify.success('Playoffs have been setup');
+      this.modalRef.hide();
+    });
   }
 
   getLeagueStatusData() {

@@ -66,5 +66,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.ChangeDay(day);
             return result;
         }
+
+        [HttpGet("beginplayoffs")]
+        public async Task<bool> BeginPlayoffs()
+        {
+            var result = await _repo.BeginPlayoffs();
+            return result;
+        }
     }
 }
