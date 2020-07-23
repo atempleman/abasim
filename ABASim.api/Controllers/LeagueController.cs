@@ -134,6 +134,13 @@ namespace ABASim.api.Controllers
             return Ok(nextGames);
         }
 
+        [HttpGet("getfirstroundgamesfortoday")]
+        public async Task<IActionResult> GetFirstRoundGamesForToday()
+        {
+            var nextGames = await _repo.GetFirstRoundGamesForToday();
+            return Ok(nextGames);
+        }
+
         [HttpGet("getleaguescoring")]
         public async Task<IActionResult> GetLeagueScoring()
         {

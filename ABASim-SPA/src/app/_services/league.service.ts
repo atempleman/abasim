@@ -93,6 +93,10 @@ export class LeagueService {
     return this.http.get<GameDisplayCurrent[]>(this.baseUrl + 'getgamesfortodayseason');
   }
 
+  getFirstRoundGamesForToday(): Observable<GameDisplayCurrent[]> {
+    return this.http.get<GameDisplayCurrent[]>(this.baseUrl + 'getfirstroundgamesfortoday');
+  }
+
   // getLeagueScoring(): Observable<LeagueScoring[]> {
   //   return this.http.get<LeagueScoring[]>(this.baseUrl + 'getleaguescoring');
   // }

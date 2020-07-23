@@ -125,6 +125,14 @@ export class DashboardComponent implements OnInit {
       }, () => {
         this.spinner.hide();
       });
+    } else if (this.league.stateId === 8 && this.league.day !== 0) {
+      this.leagueService.getFirstRoundGamesForToday().subscribe(result => {
+        this.todaysGames = result;
+      }, error => {
+        this.alertify.error('Error gettings todays events');
+      }, () => {
+        this.spinner.hide();
+      });
     }
   }
 
@@ -175,6 +183,26 @@ export class DashboardComponent implements OnInit {
     };
 
     this.gameEngine.startPreseasonGame(simGame).subscribe(result => {
+    }, error => {
+      this.alertify.error(error);
+      this.noRun = 0;
+    }, () => {
+      // Need to pass feedback and re-get the days games
+      this.alertify.success('Game run successfully');
+      this.noRun = 0;
+      this.getTodaysEvents();
+    });
+  }
+
+  runGamePlayoffs(game: GameDisplayCurrent) {
+    this.noRun = 1;
+    const simGame: SimGame = {
+      awayId:  game.awayTeamId,
+      homeId:  game.homeTeamId,
+      gameId:  game.id,
+    };
+
+    this.gameEngine.startPlayoffGame(simGame).subscribe(result => {
     }, error => {
       this.alertify.error(error);
       this.noRun = 0;

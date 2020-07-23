@@ -198,6 +198,34 @@ namespace ABASim.api.Controllers
         {
             await StartGame(game);
 
+            // Will need to update the play by play saving here
+            bool savedPBPs = await _repo.SavePlayByPlaysPlayoffs(_playByPlays);
+
+            // Now we have a game id, now to save the away box scores
+            bool saved = await _repo.SaveTeamsBoxScorePlayoffs(_game.GameId, _awayBoxScores);
+
+            // Now we have a game id, now to save the home box scores
+            saved = await _repo.SaveTeamsBoxScorePlayoffs(_game.GameId, _homeBoxScores);
+
+            // Need to save the game in the database
+            int winningTeamId = 0;
+            int losingTeamId = 0;
+            if (_awayScore > _homeScore) {
+                winningTeamId = _awayTeam.Id;
+                losingTeamId = _homeTeam.Id;
+            } else {
+                winningTeamId = _homeTeam.Id;
+                losingTeamId = _awayTeam.Id;
+            }
+            bool savedGame = await _repo.SavePlayoffResult(_awayScore, _homeScore, winningTeamId, game.GameId, losingTeamId);
+            return Ok(true);
+        }
+
+         [HttpPost("startPlayoffGame")]
+        public async Task<IActionResult> StartPlayoffGame(SimGameDto game)
+        {
+            await StartGame(game);
+
             // Will need to update the play by play saving here TODO
             bool savedPBPs = await _repo.SavePlayByPlays(_playByPlays);
 

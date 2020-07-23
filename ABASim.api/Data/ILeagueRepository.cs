@@ -21,6 +21,8 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<CurrentDayGamesDto>> GetTodaysGamesForSeason();
 
+         Task<IEnumerable<CurrentDayGamesDto>> GetFirstRoundGamesForToday();
+
          Task<IEnumerable<StandingsDto>> GetStandingsForLeague();
 
          Task<IEnumerable<StandingsDto>> GetStandingsForConference(int conference);

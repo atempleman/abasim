@@ -113,6 +113,24 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> SavePlayByPlaysPlayoffs(List<PlayByPlay> playByPlays)
+        {
+            foreach (var play in playByPlays)
+            {
+                // Convert to PlayByPlayPlayoffs
+                PlayByPlayPlayoff pbp = new PlayByPlayPlayoff
+                {
+                    GameId = play.GameId,
+                    Ordering = play.Ordering,
+                    PlayNumber = play.PlayNumber,
+                    Commentary = play.Commentary
+                };
+
+                await _context.AddAsync(pbp);
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> SavePreseasonResult(int awayScore, int homeScore, int winningTeamId, int gameId)
         {
             PreseasonGameResult gr = new PreseasonGameResult
@@ -161,12 +179,72 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> SavePlayoffResult(int awayScore, int homeScore, int winningTeamId, int gameId, int losingTeamId)
+        {
+            PlayoffResult gr = new PlayoffResult
+            {
+                GameId = gameId,
+                AwayScore = awayScore,
+                HomeScore = homeScore,
+                WinningTeamId = winningTeamId,
+                Completed = 1
+            };
+            await _context.AddAsync(gr);
+
+            // Now need to add the win to the playoff result
+            var scheduleGame = await _context.SchedulesPlayoffs.FirstOrDefaultAsync(x => x.Id == gameId);
+            var series = await _context.PlayoffSerieses.FirstOrDefaultAsync(x => x.Id == scheduleGame.SeriesId);
+
+            if (series.HomeTeamId == winningTeamId) {
+                series.HomeWins = series.HomeWins + 1;
+            } else {
+                series.AwayWins = series.AwayWins + 1;
+            }
+            _context.Update(series);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores)
         {
             for (int i = 0; i < boxScores.Count; i++) {
                 BoxScore bs = boxScores[i];
 
                 GameBoxScore gbs = new GameBoxScore
+                {
+                    GameId = gameId,
+                    TeamId = bs.TeamId,
+                    PlayerId = bs.Id,
+                    Minutes = bs.Minutes,
+                    Points = bs.Points,
+                    Rebounds = bs.Rebounds,
+                    Assists = bs.Assists,
+                    Steals = bs.Steals,
+                    Blocks = bs.Blocks,
+                    BlockedAttempts = bs.BlockedAttempts,
+                    FieldGoalsMade = bs.FGM,
+                    FieldGoalsAttempted = bs.FGA,
+                    ThreeFieldGoalsMade = bs.ThreeFGM,
+                    ThreeFieldGoalsAttempted = bs.ThreeFGA,
+                    FreeThrowsMade = bs.FTM,
+                    FreeThrowsAttempted = bs.FTA,
+                    ORebs = bs.ORebs,
+                    DRebs = bs.DRebs,
+                    Turnovers = bs.Turnovers,
+                    Fouls = bs.Fouls,
+                    PlusMinus = bs.PlusMinus
+                };
+                
+                await _context.AddAsync(gbs);
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> SaveTeamsBoxScorePlayoffs(int gameId, List<BoxScore> boxScores)
+        {
+            for (int i = 0; i < boxScores.Count; i++) {
+                BoxScore bs = boxScores[i];
+
+                PlayoffBoxScore gbs = new PlayoffBoxScore
                 {
                     GameId = gameId,
                     TeamId = bs.TeamId,

@@ -115,7 +115,7 @@
 			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day }}</p>
 
 			<table class="table table-hover events-table"
-				*ngIf="this.league?.stateId == 6 || this.league?.stateId == 7">
+				*ngIf="this.league?.stateId == 6 || this.league?.stateId == 7 || this.league?.stateId == 8">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
 						<td>
@@ -126,6 +126,9 @@
 							<button
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0"
 								type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
+								<button
+								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 8 && this.noRun == 0"
+								type="button" class="btn btn-link" (click)="runGamePlayoffs(game)">Run Game</button>
 							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
 								(click)="watchGame(game.id)">Watch</button>
 							&nbsp;

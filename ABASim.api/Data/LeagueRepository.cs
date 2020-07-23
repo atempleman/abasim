@@ -841,5 +841,46 @@ namespace ABASim.api.Data
             }
             return stealsList;
         }
+
+        public async Task<IEnumerable<CurrentDayGamesDto>> GetFirstRoundGamesForToday()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var todaysGames = await _context.SchedulesPlayoffs.Where(x => x.GameDay == (league.Day)).ToListAsync();
+
+            List<CurrentDayGamesDto> nextGamesList = new List<CurrentDayGamesDto>();
+            foreach (var game in todaysGames)
+            {
+                var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayTeamId);
+                var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeTeamId);
+                var gameResult = await _context.PlayoffResults.FirstOrDefaultAsync(x => x.GameId == game.Id);
+
+                int awayScore = 0;
+                int homeScore = 0;
+                int completed = 0;
+
+                if (gameResult != null)
+                {
+                    awayScore = gameResult.AwayScore;
+                    homeScore = gameResult.HomeScore;
+                    completed = gameResult.Completed;
+                }
+                
+                CurrentDayGamesDto ng = new CurrentDayGamesDto
+                {
+                    Id = game.Id,
+                    AwayTeamId = awayTeam.Id,
+                    AwayTeamName = awayTeam.Teamname + " " + awayTeam.Mascot,
+                    HomeTeamId = homeTeam.Id,
+                    HomeTeamName = homeTeam.Teamname + " " + homeTeam.Mascot,
+                    Day = league.Day + 1,
+                    awayScore = awayScore,
+                    homeScore = homeScore,
+                    Completed = completed
+                };
+
+                nextGamesList.Add(ng);
+            }
+            return nextGamesList;
+        }
     }
 }

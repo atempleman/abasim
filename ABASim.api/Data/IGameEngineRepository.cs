@@ -24,12 +24,18 @@ namespace ABASim.api.Data
 
          Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores);
 
+         Task<bool> SaveTeamsBoxScorePlayoffs(int gameId, List<BoxScore> boxScores);
+
          Task<IEnumerable<BoxScore>> GetBoxScoresForGameId(int gameId);
 
          Task<bool> SavePlayByPlays(List<PlayByPlay> playByPlays);
 
+         Task<bool> SavePlayByPlaysPlayoffs(List<PlayByPlay> playByPlays);
+
          Task<bool> SavePreseasonResult(int awayScore, int homeScore, int winningTeamId, int gameId);
 
          Task<bool> SaveSeasonResult(int awayScore, int homeScore, int winningTeamId, int gameId, int losingTeamId);
+
+         Task<bool> SavePlayoffResult(int awayScore, int homeScore, int winningTeamId, int gameId, int losingTeamId);
     }
 }
