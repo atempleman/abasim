@@ -76,6 +76,10 @@ export class AdminComponent implements OnInit {
     this.modalRef = this.modalService.show(template);
   }
 
+  beginPlayoffs() {
+    
+  }
+
   getLeagueStatusData() {
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
