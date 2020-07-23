@@ -14,6 +14,7 @@ import { DraftPlayer } from '../_models/draftPlayer';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PlayerService } from '../_services/player.service';
 import { DraftSelection } from '../_models/draftSelection';
+import { AdminService } from '../_services/admin.service';
 
 @Component({
   selector: 'app-draft',
@@ -46,10 +47,11 @@ export class DraftComponent implements OnInit {
   timeRemaining: number;
   timeDisplay: string;
   interval;
+  pageInterval;
 
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private router: Router,
               private draftService: DraftService, private teamService: TeamService, private authService: AuthService,
-              private modalService: BsModalService, private playerService: PlayerService) { }
+              private modalService: BsModalService, private playerService: PlayerService, private adminService: AdminService) { }
 
   ngOnInit() {
     this.isAdmin = +localStorage.getItem('isAdmin');
@@ -81,6 +83,11 @@ export class DraftComponent implements OnInit {
       this.alertify.error('Error getting available players to draft');
     }, () => {
     });
+
+    this.pageInterval = setInterval(() => {
+      this.getDraftDetails();
+      this.getDraftTracker();
+    }, 10000);
   }
 
   counter(i: number) {
@@ -174,25 +181,51 @@ export class DraftComponent implements OnInit {
       this.alertify.error('Error making pick');
     }, () => {
       this.modalRef.hide();
+
       this.getDraftDetails();
-      this.getDraftTracker();
+
+      if (this.tracker.round === 13 && this.tracker.pick === 30) {
+        // Update the leage state here
+        this.adminService.updateLeagueStatus(5).subscribe(result => {
+        }, error => {
+          this.alertify.error('Error changing league state');
+        }, () => {
+          this.alertify.success('Draft Completed');
+        });
+      } else {
+        this.getDraftTracker();
+      }
     });
    }
 
-  // getTeamOnTheClock() {
-  //   const draftPick = this.allDraftPicks.find(x => x.pick === this.tracker.pick && x.round === this.tracker.round);
-  //   this.teamService.getTeamForTeamId(draftPick.teamId).subscribe(result => {
-  //     this.teamOnClock = result;
-  //   }, error => {
-  //     this.alertify.error('Error getting team on the clock');
-  //   });
-  // }
+   autoPickAction() {
+    console.log('Auto-picking');
+    const selectedPick: DraftSelection = {
+      pick: this.tracker.pick,
+      playerId: 0,
+      round: this.tracker.round,
+      teamId: 0
+    };
 
-  // getTeamNameForSelection(round: number, pick: number) {
-  //   const selection = this.allDraftPicks.find(x => x.pick === pick && x.round === round);
-  //   const teamSelecting = this.allTeams.find(x => x.id === selection.teamId);
-  //   return teamSelecting.teamname + ' ' + teamSelecting.mascot;
-  // }
+    this.draftService.makeAutoPick(selectedPick).subscribe(result => {
+    }, error => {
+      this.alertify.error('Error making pick');
+    }, () => {
+      this.getDraftDetails();
+
+      if (this.tracker.round === 13 && this.tracker.pick === 30) {
+        // Update the leage state here
+        this.adminService.updateLeagueStatus(5).subscribe(result => {
+        }, error => {
+          this.alertify.error('Error changing league state');
+        }, () => {
+          this.alertify.success('Draft Completed');
+        });
+      } else {
+        this.getDraftTracker();
+      }
+    });
+   }
 
   playerPoolClicked() {
     this.router.navigate(['/draftplayerpool']);

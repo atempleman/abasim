@@ -205,19 +205,35 @@ namespace ABASim.api.Data
             var draftSelection = await _context.InitialDrafts.FirstOrDefaultAsync(x => x.Pick == draftPick.Pick && x.Round == draftPick.Round);
             var teamId = draftSelection.TeamId;
 
-            var players = await _context.Players.OrderBy(x => x.Id).ToListAsync();
+            // Need to check whether the team has set a draft board
+            var draftboard = await _context.DraftRankings.Where(x => x.TeamId == teamId) .OrderBy(x => x.Rank).ToListAsync();
 
-            foreach (var player in players)
-            {
-                // NEED TO CHECK WHETHER THE PLAYER HAS BEEN DRAFTED
-                var playerTeamForPlayerId = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
-
-                if (playerTeamForPlayerId.TeamId == 31)
+            if (draftboard != null) {
+                foreach (var db in draftboard)
                 {
-                    // Then this is the player that we will draft
-                    draftPick.TeamId = teamId;
-                    draftPick.PlayerId = playerTeamForPlayerId.PlayerId;
-                    return await this.MakeDraftPick(draftPick);
+                    var playerTeamForPlayerId = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == db.PlayerId);
+
+                    if (playerTeamForPlayerId.TeamId == 31) {
+                        // Then this is the player that we will draft
+                        draftPick.TeamId = teamId;
+                        draftPick.PlayerId = playerTeamForPlayerId.PlayerId;
+                        return await this.MakeDraftPick(draftPick);
+                    }
+                }
+            } else {
+                var players = await _context.Players.OrderBy(x => x.Id).ToListAsync();
+                foreach (var player in players)
+                {
+                    // NEED TO CHECK WHETHER THE PLAYER HAS BEEN DRAFTED
+                    var playerTeamForPlayerId = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+
+                    if (playerTeamForPlayerId.TeamId == 31)
+                    {
+                        // Then this is the player that we will draft
+                        draftPick.TeamId = teamId;
+                        draftPick.PlayerId = playerTeamForPlayerId.PlayerId;
+                        return await this.MakeDraftPick(draftPick);
+                    }
                 }
             }
             return false;

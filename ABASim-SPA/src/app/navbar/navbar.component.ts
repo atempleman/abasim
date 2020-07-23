@@ -9,10 +9,20 @@ import { AuthService } from '../_services/auth.service';
 })
 export class NavbarComponent implements OnInit {
   public isCollapsed = true;
+  isAdmin = 0;
+  interval;
+  checks = 0;
 
   constructor(private router: Router, public authService: AuthService) { }
 
   ngOnInit() {
+    this.interval = setInterval(() => {
+      this.isAdmin = this.authService.isAdmin();
+      this.checks++;
+      if (this.isAdmin === 1 || this.checks === 5) {
+        clearInterval(this.interval);
+      }
+    }, 5000);
   }
 
   contactus() {

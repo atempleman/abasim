@@ -104,7 +104,7 @@ export class HomeComponent implements OnInit {
   login() {
     this.loginModel = Object.assign({}, this.loginForm.value);
     this.authService.login(this.loginModel).subscribe(next => {
-      this.alertify.success('logged in successfully - ' + this.authService.decodedToken.nameid);
+      this.alertify.success('Logged in successfully');
       localStorage.setItem('currentUserId', this.authService.decodedToken.nameid);
       localStorage.setItem('isAdmin', this.authService.decodedToken.primarygroupsid);
     }, error => {

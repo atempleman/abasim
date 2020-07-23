@@ -71,7 +71,7 @@
             </blockquote>
         </div>
 
-        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
+        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5">
             <h4 class="text-success">Draft - Round {{ this.currentRound }} - {{ this.timeDisplay }}</h4>
             <br />
             <button class="btn btn-danger ml-3" *ngIf="this.isAdmin == 1 && this.league?.stateId == 3" (click)="beginDraft()">Start Draft</button>
@@ -81,7 +81,7 @@
             <h4 class="title">Current - Pick #{{ tracker?.pick }} <ng-container *ngIf="this.onClockLoaded == 2">{{ getTeamOnClock() }}</ng-container></h4>
         </div>
 
-        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
+        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5">
             <table class="table-secondary">
                 <thead>
                     <tr>
@@ -100,13 +100,13 @@
                             <button type="submit" class="btn btn-primary" (click)="openModal(makePick)">Make Pick</button>
                         </ng-container>
                         <ng-container *ngIf="this.tracker.round == this.currentRound && this.tracker.pick == picks.pick && this.isAdmin == 1">
-                            <button type="submit" class="btn btn-danger ml-1">Auto Pick</button>
+                            <button type="submit" class="btn btn-danger ml-1" (click)="autoPickAction()">Auto Pick</button>
                         </ng-container>
                     </td>
                 </tr>
             </table>
         </div>
-        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4">
+        <div class="row cards-row" *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5">
             <ul class="pagination">
                 <li class="page-item">
                     <a class="page-link">&laquo;</a>
