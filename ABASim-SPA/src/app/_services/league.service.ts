@@ -23,6 +23,7 @@ import { LeagueLeadersSteals } from '../_models/leagueLeadersSteals';
 import { LeagueLeadersTurnover } from '../_models/leagueLeadersTurnovers';
 import { LeagueLeadersFouls } from '../_models/leagueLeadersFouls';
 import { LeagueLeadersMinutes } from '../_models/leagueLeadersMinutes';
+import { PlayoffSummary } from '../_models/playoffSummary';
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +96,10 @@ export class LeagueService {
 
   getFirstRoundGamesForToday(): Observable<GameDisplayCurrent[]> {
     return this.http.get<GameDisplayCurrent[]>(this.baseUrl + 'getfirstroundgamesfortoday');
+  }
+
+  getFirstRoundSummaries(round: number): Observable<PlayoffSummary[]> {
+    return this.http.get<PlayoffSummary[]>(this.baseUrl + 'getplayoffsummariesforround/' + round);
   }
 
   // getLeagueScoring(): Observable<LeagueScoring[]> {

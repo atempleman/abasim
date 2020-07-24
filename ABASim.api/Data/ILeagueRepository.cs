@@ -74,5 +74,7 @@ namespace ABASim.api.Data
          Task<IEnumerable<LeagueLeaderTurnoversDto>> GetTurnoversLeagueLeaders(int page);
 
          int GetCountOfPointsLeagueLeaders();
+
+         Task<IEnumerable<PlayoffSummaryDto>> GetPlayoffSummariesForRound(int round);
     }
 }

@@ -267,5 +267,12 @@ namespace ABASim.api.Controllers
             var results = await _repo.GetTopFiveBlocks();
             return Ok(results);
         }
+
+        [HttpGet("getplayoffsummariesforround/{round}")]
+        public async Task<IActionResult> GetPlayoffSummariesForRound(int round)
+        {
+            var results = await _repo.GetPlayoffSummariesForRound(round);
+            return Ok(results);
+        }
     }
 }

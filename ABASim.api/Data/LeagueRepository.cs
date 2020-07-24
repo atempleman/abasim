@@ -882,5 +882,33 @@ namespace ABASim.api.Data
             }
             return nextGamesList;
         }
+
+        public async Task<IEnumerable<PlayoffSummaryDto>> GetPlayoffSummariesForRound(int round)
+        {
+            List<PlayoffSummaryDto> summaryList = new List<PlayoffSummaryDto>();
+            var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == round).ToListAsync();
+            
+            if (allSeries != null) {
+                foreach (var series in allSeries)
+                {
+                    var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == series.AwayTeamId);
+                    var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == series.HomeTeamId);
+
+                    PlayoffSummaryDto dto = new PlayoffSummaryDto
+                    {
+                        HomeTeam = homeTeam.Teamname + " " + homeTeam.Mascot,
+                        HomeTeamId = series.HomeTeamId,
+                        AwayTeam = awayTeam.Teamname + " " + awayTeam.Mascot,
+                        AwayTeamId = series.AwayTeamId,
+                        HomeWins = series.HomeWins,
+                        AwayWins = series.AwayWins
+
+                    };
+                    summaryList.Add(dto);
+                }
+            }
+            return summaryList;
+            
+        }
     }
 }

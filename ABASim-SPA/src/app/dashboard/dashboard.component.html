@@ -126,7 +126,7 @@
 							<button
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0"
 								type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
-								<button
+							<button
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 8 && this.noRun == 0"
 								type="button" class="btn btn-link" (click)="runGamePlayoffs(game)">Run Game</button>
 							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
@@ -327,6 +327,20 @@
 					</div>
 				</slide>
 			</carousel>
+
+			<div class="text-center py-5 bg-dark text-white" *ngIf="this.league.day != 0 && this.league.stateId == 8">
+				<h4>Playoff Matchups - Round 1</h4>
+				<div class="lead">
+					<div class="row stats">
+						<table class="table-secondary">
+							<tr *ngFor="let summary of this.playoffSummaries">
+								<td>{{ summary.homeTeam }} ({{ summary.homeWins }}) vs {{ summary.awayTeam }}
+									({{ summary.awayWins }})</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

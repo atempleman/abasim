@@ -19,6 +19,7 @@ import { LeagueLeadersRebounds } from '../_models/leagueLeadersRebounds';
 import { LeagueLeadersAssists } from '../_models/leagueLeadersAssists';
 import { LeagueLeadersSteals } from '../_models/leagueLeadersSteals';
 import { LeagueLeadersBlocks } from '../_models/leagueLeadersBlocks';
+import { PlayoffSummary } from '../_models/playoffSummary';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,6 +32,7 @@ export class DashboardComponent implements OnInit {
   isAdmin = 0;
   upcomingGames: GameDisplay[] = [];
   todaysGames: GameDisplayCurrent[] = [];
+  playoffSummaries: PlayoffSummary[] = [];
   noRun = 0;
 
   topFivePoints: LeagueLeadersPoints[] = [];
@@ -57,6 +59,9 @@ export class DashboardComponent implements OnInit {
       this.spinner.show();
       if (this.league.stateId === 7) {
         this.getLeagueLeaders();
+      } else if (this.league.stateId === 8) {
+        // get the playoff series
+        this.getRoundOneSummaries();
       }
       this.getTodaysEvents();
       this.spinner.hide();
@@ -74,6 +79,14 @@ export class DashboardComponent implements OnInit {
   viewPlayer(player: number) {
     this.transferService.setData(player);
     this.router.navigate(['/view-player']);
+  }
+
+  getRoundOneSummaries() {
+    this.leagueService.getFirstRoundSummaries(1).subscribe(result => {
+      this.playoffSummaries = result;
+    }, error => {
+      this.alertify.error('Error getting playoff summaries');
+    });
   }
 
   getLeagueLeaders() {
