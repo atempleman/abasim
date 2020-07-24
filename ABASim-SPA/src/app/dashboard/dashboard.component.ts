@@ -263,4 +263,8 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/stats']);
   }
 
+  goToPlayoffs() {
+    this.router.navigate(['/playoffs']);
+  }
+
 }

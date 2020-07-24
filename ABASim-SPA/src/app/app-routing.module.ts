@@ -27,6 +27,7 @@ import { ScheduleComponent } from './schedule/schedule.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { WatchGameComponent } from './watch-game/watch-game.component';
 import { BoxScoreComponent } from './box-score/box-score.component';
+import { PlayoffsComponent } from './playoffs/playoffs.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -50,11 +51,11 @@ const routes: Routes = [
   { path: 'draft', component: DraftComponent, canActivate: [AuthGuard] },
   { path: 'draftplayerpool', component: DraftPlayerPoolComponent, canActivate: [AuthGuard] },
   { path: 'draftboard', component: DraftboardComponent, canActivate: [AuthGuard] },
+  { path: 'playoffs', component: PlayoffsComponent, canActivate: [AuthGuard]},
 
-
-  { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
-  { path: 'admindraft', component: AdmindraftComponent, canActivate: [AdminAuthGuard] },
-  { path: 'initial-draft', component: InitialDraftComponent, canActivate: [AuthGuard] },
+  // { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
+  // { path: 'admindraft', component: AdmindraftComponent, canActivate: [AdminAuthGuard] },
+  // { path: 'initial-draft', component: InitialDraftComponent, canActivate: [AuthGuard] },
   { path: 'admintestengine', component: AdmintestengineComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

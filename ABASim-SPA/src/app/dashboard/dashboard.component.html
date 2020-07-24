@@ -35,6 +35,19 @@
 				</div>
 			</div>
 
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 8">
+				<div class="card-header"><i class="fa fa-trophy fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>PLAYOFFS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View details about the playoffs - results, stats &
+						matchups.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToPlayoffs()">Go to
+							Playoffs</button>
+					</div>
+				</div>
+			</div>
+
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
 				<div class="card-header"><i class="fa fa-users fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>TEAM</strong></span></div>
