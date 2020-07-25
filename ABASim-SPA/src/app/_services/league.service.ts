@@ -102,22 +102,6 @@ export class LeagueService {
     return this.http.get<PlayoffSummary[]>(this.baseUrl + 'getplayoffsummariesforround/' + round);
   }
 
-  // getLeagueScoring(): Observable<LeagueScoring[]> {
-  //   return this.http.get<LeagueScoring[]>(this.baseUrl + 'getleaguescoring');
-  // }
-
-  // getLeagueRebounding(): Observable<LeagueRebounding[]> {
-  //   return this.http.get<LeagueRebounding[]>(this.baseUrl + 'getleaguerebounding');
-  // }
-
-  // getLeagueOther(): Observable<LeagueOther[]> {
-  //   return this.http.get<LeagueOther[]>(this.baseUrl + 'getleagueother');
-  // }
-
-  // getLeagueDefence(): Observable<LeagueDefence[]> {
-  //   return this.http.get<LeagueDefence[]>(this.baseUrl + 'getleaguedefence');
-  // }
-
   getPointsLeagueLeadersForPage(page: number): Observable<LeagueLeadersPoints[]> {
     return this.http.get<LeagueLeadersPoints[]>(this.baseUrl + 'leagueleaderspoints/' + page);
   }
@@ -172,5 +156,41 @@ export class LeagueService {
 
   getTopFiveBlocks(): Observable<LeagueLeadersBlocks[]> {
     return this.http.get<LeagueLeadersBlocks[]>(this.baseUrl + 'gettopfiveblocks');
+  }
+
+  getPlayoffsPointsLeagueLeadersForPage(page: number): Observable<LeagueLeadersPoints[]> {
+    return this.http.get<LeagueLeadersPoints[]>(this.baseUrl + 'playoffleagueleaderspoints/' + page);
+  }
+
+  getCountOfPointsLeagueLeadersPlayoffs() {
+    return this.http.get<number>(this.baseUrl + 'getcountofpointsleadersplayoffs');
+  }
+
+  getPlayoffsAssistsLeagueLeadersForPage(page: number): Observable<LeagueLeadersAssists[]> {
+    return this.http.get<LeagueLeadersAssists[]>(this.baseUrl + 'leagueleadersassistsplayoffs/' + page);
+  }
+
+  getPlayoffsReboundsLeagueLeadersForPage(page: number): Observable<LeagueLeadersRebounds[]> {
+    return this.http.get<LeagueLeadersRebounds[]>(this.baseUrl + 'leagueleadersreboundsplayoffs/' + page);
+  }
+
+  getPlayoffsBlocksLeagueLeadersForPage(page: number): Observable<LeagueLeadersBlocks[]> {
+    return this.http.get<LeagueLeadersBlocks[]>(this.baseUrl + 'leagueleadersblocksplayoffs/' + page);
+  }
+
+  getPlayoffsStealsLeagueLeadersForPage(page: number): Observable<LeagueLeadersSteals[]> {
+    return this.http.get<LeagueLeadersSteals[]>(this.baseUrl + 'leagueleadersstealsplayoffs/' + page);
+  }
+
+  getPlayoffsTurnoversLeagueLeadersForPage(page: number): Observable<LeagueLeadersTurnover[]> {
+    return this.http.get<LeagueLeadersTurnover[]>(this.baseUrl + 'leagueleadersturnoversplayoffs/' + page);
+  }
+
+  getPlayoffsFoulsLeagueLeadersForPage(page: number): Observable<LeagueLeadersFouls[]> {
+    return this.http.get<LeagueLeadersFouls[]>(this.baseUrl + 'leagueleadersfoulsplayoffs/' + page);
+  }
+
+  getPlayoffsMinutesLeagueLeadersForPage(page: number): Observable<LeagueLeadersMinutes[]> {
+    return this.http.get<LeagueLeadersMinutes[]>(this.baseUrl + 'leagueleadersminutesplayoffs/' + page);
   }
 }

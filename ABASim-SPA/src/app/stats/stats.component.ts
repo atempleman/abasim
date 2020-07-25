@@ -224,7 +224,13 @@ export class StatsComponent implements OnInit {
         this.spinner.hide();
       });
     } else if (this.turnoversSelection) {
-
+      this.leagueService.getTurnoversLeagueLeadersForPage(this.pager).subscribe(result => {
+        this.turnoversStats = result;
+      }, error => {
+        this.alertify.error('Error getting turnover stats');
+      }, () => {
+        this.spinner.hide();
+      })
     } else if (this.foulsSelection) {
       this.leagueService.getFoulsLeagueLeadersForPage(this.pager).subscribe(result => {
         this.foulsStats = result;

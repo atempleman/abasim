@@ -49,31 +49,49 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<LeagueLeaderPointsDto>> GetPointsLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderPointsDto>> GetPlayoffsPointsLeagueLeaders(int page);
+
          Task<IEnumerable<LeagueLeaderPointsDto>> GetTopFivePoints();
 
          Task<IEnumerable<LeagueLeaderAssistsDto>> GetAssistsLeagueLeaders(int page);
+
+         Task<IEnumerable<LeagueLeaderAssistsDto>> GetPlayoffAssistsLeagueLeaders(int page);
 
          Task<IEnumerable<LeagueLeaderAssistsDto>> GetTopFiveAssists();
 
          Task<IEnumerable<LeagueLeaderReboundsDto>> GetReboundsLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderReboundsDto>> GetPlayoffReboundsLeagueLeaders(int page);
+
          Task<IEnumerable<LeagueLeaderReboundsDto>> GetTopFiveRebounds();
 
          Task<IEnumerable<LeagueLeaderBlocksDto>> GetBlocksLeagueLeaders(int page);
+
+         Task<IEnumerable<LeagueLeaderBlocksDto>> GetPlayoffBlocksLeagueLeaders(int page);
 
          Task<IEnumerable<LeagueLeaderBlocksDto>> GetTopFiveBlocks();
 
          Task<IEnumerable<LeagueLeaderStealsDto>> GetStealsLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderStealsDto>> GetPlayoffStealsLeagueLeaders(int page);
+
          Task<IEnumerable<LeagueLeaderStealsDto>> GetTopFiveSteals();
 
          Task<IEnumerable<LeagueLeaderMinutesDto>> GetMinutesLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderMinutesDto>> GetPlayoffMinutesLeagueLeaders(int page);
+
          Task<IEnumerable<LeagueLeaderFoulsDto>> GetFoulsLeagueLeaders(int page);
+
+         Task<IEnumerable<LeagueLeaderFoulsDto>> GetPlayoffFoulsLeagueLeaders(int page);
 
          Task<IEnumerable<LeagueLeaderTurnoversDto>> GetTurnoversLeagueLeaders(int page);
 
+         Task<IEnumerable<LeagueLeaderTurnoversDto>> GetPlayoffTurnoversLeagueLeaders(int page);
+
          int GetCountOfPointsLeagueLeaders();
+
+         int GetCountOfPointsLeagueLeadersPlayoffs();
 
          Task<IEnumerable<PlayoffSummaryDto>> GetPlayoffSummariesForRound(int round);
     }
