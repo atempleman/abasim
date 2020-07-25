@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { League } from '../_models/league';
 import { Router } from '@angular/router';
 import { LeagueService } from '../_services/league.service';
 import { AlertifyService } from '../_services/alertify.service';
-import { League } from '../_models/league';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
-  selector: 'app-playoffs',
-  templateUrl: './playoffs.component.html',
-  styleUrls: ['./playoffs.component.css']
+  selector: 'app-playoff-results',
+  templateUrl: './playoff-results.component.html',
+  styleUrls: ['./playoff-results.component.css']
 })
-export class PlayoffsComponent implements OnInit {
+export class PlayoffResultsComponent implements OnInit {
   league: League;
   isAdmin = 0;
 
@@ -27,14 +27,6 @@ export class PlayoffsComponent implements OnInit {
       this.alertify.error('Error getting League Details');
     }, () => {
     });
-  }
-
-  goToStats() {
-    this.router.navigate(['/playoffs-stats']);
-  }
-
-  goToResults() {
-    this.router.navigate(['/playoffs-results']);
   }
 
 }

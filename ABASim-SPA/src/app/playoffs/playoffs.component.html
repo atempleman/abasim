@@ -9,24 +9,40 @@
 	<span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
 	<span class="badge badge-warning"
 		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
-  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
-  <span *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14"> - Day #{{ this.league?.day }}</span>
+	<span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+	<span
+		*ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+		- Day #{{ this.league?.day }}</span>
 </div>
 
 
 <div class="box">
 	<div class="container">
 		<div class="row cards-row">
-      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
 				<div class="card-header"><i class="fa fa-signal fa-2x"></i><span
 						class="header-card ml-3"><strong>PLAYOFF STATS</strong></span></div>
 				<div class="card-body">
 					<p class="card-text">View the statistics of players and teams during the playoffs.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToStats()">Go to Playoff Stats</button>
+						<button type="button" class="btn btn-link text-left" (click)="goToStats()">Go to Playoff
+							Stats</button>
 					</div>
 				</div>
 			</div>
-    </div>
-  </div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-trophy fa-2x"></i><span
+						class="header-card ml-3"><strong>PLAYOFF RESULTS</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View the results of playoff games.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToResults()">Go to Playoff
+							Results</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
 </div>

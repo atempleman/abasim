@@ -41,6 +41,7 @@ import { BoxScoreComponent } from './box-score/box-score.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { PlayoffsComponent } from './playoffs/playoffs.component';
 import { PlayoffStatsComponent } from './playoff-stats/playoff-stats.component';
+import { PlayoffResultsComponent } from './playoff-results/playoff-results.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -79,6 +80,7 @@ export function tokenGetter() {
       WatchGameComponent,
       PlayoffsComponent,
       PlayoffStatsComponent,
+      PlayoffResultsComponent,
       BoxScoreComponent
    ],
    imports: [
