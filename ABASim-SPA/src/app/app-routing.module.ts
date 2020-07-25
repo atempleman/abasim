@@ -28,6 +28,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
 import { WatchGameComponent } from './watch-game/watch-game.component';
 import { BoxScoreComponent } from './box-score/box-score.component';
 import { PlayoffsComponent } from './playoffs/playoffs.component';
+import { PlayoffStatsComponent } from './playoff-stats/playoff-stats.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -52,6 +53,7 @@ const routes: Routes = [
   { path: 'draftplayerpool', component: DraftPlayerPoolComponent, canActivate: [AuthGuard] },
   { path: 'draftboard', component: DraftboardComponent, canActivate: [AuthGuard] },
   { path: 'playoffs', component: PlayoffsComponent, canActivate: [AuthGuard]},
+  { path: 'playoffs-stats', component: PlayoffStatsComponent, canActivate: [AuthGuard]},
 
   // { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
   // { path: 'admindraft', component: AdmindraftComponent, canActivate: [AdminAuthGuard] },

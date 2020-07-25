@@ -1,0 +1,227 @@
+<div class="jumbotron">
+  <h3 class="display">PLAYOFF STATS</h3>
+</div>
+
+<div class="box">
+  <div class="container">
+    <ngx-spinner [fullScreen]="false" type="pacman" size="medium">
+      <p class="loading">Loading Stats...</p>
+    </ngx-spinner>
+
+    <div class="row">
+      <div class="col-12">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.pointsSelection ? 'active' : ''"
+              (click)="pointsClick()">Points</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.assistsSelection ? 'active' : ''"
+              (click)="assistsClick()">Assists</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.reboundsSelection ? 'active' : ''"
+              (click)="reboundsClick()">Rebounds</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.stealsSelection ? 'active' : ''"
+              (click)="stealsClick()">Steals</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.blocksSelection ? 'active' : ''"
+              (click)="blocksClick()">Blocks</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.minutesSelection ? 'active' : ''"
+              (click)="minutesClick()">Minutes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.foulsSelection ? 'active' : ''"
+              (click)="foulsClick()">Fouls</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="" [ngClass]="this.turnoversSelection ? 'active' : ''"
+              (click)="turnoversClick()">Turnovers</a>
+          </li>
+        </ul>
+
+        <br />
+        <div class="row statstext"
+          *ngIf="(this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
+          <h5>Stats are not yet available.</h5>
+        </div>
+        <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7)">
+          <table *ngIf="this.pointsStats?.length != 0 && this.pointsSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Points Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.pointsStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ (player.points / player.gamesPlayed).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <table *ngIf="this.assistsStats?.length != 0 && this.assistsSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Assists Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.assistsStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ (player.assists / player.gamesPlayed).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <table *ngIf="this.reboundStats?.length != 0 && this.reboundsSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Rebounds Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.reboundStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ (player.rebounds / player.gamesPlayed).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <table *ngIf="this.blocksStats?.length != 0 && this.blocksSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Blocks Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.blocksStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ (player.blocks / player.gamesPlayed).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <table *ngIf="this.stealsStats?.length != 0 && this.stealsSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Steals Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.stealsStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ (player.steals / player.gamesPlayed).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <table *ngIf="this.turnoversStats?.length != 0 && this.turnoversSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Turnovers Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.turnoversStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ (player.turnovers / player.gamesPlayed).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <table *ngIf="this.foulsStats?.length != 0 && this.foulsSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Fouls Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.foulsStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ (player.fouls / player.gamesPlayed).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <table *ngIf="this.minutesStats?.length != 0 && this.minutesSelection" class="table table-striped custab">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Minutes Per Game</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tr *ngFor="let player of this.minutesStats; let i = index">
+              <td>{{ (this.pager * 25 - 25) + i + 1 }}</td>
+              <td>{{ player.playerName }}</td>
+              <td>{{ player.teamShortCode }}</td>
+              <td>{{ ((player.minutes / player.gamesPlayed) / 60).toFixed(2) }}</td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
+                    class="glyphicon glyphicon-edit"></span> View</button></td>
+            </tr>
+          </table>
+
+          <br />
+          <div class="row">
+            <div class="col colleft">
+              <button type="button" class="btn btn-primary" *ngIf="this.pager != 1" (click)="this.pagerPrev()">PREVIOUS</button>
+            </div>
+            <div class="col colright">
+              <button type="button" class="btn btn-primary" (click)="this.pagerNext()">NEXT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
