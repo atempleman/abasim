@@ -31,6 +31,8 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<ScheduleDto>> GetScheduleForDisplay(int day);
 
+         Task<IEnumerable<PlayoffScheduleDto>> GetPlayoffScheduleForDisplay(int day);
+
          Task<IEnumerable<TransactionDto>> GetTransactions();
 
          Task<IEnumerable<PlayByPlay>> GetGamePlayByPlay(int gameId);

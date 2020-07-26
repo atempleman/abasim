@@ -24,6 +24,8 @@ import { LeagueLeadersTurnover } from '../_models/leagueLeadersTurnovers';
 import { LeagueLeadersFouls } from '../_models/leagueLeadersFouls';
 import { LeagueLeadersMinutes } from '../_models/leagueLeadersMinutes';
 import { PlayoffSummary } from '../_models/playoffSummary';
+import { PlayoffResultsComponent } from '../playoff-results/playoff-results.component';
+import { PlayoffResult } from '../_models/playoffResult';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +70,10 @@ export class LeagueService {
 
   getScheduleGames(day: number): Observable<Schedule[]> {
     return this.http.get<Schedule[]>(this.baseUrl + 'getscheduledisplay/' + day);
+  }
+
+  getPlayoffGames(day: number): Observable<PlayoffResult[]> {
+    return this.http.get<PlayoffResult[]>(this.baseUrl + 'getplayoffdisplay/' + day);
   }
 
   getTransactions(): Observable<Transaction[]> {

@@ -3,3 +3,39 @@
     padding: 30px 0;
     position: relative;
 }
+
+table { 
+    border-spacing: 10px;
+    /* border-collapse: separate; */
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.tablebutton {
+    margin-left:5px;
+}
+
+.colleft {
+    border-spacing: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.colright {
+    text-align: right;
+    border-spacing: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.dayheading {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
+}
+
+.cards-row {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}
