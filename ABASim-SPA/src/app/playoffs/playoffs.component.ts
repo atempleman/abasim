@@ -4,6 +4,7 @@ import { LeagueService } from '../_services/league.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { League } from '../_models/league';
 import { AuthService } from '../_services/auth.service';
+import { PlayoffSummary } from '../_models/playoffSummary';
 
 @Component({
   selector: 'app-playoffs',
@@ -13,6 +14,8 @@ import { AuthService } from '../_services/auth.service';
 export class PlayoffsComponent implements OnInit {
   league: League;
   isAdmin = 0;
+  playoffRoundSelection = 0;
+  playoffSummaries: PlayoffSummary[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService) { }
@@ -27,6 +30,22 @@ export class PlayoffsComponent implements OnInit {
       this.alertify.error('Error getting League Details');
     }, () => {
     });
+  }
+
+  playoffRoundSelected() {
+    if (this.playoffRoundSelection === 1) {
+      this.leagueService.getFirstRoundSummaries(1).subscribe(result => {
+        this.playoffSummaries = result;
+      }, error => {
+        this.alertify.error('Error getting first round summaries');
+      });
+    } else if (this.playoffRoundSelection === 2) {
+
+    } else if (this.playoffRoundSelection === 3) {
+
+    } else if (this.playoffRoundSelection === 4) {
+
+    }
   }
 
   goToStats() {
