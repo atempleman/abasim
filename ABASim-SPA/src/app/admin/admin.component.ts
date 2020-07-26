@@ -148,11 +148,9 @@ export class AdminComponent implements OnInit {
     let value = false;
     this.adminService.checkAllGamesRun().subscribe(result => {
       value = result;
-      console.log(result);
     }, error => {
       this.alertify.error('Error checking if games are run');
     }, () => {
-      console.log('ash check');
       console.log(value);
       if (value) {
         // Now run the roll over process
@@ -171,8 +169,6 @@ export class AdminComponent implements OnInit {
     }, error => {
       this.alertify.error('Error rolling over day');
     }, () => {
-      console.log('ash');
-      console.log(this.rolloverResult);
       if (this.rolloverResult) {
         this.alertify.success('Day Rolled over successfully');
         this.modalRef.hide();
