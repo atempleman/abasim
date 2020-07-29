@@ -28,6 +28,8 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<BoxScore>> GetBoxScoresForGameId(int gameId);
 
+         Task<IEnumerable<BoxScore>> GetBoxScoresForGameIdPlayoffs(int gameId);
+
          Task<bool> SavePlayByPlays(List<PlayByPlay> playByPlays);
 
          Task<bool> SavePlayByPlaysPlayoffs(List<PlayByPlay> playByPlays);

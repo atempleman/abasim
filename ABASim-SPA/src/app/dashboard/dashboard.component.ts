@@ -208,12 +208,15 @@ export class DashboardComponent implements OnInit {
   }
 
   runGamePlayoffs(game: GameDisplayCurrent) {
+    console.log('ashley testing here');
     this.noRun = 1;
     const simGame: SimGame = {
       awayId:  game.awayTeamId,
       homeId:  game.homeTeamId,
       gameId:  game.id,
     };
+
+    console.log(simGame);
 
     this.gameEngine.startPlayoffGame(simGame).subscribe(result => {
     }, error => {
@@ -254,6 +257,8 @@ export class DashboardComponent implements OnInit {
   }
 
   viewBoxScore(gameId: number) {
+    console.log(gameId);
+    console.log('testb');
     this.transferService.setData(gameId);
     this.router.navigate(['/box-score']);
   }

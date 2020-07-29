@@ -24,7 +24,7 @@ namespace ABASim.api.Data
             var league = await _context.Leagues.FirstOrDefaultAsync(x => x.Id == 1);
             league.StateId = newState;
 
-            if (newState == 7) {
+            if (newState == 7 || newState == 8 || newState == 9 || newState == 10 || newState == 11) {
                 league.Day = 0;
             }
 
@@ -170,6 +170,7 @@ namespace ABASim.api.Data
                         }
                     }
                 }
+                league.Day = league.Day + 1;
             } else if (league.StateId == 8) {
                 var todaysGames = await _context.SchedulesPlayoffs.Where(x => x.GameDay == (league.Day)).ToListAsync();
 
@@ -248,11 +249,45 @@ namespace ABASim.api.Data
                             }
                         }
                     }
+                    await _context.SaveChangesAsync(); // something here is breaking!
                 }
+
+                // Need to do the next days schedule
+                    league.Day = league.Day + 1;
+                    // Now get list of all PlayOff series for Round 1
+                    var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 1).ToListAsync();
+
+                    if (allSeries != null) {
+                        foreach (var series in allSeries)
+                        {
+                            if (series.HomeWins != 4 && series.AwayWins != 4) 
+                            {
+                                int homeTeamId = 0;
+                                int awayTeamId = 0;
+
+                                if (league.Day == 3 || league.Day == 4 || league.Day == 6) {
+                                    homeTeamId = series.AwayTeamId;
+                                    awayTeamId = series.HomeTeamId;
+                                } else {
+                                    homeTeamId = series.HomeTeamId;
+                                    awayTeamId = series.AwayTeamId;
+                                }
+
+                                SchedulesPlayoff sched = new SchedulesPlayoff
+                                {
+                                    AwayTeamId = awayTeamId,
+                                    HomeTeamId = homeTeamId,
+                                    SeriesId = series.Id,
+                                    GameDay = league.Day
+                                };
+                                await _context.AddAsync(sched);
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
             }
 
             // Need to rollover the day to the next day
-            league.Day = league.Day + 1;
             _context.Update(league);
 
             return await _context.SaveChangesAsync() > 0;
@@ -325,24 +360,26 @@ namespace ABASim.api.Data
 
         public async Task<bool> BeginPlayoffs()
         {
-            // Change the League State Id to 5
-            await UpdateLeagueState(5);
+            // Change the League State Id to 8
+            await UpdateLeagueState(8);
 
             // Create the PlayOff Series for Round 1
             // Get the standings and set up the lists
             var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
-            
+            var teams = await _context.Teams.ToListAsync();
+
             int westTeams = 0;
             int eastTeams = 0;
             List<int> eastTeamsList = new List<int>();
             List<int> westTeamsList = new List<int>();
 
             foreach(var ls in leagueStandings) {
-                if ((ls.TeamId == 1 || ls.TeamId == 2 || ls.TeamId == 3) && eastTeams < 8) {
+                var team = teams.FirstOrDefault(x => x.Id == ls.TeamId);
+                if ((team.Division == 1 || team.Division == 2 || team.Division == 3) && eastTeams < 8) {
                     // East
                     eastTeamsList.Add(ls.TeamId);
                     eastTeams++;
-                } else if ((ls.TeamId == 4 || ls.TeamId == 5 || ls.TeamId == 6) && westTeams < 8) {
+                } else if ((team.Division == 4 || team.Division == 5 || team.Division == 6) && westTeams < 8) {
                     // West
                     westTeamsList.Add(ls.TeamId);
                     westTeams++;
@@ -383,7 +420,7 @@ namespace ABASim.api.Data
                 await _context.AddAsync(ps);
             }
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 1; i < 5; i++) {
                 int homeTeamId = 0;
                 int awayTeamId = 0;
 
@@ -435,6 +472,224 @@ namespace ABASim.api.Data
             }
             // Save all changes and return
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> BeginConferenceSemis()
+        {
+            // Need to check to see if the previous round has been completed
+            var seriesFinished = await _context.PlayoffSerieses.Where(x => x.AwayWins == 4 || x.HomeWins == 4).ToListAsync();
+
+            if (seriesFinished.Count == 8) {
+                // Change the League State Id to 9
+                await UpdateLeagueState(9);
+
+                // Create the PlayOff Series for Round 2 - Semis
+                // Get the standings and set up the lists
+                var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
+
+                // First 4 will be east
+                var series1 = seriesFinished[0];
+                var series2 = seriesFinished[1];
+                var series3 = seriesFinished[2];
+                var series4 = seriesFinished[3];
+                var series5 = seriesFinished[4];
+                var series6 = seriesFinished[5];
+                var series7 = seriesFinished[6];
+                var series8 = seriesFinished[7];
+
+                // Create the object and add to DB for East
+                for (int i = 1; i < 3; i++) {
+                    int homeTeamId = 0;
+                    int awayTeamId = 0;
+                    int teamOneId = 0;
+                    int teamTwoId = 0;
+
+                    if (i == 1)
+                    {
+                        if(series1.HomeWins == 4) {
+                            teamOneId = series1.HomeTeamId;
+                        } else {
+                            teamOneId = series1.AwayTeamId;
+                        }
+
+                        if (series4.HomeWins == 4) {
+                            teamTwoId = series4.HomeTeamId;
+                        } else {
+                            teamTwoId = series4.AwayTeamId;
+                        }
+
+                        // Need to determine who should get home court
+                        var teamOneStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamOneId);
+                        var teamTwoStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamTwoId);
+
+                        if (teamOneStandings.Wins >= teamTwoStandings.Wins) {
+                            homeTeamId = teamOneId;
+                            awayTeamId = teamTwoId;
+                        } else {
+                            homeTeamId = teamTwoId;
+                            awayTeamId = teamOneId;
+                        }
+
+                        PlayoffSeries ps = new PlayoffSeries
+                        {
+                            Round = 2,
+                            HomeTeamId = homeTeamId,
+                            AwayTeamId = awayTeamId,
+                            HomeWins = 0,
+                            AwayWins = 0,
+                            Conference = 1
+                        };
+                        await _context.AddAsync(ps);
+                    } else if (i == 2) {
+                        if(series2.HomeWins == 4) {
+                            teamOneId = series2.HomeTeamId;
+                        } else {
+                            teamOneId = series2.AwayTeamId;
+                        }
+
+                        if (series3.HomeWins == 4) {
+                            teamTwoId = series3.HomeTeamId;
+                        } else {
+                            teamTwoId = series3.AwayTeamId;
+                        }
+
+                        // Need to determine who should get home court
+                        var teamOneStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamOneId);
+                        var teamTwoStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamTwoId);
+
+                        if (teamOneStandings.Wins >= teamTwoStandings.Wins) {
+                            homeTeamId = teamOneId;
+                            awayTeamId = teamTwoId;
+                        } else {
+                            homeTeamId = teamTwoId;
+                            awayTeamId = teamOneId;
+                        }
+
+                        PlayoffSeries ps = new PlayoffSeries
+                        {
+                            Round = 2,
+                            HomeTeamId = homeTeamId,
+                            AwayTeamId = awayTeamId,
+                            HomeWins = 0,
+                            AwayWins = 0,
+                            Conference = 1
+                        };
+                        await _context.AddAsync(ps);
+                    }
+                }
+
+                for (int i = 1; i < 3; i++) {
+                    int homeTeamId = 0;
+                    int awayTeamId = 0;
+                    int teamOneId = 0;
+                    int teamTwoId = 0;
+
+                    if (i == 1)
+                    {
+                        if(series5.HomeWins == 4) {
+                            teamOneId = series5.HomeTeamId;
+                        } else {
+                            teamOneId = series5.AwayTeamId;
+                        }
+
+                        if (series8.HomeWins == 4) {
+                            teamTwoId = series8.HomeTeamId;
+                        } else {
+                            teamTwoId = series8.AwayTeamId;
+                        }
+
+                        // Need to determine who should get home court
+                        var teamOneStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamOneId);
+                        var teamTwoStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamTwoId);
+
+                        if (teamOneStandings.Wins >= teamTwoStandings.Wins) {
+                            homeTeamId = teamOneId;
+                            awayTeamId = teamTwoId;
+                        } else {
+                            homeTeamId = teamTwoId;
+                            awayTeamId = teamOneId;
+                        }
+
+                        PlayoffSeries ps = new PlayoffSeries
+                        {
+                            Round = 2,
+                            HomeTeamId = homeTeamId,
+                            AwayTeamId = awayTeamId,
+                            HomeWins = 0,
+                            AwayWins = 0,
+                            Conference = 2
+                        };
+                        await _context.AddAsync(ps);
+                    } else if (i == 2) {
+                        if(series6.HomeWins == 4) {
+                            teamOneId = series6.HomeTeamId;
+                        } else {
+                            teamOneId = series6.AwayTeamId;
+                        }
+
+                        if (series7.HomeWins == 4) {
+                            teamTwoId = series7.HomeTeamId;
+                        } else {
+                            teamTwoId = series7.AwayTeamId;
+                        }
+
+                        // Need to determine who should get home court
+                        var teamOneStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamOneId);
+                        var teamTwoStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamTwoId);
+
+                        if (teamOneStandings.Wins >= teamTwoStandings.Wins) {
+                            homeTeamId = teamOneId;
+                            awayTeamId = teamTwoId;
+                        } else {
+                            homeTeamId = teamTwoId;
+                            awayTeamId = teamOneId;
+                        }
+
+                        PlayoffSeries ps = new PlayoffSeries
+                        {
+                            Round = 2,
+                            HomeTeamId = homeTeamId,
+                            AwayTeamId = awayTeamId,
+                            HomeWins = 0,
+                            AwayWins = 0,
+                            Conference = 2
+                        };
+                        await _context.AddAsync(ps);
+                    }
+                }
+            }   
+
+            // Save the PlayOffSeries
+            await _context.SaveChangesAsync();
+
+            // Now get list of all PlayOff series for Round 2
+            var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 2).ToListAsync();
+
+            if (allSeries != null) {
+                foreach (var series in allSeries)
+                {
+                    SchedulesPlayoff sched = new SchedulesPlayoff
+                    {
+                        AwayTeamId = series.AwayTeamId,
+                        HomeTeamId = series.HomeTeamId,
+                        SeriesId = series.Id,
+                        GameDay = 1
+                    };
+                    await _context.AddAsync(sched);
+                }
+            }
+            // Save all changes and return
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public Task<bool> BeginConferenceFinals()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> BeginFinals()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -19,5 +19,11 @@ namespace ABASim.api.Data
          Task<bool> ChangeDay(int day);
 
          Task<bool> BeginPlayoffs();
+
+         Task<bool> BeginConferenceSemis();
+
+         Task<bool> BeginConferenceFinals();
+
+         Task<bool> BeginFinals();
     }
 }

@@ -127,6 +127,13 @@ namespace ABASim.api.Controllers
             return Ok(details);
         }
 
+        [HttpGet("getplayoffgamedetails/{gameId}")]
+        public async Task<IActionResult> GetPlayoffGameDetails(int gameId)
+        {
+            var details = await _repo.GetPlayoffGameDetails(gameId);
+            return Ok(details);
+        }
+
         [HttpGet("getgamesfortomorrowseason")]
         public async Task<IActionResult> GetGamesForTomrrowSeason()
         {

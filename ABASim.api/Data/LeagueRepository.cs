@@ -47,6 +47,22 @@ namespace ABASim.api.Data
             return details;
         }
 
+        public async Task<GameDetailsDto> GetPlayoffGameDetails(int gameId)
+        {
+            var game = await _context.SchedulesPlayoffs.FirstOrDefaultAsync(x => x.Id == gameId); 
+            var awayTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.AwayTeamId);
+            var homeTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == game.HomeTeamId);
+            GameDetailsDto details = new GameDetailsDto
+            {
+                GameId = game.Id,
+                AwayTeam = awayTeam.Teamname + " " + awayTeam.Mascot,
+                AwayTeamId = game.AwayTeamId,
+                HomeTeam = homeTeam.Teamname + " " + homeTeam.Mascot,
+                HomeTeamId = game.HomeTeamId
+            };
+            return details;
+        }
+
         public async Task<IEnumerable<PlayByPlay>> GetGamePlayByPlay(int gameId)
         {
             var playByPlay = await _context.PlayByPlays.Where(x => x.GameId == gameId).ToListAsync();

@@ -60,6 +60,9 @@ export class BoxScoreComponent implements OnInit {
   ngOnInit() {
     this.gameId = this.transferService.getData();
 
+    console.log('ash');
+    console.log(this.gameId);
+
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
     }, error => {
@@ -93,24 +96,51 @@ export class BoxScoreComponent implements OnInit {
         this.calculateTeamTotals();
         this.spinner.hide();
       });
+    } else if (this.league.stateId === 8) {
+      this.spinner.show();
+      this.leagueService.getGameDetailsPlayoffs(this.gameId).subscribe(result => {
+        this.gameDetails = result;
+      }, error => {
+        this.alertify.error('Error getting game details');
+        this.spinner.hide();
+      }, () => {
+        this.retrieveBoxScoreData();
+        this.calculateTeamTotals();
+        this.spinner.hide();
+      });
     }
   }
 
   retrieveBoxScoreData() {
-    console.log('here');
-    this.engineService.getBoxScoreForGameId(this.gameId).subscribe(result => {
-      this.boxScores = result;
-      console.log(this.boxScores);
-      console.log(this.boxScores[0].fga);
-    }, error => {
-      this.alertify.error('Wrror getting box scores');
-    }, () => {
-      this.boxScores = this.boxScores.sort((a, b) => a.minutes < b.minutes ? 1 : a.minutes > b.minutes ? -1 : 0);
-      this.homeBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.homeTeamId);
-      this.awayBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.awayTeamId);
+    if (this.league.stateId === 8 || this.league.stateId === 9 || this.league.stateId === 10 || this.league.stateId === 11) {
+      this.engineService.getBoxScoreForGameIdPlayoffs(this.gameId).subscribe(result => {
+        this.boxScores = result;
+        console.log(this.boxScores);
+        console.log(this.boxScores[0].fga);
+      }, error => {
+        this.alertify.error('Wrror getting box scores');
+      }, () => {
+        this.boxScores = this.boxScores.sort((a, b) => a.minutes < b.minutes ? 1 : a.minutes > b.minutes ? -1 : 0);
+        this.homeBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.homeTeamId);
+        this.awayBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.awayTeamId);
 
-      this.calculateTeamTotals();
-    });
+        this.calculateTeamTotals();
+      });
+    } else {
+      this.engineService.getBoxScoreForGameId(this.gameId).subscribe(result => {
+        this.boxScores = result;
+        console.log(this.boxScores);
+        console.log(this.boxScores[0].fga);
+      }, error => {
+        this.alertify.error('Wrror getting box scores');
+      }, () => {
+        this.boxScores = this.boxScores.sort((a, b) => a.minutes < b.minutes ? 1 : a.minutes > b.minutes ? -1 : 0);
+        this.homeBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.homeTeamId);
+        this.awayBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.awayTeamId);
+
+        this.calculateTeamTotals();
+      });
+    }
   }
 
   calculateTeamTotals() {

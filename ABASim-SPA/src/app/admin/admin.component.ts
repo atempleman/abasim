@@ -83,6 +83,47 @@ export class AdminComponent implements OnInit {
       this.alertify.error('Error beginning the playoffs');
     }, () => {
       this.alertify.success('Playoffs have been setup');
+      this.league.stateId = 8;
+      this.league.day = 0;
+      this.modalRef.hide();
+    });
+  }
+
+  beginConfSemis() {
+    this.adminService.beginConfSemis().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error beginning the playoffs');
+    }, () => {
+      this.alertify.success('Playoffs have been setup');
+      this.league.stateId = 9;
+      this.league.day = 0;
+      this.modalRef.hide();
+    });
+  }
+
+  beginConfFinals() {
+    this.adminService.beginConfFinals().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error beginning the playoffs');
+    }, () => {
+      this.alertify.success('Playoffs have been setup');
+      this.league.stateId = 10;
+      this.league.day = 0;
+      this.modalRef.hide();
+    });
+  }
+
+  beginFinals() {
+    this.adminService.beginFinals().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error beginning the playoffs');
+    }, () => {
+      this.alertify.success('Playoffs have been setup');
+      this.league.stateId = 11;
+      this.league.day = 0;
       this.modalRef.hide();
     });
   }

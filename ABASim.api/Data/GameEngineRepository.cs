@@ -57,6 +57,48 @@ namespace ABASim.api.Data
             return boxScores;
         }
 
+        public async Task<IEnumerable<BoxScore>> GetBoxScoresForGameIdPlayoffs(int gameId)
+        {
+            List<BoxScore> boxScores = new List<BoxScore>();
+            var gameBoxScores = await _context.PlayoffBoxScores.Where(x => x.GameId == gameId).ToListAsync();
+
+            foreach (var gbs in gameBoxScores)
+            {
+                // Need to get player name
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == gbs.PlayerId);
+
+                BoxScore bs = new BoxScore
+                {
+                    Id = gbs.Id,
+                    ScheduleId = gbs.GameId,
+                    TeamId = gbs.TeamId,
+                    FirstName = player.FirstName,
+                    LastName = player.Surname,
+                    Minutes = gbs.Minutes,
+                    Points = gbs.Points,
+                    Rebounds = gbs.Rebounds,
+                    Assists = gbs.Assists,
+                    Steals = gbs.Steals,
+                    Blocks = gbs.Blocks,
+                    BlockedAttempts = gbs.BlockedAttempts,
+                    FGM = gbs.FieldGoalsMade,
+                    FGA = gbs.FieldGoalsAttempted,
+                    ThreeFGM = gbs.ThreeFieldGoalsMade,
+                    ThreeFGA = gbs.ThreeFieldGoalsAttempted,
+                    FTM = gbs.FreeThrowsMade,
+                    FTA = gbs.FreeThrowsAttempted,
+                    ORebs = gbs.ORebs,
+                    DRebs = gbs.DRebs,
+                    Turnovers = gbs.Turnovers,
+                    Fouls = gbs.Fouls,
+                    PlusMinus = gbs.PlusMinus
+                }; 
+                boxScores.Add(bs);
+            }
+
+            return boxScores;
+        }
+
         public async Task<IEnumerable<DepthChart>> GetDepthChart(int teamId)
         {
             var depthChart = await _context.DepthCharts.Where(x => x.TeamId == teamId).ToListAsync();

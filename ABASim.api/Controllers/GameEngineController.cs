@@ -193,8 +193,8 @@ namespace ABASim.api.Controllers
             return Ok(true);
         }
 
-        [HttpPost("startSeasonGame")]
-        public async Task<IActionResult> StartSeasonGame(SimGameDto game)
+        [HttpPost("startPlayoffGame")]
+        public async Task<IActionResult> StartPlayoffGame(SimGameDto game)
         {
             await StartGame(game);
 
@@ -221,8 +221,8 @@ namespace ABASim.api.Controllers
             return Ok(true);
         }
 
-         [HttpPost("startPlayoffGame")]
-        public async Task<IActionResult> StartPlayoffGame(SimGameDto game)
+        [HttpPost("startSeasonGame")]
+        public async Task<IActionResult> StartSeasonGame(SimGameDto game)
         {
             await StartGame(game);
 
@@ -6429,6 +6429,13 @@ namespace ABASim.api.Controllers
         public async Task<IEnumerable<BoxScore>> GetBoxScoresForGameId(int gameId)
         {
             var boxScores = await _repo.GetBoxScoresForGameId(gameId);
+            return boxScores;
+        }
+
+        [HttpGet("getboxscoresforgameidplayoffs/{gameId}")]
+        public async Task<IEnumerable<BoxScore>> GetBoxScoresForGameIdPlayoffs(int gameId)
+        {
+            var boxScores = await _repo.GetBoxScoresForGameIdPlayoffs(gameId);
             return boxScores;
         }
 

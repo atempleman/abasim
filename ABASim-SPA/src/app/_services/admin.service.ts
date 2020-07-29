@@ -40,4 +40,15 @@ export class AdminService {
   beginPlayoffs() {
     return this.http.get<boolean>(this.baseUrl + 'beginplayoffs');
   }
+
+  beginConfSemis() {
+    return this.http.get<boolean>(this.baseUrl + 'beginconfsemis');
+  }
+
+  beginConfFinals() {
+    return this.http.get<boolean>(this.baseUrl + 'beginconffinals');
+  }
+  beginFinals() {
+    return this.http.get<boolean>(this.baseUrl + 'beginfinals');
+  }
 }

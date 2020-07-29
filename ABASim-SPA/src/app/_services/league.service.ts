@@ -92,6 +92,10 @@ export class LeagueService {
     return this.http.get<GameDetails>(this.baseUrl + 'getseasongamedetails/ ' + gameId);
   }
 
+  getGameDetailsPlayoffs(gameId: number) {
+    return this.http.get<GameDetails>(this.baseUrl + 'getplayoffgamedetails/ ' + gameId);
+  }
+
   getSeasonGamesForTomorrow(): Observable<GameDisplay[]> {
     return this.http.get<GameDisplay[]>(this.baseUrl + 'getgamesfortomorrowseason');
   }

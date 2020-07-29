@@ -28,10 +28,15 @@ export class GameEngineService {
   }
 
   startPlayoffGame(game: SimGame) {
+    console.log('inside game engine');
     return this.http.post(this.baseUrl + 'startPlayoffGame', game);
   }
 
   getBoxScoreForGameId(gameId: number): Observable<BoxScore[]> {
     return this.http.get<BoxScore[]>(this.baseUrl + 'getboxscoresforgameid/' + gameId);
+  }
+
+  getBoxScoreForGameIdPlayoffs(gameId: number): Observable<BoxScore[]> {
+    return this.http.get<BoxScore[]>(this.baseUrl + 'getboxscoresforgameidplayoffs/' + gameId);
   }
 }

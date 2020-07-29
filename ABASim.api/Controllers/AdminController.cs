@@ -73,5 +73,26 @@ namespace ABASim.api.Controllers
             var result = await _repo.BeginPlayoffs();
             return result;
         }
+
+        [HttpGet("beginconfsemis")]
+        public async Task<bool> BeginConferenceSemis()
+        {
+            var result = await _repo.BeginConferenceSemis();
+            return result;
+        }
+
+        [HttpGet("beginconffinals")]
+        public async Task<bool> BeginConferenceFinals()
+        {
+            var result = await _repo.BeginConferenceFinals();
+            return result;
+        }
+
+        [HttpGet("beginfinals")]
+        public async Task<bool> BeginFinals()
+        {
+            var result = await _repo.BeginFinals();
+            return result;
+        }
     }
 }
