@@ -29,6 +29,7 @@ import { PlayoffSummary } from '../_models/playoffSummary';
 export class DashboardComponent implements OnInit {
   league: League;
   team: Team;
+  champion: Team;
   isAdmin = 0;
   upcomingGames: GameDisplay[] = [];
   todaysGames: GameDisplayCurrent[] = [];
@@ -71,7 +72,18 @@ export class DashboardComponent implements OnInit {
         this.getFinalsSummaries();
       }
       this.getTodaysEvents();
-      this.spinner.hide();
+
+      if (this.league.stateId === 11 && this.league.day > 28) {
+        this.leagueService.getChampion().subscribe(result => {
+          this.champion = result;
+        }, error => {
+          this.alertify.error('Error getting the champion');
+        }, () => {
+          this.spinner.hide();
+        });
+      } else {
+        this.spinner.hide();
+      }
     });
 
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {

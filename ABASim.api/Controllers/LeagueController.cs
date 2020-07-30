@@ -351,5 +351,12 @@ namespace ABASim.api.Controllers
             var fouls = await _repo.GetPlayoffFoulsLeagueLeaders(page);
             return Ok(fouls);
         }
+
+        [HttpGet("getchampion")]
+        public async Task<IActionResult> GetChampion()
+        {
+            var team = await _repo.GetChampion();
+            return Ok(team);
+        }
     }
 }

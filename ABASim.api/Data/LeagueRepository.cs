@@ -1189,5 +1189,20 @@ namespace ABASim.api.Data
             }
             return schedules;
         }
+
+        public async Task<Team> GetChampion()
+        {
+            var series = await _context.PlayoffSerieses.FirstOrDefaultAsync(x => x.Round == 4);
+
+            int teamId = 0;
+            if (series.HomeWins == 4) {
+                teamId = series.HomeTeamId;
+            } else { 
+                teamId = series.AwayTeamId;
+            }
+
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
+            return team;
+        }
     }
 }

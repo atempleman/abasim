@@ -98,5 +98,7 @@ namespace ABASim.api.Data
          int GetCountOfPointsLeagueLeadersPlayoffs();
 
          Task<IEnumerable<PlayoffSummaryDto>> GetPlayoffSummariesForRound(int round);
+
+         Task<Team> GetChampion();
     }
 }

@@ -26,6 +26,7 @@ import { LeagueLeadersMinutes } from '../_models/leagueLeadersMinutes';
 import { PlayoffSummary } from '../_models/playoffSummary';
 import { PlayoffResultsComponent } from '../playoff-results/playoff-results.component';
 import { PlayoffResult } from '../_models/playoffResult';
+import { Team } from '../_models/team';
 
 @Injectable({
   providedIn: 'root'
@@ -175,6 +176,10 @@ export class LeagueService {
 
   getCountOfPointsLeagueLeadersPlayoffs() {
     return this.http.get<number>(this.baseUrl + 'getcountofpointsleadersplayoffs');
+  }
+
+  getChampion() {
+    return this.http.get<Team>(this.baseUrl + 'getchampion');
   }
 
   getPlayoffsAssistsLeagueLeadersForPage(page: number): Observable<LeagueLeadersAssists[]> {

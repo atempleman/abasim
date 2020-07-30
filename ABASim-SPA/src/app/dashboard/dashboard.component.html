@@ -151,6 +151,7 @@
 					</tr>
 				</tbody>
 			</table>
+			<h2 *ngIf="this.league?.stateId == 11 && this.league?.day > 28" class="text-success">The {{ champion.teamname }} {{ champion.mascot }} are the ABA champions!!</h2>
 		</div>
 		<div class="col-lg-6 events upcoming">
 			<!-- <h4>UPCOMING EVENTS</h4>
