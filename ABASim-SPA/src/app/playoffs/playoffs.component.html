@@ -47,33 +47,29 @@
 </div>
 
 <div class="box">
-	<div class="row event-row">
-		<div class="col-lg-6 events" *ngIf="this.league?.day != 0">
-			<h3>Playoff Picture</h3>
-			<p>select a round to view</p>
-			<select name="playoffround" [(ngModel)]="playoffRoundSelection">
-				<option *ngIf="this.league?.stateId >= 8" [value]="1">First Round</option>
-				<option *ngIf="this.league?.stateId >= 9" [value]="2">Conference Semis</option>
-				<option *ngIf="this.league?.stateId >= 10" [value]="3">Conference Finals</option>
-				<option *ngIf="this.league?.stateId >= 11" [value]="4">ABA Finals</option>
-				<button type="submit" class="btn btn-primary" (click)="playoffRoundSelected()">Select</button>
-			</select>
+	<div class="jumbotron" *ngIf="this.league?.day != 0">
+		<h3>Playoff Picture</h3>
+		<p>select a round to view</p>
+		<select name="playoffround" [(ngModel)]="playoffRoundSelection">
+			<option *ngIf="this.league?.stateId >= 8" [value]="1">First Round</option>
+			<option *ngIf="this.league?.stateId >= 9" [value]="2">Conference Semis</option>
+			<option *ngIf="this.league?.stateId >= 10" [value]="3">Conference Finals</option>
+			<option *ngIf="this.league?.stateId >= 11" [value]="4">ABA Finals</option>
+		</select>
+		<button type="submit" class="btn btn-primary ml-2" (click)="playoffRoundSelected()">Select</button>
 
-			<div class="row event-row">
-				<div class="col-lg-6 events">
-					<table class="table table-hover events-table">
-						<tbody>
-							<tr class="table-secondary" *ngFor="let series of this.playoffSummaries">
-								<td>
-									{{ series.awayTeam }}: {{ series.awayWins }}
-									<br />
-									{{ series.homeTeam }}: {{ series.homeWins }}
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+		<div class="row event-row">
+				<table class="table table-hover events-table">
+					<tbody>
+						<tr class="table-secondary" *ngFor="let series of this.playoffSummaries">
+							<td>
+								{{ series.awayTeam }}: {{ series.awayWins }}
+								<br />
+								{{ series.homeTeam }}: {{ series.homeWins }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
-	</div>
 </div>

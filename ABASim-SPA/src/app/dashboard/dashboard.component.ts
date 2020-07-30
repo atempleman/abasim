@@ -62,6 +62,13 @@ export class DashboardComponent implements OnInit {
       } else if (this.league.stateId === 8) {
         // get the playoff series
         this.getRoundOneSummaries();
+      } else if (this.league.stateId === 9) {
+        // get playoff series
+        this.getConfSemiSummaries();
+      } else if (this.league.stateId === 10) {
+        this.getConfFinalsSummaries();
+      } else if (this.league.stateId === 11) {
+        this.getFinalsSummaries();
       }
       this.getTodaysEvents();
       this.spinner.hide();
@@ -83,6 +90,30 @@ export class DashboardComponent implements OnInit {
 
   getRoundOneSummaries() {
     this.leagueService.getFirstRoundSummaries(1).subscribe(result => {
+      this.playoffSummaries = result;
+    }, error => {
+      this.alertify.error('Error getting playoff summaries');
+    });
+  }
+
+  getConfSemiSummaries() {
+    this.leagueService.getFirstRoundSummaries(2).subscribe(result => {
+      this.playoffSummaries = result;
+    }, error => {
+      this.alertify.error('Error getting playoff summaries');
+    });
+  }
+
+  getConfFinalsSummaries() {
+    this.leagueService.getFirstRoundSummaries(3).subscribe(result => {
+      this.playoffSummaries = result;
+    }, error => {
+      this.alertify.error('Error getting playoff summaries');
+    });
+  }
+
+  getFinalsSummaries() {
+    this.leagueService.getFirstRoundSummaries(4).subscribe(result => {
       this.playoffSummaries = result;
     }, error => {
       this.alertify.error('Error getting playoff summaries');
@@ -139,6 +170,14 @@ export class DashboardComponent implements OnInit {
         this.spinner.hide();
       });
     } else if (this.league.stateId === 8 && this.league.day !== 0) {
+      this.leagueService.getFirstRoundGamesForToday().subscribe(result => {
+        this.todaysGames = result;
+      }, error => {
+        this.alertify.error('Error gettings todays events');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.league.stateId === 9 && this.league.day !== 0) {
       this.leagueService.getFirstRoundGamesForToday().subscribe(result => {
         this.todaysGames = result;
       }, error => {

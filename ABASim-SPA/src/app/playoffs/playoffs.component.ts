@@ -33,8 +33,11 @@ export class PlayoffsComponent implements OnInit {
   }
 
   playoffRoundSelected() {
-    if (this.playoffRoundSelection === 1) {
+    console.log('test');
+    console.log(this.playoffRoundSelection);
+    if (+this.playoffRoundSelection === 1) {
       this.leagueService.getFirstRoundSummaries(1).subscribe(result => {
+        console.log(result);
         this.playoffSummaries = result;
       }, error => {
         this.alertify.error('Error getting first round summaries');

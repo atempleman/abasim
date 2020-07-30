@@ -97,7 +97,7 @@ export class AdminComponent implements OnInit {
     }, () => {
       this.alertify.success('Playoffs have been setup');
       this.league.stateId = 9;
-      this.league.day = 0;
+      this.league.day = 8;
       this.modalRef.hide();
     });
   }

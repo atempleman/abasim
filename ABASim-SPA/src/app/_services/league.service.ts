@@ -109,6 +109,7 @@ export class LeagueService {
   }
 
   getFirstRoundSummaries(round: number): Observable<PlayoffSummary[]> {
+    console.log('service');
     return this.http.get<PlayoffSummary[]>(this.baseUrl + 'getplayoffsummariesforround/' + round);
   }
 

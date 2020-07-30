@@ -171,7 +171,7 @@ namespace ABASim.api.Data
                     }
                 }
                 league.Day = league.Day + 1;
-            } else if (league.StateId == 8) {
+            } else if (league.StateId == 8 || league.StateId == 9 || league.StateId == 10 || league.StateId == 11) {
                 var todaysGames = await _context.SchedulesPlayoffs.Where(x => x.GameDay == (league.Day)).ToListAsync();
 
                 foreach (var game in todaysGames)
@@ -326,7 +326,7 @@ namespace ABASim.api.Data
                         }
                     }
                 }
-            } else if (league.StateId == 8) {
+            } else if (league.StateId == 8 || league.StateId == 9 || league.StateId == 10 || league.StateId == 11) {
                 var todaysGames = await _context.SchedulesPlayoffs.Where(x => x.GameDay == (league.Day)).ToListAsync();
                 if (todaysGames.Count != 0) {
                     foreach (var game in todaysGames)
@@ -482,6 +482,10 @@ namespace ABASim.api.Data
             if (seriesFinished.Count == 8) {
                 // Change the League State Id to 9
                 await UpdateLeagueState(9);
+                var league = await _context.Leagues.FirstOrDefaultAsync();
+                league.Day = 8;
+                _context.Update(league);
+                await _context.SaveChangesAsync();
 
                 // Create the PlayOff Series for Round 2 - Semis
                 // Get the standings and set up the lists
@@ -673,7 +677,7 @@ namespace ABASim.api.Data
                         AwayTeamId = series.AwayTeamId,
                         HomeTeamId = series.HomeTeamId,
                         SeriesId = series.Id,
-                        GameDay = 1
+                        GameDay = 8
                     };
                     await _context.AddAsync(sched);
                 }

@@ -98,6 +98,39 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 9 && this.league?.day >= 7">
+				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Begin Conferecene Finals</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Setup the playoffs and move the league into the Conference Finals state.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(beginconffinals, 5)">Begin Conf Finals</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 10 && this.league?.day >= 7">
+				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Begin Finals</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Setup the playoffs and move the league into the Finals state.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(beginfinals, 5)">Begin Finals</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 8 && this.league?.day > 7">
+				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>Begin Conf Semis</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Setup the playoffs and move the league into the Conference Semis state.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(beginconfsemis, 5)">Begin Semis</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 

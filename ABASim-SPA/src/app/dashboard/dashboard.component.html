@@ -35,7 +35,7 @@
 				</div>
 			</div>
 
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 8">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11">
 				<div class="card-header"><i class="fa fa-trophy fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>PLAYOFFS</strong></span></div>
 				<div class="card-body">
@@ -128,7 +128,7 @@
 			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day }}</p>
 
 			<table class="table table-hover events-table"
-				*ngIf="this.league?.stateId == 6 || this.league?.stateId == 7 || this.league?.stateId == 8">
+				*ngIf="this.league?.stateId == 6 || this.league?.stateId == 7 || this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
 						<td>
@@ -140,7 +140,7 @@
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0"
 								type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
 							<button
-								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 8 && this.noRun == 0"
+								*ngIf="this.isAdmin == 1 && game.completed == 0 && (this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11) && this.noRun == 0"
 								type="button" class="btn btn-link" (click)="runGamePlayoffs(game)">Run Game</button>
 							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
 								(click)="watchGame(game.id)">Watch</button>
@@ -343,6 +343,48 @@
 
 			<div class="text-center py-5 bg-dark text-white" *ngIf="this.league.day != 0 && this.league.stateId == 8">
 				<h4>Playoff Matchups - Round 1</h4>
+				<div class="lead">
+					<div class="row stats">
+						<table class="table-secondary">
+							<tr *ngFor="let summary of this.playoffSummaries">
+								<td>{{ summary.homeTeam }} ({{ summary.homeWins }}) vs {{ summary.awayTeam }}
+									({{ summary.awayWins }})</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center py-5 bg-dark text-white" *ngIf="this.league.day != 0 && this.league.stateId == 9">
+				<h4>Playoff Matchups - Conference Semis</h4>
+				<div class="lead">
+					<div class="row stats">
+						<table class="table-secondary">
+							<tr *ngFor="let summary of this.playoffSummaries">
+								<td>{{ summary.homeTeam }} ({{ summary.homeWins }}) vs {{ summary.awayTeam }}
+									({{ summary.awayWins }})</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center py-5 bg-dark text-white" *ngIf="this.league.day != 0 && this.league.stateId == 10">
+				<h4>Playoff Matchups - Conference Finals</h4>
+				<div class="lead">
+					<div class="row stats">
+						<table class="table-secondary">
+							<tr *ngFor="let summary of this.playoffSummaries">
+								<td>{{ summary.homeTeam }} ({{ summary.homeWins }}) vs {{ summary.awayTeam }}
+									({{ summary.awayWins }})</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center py-5 bg-dark text-white" *ngIf="this.league.day != 0 && this.league.stateId == 11">
+				<h4>Playoff Matchups - FINALS</h4>
 				<div class="lead">
 					<div class="row stats">
 						<table class="table-secondary">
