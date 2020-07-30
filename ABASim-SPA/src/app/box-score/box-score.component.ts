@@ -96,7 +96,7 @@ export class BoxScoreComponent implements OnInit {
         this.calculateTeamTotals();
         this.spinner.hide();
       });
-    } else if (this.league.stateId === 8) {
+    } else if (this.league.stateId === 8 || this.league.stateId === 9 || this.league.stateId === 10 || this.league.stateId === 11) {
       this.spinner.show();
       this.leagueService.getGameDetailsPlayoffs(this.gameId).subscribe(result => {
         this.gameDetails = result;

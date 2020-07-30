@@ -253,7 +253,9 @@ namespace ABASim.api.Data
                 }
 
                 // Need to do the next days schedule
-                    league.Day = league.Day + 1;
+                league.Day = league.Day + 1;
+
+                if (league.StateId == 8) {
                     // Now get list of all PlayOff series for Round 1
                     var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 1).ToListAsync();
 
@@ -285,6 +287,104 @@ namespace ABASim.api.Data
                         }
                         await _context.SaveChangesAsync();
                     }
+                } else if (league.StateId == 9) {
+                    // Now get list of all PlayOff series for Round 1
+                    var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 2).ToListAsync();
+
+                    if (allSeries != null) {
+                        foreach (var series in allSeries)
+                        {
+                            if (series.HomeWins != 4 && series.AwayWins != 4) 
+                            {
+                                int homeTeamId = 0;
+                                int awayTeamId = 0;
+
+                                if (league.Day == 10 || league.Day == 11 || league.Day == 13) {
+                                    homeTeamId = series.AwayTeamId;
+                                    awayTeamId = series.HomeTeamId;
+                                } else {
+                                    homeTeamId = series.HomeTeamId;
+                                    awayTeamId = series.AwayTeamId;
+                                }
+
+                                SchedulesPlayoff sched = new SchedulesPlayoff
+                                {
+                                    AwayTeamId = awayTeamId,
+                                    HomeTeamId = homeTeamId,
+                                    SeriesId = series.Id,
+                                    GameDay = league.Day
+                                };
+                                await _context.AddAsync(sched);
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                } else if (league.StateId == 10) {
+                    // Now get list of all PlayOff series for Round 1
+                    var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 3).ToListAsync();
+
+                    if (allSeries != null) {
+                        foreach (var series in allSeries)
+                        {
+                            if (series.HomeWins != 4 && series.AwayWins != 4) 
+                            {
+                                int homeTeamId = 0;
+                                int awayTeamId = 0;
+
+                                if (league.Day == 17 || league.Day == 18 || league.Day == 20) {
+                                    homeTeamId = series.AwayTeamId;
+                                    awayTeamId = series.HomeTeamId;
+                                } else {
+                                    homeTeamId = series.HomeTeamId;
+                                    awayTeamId = series.AwayTeamId;
+                                }
+
+                                SchedulesPlayoff sched = new SchedulesPlayoff
+                                {
+                                    AwayTeamId = awayTeamId,
+                                    HomeTeamId = homeTeamId,
+                                    SeriesId = series.Id,
+                                    GameDay = league.Day
+                                };
+                                await _context.AddAsync(sched);
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                } else if (league.StateId == 11) {
+                    // Now get list of all PlayOff series for Round 1
+                    var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 4).ToListAsync();
+
+                    if (allSeries != null) {
+                        foreach (var series in allSeries)
+                        {
+                            if (series.HomeWins != 4 && series.AwayWins != 4) 
+                            {
+                                int homeTeamId = 0;
+                                int awayTeamId = 0;
+
+                                if (league.Day == 24 || league.Day == 25 || league.Day == 27) {
+                                    homeTeamId = series.AwayTeamId;
+                                    awayTeamId = series.HomeTeamId;
+                                } else {
+                                    homeTeamId = series.HomeTeamId;
+                                    awayTeamId = series.AwayTeamId;
+                                }
+
+                                SchedulesPlayoff sched = new SchedulesPlayoff
+                                {
+                                    AwayTeamId = awayTeamId,
+                                    HomeTeamId = homeTeamId,
+                                    SeriesId = series.Id,
+                                    GameDay = league.Day
+                                };
+                                await _context.AddAsync(sched);
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                    
             }
 
             // Need to rollover the day to the next day
@@ -686,14 +786,218 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<bool> BeginConferenceFinals()
+        public async Task<bool> BeginConferenceFinals()
         {
-            throw new NotImplementedException();
+            // Need to check to see if the previous round has been completed
+            var seriesFinished = await _context.PlayoffSerieses.Where(x => (x.AwayWins == 4 || x.HomeWins == 4) && x.Round == 2).ToListAsync();
+
+            if (seriesFinished.Count == 4) {
+                // Change the League State Id to 10
+                await UpdateLeagueState(10);
+                var league = await _context.Leagues.FirstOrDefaultAsync();
+                league.Day = 15;
+                _context.Update(league);
+                await _context.SaveChangesAsync();
+
+                // Create the PlayOff Series for Round 3 - Conference Finals
+                // Get the standings and set up the lists
+                var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
+
+                // First 2 will be east
+                var series1 = seriesFinished[0];
+                var series2 = seriesFinished[1];
+                var series3 = seriesFinished[2];
+                var series4 = seriesFinished[3];
+                
+                // Create the object and add to DB for East
+                int homeTeamId = 0;
+                int awayTeamId = 0;
+                int teamOneId = 0;
+                int teamTwoId = 0;
+
+                if(series1.HomeWins == 4) {
+                    teamOneId = series1.HomeTeamId;
+                } else {
+                    teamOneId = series1.AwayTeamId;
+                }
+
+                if (series2.HomeWins == 4) {
+                    teamTwoId = series2.HomeTeamId;
+                } else {
+                    teamTwoId = series2.AwayTeamId;
+                }
+
+                // Need to determine who should get home court
+                var teamOneStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamOneId);
+                var teamTwoStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamTwoId);
+
+                if (teamOneStandings.Wins >= teamTwoStandings.Wins) {
+                    homeTeamId = teamOneId;
+                    awayTeamId = teamTwoId;
+                } else {
+                    homeTeamId = teamTwoId;
+                    awayTeamId = teamOneId;
+                }
+
+                PlayoffSeries ps = new PlayoffSeries
+                {
+                    Round = 3,
+                    HomeTeamId = homeTeamId,
+                    AwayTeamId = awayTeamId,
+                    HomeWins = 0,
+                    AwayWins = 0,
+                    Conference = 1
+                };
+                await _context.AddAsync(ps);
+
+                homeTeamId = 0;
+                awayTeamId = 0;
+                teamOneId = 0;
+                teamTwoId = 0;
+
+                if(series3.HomeWins == 4) {
+                    teamOneId = series3.HomeTeamId;
+                } else {
+                    teamOneId = series3.AwayTeamId;
+                }
+
+                if (series4.HomeWins == 4) {
+                    teamTwoId = series4.HomeTeamId;
+                } else {
+                    teamTwoId = series4.AwayTeamId;
+                }
+
+                // Need to determine who should get home court
+                teamOneStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamOneId);
+                teamTwoStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamTwoId);
+
+                if (teamOneStandings.Wins >= teamTwoStandings.Wins) {
+                    homeTeamId = teamOneId;
+                    awayTeamId = teamTwoId;
+                } else {
+                    homeTeamId = teamTwoId;
+                    awayTeamId = teamOneId;
+                }
+
+                PlayoffSeries psTwo = new PlayoffSeries
+                {
+                    Round = 3,
+                    HomeTeamId = homeTeamId,
+                    AwayTeamId = awayTeamId,
+                    HomeWins = 0,
+                    AwayWins = 0,
+                    Conference = 2
+                };
+                await _context.AddAsync(psTwo);
+            }
+
+            // Save the PlayOffSeries
+            await _context.SaveChangesAsync();
+
+            // Now get list of all PlayOff series for Round 2
+            var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 3).ToListAsync();
+
+            if (allSeries != null) {
+                foreach (var series in allSeries)
+                {
+                    SchedulesPlayoff sched = new SchedulesPlayoff
+                    {
+                        AwayTeamId = series.AwayTeamId,
+                        HomeTeamId = series.HomeTeamId,
+                        SeriesId = series.Id,
+                        GameDay = 15
+                    };
+                    await _context.AddAsync(sched);
+                }
+            }
+            // Save all changes and return
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<bool> BeginFinals()
+        public async Task<bool> BeginFinals()
         {
-            throw new NotImplementedException();
+            // Need to check to see if the previous round has been completed
+            var seriesFinished = await _context.PlayoffSerieses.Where(x => (x.AwayWins == 4 || x.HomeWins == 4) && x.Round == 3).ToListAsync();
+
+            if (seriesFinished.Count == 2) {
+                // Change the League State Id to 10
+                await UpdateLeagueState(11);
+                var league = await _context.Leagues.FirstOrDefaultAsync();
+                league.Day = 22;
+                _context.Update(league);
+                await _context.SaveChangesAsync();
+
+                // Create the PlayOff Series for Round 3 - Conference Finals
+                // Get the standings and set up the lists
+                var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
+
+                // First 2 will be east
+                var series1 = seriesFinished[0];
+                var series2 = seriesFinished[1];
+                
+                // Create the object and add to DB for East
+                int homeTeamId = 0;
+                int awayTeamId = 0;
+                int teamOneId = 0;
+                int teamTwoId = 0;
+
+                if(series1.HomeWins == 4) {
+                    teamOneId = series1.HomeTeamId;
+                } else {
+                    teamOneId = series1.AwayTeamId;
+                }
+
+                if (series2.HomeWins == 4) {
+                    teamTwoId = series2.HomeTeamId;
+                } else {
+                    teamTwoId = series2.AwayTeamId;
+                }
+
+                // Need to determine who should get home court
+                var teamOneStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamOneId);
+                var teamTwoStandings = await _context.Standings.FirstOrDefaultAsync(x => x.TeamId == teamTwoId);
+
+                if (teamOneStandings.Wins >= teamTwoStandings.Wins) {
+                    homeTeamId = teamOneId;
+                    awayTeamId = teamTwoId;
+                } else {
+                    homeTeamId = teamTwoId;
+                    awayTeamId = teamOneId;
+                }
+
+                PlayoffSeries ps = new PlayoffSeries
+                {
+                    Round = 4,
+                    HomeTeamId = homeTeamId,
+                    AwayTeamId = awayTeamId,
+                    HomeWins = 0,
+                    AwayWins = 0,
+                    Conference = 0
+                };
+                await _context.AddAsync(ps);
+            }
+
+            // Save the PlayOffSeries
+            await _context.SaveChangesAsync();
+
+            // Now get list of all PlayOff series for Round 2
+            var allSeries = await _context.PlayoffSerieses.Where(x => x.Round == 4).ToListAsync();
+
+            if (allSeries != null) {
+                foreach (var series in allSeries)
+                {
+                    SchedulesPlayoff sched = new SchedulesPlayoff
+                    {
+                        AwayTeamId = series.AwayTeamId,
+                        HomeTeamId = series.HomeTeamId,
+                        SeriesId = series.Id,
+                        GameDay = 22
+                    };
+                    await _context.AddAsync(sched);
+                }
+            }
+            // Save all changes and return
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

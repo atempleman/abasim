@@ -110,7 +110,7 @@ export class AdminComponent implements OnInit {
     }, () => {
       this.alertify.success('Playoffs have been setup');
       this.league.stateId = 10;
-      this.league.day = 0;
+      this.league.day = 15;
       this.modalRef.hide();
     });
   }
@@ -123,7 +123,7 @@ export class AdminComponent implements OnInit {
     }, () => {
       this.alertify.success('Playoffs have been setup');
       this.league.stateId = 11;
-      this.league.day = 0;
+      this.league.day = 22;
       this.modalRef.hide();
     });
   }

@@ -185,6 +185,22 @@ export class DashboardComponent implements OnInit {
       }, () => {
         this.spinner.hide();
       });
+    } else if (this.league.stateId === 10 && this.league.day !== 0) {
+      this.leagueService.getFirstRoundGamesForToday().subscribe(result => {
+        this.todaysGames = result;
+      }, error => {
+        this.alertify.error('Error gettings todays events');
+      }, () => {
+        this.spinner.hide();
+      });
+    } else if (this.league.stateId === 11 && this.league.day !== 0) {
+      this.leagueService.getFirstRoundGamesForToday().subscribe(result => {
+        this.todaysGames = result;
+      }, error => {
+        this.alertify.error('Error gettings todays events');
+      }, () => {
+        this.spinner.hide();
+      });
     }
   }
 

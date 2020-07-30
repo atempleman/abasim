@@ -42,12 +42,27 @@ export class PlayoffsComponent implements OnInit {
       }, error => {
         this.alertify.error('Error getting first round summaries');
       });
-    } else if (this.playoffRoundSelection === 2) {
-
-    } else if (this.playoffRoundSelection === 3) {
-
-    } else if (this.playoffRoundSelection === 4) {
-
+    } else if (+this.playoffRoundSelection === 2) {
+        this.leagueService.getFirstRoundSummaries(2).subscribe(result => {
+          console.log(result);
+          this.playoffSummaries = result;
+        }, error => {
+          this.alertify.error('Error getting first round summaries');
+        });
+    } else if (+this.playoffRoundSelection === 3) {
+      this.leagueService.getFirstRoundSummaries(3).subscribe(result => {
+        console.log(result);
+        this.playoffSummaries = result;
+      }, error => {
+        this.alertify.error('Error getting first round summaries');
+      });
+    } else if (+this.playoffRoundSelection === 4) {
+      this.leagueService.getFirstRoundSummaries(4).subscribe(result => {
+        console.log(result);
+        this.playoffSummaries = result;
+      }, error => {
+        this.alertify.error('Error getting first round summaries');
+      });
     }
   }
 
