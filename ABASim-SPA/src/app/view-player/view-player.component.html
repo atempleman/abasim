@@ -134,6 +134,98 @@
                                     </tbody>
                                 </table>
 
+                                <h4 *ngIf="this.league?.stateId > 8 || (this.league?.stateId == 7 && this.league?.day > 0)">Playoffs</h4>
+                                <table class="table table-hover roster-table" *ngIf="this.league?.stateId > 8 || (this.league?.stateId == 7 && this.league?.day > 0)">
+                                    <thead>
+                                        <tr>
+                                          <th>G</th>
+                                          <th>MP</th>
+                                          <th>FG</th>
+                                          <th>FGA</th>
+                                          <th>FG%</th>
+                                          <th>3P</th>
+                                          <th>3PA</th>
+                                          <th>3P%</th>
+                                          <th>FT</th>
+                                          <th>FTA</th>
+                                          <th>FT%</th>
+                                          <th>ORB</th>
+                                          <th>DRB</th>
+                                          <th>TRB</th>
+                                          <th>AST</th>
+                                          <th>STL</th>
+                                          <th>BLK</th>
+                                          <th>TOV</th>
+                                          <th>PF</th>
+                                          <th>PTS</th>
+                                        </tr>
+                                      </thead>
+                                    <tbody>
+                                        <tr class="table-secondary">
+                                            <td>
+                                                {{ this.detailedPlayer?.playoffGamesStats }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffMinutesAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffFGAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffFGAAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffFgPercentage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffThreeFGAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffThreeFGAAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffThreeFgPercentage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffFTAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffFTAAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffFTPercentage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffOrebAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffDrebverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffTotalRebAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffTotalAstAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffTotalStlAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffTotalBlkAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffTotalTovAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffTotalFoulsAverage() }}
+                                            </td>
+                                            <td>
+                                                {{ getPlayoffTotalPointsAverage() }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
                                 <table class="table table-hover roster-table" *ngIf="this.statusGrades">
                                     <thead>
                                         <tr>

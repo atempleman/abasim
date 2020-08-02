@@ -110,5 +110,37 @@ namespace ABASim.api.Dtos
         public int ToStats { get; set; }
 
         public int PtsStats { get; set; }
+
+        public int PlayoffGamesStats { get; set; }
+
+        public int PlayoffMinutesStats { get; set; }
+
+        public int PlayoffFgmStats { get; set; }
+        
+        public int PlayoffFgaStats { get; set; }
+
+        public int PlayoffThreeFgmStats { get; set; }
+
+        public int PlayoffThreeFgaStats { get; set; }
+    
+        public int PlayoffFtmStats { get; set; }
+
+        public int PlayoffFtaStats { get; set; }
+    
+        public int PlayoffOrebsStats { get; set; }
+
+        public int PlayoffDrebsStats { get; set; }
+    
+        public int PlayoffAstStats { get; set; }
+
+        public int PlayoffStlStats { get; set; }
+
+        public int PlayoffBlkStats { get; set; }
+
+        public int PlayoffFlsStats { get; set; }
+
+        public int PlayoffToStats { get; set; }
+
+        public int PlayoffPtsStats { get; set; }
     }
 }
