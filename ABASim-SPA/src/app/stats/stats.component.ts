@@ -63,7 +63,11 @@ export class StatsComponent implements OnInit {
     });
 
     this.selectedStat = this.transferService.getData();
+    if (!this.selectedStat) {
+      this.selectedStat = 0;
+    }
 
+    console.log(this.selectedStat);
     if (this.selectedStat === 0 || this.selectedStat === 1) {
       this.leagueService.getPointsLeagueLeadersForPage(1).subscribe(result => {
         this.pointsStats = result;

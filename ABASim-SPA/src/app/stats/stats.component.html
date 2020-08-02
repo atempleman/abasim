@@ -50,7 +50,7 @@
           *ngIf="(this.league?.day == 0 && (this.league?.stateId == 6 || this.league?.stateId == 7))">
           <h5>Stats are not yet available.</h5>
         </div>
-        <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId == 7)">
+        <div class="row stats" *ngIf="(this.league?.day > 0 && this.league?.stateId >= 7)">
           <table *ngIf="this.pointsStats?.length != 0 && this.pointsSelection" class="table table-striped custab">
             <thead>
               <tr>

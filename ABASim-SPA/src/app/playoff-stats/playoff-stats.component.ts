@@ -60,10 +60,13 @@ export class PlayoffStatsComponent implements OnInit {
 
     this.selectedStat = this.transferService.getData();
 
-    this.selectedStat = this.transferService.getData();
+    if(!this.selectedStat) {
+      this.selectedStat = 0;
+    }
 
     if (this.selectedStat === 0 || this.selectedStat === 1) {
       this.leagueService.getPlayoffsPointsLeagueLeadersForPage(1).subscribe(result => {
+        console.log(result);
         this.pointsStats = result;
       }, error => {
         this.alertify.error('Error getting scoring stats');
