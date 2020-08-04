@@ -42,12 +42,12 @@ namespace ABASim.api.Data
             var temp = chatDto.Username;
             var userId = Convert.ToInt32(temp);
 
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == userId);
 
             GlobalChat chatRecord = new GlobalChat
             {
                 ChatText = chatDto.ChatText,
-                Username = user.Username,
+                Username = team.Mascot,
                 ChatTime = chatDto.ChatTime
             };
 
