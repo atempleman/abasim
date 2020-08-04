@@ -31,5 +31,7 @@ namespace ABASim.api.Models
         public int ORPMRating { get; set; }
 
         public int DRPMRating { get; set; }
+
+        public int FoulingRating { get; set; }
     }
 }

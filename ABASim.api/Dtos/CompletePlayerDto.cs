@@ -67,6 +67,8 @@ namespace ABASim.api.Dtos
 
         public int DrpmRating { get; set; }
 
+        public int FoulingRating { get; set; }
+
         public string StealGrade { get; set; }
 
         public string BlockGrade { get; set; }
