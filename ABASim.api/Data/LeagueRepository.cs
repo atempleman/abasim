@@ -69,6 +69,12 @@ namespace ABASim.api.Data
             return playByPlay;
         }
 
+        public async Task<IEnumerable<PlayByPlayPlayoff>> GetGamePlayByPlayPlayoffs(int gameId)
+        {
+            var playByPlay = await _context.PlayByPlayPlayoffs.Where(x => x.GameId == gameId).ToListAsync();
+            return playByPlay;
+        }
+
         public async Task<League> GetLeague()
         {
             var league = await _context.Leagues.FirstOrDefaultAsync();

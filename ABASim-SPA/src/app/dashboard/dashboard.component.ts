@@ -318,10 +318,15 @@ export class DashboardComponent implements OnInit {
   }
 
   watchGame(gameId: number, stateId: number) {
-    console.log(gameId);
     this.transferService.setData(gameId);
     this.transferService.setState(stateId);
     this.router.navigate(['/watch-game']);
+  }
+
+  fullGame(gameId: number, stateId: number) {
+    this.transferService.setData(gameId);
+    this.transferService.setState(stateId);
+    this.router.navigate(['/full-game-comm']);
   }
 
   viewBoxScore(gameId: number) {

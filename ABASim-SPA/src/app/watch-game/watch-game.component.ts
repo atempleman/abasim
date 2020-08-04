@@ -67,32 +67,57 @@ export class WatchGameComponent implements OnInit {
   beginGame() {
     this.gameBegun = 1;
 
-    this.leagueService.getPlayByPlaysForId(this.gameId).subscribe(result => {
-      this.playByPlays = result;
-      const element = this.playByPlays[this.playByPlays.length - 1];
-      this.numberOfPlays = element.ordering;
-
-      this.playByPlays.sort((n1, n2) => {
-        if (n1.ordering > n2.ordering) {
-            return 1;
-        }
-        if (n1.ordering < n2.ordering) {
-            return -1;
-        }
-        return 0;
+    if (this.state === 1 || this.state === 0) {
+      this.leagueService.getPlayByPlaysForId(this.gameId).subscribe(result => {
+        this.playByPlays = result;
+        const element = this.playByPlays[this.playByPlays.length - 1];
+        this.numberOfPlays = element.ordering;
+        this.playByPlays.sort((n1, n2) => {
+          if (n1.ordering > n2.ordering) {
+              return 1;
+          }
+          if (n1.ordering < n2.ordering) {
+              return -1;
+          }
+          return 0;
+        });
+      }, error => {
+        this.alertify.error('Error getting Play by Play');
+      }, () => {
+        const refreshId = setInterval(() => {
+          this.displayPlays();
+          if (this.numberOfPlays === this.playNo) {
+            this.displayBoxScoresButtons = 1;
+            clearInterval(refreshId);
+          }
+        }, 1000);
       });
-    }, error => {
-      this.alertify.error('Error getting Play by Play');
-    }, () => {
-      const refreshId = setInterval(() => {
-        this.displayPlays();
-        console.log(this.numberOfPlays);
-        if (this.numberOfPlays === this.playNo) {
-          this.displayBoxScoresButtons = 1;
-          clearInterval(refreshId);
-        }
-      }, 1000);
-    });
+    } else if (this.state === 2) {
+      this.leagueService.getPlayoffsPlayByPlaysForId(this.gameId).subscribe(result => {
+        this.playByPlays = result;
+        const element = this.playByPlays[this.playByPlays.length - 1];
+        this.numberOfPlays = element.ordering;
+        this.playByPlays.sort((n1, n2) => {
+          if (n1.ordering > n2.ordering) {
+              return 1;
+          }
+          if (n1.ordering < n2.ordering) {
+              return -1;
+          }
+          return 0;
+        });
+      }, error => {
+        this.alertify.error('Error getting Play by Play');
+      }, () => {
+        const refreshId = setInterval(() => {
+          this.displayPlays();
+          if (this.numberOfPlays === this.playNo) {
+            this.displayBoxScoresButtons = 1;
+            clearInterval(refreshId);
+          }
+        }, 1000);
+      });
+    }
   }
 
   displayPlays() {

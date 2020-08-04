@@ -37,6 +37,8 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<PlayByPlay>> GetGamePlayByPlay(int gameId);
 
+         Task<IEnumerable<PlayByPlayPlayoff>> GetGamePlayByPlayPlayoffs(int gameId);
+
          Task<GameDetailsDto> GetPreseasonGameDetails(int gameId);
 
          Task<GameDetailsDto> GetSeasonGameDetails(int gameId);

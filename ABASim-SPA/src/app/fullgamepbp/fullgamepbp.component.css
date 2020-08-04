@@ -1,0 +1,14 @@
+.jumbotron {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
+}
+
+td { 
+    padding: 10px;
+}
+
+table { 
+    border-spacing: 10px;
+    border-collapse: separate;
+}

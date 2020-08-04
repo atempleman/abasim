@@ -85,6 +85,10 @@ export class LeagueService {
     return this.http.get<PlayByPlay[]>(this.baseUrl + 'getgameplaybyplay/' + gameId);
   }
 
+  getPlayoffsPlayByPlaysForId(gameId: number): Observable<PlayByPlay[]> {
+    return this.http.get<PlayByPlay[]>(this.baseUrl + 'getgameplaybyplayplayoffs/' + gameId);
+  }
+
   getGameDetailsPreseason(gameId: number) {
     return this.http.get<GameDetails>(this.baseUrl + 'getpreseasongamedetails/ ' + gameId);
   }

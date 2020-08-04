@@ -149,6 +149,13 @@
 							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button" class="btn btn-link"
 									(click)="watchGame(game.id, 0)">Watch</button>
 							&nbsp;
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button" class="btn btn-link"
+								(click)="fullGame(game.id, 1)">Full PbP</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11" type="button" class="btn btn-link"
+								(click)="fullGame(game.id, 2)">Full PbP</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button" class="btn btn-link"
+									(click)="fullGame(game.id, 0)">Full PbP</button>
+							&nbsp;
 							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
 								(click)="viewBoxScore(game.id)">Box Scores</button>
 						</td>
