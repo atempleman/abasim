@@ -451,7 +451,7 @@ namespace ABASim.api.Controllers
                     switch (choice)
                     {
                         case 0:
-                            return "A clever pump fake inside by " + playername + " draws the foul on " + foulingPlayer + ".";
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A clever pump fake inside by " + playername + " draws the foul on " + foulingPlayer + ".";
                         case 1:
                             return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " shoots the mid-range jumpshot and is fouled by " + foulingPlayer + ". The shot is no good.";
                         case 2:

@@ -60,6 +60,8 @@ namespace ABASim.api.Controllers
 
         int _homeFoulBonus = 0;
         int _awayFoulBonus = 0;
+        int _awayFinal2Bonus = 0;
+        int _homeFinal2Bonus = 0;
 
         int foulCounter = 0;
         int blockCounter = 0;
@@ -597,6 +599,8 @@ namespace ABASim.api.Controllers
         {
             _homeFoulBonus = 0;
             _awayFoulBonus = 0;
+            _awayFinal2Bonus = 0;
+            _homeFinal2Bonus = 0;
 
             while (_time > 0)
             {
@@ -660,6 +664,8 @@ namespace ABASim.api.Controllers
         {
             _homeFoulBonus = 0;
             _awayFoulBonus = 0;
+            _homeFinal2Bonus = 0;
+            _awayFinal2Bonus = 0;
             _time = 300;
             _quarter++;
 
@@ -2416,7 +2422,7 @@ namespace ABASim.api.Controllers
 
         public void PlayerFouled()
         {
-            foulCounter++;
+            // Setting up the variables
             _playerRatingPassed = null;
             _playerPassed = null;
 
@@ -2424,9 +2430,10 @@ namespace ABASim.api.Controllers
             Player playerFouling = new Player();
             int isFreeThrows = 0;
             int teamWhichFouled = 2;
+            int numberOfShots = 0;
 
             // Set the time
-            int timeValue = _random.Next(1, 5);
+            int timeValue = _random.Next(1, 4);
 
             // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
             if (timeValue > _time || timeValue > _shotClock)
@@ -2461,106 +2468,52 @@ namespace ABASim.api.Controllers
 
             int result = _random.Next(1, 20);
 
-            if (result < 16)
+            if (result < 15)
             {
                 // Non-Shooting Foul
-                if (_teamPossession == 1)
+                if (_teamPossession == 0)
                 {
+                    // Home team has been fouled
                     // Commentary
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                    _homeFoulBonus++;
-                    teamWhichFouled = 0;
 
-                    if (_homeFoulBonus > 4)
-                    {
-                        // Commentary
-                        commentaryData.Add(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        // Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
-                        isFreeThrows = 1;
+                    if (_time <= 120) {
+                        _homeFinal2Bonus++;
                     }
-                }
-                else
-                {
-                    // Commentary
-                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                    _awayFoulBonus++;
+                    _homeFoulBonus++;
                     teamWhichFouled = 1;
 
-                    if (_awayFoulBonus > 4)
+                    if (_homeFoulBonus > 4 || _homeFinal2Bonus > 1)
                     {
                         // Commentary
                         commentaryData.Add(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        // Console.WriteLine(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                         PlayByPlayTracker(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                         isFreeThrows = 1;
-                    }
-                }
-
-                // // Foul Trouble Check for subs
-                int sub = FoulTroubleCheck(teamWhichFouled, fouler);
-
-                if (sub == 1)
-                {
-                    string outPlayer = GetPlayerFullNameForPositionForFouler(teamWhichFouled, GetPlayerIdForPosition(teamWhichFouled, fouler));
-                    // Player needs to be subbed out due to foul trouble
-                    Substitution(teamWhichFouled, fouler);
-
-                    // Now need to sort out the sub commentary
-                    string inPlayer = GetPlayerFullNameForPositionForFouler(teamWhichFouled, GetPlayerIdForPosition(teamWhichFouled, fouler));
-
-                    int teamToDisplay = 0;
-                    if (teamWhichFouled == 1) {
-                        teamToDisplay = 1;
-                    }
-                        
-                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
-                    // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                }
-                //  else if (sub == 6) {
-                //     // player has fouled out
-                //     int pid = GetPlayerIdForPosition(teamWhichFouled, fouler);
-                //     fouledOutPlayers.Add(pid);
-                    
-                //     // call substituion
-                //     Substitution(teamWhichFouled, fouler);
-                // }
-                
-                // Check if it is free throws
-                if (isFreeThrows == 1)
-                {
-                    // Need to check if there are any subs to be made
-                    SubCheckFT();
-
-                    int ftResult = FreeThrows(2);
-                    if (ftResult == 0)
-                    {
-                        // last shot was made
-                        if (_teamPossession == 0)
-                        {
-                            _teamPossession = 1;
-                        }
-                        else
-                        {
-                            _teamPossession = 0;
-                        }
-                        Inbounds();
-                    }
-                    else
-                    {
-                        Rebound();
+                        numberOfShots = 2;
                     }
                 }
                 else
                 {
-                    // Need to check for subs
-                    SubCheck();
-                    Inbounds();
+                    // Away Team has been fouled
+                    // Commentary
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+
+                    if (_time <= 120) {
+                        _awayFinal2Bonus++;
+                    }
+                    _awayFoulBonus++;
+                    teamWhichFouled = 0;
+                    
+                    if (_awayFoulBonus > 4 || _awayFinal2Bonus > 1)
+                    {
+                        // Commentary
+                        commentaryData.Add(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.BonusCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                        isFreeThrows = 1;
+                        numberOfShots = 2;
+                    }
                 }
             }
             else
@@ -2568,75 +2521,97 @@ namespace ABASim.api.Controllers
                 // Shooting Foul
                 if (_teamPossession == 0)
                 {
+                    if (_time <= 120) {
+                        _homeFinal2Bonus++;
+                    }
                     _homeFoulBonus++;
                 }
                 else
-                {
+                {   
+                    if (_time <= 120) {
+                        _awayFinal2Bonus++;
+                    }
                     _awayFoulBonus++;
                 }
 
                 // Need to determine if it is a 3 or 2
                 int shots = _random.Next(1, 11);
-
                 if (shots <= 8)
                 {
                     // Commentary
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
                     // Need to check if there are any subs to be made
                     SubCheckFT();
 
-                    int ftResult = FreeThrows(2);
-                    if (ftResult == 0)
-                    {
-                        // last shot was made
-                        if (_teamPossession == 0)
-                        {
-                            _teamPossession = 1;
-                        }
-                        else
-                        {
-                            _teamPossession = 0;
-                        }
-                        Inbounds();
-                    }
-                    else
-                    {
-                        Rebound();
-                    }
+                    numberOfShots = 2;
+                    isFreeThrows = 1;
                 }
                 else
                 {
-                    // Commentary
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    // Console.WriteLine(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
                     // Need to check if there are any subs to be made
                     SubCheckFT();
 
-                    int ftResult = FreeThrows(3);
-                    if (ftResult == 0)
+                    numberOfShots = 3;
+                    isFreeThrows = 1;
+                }
+            }
+
+            // Foul Trouble Check for subs
+            int sub = FoulTroubleCheck(teamWhichFouled, fouler);
+
+            if (sub == 1)
+            {
+                string outPlayer = GetPlayerFullNameForPositionForFouler(teamWhichFouled, GetPlayerIdForPosition(teamWhichFouled, fouler));
+                // Player needs to be subbed out due to foul trouble
+                Substitution(teamWhichFouled, fouler);
+
+                // Now need to sort out the sub commentary
+                string inPlayer = GetPlayerFullNameForPositionForFouler(teamWhichFouled, GetPlayerIdForPosition(teamWhichFouled, fouler));
+
+                int teamToDisplay = 0;
+                if (teamWhichFouled == 1) {
+                    teamToDisplay = 1;
+                }
+                    
+                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
+                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+            }
+               
+            // Check if it is free throws
+            if (isFreeThrows == 1)
+            {
+                // Need to check if there are any subs to be made
+                SubCheckFT();
+
+                int ftResult = FreeThrows(numberOfShots);
+                if (ftResult == 0)
+                {
+                    // last shot was made
+                    if (_teamPossession == 0)
                     {
-                        // last shot was made
-                        if (_teamPossession == 0)
-                        {
-                            _teamPossession = 1;
-                        }
-                        else
-                        {
-                            _teamPossession = 0;
-                        }
-                        // Finish the action
-                        Inbounds();
+                        _teamPossession = 1;
                     }
                     else
                     {
-                        Rebound();
+                        _teamPossession = 0;
                     }
+                    Inbounds();
                 }
+                else
+                {
+                    Rebound();
+                }
+            }
+            else
+            {
+                // Need to check for subs
+                SubCheck();
+                Inbounds();
             }
         }
 
