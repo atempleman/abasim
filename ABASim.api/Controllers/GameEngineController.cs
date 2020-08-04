@@ -2462,7 +2462,7 @@ namespace ABASim.api.Controllers
             }
 
             // Need to update the player fouling boxscore
-            int fouler = _random.Next(1, 6);
+            int fouler = PlayerWhoFouled();
             playerFouling = UpdateFouler(fouler);
             string fouling = playerFouling.FirstName + " " + playerFouling.Surname;
 
@@ -2612,6 +2612,60 @@ namespace ABASim.api.Controllers
                 // Need to check for subs
                 SubCheck();
                 Inbounds();
+            }
+        }
+
+        public int PlayerWhoFouled()
+        {
+            if (_teamPossession == 0)
+            {
+                // Then it was away team who fouled
+                int awayPGFoulRating = awayPGRatings.FoulingRating;
+                int awaySGFoulRating = awaySGRatings.FoulingRating;
+                int awaySFFoulRating = awaySFRatings.FoulingRating;
+                int awayPFFoulRating = awayPFRatings.FoulingRating;
+                int awayCFoulRating = awayCRatings.FoulingRating;
+
+                int totalRating = awayPGFoulRating + awaySGFoulRating + awaySFFoulRating + awayPFFoulRating + awayCFoulRating;
+
+                int fouler = _random.Next(1, totalRating + 1);
+
+                if (fouler < awayPGFoulRating) {
+                    return 1;
+                } else if (fouler >= awayPGFoulRating && fouler < (awayPGFoulRating + awaySGFoulRating)) {
+                    return 2;
+                } else if (fouler >= (awayPGFoulRating + awaySGFoulRating) && fouler < (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating)) {
+                    return 3;
+                } else if (fouler >= (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating) && fouler < (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating + awayPFFoulRating)) {
+                    return 4;
+                } else {
+                    return 5;
+                }
+            }
+            else
+            {
+                // Then it was home team who fouled
+                int homePGFoulRating = homePGRatings.FoulingRating;
+                int homeSGFoulRating = homeSGRatings.FoulingRating;
+                int homeSFFoulRating = homeSFRatings.FoulingRating;
+                int homePFFoulRating = homePFRatings.FoulingRating;
+                int homeCFoulRating = homeCRatings.FoulingRating;
+
+                int totalRating = homePGFoulRating + homeSGFoulRating + homeSFFoulRating + homePFFoulRating + homeCFoulRating;
+
+                int fouler = _random.Next(1, totalRating + 1);
+
+                if (fouler < homePGFoulRating) {
+                    return 1;
+                } else if (fouler >= homePGFoulRating && fouler < (homePGFoulRating + homeSGFoulRating)) {
+                    return 2;
+                } else if (fouler >= (homePGFoulRating + homeSGFoulRating) && fouler < (homePGFoulRating + homeSGFoulRating + homeSFFoulRating)) {
+                    return 3;
+                } else if (fouler >= (homePGFoulRating + homeSGFoulRating + homeSFFoulRating) && fouler < (homePGFoulRating + homeSGFoulRating + homeSFFoulRating + homePFFoulRating)) {
+                    return 4;
+                } else {
+                    return 5;
+                }
             }
         }
 
