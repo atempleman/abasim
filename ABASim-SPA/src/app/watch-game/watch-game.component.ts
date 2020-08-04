@@ -16,6 +16,7 @@ import { League } from '../_models/league';
 export class WatchGameComponent implements OnInit {
   league: League;
   gameId: number;
+  state: number;
   gameDetails: GameDetails;
   gameBegun = 0;
   playByPlays: PlayByPlay[] = [];
@@ -30,6 +31,7 @@ export class WatchGameComponent implements OnInit {
 
   ngOnInit() {
     this.gameId = this.transferService.getData();
+    this.state = this.transferService.getState();
 
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
@@ -41,14 +43,20 @@ export class WatchGameComponent implements OnInit {
   }
 
   getGameDetails() {
-    if (this.league.stateId === 6) {
+    if (this.state === 0) {
       this.leagueService.getGameDetailsPreseason(this.gameId).subscribe(result => {
         this.gameDetails = result;
       }, error => {
         this.alertify.error('Error getting game details');
       });
-    } else if (this.league.stateId === 7) {
+    } else if (this.state === 1) {
       this.leagueService.getGameDetailsSeason(this.gameId).subscribe(result => {
+        this.gameDetails = result;
+      }, error => {
+        this.alertify.error('Error getting game details');
+      });
+    } else if (this.state === 2) {
+      this.leagueService.getGameDetailsPlayoffs(this.gameId).subscribe(result => {
         this.gameDetails = result;
       }, error => {
         this.alertify.error('Error getting game details');
@@ -76,13 +84,6 @@ export class WatchGameComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting Play by Play');
     }, () => {
-      // const refreshId = setInterval(() => {
-      //   this.displayingPlayByPlays();
-      //   if(this.numberOfPlays === this.playNumber) {
-      //     clearInterval(refreshId);
-      //     this.displayBoxScoresButtons = 1;
-      //   }
-      // }, 10000);
       const refreshId = setInterval(() => {
         this.displayPlays();
         console.log(this.numberOfPlays);

@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 export class TransferService {
 
   data: number;
+  state: number;
 
   constructor() { }
 
@@ -22,5 +23,19 @@ export class TransferService {
 
   clearData() {
     this.data = undefined;
+  }
+
+  setState(data: number) {
+    this.state = data;
+  }
+
+  getState() {
+    const temp = this.state;
+    this.clearState();
+    return temp;
+  }
+
+  clearState() {
+    this.state = undefined;
   }
 }

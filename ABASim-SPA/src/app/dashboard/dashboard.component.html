@@ -142,8 +142,12 @@
 							<button
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && (this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11) && this.noRun == 0"
 								type="button" class="btn btn-link" (click)="runGamePlayoffs(game)">Run Game</button>
-							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
-								(click)="watchGame(game.id)">Watch</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button" class="btn btn-link"
+								(click)="watchGame(game.id, 1)">Watch</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11" type="button" class="btn btn-link"
+								(click)="watchGame(game.id, 2)">Watch</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button" class="btn btn-link"
+									(click)="watchGame(game.id, 0)">Watch</button>
 							&nbsp;
 							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
 								(click)="viewBoxScore(game.id)">Box Scores</button>

@@ -317,9 +317,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  watchGame(gameId: number) {
+  watchGame(gameId: number, stateId: number) {
     console.log(gameId);
     this.transferService.setData(gameId);
+    this.transferService.setState(stateId);
     this.router.navigate(['/watch-game']);
   }
 
