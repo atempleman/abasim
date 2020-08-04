@@ -20,6 +20,12 @@ import { LeagueLeadersAssists } from '../_models/leagueLeadersAssists';
 import { LeagueLeadersSteals } from '../_models/leagueLeadersSteals';
 import { LeagueLeadersBlocks } from '../_models/leagueLeadersBlocks';
 import { PlayoffSummary } from '../_models/playoffSummary';
+import { GlobalChat } from '../_models/globalChat';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { User } from '../_models/user';
+// import { DatePipe } from '@angular/common';
+import {formatDate} from '@angular/common';
+import { ContactService } from '../_services/contact.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,14 +48,27 @@ export class DashboardComponent implements OnInit {
   topFiveSteals: LeagueLeadersSteals[] = [];
   topFiveBlocks: LeagueLeadersBlocks[] = [];
 
+  chatRecords: GlobalChat[] = [];
+  chatForm: FormGroup;
+  user: User;
+  interval;
+
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private adminService: AdminService,
-              private gameEngine: GameEngineService, private transferService: TransferService, private spinner: NgxSpinnerService) { }
+              private gameEngine: GameEngineService, private transferService: TransferService, private spinner: NgxSpinnerService,
+              private fb: FormBuilder, private contactService: ContactService) { }
 
   ngOnInit() {
     // Check to see if the user is an admin user
     this.isAdmin = this.authService.isAdmin();
     localStorage.setItem('isAdmin', this.isAdmin.toString());
+
+    this.createChatForm();
+
+    this.refreshChat();
+    this.interval = setInterval(() => {
+      this.refreshChat();
+    }, 600000);
 
     // get the league object - TODO - roll the league state into the object as a Dto and pass back
     this.leagueService.getLeague().subscribe(result => {
@@ -343,6 +362,50 @@ export class DashboardComponent implements OnInit {
 
   goToPlayoffs() {
     this.router.navigate(['/playoffs']);
+  }
+
+  refreshChat() {
+    this.contactService.getChatRecords().subscribe(result => {
+      this.chatRecords = result;
+    }, error => {
+      this.alertify.error('Error getting chat messages');
+    });
+  }
+
+  sendChat() {
+    if (this.chatForm.valid) {
+      const result = this.chatForm.controls['message'].value;
+      // const myDate = new Date();
+      // const dt = this.datePipe.transform(myDate, 'dd-MM-yyyy');
+      const dt = formatDate(new Date(), 'dd/MM/yyyy', 'en');
+      const chatRecord: GlobalChat = {
+        chatText: result,
+        username: this.authService.decodedToken.nameid,
+        chatTime: dt.toString()
+      };
+
+      this.contactService.sendChat(chatRecord).subscribe(rst => {
+      }, error => {
+        this.alertify.error('Error sending message');
+      }, () => {
+        this.alertify.success('Message posted');
+        this.chatForm.reset();
+        // Need to get the chat messages again
+        this.contactService.getChatRecords().subscribe(r => {
+          this.chatRecords = r;
+        }, error => {
+          this.alertify.error('Error getting chat messages');
+        });
+      });
+    } else {
+      this.alertify.error('Please populate your chat message');
+    }
+  }
+
+  createChatForm() {
+    this.chatForm = this.fb.group({
+      message: ['', Validators.required]
+    });
   }
 
 }

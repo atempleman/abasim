@@ -79,5 +79,7 @@ namespace ABASim.api.Data
         public DbSet<PlayoffResult> PlayoffResults { get; set; }
 
         public DbSet<SchedulesPlayoff> SchedulesPlayoffs { get; set; }
+
+        public DbSet<GlobalChat> GlobalChats { get; set; }
     }
 }

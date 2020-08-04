@@ -35,7 +35,8 @@
 				</div>
 			</div>
 
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;"
+				*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11">
 				<div class="card-header"><i class="fa fa-trophy fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>PLAYOFFS</strong></span></div>
 				<div class="card-body">
@@ -142,19 +143,21 @@
 							<button
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && (this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11) && this.noRun == 0"
 								type="button" class="btn btn-link" (click)="runGamePlayoffs(game)">Run Game</button>
-							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button" class="btn btn-link"
-								(click)="watchGame(game.id, 1)">Watch</button>
-							<button *ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11" type="button" class="btn btn-link"
-								(click)="watchGame(game.id, 2)">Watch</button>
-							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button" class="btn btn-link"
-									(click)="watchGame(game.id, 0)">Watch</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button"
+								class="btn btn-link" (click)="watchGame(game.id, 1)">Watch</button>
+							<button
+								*ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11"
+								type="button" class="btn btn-link" (click)="watchGame(game.id, 2)">Watch</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button"
+								class="btn btn-link" (click)="watchGame(game.id, 0)">Watch</button>
 							&nbsp;
-							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button" class="btn btn-link"
-								(click)="fullGame(game.id, 1)">Full PbP</button>
-							<button *ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11" type="button" class="btn btn-link"
-								(click)="fullGame(game.id, 2)">Full PbP</button>
-							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button" class="btn btn-link"
-									(click)="fullGame(game.id, 0)">Full PbP</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button"
+								class="btn btn-link" (click)="fullGame(game.id, 1)">Full PbP</button>
+							<button
+								*ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11"
+								type="button" class="btn btn-link" (click)="fullGame(game.id, 2)">Full PbP</button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button"
+								class="btn btn-link" (click)="fullGame(game.id, 0)">Full PbP</button>
 							&nbsp;
 							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
 								(click)="viewBoxScore(game.id)">Box Scores</button>
@@ -162,7 +165,8 @@
 					</tr>
 				</tbody>
 			</table>
-			<h2 *ngIf="this.league?.stateId == 11 && this.league?.day > 28" class="text-success">The {{ champion.teamname }} {{ champion.mascot }} are the ABA champions!!</h2>
+			<h2 *ngIf="this.league?.stateId == 11 && this.league?.day > 28" class="text-success">The
+				{{ champion.teamname }} {{ champion.mascot }} are the ABA champions!!</h2>
 		</div>
 		<div class="col-lg-6 events upcoming">
 			<!-- <h4>UPCOMING EVENTS</h4>
@@ -410,95 +414,32 @@
 			</div>
 		</div>
 	</div>
-</div>
-
-
-
-
-
-
-<!-- 
-<div class="box">
-	<div class="row">
-			<div class="container">
-				 <div class="row">						
-						 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-					   
-							<div class="box-part text-center">
-								<i class="fa fa-list fa-3x" aria-hidden="true"></i>
-							
-								<div class="title">
-									<h4>Players</h4>
-								</div>
-								
-								<div class="text">
-									<span></span>
-								</div>
-								
-								<a (click)="goToPlayers()">View Players</a>
-								
-							 </div>
-						</div>	 	 
-						
-						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
-					   
-							<div class="box-part text-center">
-								
-								<i class="fa fa-signal fa-3x" aria-hidden="true"></i>
-								
-								<div class="title">
-									<h4>Stats</h4>
-								</div>
-								
-								<div class="text">
-									<span>View all stats for the current season - Leaders, Players and Team stats.</span>
-								</div>
-								
-								<a (click)="goToStats()">View Stats</a>
-								
-							 </div>
-						</div>	 
-						
-						 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
-					   
-							<div class="box-part text-center">
-								
-								<i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
-							
-								<div class="title">
-									<h4>Standings</h4>
-								</div>
-								
-								<div class="text">
-									<span>View the current seasons league standings.</span>
-								</div>
-								
-								<a (click)="goToStandings()">View Standings</a>
-								
-							 </div>
-						</div>	 
-						
-						
-						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="this.league?.stateId > 3">
-					   
-							<div class="box-part text-center">
-								
-								<i class="fa fa-credit-card fa-3x" aria-hidden="true"></i>
-								
-								<div class="title">
-									<h4>Finances</h4>
-								</div>
-								
-								<div class="text">
-									<span>View Team Finances, including budget, player contracts and managing contract extensions.</span>
-								</div>
-								
-								<a (click)="goToFinances()">View Team Finances</a>
-								
-							 </div>
-						</div>				
-				</div>		
+	<div class="row event-row events">
+		<div class="events col-lg-12">
+			<h4>Global Chat <button class="btn btn-secondary ml-2" (click)="refreshChat()"><i
+						class="fa fa-refresh"></i></button></h4>
+			<p *ngIf="this.chatRecords.length == 0">No chat records exist</p>
+			<table class="table table-hover events-table">
+				<tbody>
+					<tr class="table-secondary" *ngFor="let item of this.chatRecords">
+						<td>
+							<b>{{ item.username }}:</b><p>{{ item.chatText }}</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<div class="form-group">
+				<form [formGroup]="chatForm" accept-charset="UTF-8" role="form" (ngSubmit)="sendChat()">
+					<fieldset>
+						<div class="form-group">
+							<label for="exampleTextarea">Your Message</label>
+							<textarea class="form-control" id="message" rows="2" name="message" formControlName="message"></textarea>
+						</div>
+						<input class="btn btn-primary mt-1" type="submit" value="Post">
+					</fieldset>
+				</form>
 			</div>
+		</div>
 	</div>
 </div>
- -->

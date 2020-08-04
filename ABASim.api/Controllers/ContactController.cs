@@ -22,5 +22,19 @@ namespace ABASim.api.Controllers
             var createdForm = await _repo.SaveContactForm(contactFormDto);
             return StatusCode(201);
         }
+
+        [HttpPost("savechatrecord")]
+        public async Task<IActionResult> SaveChatRecord(GlobalChatDto chatDto)
+        {
+            var result = await _repo.SaveChatRecord(chatDto);
+            return Ok(result);
+        }
+
+        [HttpGet("getchatrecords")]
+        public async Task<IActionResult> GetChatRecords()
+        {
+            var records = await _repo.GetChatRecords();
+            return Ok(records);
+        }
     }
 }
