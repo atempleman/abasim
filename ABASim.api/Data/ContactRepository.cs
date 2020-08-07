@@ -17,6 +17,23 @@ namespace ABASim.api.Data
             _context = context;
         }
 
+        public async Task<InboxMessageCountDto> CountOfMessages(int teamId)
+        {
+            var messages = await _context.InboxMessages.Where(x => x.ReceiverId == teamId).ToListAsync();
+            InboxMessageCountDto com = new InboxMessageCountDto
+            {
+                CountOfMessages = messages.Count
+            };
+            return com;
+        }
+
+        public async Task<bool> DeleteInboxMessage(int messageId)
+        {
+            var msg = await _context.InboxMessages.FirstOrDefaultAsync(x => x.Id == messageId);
+            _context.Remove(msg);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<IEnumerable<GlobalChatDto>> GetChatRecords()
         {
             List<GlobalChatDto> chatRecords = new List<GlobalChatDto>();
@@ -34,6 +51,33 @@ namespace ABASim.api.Data
                 chatRecords.Add(dto);
             }
             return chatRecords;
+        }
+
+        public async Task<IEnumerable<InboxMessageDto>> GetInboxMessages(int teamId)
+        {
+            List<InboxMessageDto> messages = new List<InboxMessageDto>();
+
+            var inboxMessages = await _context.InboxMessages.Where(x => x.ReceiverId == teamId).ToListAsync();
+
+            foreach (var im in inboxMessages)
+            {
+                InboxMessageDto dto = new InboxMessageDto
+                {
+                    Id = im.Id,
+                    SenderId = im.SenderId,
+                    SenderName = im.SenderName,
+                    SenderTeam = im.SenderTeam,
+                    ReceiverId = im.ReceiverId,
+                    ReceiverName = im.ReceiverName,
+                    ReceiverTeam = im.ReceiverTeam,
+                    Subject = im.Subject,
+                    Body = im.Body,
+                    MessageDate = im.MessageDate,
+                    IsNew = im.IsNew
+                };
+                messages.Add(dto);
+            }
+            return messages;
         }
 
         public async Task<bool> SaveChatRecord(GlobalChatDto chatDto)
@@ -57,7 +101,7 @@ namespace ABASim.api.Data
 
         public async Task<bool> SaveContactForm(ContactFormDto contactFormDto)
         {
-            ContactForm contactForm = new ContactForm 
+            ContactForm contactForm = new ContactForm
             {
                 Name = contactFormDto.Name,
                 Email = contactFormDto.Email,
@@ -66,6 +110,25 @@ namespace ABASim.api.Data
 
             await _context.ContactForms.AddAsync(contactForm);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> SendInboxMessage(InboxMessageDto message)
+        {
+            InboxMessage im = new InboxMessage
+            {
+                SenderId = message.SenderId,
+                SenderName = message.SenderName,
+                SenderTeam = message.SenderTeam,
+                ReceiverId = message.ReceiverId,
+                ReceiverName = message.ReceiverName,
+                ReceiverTeam = message.ReceiverTeam,
+                Subject = message.Subject,
+                Body = message.Body,
+                MessageDate = message.MessageDate,
+                IsNew = message.IsNew
+            };
+            await _context.AddAsync(im);
+            return await _context.SaveChangesAsync() > 1;
         }
     }
 }

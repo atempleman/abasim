@@ -43,6 +43,7 @@ import { PlayoffsComponent } from './playoffs/playoffs.component';
 import { PlayoffStatsComponent } from './playoff-stats/playoff-stats.component';
 import { PlayoffResultsComponent } from './playoff-results/playoff-results.component';
 import { FullgamepbpComponent } from './fullgamepbp/fullgamepbp.component';
+import { InboxComponent } from './inbox/inbox.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -83,7 +84,8 @@ export function tokenGetter() {
       PlayoffStatsComponent,
       PlayoffResultsComponent,
       BoxScoreComponent,
-      FullgamepbpComponent
+      FullgamepbpComponent,
+      InboxComponent
    ],
    imports: [
       BrowserModule,

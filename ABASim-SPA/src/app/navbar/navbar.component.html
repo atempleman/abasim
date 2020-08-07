@@ -6,9 +6,6 @@
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
     <ul class="navbar-nav mr-auto">
-      <!-- <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li> -->
       <li class="nav-item" >
         <a class="nav-link"  [routerLink]="['/dashboard']">Dashboard</a>
       </li>
@@ -16,10 +13,16 @@
         <a class="nav-link" [routerLink]="['/league']">League</a>
       </li>
       <li class="nav-item" *ngIf="loggedIn()">
+        <a class="nav-link" [routerLink]="['/playoffs']" *ngIf="this.league?.stateId > 7">Playoffs</a>
+      </li>
+      <li class="nav-item" *ngIf="loggedIn()">
         <a class="nav-link" [routerLink]="['/team']">Team</a>
       </li>
       <li class="nav-item" *ngIf="loggedIn()">
         <a class="nav-link" [routerLink]="['/draft']">Draft</a>
+      </li>
+      <li class="nav-item" *ngIf="loggedIn()">
+        <a class="nav-link" [routerLink]="['/inbox']">Inbox</a><span *ngIf="this.countOfMessages?.countOfMessages != 0">( {{ this.countOfMessages?.countOfMessages }} )</span><span *ngIf="this.countOfMessages?.countOfMessages == 0">( 0 )</span>
       </li>
       <li class="nav-item" *ngIf="loggedIn()">
         <a class="nav-link" [routerLink]="['/admin']" *ngIf="this.isAdmin == 1">Admin</a>

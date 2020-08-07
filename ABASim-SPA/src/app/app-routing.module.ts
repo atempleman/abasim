@@ -31,6 +31,7 @@ import { PlayoffsComponent } from './playoffs/playoffs.component';
 import { PlayoffStatsComponent } from './playoff-stats/playoff-stats.component';
 import { PlayoffResultsComponent } from './playoff-results/playoff-results.component';
 import { FullgamepbpComponent } from './fullgamepbp/fullgamepbp.component';
+import { InboxComponent } from './inbox/inbox.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -59,6 +60,7 @@ const routes: Routes = [
   { path: 'playoffs-results', component: PlayoffResultsComponent, canActivate: [AuthGuard]},
   { path: 'full-game-comm', component: FullgamepbpComponent, canActivate: [AuthGuard]},
   { path: 'admintestengine', component: AdmintestengineComponent, canActivate: [AuthGuard] },
+  { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

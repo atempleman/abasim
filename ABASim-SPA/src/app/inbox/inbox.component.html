@@ -1,0 +1,114 @@
+<div class="jumbotron">
+  <h3 class="display">{{this.team?.mascot }} Inbox</h3>
+  <span class="badge badge-danger"
+    *ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+  <span class="badge badge-info"
+    *ngIf="this.league?.stateId == 2 || this.league?.stateId == 6">{{ this.league?.state }}</span>
+  <span class="badge badge-success"
+    *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5 || this.league?.stateId == 11 || this.league?.stateId == 13 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+  <span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
+  <span class="badge badge-warning"
+    *ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
+  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+  <span
+    *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+    - Day #{{ this.league?.day }}</span>
+</div>
+
+
+<div class="box">
+  <div class="container">
+    <div class="row cards-row">
+      <table class="table table-hover roster-table">
+        <thead>
+          <tr>
+            <th>
+              New
+            </th>
+            <th>
+              Date
+            </th>
+            <th>
+              From
+            </th>
+            <th>
+              Subject
+            </th>
+            <th>
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-secondary" *ngFor="let mes of this.messages">
+            <td>
+              <span class="badge badge-success" *ngIf="mes.isNew == 1">New</span>
+            </td>
+            <td>
+              <p>{{ mes.messageDate }}</p>
+            </td>
+            <td>
+              <b>{{ mes.receiverTeam }}'s GM</b>
+            </td>
+            <td>
+              <b>{{ mes.subject }}</b>
+            </td>
+            <td>
+              <button class="btn btn-info btn-xs tablebutton"><span class="glyphicon glyphicon-view"
+                  (click)="openModal(viewmessage, mes)"></span> View</button>
+              <button class="btn btn-info btn-xs tablebutton ml-2" (click)="deleteMessage(mes.id)"><span
+                  class="glyphicon glyphicon-delete"></span> Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+<ng-template #viewmessage>
+  <div class="modal-header">
+    <h4 class="modal-title" *ngIf="this.messageState == 1">View Message</h4>
+    <h4 class="modal-title" *ngIf="this.messageState == 2">Reply</h4>
+    <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+  </div>
+  <div class="modal-body" *ngIf="this.messageState == 1">
+    <h4><b>From:</b> {{ this.viewedMessage.senderName }} - {{ this.viewedMessage.senderTeam }}'s GM</h4>
+    <br />
+    <h4><b>Subject:</b> </h4>
+    <p>{{ this.viewedMessage.subject }}</p>
+    <br />
+    <h5><b>Message:</b></h5>
+    <p>{{ this.viewedMessage.body }}</p>
+  </div>
+  <div class="modal-body" *ngIf="this.messageState == 2">
+    <form #messageform (ngSubmit)="updateMessageForm()">
+    <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-md-6 control-label" for="textinput">To: </label>
+        <select name="teamsOption" [(ngModel)]="selectedTeam">
+          <option *ngFor="let team of this.teams" [value]="team">{{ team.mascot }}</option>
+        </select>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-6 control-label" for="textinput">Subject: </label>
+        <input type="text" readonly="" class="form-control-plaintext" id="subject" value="subject">
+        <label class="col-md-6 control-label" for="textinput">Body: </label>
+        <textarea class="form-control" id="body" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer form-group text-center">
+      <button type="submit" class="btn btn-primary">Send</button>
+      <button type="button" class="btn btn-danger" (click)="cancelReply()">Cancel</button>
+    </div>
+  </form>
+  </div>
+  <div class="modal-footer form-group text-center" *ngIf="this.messageState == 1">
+    <button type="submit" class="btn btn-primary" (click)="replyAction()">Reply</button>
+    <button type="button" class="btn btn-danger" (click)="deleteMessageFromModal()">Delete</button>
+    <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+  </div>
+</ng-template>

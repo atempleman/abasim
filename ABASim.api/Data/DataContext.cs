@@ -81,5 +81,7 @@ namespace ABASim.api.Data
         public DbSet<SchedulesPlayoff> SchedulesPlayoffs { get; set; }
 
         public DbSet<GlobalChat> GlobalChats { get; set; }
+
+        public DbSet<InboxMessage> InboxMessages { get; set; }
     }
 }

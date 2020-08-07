@@ -11,5 +11,13 @@ namespace ABASim.api.Data
         Task<bool> SaveChatRecord(GlobalChatDto chatDto);
 
         Task<IEnumerable<GlobalChatDto>> GetChatRecords();
+
+        Task<IEnumerable<InboxMessageDto>> GetInboxMessages(int teamId);
+
+        Task<bool> SendInboxMessage(InboxMessageDto message);
+
+        Task<bool> DeleteInboxMessage(int messageId);
+
+        Task<InboxMessageCountDto> CountOfMessages(int teamId);
     }
 }

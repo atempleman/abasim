@@ -36,5 +36,33 @@ namespace ABASim.api.Controllers
             var records = await _repo.GetChatRecords();
             return Ok(records);
         }
+
+        [HttpGet("getinboxmessages/{teamId}")]
+        public async Task<IActionResult> GetInboxMessages(int teamId)
+        {
+            var result = await _repo.GetInboxMessages(teamId);
+            return Ok(result);
+        }
+
+        [HttpPost("sendinboxmessage")]
+        public async Task<IActionResult> SendInboxMessage(InboxMessageDto message)
+        {
+            var result = await _repo.SendInboxMessage(message);
+            return Ok(result);
+        }
+
+        [HttpGet("deletemessage/{messageId}")]
+        public async Task<IActionResult> DeleteInboxMessage(int messageId)
+        {
+            var result = await _repo.DeleteInboxMessage(messageId);
+            return Ok(result);
+        }
+        
+        [HttpGet("getcountofmessages/{teamId}")]
+        public async Task<IActionResult> GetCountOfMessages(int teamId)
+        {
+            var count = await _repo.CountOfMessages(teamId);
+            return Ok(count);
+        }
     }
 }
