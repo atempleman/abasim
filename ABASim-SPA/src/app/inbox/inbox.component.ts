@@ -8,6 +8,7 @@ import { Team } from '../_models/team';
 import { InboxMessage } from '../_models/inboxMessage';
 import { ContactService } from '../_services/contact.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import {formatDate} from '@angular/common';
 
 @Component({
   selector: 'app-inbox',
@@ -22,7 +23,7 @@ export class InboxComponent implements OnInit {
   messageState = 0;
   viewedMessage: InboxMessage;
   teams: Team[] = [];
-  selectedTeam: Team;
+  selectedTeam: number;
 
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private teamService: TeamService,
               private authService: AuthService, private contactService: ContactService, private modalService: BsModalService) { }
@@ -78,8 +79,21 @@ export class InboxComponent implements OnInit {
   }
 
   public openModal(template: TemplateRef<any>, message: InboxMessage) {
+    console.log('testing');
+
     this.messageState = 1;
     this.viewedMessage = message;
+
+    this.contactService.markMessageRead(message.id).subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error marking message read');
+    });
+
+    this.modalRef = this.modalService.show(template);
+  }
+
+  public openModalNew(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
   }
 
@@ -90,7 +104,61 @@ export class InboxComponent implements OnInit {
   updateMessageForm() {
     // this.selectedTeam
     // now need to get the subject and body values
-    
+    // var inputValue = (<HTMLInputElement>document.getElementById('')).value;
+    const subjectValue = (document.getElementById('subject') as HTMLInputElement).value;
+    const bodyValue = (document.getElementById('body') as HTMLInputElement).value;
+    const dt = formatDate(new Date(), 'dd/MM/yyyy', 'en');
+
+    const receivingTeam = this.teams.find(x => x.id === +this.selectedTeam);
+
+    const message: InboxMessage = {
+      id: 0,
+      senderId: this.team.id,
+      senderName: '',
+      senderTeam: this.team.mascot,
+      receiverId: this.viewedMessage.senderId,
+      receiverName: '',
+      receiverTeam: this.viewedMessage.senderTeam,
+      subject: subjectValue,
+      body: bodyValue,
+      messageDate: dt,
+      isNew: 1
+    };
+    this.contactService.sendInboxMessage(message).subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error sending message');
+    }, () => {
+      this.modalRef.hide();
+    });
+  }
+
+  newMessageForm() {
+    const subjectValue = (document.getElementById('subject') as HTMLInputElement).value;
+    const bodyValue = (document.getElementById('body') as HTMLInputElement).value;
+    const dt = formatDate(new Date(), 'dd/MM/yyyy', 'en');
+    const receivingTeam = this.teams.find(x => x.id === +this.selectedTeam);
+
+    const message: InboxMessage = {
+      id: 0,
+      senderId: this.team.id,
+      senderName: '',
+      senderTeam: this.team.mascot,
+      receiverId: +this.selectedTeam,
+      receiverName: '',
+      receiverTeam: receivingTeam.mascot,
+      subject: subjectValue,
+      body: bodyValue,
+      messageDate: dt,
+      isNew: 1
+    };
+    this.contactService.sendInboxMessage(message).subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error sending message');
+    }, () => {
+      this.modalRef.hide();
+    });
   }
 
   cancelReply() {

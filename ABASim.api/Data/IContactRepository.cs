@@ -16,6 +16,8 @@ namespace ABASim.api.Data
 
         Task<bool> SendInboxMessage(InboxMessageDto message);
 
+        Task<bool> MarkMessageRead(int messageId);
+
         Task<bool> DeleteInboxMessage(int messageId);
 
         Task<InboxMessageCountDto> CountOfMessages(int teamId);

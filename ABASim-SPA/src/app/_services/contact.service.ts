@@ -42,4 +42,8 @@ export class ContactService {
   getCountOfMessages(teamId: number) {
     return this.http.get<CountOfMessages>(this.baseUrl + 'getcountofmessages/' + teamId);
   }
+
+  markMessageRead(messageId: number) {
+    return this.http.get<boolean>(this.baseUrl + 'markasread/' + messageId);
+  }
 }

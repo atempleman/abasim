@@ -64,5 +64,12 @@ namespace ABASim.api.Controllers
             var count = await _repo.CountOfMessages(teamId);
             return Ok(count);
         }
+
+        [HttpGet("markasread/{messageId}")]
+        public async Task<IActionResult> MarkMessageRead(int messageId)
+        {
+            var result = await _repo.MarkMessageRead(messageId);
+            return Ok(result);
+        }
     }
 }

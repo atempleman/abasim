@@ -43,7 +43,7 @@ export class NavbarComponent implements OnInit {
     this.checkMessages();
     this.refresh = setInterval(() => {
       this.checkMessages();
-    }, 600000);
+    }, 60000);
   }
 
   checkMessages() {

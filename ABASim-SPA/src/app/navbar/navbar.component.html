@@ -22,7 +22,10 @@
         <a class="nav-link" [routerLink]="['/draft']">Draft</a>
       </li>
       <li class="nav-item" *ngIf="loggedIn()">
-        <a class="nav-link" [routerLink]="['/inbox']">Inbox</a><span *ngIf="this.countOfMessages?.countOfMessages != 0">( {{ this.countOfMessages?.countOfMessages }} )</span><span *ngIf="this.countOfMessages?.countOfMessages == 0">( 0 )</span>
+        <a class="nav-link" [routerLink]="['/inbox']">Inbox
+          <span class="badge badge-warning" *ngIf="this.countOfMessages?.countOfMessages != 0">( {{ this.countOfMessages?.countOfMessages }} )</span>
+          <span *ngIf="this.countOfMessages?.countOfMessages == 0">( 0 )</span>
+        </a>      
       </li>
       <li class="nav-item" *ngIf="loggedIn()">
         <a class="nav-link" [routerLink]="['/admin']" *ngIf="this.isAdmin == 1">Admin</a>

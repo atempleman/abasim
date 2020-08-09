@@ -19,7 +19,7 @@ namespace ABASim.api.Data
 
         public async Task<InboxMessageCountDto> CountOfMessages(int teamId)
         {
-            var messages = await _context.InboxMessages.Where(x => x.ReceiverId == teamId).ToListAsync();
+            var messages = await _context.InboxMessages.Where(x => x.ReceiverId == teamId && x.IsNew == 1).ToListAsync();
             InboxMessageCountDto com = new InboxMessageCountDto
             {
                 CountOfMessages = messages.Count
@@ -78,6 +78,14 @@ namespace ABASim.api.Data
                 messages.Add(dto);
             }
             return messages;
+        }
+
+        public async Task<bool> MarkMessageRead(int messageId)
+        {
+            var message = await _context.InboxMessages.FirstOrDefaultAsync(x => x.Id == messageId);
+            message.IsNew = 0;
+            _context.Update(message);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SaveChatRecord(GlobalChatDto chatDto)
