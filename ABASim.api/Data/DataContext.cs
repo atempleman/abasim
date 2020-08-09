@@ -83,5 +83,7 @@ namespace ABASim.api.Data
         public DbSet<GlobalChat> GlobalChats { get; set; }
 
         public DbSet<InboxMessage> InboxMessages { get; set; }
+
+        public DbSet<AutoPickOrder> AutoPickOrders { get; set; }
     }
 }

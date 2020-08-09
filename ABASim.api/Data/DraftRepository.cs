@@ -197,6 +197,10 @@ namespace ABASim.api.Data
                 _context.Remove(recordToRemove);
             }
 
+            // Need to move from the autopick board
+            var autopickRecord = await _context.AutoPickOrders.FirstOrDefaultAsync(x => x.PlayerId == draftPick.PlayerId);
+            _context.Remove(autopickRecord);
+
             return await _context.SaveChangesAsync() > 0;
         }
 
@@ -221,20 +225,11 @@ namespace ABASim.api.Data
                     }
                 }
             } else {
-                var players = await _context.Players.OrderBy(x => x.Id).ToListAsync();
-                foreach (var player in players)
-                {
-                    // NEED TO CHECK WHETHER THE PLAYER HAS BEEN DRAFTED
-                    var playerTeamForPlayerId = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
-
-                    if (playerTeamForPlayerId.TeamId == 31)
-                    {
-                        // Then this is the player that we will draft
-                        draftPick.TeamId = teamId;
-                        draftPick.PlayerId = playerTeamForPlayerId.PlayerId;
-                        return await this.MakeDraftPick(draftPick);
-                    }
-                }
+                // Now need to get the auto pick order
+                var autopick = await _context.AutoPickOrders.OrderByDescending(x => x.Score).FirstOrDefaultAsync();
+                draftPick.TeamId = teamId;
+                draftPick.PlayerId = autopick.PlayerId;
+                return await this.MakeDraftPick(draftPick);
             }
             return false;
         }

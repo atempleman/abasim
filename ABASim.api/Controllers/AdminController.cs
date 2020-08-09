@@ -43,6 +43,10 @@ namespace ABASim.api.Controllers
         public async Task<bool> RunInitialDraftLottery()
         {
             var runLottery = await _repo.RunInitialDraftLottery();
+
+            // Now need to setup the auto pick rankings
+            var autoPicksSet = await _repo.GenerateAutoPickOrder();
+
             return runLottery;
         }
 

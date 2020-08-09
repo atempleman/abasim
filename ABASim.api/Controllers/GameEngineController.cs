@@ -1385,7 +1385,7 @@ namespace ABASim.api.Controllers
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
                 {
-                    int assistRating = (_playerRatingPassed.AssitRating * 5);
+                    int assistRating = (_playerRatingPassed.AssitRating * 6);
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -1393,7 +1393,7 @@ namespace ABASim.api.Controllers
                         assistCounterChance++;
                         possibleAssist = 1;
                         // update the result
-                        result = result - 80;
+                        result = result - 50;
                     }
                     else
                     {
@@ -1591,7 +1591,7 @@ namespace ABASim.api.Controllers
                 if (_playerRatingPassed != null)
                 {
                     
-                    int assistRating = (_playerRatingPassed.AssitRating * 5); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
+                    int assistRating = (_playerRatingPassed.AssitRating * 6); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -1599,7 +1599,7 @@ namespace ABASim.api.Controllers
                         assistCounterChance++;
                         possibleAssist = 1;
                         // update the result
-                        result = result - 80;
+                        result = result - 40;
                     }
                     else
                     {
@@ -1787,7 +1787,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = awayRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 1, checking.BlockRating);
-                    int result = _random.Next(1, 2001);
+                    int result = _random.Next(1, 1901);
 
                     if (result <= rating)
                     {
@@ -1853,7 +1853,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = homeRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 0, checking.BlockRating);
-                    int result = _random.Next(1, 2501);
+                    int result = _random.Next(1, 1901);
 
                     if (result <= rating)
                     {
@@ -2290,7 +2290,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = awayRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 1, checking.StealRating);
-                    int result = _random.Next(1, (4501 - stealBonus)); // This is times 5 to account for all 5 players pn the court
+                    int result = _random.Next(1, (4001 - stealBonus)); // This is times 5 to account for all 5 players pn the court
 
                     if (result <= rating)
                     {
@@ -2361,7 +2361,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = homeRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 0, checking.StealRating);
-                    int result = _random.Next(1, (4501 - stealBonus));
+                    int result = _random.Next(1, (4001 - stealBonus));
 
                     if (result <= rating)
                     {
@@ -2468,7 +2468,7 @@ namespace ABASim.api.Controllers
 
             int result = _random.Next(1, 20);
 
-            if (result < 15)
+            if (result < 14)
             {
                 // Non-Shooting Foul
                 if (_teamPossession == 0)

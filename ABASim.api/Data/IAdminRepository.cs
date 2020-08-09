@@ -25,5 +25,7 @@ namespace ABASim.api.Data
          Task<bool> BeginConferenceFinals();
 
          Task<bool> BeginFinals();
+
+         Task<bool> GenerateAutoPickOrder();
     }
 }
