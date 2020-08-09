@@ -83,7 +83,7 @@ export class InboxComponent implements OnInit {
 
     this.messageState = 1;
     this.viewedMessage = message;
-
+    console.log(message.id);
     this.contactService.markMessageRead(message.id).subscribe(result => {
 
     }, error => {
