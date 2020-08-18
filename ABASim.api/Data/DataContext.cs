@@ -85,5 +85,9 @@ namespace ABASim.api.Data
         public DbSet<InboxMessage> InboxMessages { get; set; }
 
         public DbSet<AutoPickOrder> AutoPickOrders { get; set; }
+
+        public DbSet<InjurySeverity> InjurySeverities { get; set; }
+
+        public DbSet<InjuryType> InjuryTypes { get; set; }
     }
 }

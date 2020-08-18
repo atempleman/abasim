@@ -23,6 +23,8 @@ namespace ABASim.api.Controllers
 
         int _quarter, _time, _awayScore, _homeScore, _shotClock;
 
+        int subError = 0;
+
         SimGameDto _game;
 
         SimTeamDto _awayTeam, _homeTeam;
@@ -92,12 +94,17 @@ namespace ABASim.api.Controllers
         int _ordering = 0;
         int _playNumber = 0;
 
+        List<InjurySeverity> _injurySeverities = new List<InjurySeverity>();
+        List<InjuryType> _injuryTypes = new List<InjuryType>();
+        List<InjuryDto> _awayInjuries = new List<InjuryDto>();
+        List<InjuryDto> _homeInjuries = new List<InjuryDto>();
+
         public GameEngineController(IGameEngineRepository repo)
         {
             _repo = repo;
         }
 
-        
+
         public async Task<IActionResult> StartGame(SimGameDto game)
         {
             _game = game;
@@ -106,7 +113,7 @@ namespace ABASim.api.Controllers
             _quarter = 1;
             _time = 720;
             _shotClock = 24;
-            
+
             // Setup the Game
             var result = await SetupTeams();
             var result1 = await SetupRosters();
@@ -118,8 +125,8 @@ namespace ABASim.api.Controllers
             commentaryData.Add(comm.GetStartingLineupsCommentary(awayPG, awaySG, awaySF, awayPF, awayC));
             commentaryData.Add(comm.GetStartingLineupsCommentary(homePG, homeSG, homeSF, homePF, homeC));
             commentaryData.Add("It's now time for the opening tip");
-            
-            PlayByPlayTracker(comm.GetGameIntroCommentry(_awayTeam, _homeTeam) , 0);
+
+            PlayByPlayTracker(comm.GetGameIntroCommentry(_awayTeam, _homeTeam), 0);
             PlayByPlayTracker(comm.GetStartingLineupsCommentary(awayPG, awaySG, awaySF, awayPF, awayC), 0);
             PlayByPlayTracker(comm.GetStartingLineupsCommentary(homePG, homeSG, homeSF, homePF, homeC), 0);
             PlayByPlayTracker("It's now time for the opening tip", 1);
@@ -183,11 +190,14 @@ namespace ABASim.api.Controllers
             saved = await _repo.SaveTeamsBoxScore(_game.GameId, _homeBoxScores);
 
             // Need to save the game in the database
-             // Need to save the game in the database
+            // Need to save the game in the database
             int winningTeamId = 0;
-            if (_awayScore > _homeScore) {
+            if (_awayScore > _homeScore)
+            {
                 winningTeamId = _awayTeam.Id;
-            } else {
+            }
+            else
+            {
                 winningTeamId = _homeTeam.Id;
             }
             bool savedGame = await _repo.SavePreseasonResult(_awayScore, _homeScore, winningTeamId, game.GameId);
@@ -212,10 +222,13 @@ namespace ABASim.api.Controllers
             // Need to save the game in the database
             int winningTeamId = 0;
             int losingTeamId = 0;
-            if (_awayScore > _homeScore) {
+            if (_awayScore > _homeScore)
+            {
                 winningTeamId = _awayTeam.Id;
                 losingTeamId = _homeTeam.Id;
-            } else {
+            }
+            else
+            {
                 winningTeamId = _homeTeam.Id;
                 losingTeamId = _awayTeam.Id;
             }
@@ -240,10 +253,13 @@ namespace ABASim.api.Controllers
             // Need to save the game in the database
             int winningTeamId = 0;
             int losingTeamId = 0;
-            if (_awayScore > _homeScore) {
+            if (_awayScore > _homeScore)
+            {
                 winningTeamId = _awayTeam.Id;
                 losingTeamId = _homeTeam.Id;
-            } else {
+            }
+            else
+            {
                 winningTeamId = _homeTeam.Id;
                 losingTeamId = _awayTeam.Id;
             }
@@ -289,14 +305,14 @@ namespace ABASim.api.Controllers
             _homeSubTracker.QuarterSub = 0;
 
             return Ok(true);
-        } 
+        }
 
         public async Task<IActionResult> SetupRosters()
         {
             var ar = await _repo.GetRoster(_awayTeam.Id);
             var hr = await _repo.GetRoster(_homeTeam.Id);
-            _awayRoster = (List<Roster>) ar;
-            _homeRoster = (List<Roster>) hr;
+            _awayRoster = (List<Roster>)ar;
+            _homeRoster = (List<Roster>)hr;
 
             return Ok(true);
         }
@@ -305,9 +321,9 @@ namespace ABASim.api.Controllers
         {
             var adc = await _repo.GetDepthChart(_awayTeam.Id);
             var hdc = await _repo.GetDepthChart(_homeTeam.Id);
-            _awayDepth = (List<DepthChart>) adc;
-            _homeDepth = (List<DepthChart>) hdc;
-            
+            _awayDepth = (List<DepthChart>)adc;
+            _homeDepth = (List<DepthChart>)hdc;
+
             return Ok(true);
         }
 
@@ -419,7 +435,7 @@ namespace ABASim.api.Controllers
             }
             return Ok(true);
         }
-    
+
         public void SetStartingLineups()
         {
             var ad = _awayDepth.FindAll(x => x.Depth == 1);
@@ -433,7 +449,7 @@ namespace ABASim.api.Controllers
                     case 1:
                         awayPG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                         awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
-                        awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId); 
+                        awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
 
                         StaminaTrack awatSTPG = _awayStaminas.Find(x => x.PlayerId == ad[i].PlayerId);
                         awatSTPG.OnOff = 1;
@@ -556,7 +572,8 @@ namespace ABASim.api.Controllers
                 // Home Team wins the jumpball
                 _teamPossession = 0;
                 winningTeam = _homeTeam;
-            } else
+            }
+            else
             {
                 // Away Team wins the jumpball
                 _teamPossession = 1;
@@ -564,7 +581,7 @@ namespace ABASim.api.Controllers
             }
 
             int j = _random.Next(1, 101);
-            
+
             _playerPossession = new Jumpball().GetJumpPlayer(j);
             string currentPlayerName = GetCurrentPlayerFullName();
 
@@ -604,7 +621,7 @@ namespace ABASim.api.Controllers
 
             while (_time > 0)
             {
-                if(_shotClock > 0)
+                if (_shotClock > 0)
                 {
                     // int decision = -1;
 
@@ -614,7 +631,7 @@ namespace ABASim.api.Controllers
                     //     decision = GetPlayerDecision();
                     // }
                     int decision = GetPlayerDecision();
-                    
+
                     switch (decision)
                     {
                         case 1:
@@ -643,8 +660,8 @@ namespace ABASim.api.Controllers
                             break;
                         case 7:
                             // Player has held onto the ball
-                             _time = _time - 1;
-                             timeCounter = timeCounter + 1;
+                            _time = _time - 1;
+                            timeCounter = timeCounter + 1;
                             StaminaUpdates(1);
                             UpdateTimeInBoxScores(1);
                             commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
@@ -653,14 +670,16 @@ namespace ABASim.api.Controllers
                         default:
                             break;
                     }
-                } else {
+                }
+                else
+                {
                     ShotClockViolation();
                 }
             }
             EndOfQuarter();
         }
 
-         public void RunOvertime()
+        public void RunOvertime()
         {
             _homeFoulBonus = 0;
             _awayFoulBonus = 0;
@@ -671,7 +690,7 @@ namespace ABASim.api.Controllers
 
             while (_time > 0)
             {
-                if(_shotClock > 0)
+                if (_shotClock > 0)
                 {
                     int decision = GetPlayerDecision();
 
@@ -703,8 +722,8 @@ namespace ABASim.api.Controllers
                             break;
                         case 7:
                             // Player has held onto the ball
-                             _time = _time - 1;
-                             timeCounter = timeCounter + 1;
+                            _time = _time - 1;
+                            timeCounter = timeCounter + 1;
                             StaminaUpdates(1);
                             UpdateTimeInBoxScores(1);
                             commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
@@ -713,7 +732,9 @@ namespace ABASim.api.Controllers
                         default:
                             break;
                     }
-                } else {
+                }
+                else
+                {
                     ShotClockViolation();
                 }
             }
@@ -728,16 +749,19 @@ namespace ABASim.api.Controllers
             int shotClockBonus = 0;
 
             // Get the shot clock shoot bonus - TODO here around the end game bonuses
-            if (_quarter > 3 && _time <= 48) {
+            if (_quarter > 3 && _time <= 48)
+            {
                 _endGameFoulAddition = 0; // Done
                 _endGameResultIncrease = 0; // Done
                 _endGameShotClockBonus = 0; // Done
                 _endGameStealAddition = 0; // Done
                 _endGameThreePointAddition = 0;
                 _endGameTwoPointAddition = 0;
-                
+
                 EndGameShootBonus();
-            } else {
+            }
+            else
+            {
                 _endGameFoulAddition = 0;
                 _endGameResultIncrease = 0;
                 _endGameShotClockBonus = 0;
@@ -757,35 +781,46 @@ namespace ABASim.api.Controllers
                 PlayerTendancy tendancy = GetCurrentPlayersTendancies();
 
                 int foulBonusValue = 0;
-                if (_quarter > 3 && _time <= 48 && _endGameFoulAddition != 0) {
+                if (_quarter > 3 && _time <= 48 && _endGameFoulAddition != 0)
+                {
                     foulBonusValue = _endGameFoulAddition;
-                } else {
+                }
+                else
+                {
                     foulBonusValue = (int)(tendancy.FouledTendancy * 0.1);
                 }
 
                 int threeTendancy = tendancy.ThreePointTendancy;
                 int twoTendancy = tendancy.TwoPointTendancy;
                 int passTendancy = tendancy.PassTendancy;
-                if (_quarter > 3 && _time <= 48 && _endGameThreePointAddition != 0) {
+                if (_quarter > 3 && _time <= 48 && _endGameThreePointAddition != 0)
+                {
                     threeTendancy = tendancy.ThreePointTendancy + _endGameThreePointAddition;
-                    
-                    if (tendancy.TwoPointTendancy < _endGameThreePointAddition) {
+
+                    if (tendancy.TwoPointTendancy < _endGameThreePointAddition)
+                    {
                         twoTendancy = 0;
                         int remainder = _endGameThreePointAddition - tendancy.ThreePointTendancy;
                         passTendancy = tendancy.PassTendancy - remainder;
-                    } else {
+                    }
+                    else
+                    {
                         twoTendancy = tendancy.TwoPointTendancy - _endGameThreePointAddition;
                     }
                 }
 
-                if (_quarter > 3 && _time <= 48 && _endGameTwoPointAddition != 0) {
+                if (_quarter > 3 && _time <= 48 && _endGameTwoPointAddition != 0)
+                {
                     twoTendancy = tendancy.TwoPointTendancy + _endGameTwoPointAddition;
-                    
-                    if (tendancy.PassTendancy < _endGameTwoPointAddition) {
+
+                    if (tendancy.PassTendancy < _endGameTwoPointAddition)
+                    {
                         passTendancy = 0;
                         int remainder = _endGameTwoPointAddition - tendancy.PassTendancy;
                         twoTendancy = tendancy.TwoPointTendancy - remainder;
-                    } else {
+                    }
+                    else
+                    {
                         passTendancy = tendancy.PassTendancy - _endGameTwoPointAddition;
                     }
                 }
@@ -802,39 +837,44 @@ namespace ABASim.api.Controllers
 
                 if (shotClockBonus > 0 || _endGameShotClockBonus > 0)
                 {
-                    if (_quarter > 3 && _time <= 48) {
+                    if (_quarter > 3 && _time <= 48)
+                    {
                         shotClockBonus = _endGameShotClockBonus;
                     }
                     // Then we have some bonus to work out
                     int total = twoTendancy + threeTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy;
 
-                    double twoUpgrade = (double) tendancy.TwoPointTendancy / total;
-                    double threeUpgrade = (double) tendancy.ThreePointTendancy / total;
-                    double foulUpgrade = (double) (tendancy.FouledTendancy + foulBonusValue) / total;
-                    double turnoverUpgrade = (double) tendancy.TurnoverTendancy / total;
+                    double twoUpgrade = (double)tendancy.TwoPointTendancy / total;
+                    double threeUpgrade = (double)tendancy.ThreePointTendancy / total;
+                    double foulUpgrade = (double)(tendancy.FouledTendancy + foulBonusValue) / total;
+                    double turnoverUpgrade = (double)tendancy.TurnoverTendancy / total;
 
-                    int twoPointBonus = (int) (shotClockBonus * twoUpgrade);
-                    int threePointBonus = (int) (shotClockBonus * threeUpgrade);
-                    int foulBonus = (int) (shotClockBonus * foulUpgrade);
-                    int turnoverBonus = (int) (shotClockBonus * turnoverUpgrade);
+                    int twoPointBonus = (int)(shotClockBonus * twoUpgrade);
+                    int threePointBonus = (int)(shotClockBonus * threeUpgrade);
+                    int foulBonus = (int)(shotClockBonus * foulUpgrade);
+                    int turnoverBonus = (int)(shotClockBonus * turnoverUpgrade);
 
                     twoSection = twoTendancy + twoPointBonus;
                     threeSection = threeTendancy + threePointBonus + twoSection;
                     foulSection = tendancy.FouledTendancy + foulBonusValue + foulBonus + threeSection;
                     turnoverSection = tendancy.TurnoverTendancy + turnoverBonus + foulSection;
-                } else {
-                    if (shotClockBonus != 0 || _endGameShotClockBonus != 0) {
-                        if (_quarter > 3 && _time <= 48) {
+                }
+                else
+                {
+                    if (shotClockBonus != 0 || _endGameShotClockBonus != 0)
+                    {
+                        if (_quarter > 3 && _time <= 48)
+                        {
                             shotClockBonus = _endGameShotClockBonus;
                         }
 
                         int total = twoTendancy + threeTendancy;
 
-                        double twoUpgrade = (double) tendancy.TwoPointTendancy / total;
-                        double threeUpgrade = (double) tendancy.ThreePointTendancy / total;
+                        double twoUpgrade = (double)tendancy.TwoPointTendancy / total;
+                        double threeUpgrade = (double)tendancy.ThreePointTendancy / total;
 
-                        int twoPointBonus = (int) (shotClockBonus * twoUpgrade);
-                        int threePointBonus = (int) (shotClockBonus * threeUpgrade);
+                        int twoPointBonus = (int)(shotClockBonus * twoUpgrade);
+                        int threePointBonus = (int)(shotClockBonus * threeUpgrade);
 
                         twoSection = twoTendancy + twoPointBonus;
                         threeSection = threeTendancy + threePointBonus + twoSection;
@@ -842,24 +882,24 @@ namespace ABASim.api.Controllers
                         turnoverSection = tendancy.TurnoverTendancy + foulSection;
                     }
                 }
-                
+
                 int value = 1000 + foulBonusValue;
                 if (turnoverSection > 1000)
                 {
                     value = turnoverSection + 10;
-                } 
+                }
                 int result = _random.Next(1, value + 1);
 
                 if (result <= twoSection)
                 {
                     // Shooting a 2
                     decision = 2;
-                } 
+                }
                 else if (result > twoSection && result <= threeSection)
                 {
                     // Shooting a 3
                     decision = 3;
-                } 
+                }
                 else if (result > threeSection && result <= foulSection)
                 {
                     // The player has been fouled potentially
@@ -868,7 +908,9 @@ namespace ABASim.api.Controllers
                     {
                         // The player has been fouled
                         decision = 4;
-                    } else {
+                    }
+                    else
+                    {
                         decision = 7; // Player has had to hold onto the ball
                     }
                 }
@@ -880,16 +922,20 @@ namespace ABASim.api.Controllers
                     {
                         // The player has turned the ball over
                         decision = 5;
-                    } else {
+                    }
+                    else
+                    {
                         decision = 7; // Player has had to hold onto the ball
                     }
-                } 
-                else 
+                }
+                else
                 {
                     // The player has passed the ball
-                    decision = 1; 
+                    decision = 1;
                 }
-            } else {
+            }
+            else
+            {
                 // The ball has been stolen
                 stealCounter++;
                 decision = 6;
@@ -954,7 +1000,7 @@ namespace ABASim.api.Controllers
                         break;
                 }
             }
-            else 
+            else
             {
                 switch (_playerPossession)
                 {
@@ -1003,7 +1049,7 @@ namespace ABASim.api.Controllers
                         break;
                 }
             }
-        
+
             // Now need to generate the result of who receives the ball
             int result = _random.Next(1, totalUsage + 1);
 
@@ -1289,7 +1335,7 @@ namespace ABASim.api.Controllers
             }
 
             // Now need the timer - to determine how long the play to the pass took
-            int timeValue = _timer.GetPassTime(); 
+            int timeValue = _timer.GetPassTime();
 
             // Now need to work out how to determine what time is sent - in case this triggers a shot clock or end of quarter action
             if (timeValue > _time || timeValue > _shotClock)
@@ -1324,8 +1370,8 @@ namespace ABASim.api.Controllers
                     // Call ShotClockViolation
                     ShotClockViolation();
                 }
-            } 
-            else 
+            }
+            else
             {
                 _shotClock = _shotClock - timeValue;
                 _time = _time - timeValue;
@@ -1349,7 +1395,7 @@ namespace ABASim.api.Controllers
             twosTaken++;
             int possibleAssist = 0;
             string assistingPlayingName = "";
-            if(_playerPassed != null)
+            if (_playerPassed != null)
             {
                 assistingPlayingName = _playerPassed.FirstName + " " + _playerPassed.Surname;
             }
@@ -1433,7 +1479,7 @@ namespace ABASim.api.Controllers
                     timeCounter = timeCounter + timeValue;
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
-                    
+
                     // Update Score
                     if (_teamPossession == 0)
                     {
@@ -1456,7 +1502,9 @@ namespace ABASim.api.Controllers
                             int indexAst = _homeBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
                             _homeBoxScores[indexAst] = tempAst;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         _awayScore = _awayScore + 2;
                         UpdatePlusMinusBoxScore(2);
 
@@ -1486,12 +1534,16 @@ namespace ABASim.api.Controllers
                     if (_teamPossession == 0)
                     {
                         _teamPossession = 1;
-                    } else {
+                    }
+                    else
+                    {
                         _teamPossession = 0;
                     }
 
                     Inbounds();
-                } else {
+                }
+                else
+                {
                     // Shot missed
                     int timeValue = _timer.GetTwoShotTime();
 
@@ -1539,14 +1591,16 @@ namespace ABASim.api.Controllers
                     // Go to the Rebound
                     Rebound();
                 }
-            } else {
+            }
+            else
+            {
                 // Shot has been blocked
                 blockCounter++;
                 // TODO - need to handle the fact the shot clock would not reset on offensive rebound here
                 Rebound();
             }
 
-            
+
         }
 
         public void ThreePointShot()
@@ -1554,7 +1608,7 @@ namespace ABASim.api.Controllers
             threesTaken++;
             int possibleAssist = 0;
             string assistingPlayingName = "";
-            if(_playerPassed != null)
+            if (_playerPassed != null)
             {
                 assistingPlayingName = _playerPassed.FirstName + " " + _playerPassed.Surname;
             }
@@ -1590,7 +1644,7 @@ namespace ABASim.api.Controllers
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
                 {
-                    
+
                     int assistRating = (_playerRatingPassed.AssitRating * 6); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
                     int assistResult = _random.Next(0, 1000);
 
@@ -1640,7 +1694,7 @@ namespace ABASim.api.Controllers
 
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
-                    
+
                     // Update Score
                     if (_teamPossession == 0)
                     {
@@ -1667,8 +1721,10 @@ namespace ABASim.api.Controllers
                             int index2 = _homeBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
                             _homeBoxScores[index2] = temp2;
                         }
-                        
-                    } else {
+
+                    }
+                    else
+                    {
                         _awayScore = _awayScore + 3;
                         UpdatePlusMinusBoxScore(3);
 
@@ -1702,12 +1758,16 @@ namespace ABASim.api.Controllers
                     if (_teamPossession == 0)
                     {
                         _teamPossession = 1;
-                    } else {
+                    }
+                    else
+                    {
                         _teamPossession = 0;
                     }
 
                     Inbounds();
-                } else {
+                }
+                else
+                {
                     // Shot missed
                     int timeValue = _timer.GetThreeShotTime();
 
@@ -1758,7 +1818,9 @@ namespace ABASim.api.Controllers
                     // Go to the Rebound
                     Rebound();
                 }
-            } else {
+            }
+            else
+            {
                 // Shot has been blocked
                 blockCounter++;
                 // TODO - need to handle the fact the shot clock would not reset on offensive rebound here
@@ -1837,7 +1899,9 @@ namespace ABASim.api.Controllers
                         return 1;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 // Home team is trying to block the shot
                 List<PlayerRating> homeRatings = new List<PlayerRating>();
                 homeRatings.Add(homePGRatings);
@@ -1916,7 +1980,7 @@ namespace ABASim.api.Controllers
             int defensiveRate = 0;
 
             // Update the timer
-            int timeValue = _random.Next(2, 6);            
+            int timeValue = _random.Next(2, 6);
 
             // Need to check if the time has not gone past 0 and update the time value appropriately
             if (timeValue > _time || timeValue > _shotClock)
@@ -2100,7 +2164,9 @@ namespace ABASim.api.Controllers
                     // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                 }
-            } else {
+            }
+            else
+            {
                 int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.DRebRating);
                 int homeSGRebound = StaminaEffect(homeSGRatings.PlayerId, 0, homeSGRatings.DRebRating);
                 int homeSFRebound = StaminaEffect(homeSFRatings.PlayerId, 0, homeSFRatings.DRebRating);
@@ -2267,7 +2333,8 @@ namespace ABASim.api.Controllers
             PlayerRating currentRating = GetCurrentPlayersRatings();
             int stealBonus = 0;
 
-            if (_endGameStealAddition > 0) {
+            if (_endGameStealAddition > 0)
+            {
                 stealBonus = _endGameStealAddition;
             }
 
@@ -2345,7 +2412,9 @@ namespace ABASim.api.Controllers
                         return 1;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 // Home team is trying to steal the shot
                 List<PlayerRating> homeRatings = new List<PlayerRating>();
                 homeRatings.Add(homePGRatings);
@@ -2457,7 +2526,8 @@ namespace ABASim.api.Controllers
             StaminaUpdates(timeValue);
             UpdateTimeInBoxScore(timeValue);
 
-            if (_shotClock < 14) {
+            if (_shotClock < 14)
+            {
                 _shotClock = 14;
             }
 
@@ -2478,7 +2548,8 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
-                    if (_time <= 120) {
+                    if (_time <= 120)
+                    {
                         _homeFinal2Bonus++;
                     }
                     _homeFoulBonus++;
@@ -2500,12 +2571,13 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
-                    if (_time <= 120) {
+                    if (_time <= 120)
+                    {
                         _awayFinal2Bonus++;
                     }
                     _awayFoulBonus++;
                     teamWhichFouled = 0;
-                    
+
                     if (_awayFoulBonus > 4 || _awayFinal2Bonus > 1)
                     {
                         // Commentary
@@ -2521,14 +2593,16 @@ namespace ABASim.api.Controllers
                 // Shooting Foul
                 if (_teamPossession == 0)
                 {
-                    if (_time <= 120) {
+                    if (_time <= 120)
+                    {
                         _homeFinal2Bonus++;
                     }
                     _homeFoulBonus++;
                 }
                 else
-                {   
-                    if (_time <= 120) {
+                {
+                    if (_time <= 120)
+                    {
                         _awayFinal2Bonus++;
                     }
                     _awayFoulBonus++;
@@ -2542,6 +2616,10 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
 
+                    // Todo Injury Check
+                    InjuryCheck();
+                    InjuryStaminaChecks();
+
                     // Need to check if there are any subs to be made
                     SubCheckFT();
 
@@ -2553,6 +2631,7 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
+                    InjuryCheck();
                     // Need to check if there are any subs to be made
                     SubCheckFT();
 
@@ -2570,21 +2649,29 @@ namespace ABASim.api.Controllers
                 // Player needs to be subbed out due to foul trouble
                 Substitution(teamWhichFouled, fouler);
 
-                // Now need to sort out the sub commentary
-                string inPlayer = GetPlayerFullNameForPositionForFouler(teamWhichFouled, GetPlayerIdForPosition(teamWhichFouled, fouler));
+                if (subError == 0)
+                {
+                    // Now need to sort out the sub commentary
+                    string inPlayer = GetPlayerFullNameForPositionForFouler(teamWhichFouled, GetPlayerIdForPosition(teamWhichFouled, fouler));
 
-                int teamToDisplay = 0;
-                if (teamWhichFouled == 1) {
-                    teamToDisplay = 1;
+                    int teamToDisplay = 0;
+                    if (teamWhichFouled == 1)
+                    {
+                        teamToDisplay = 1;
+                    }
+
+                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                 }
-                    
-                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot));
-                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, teamToDisplay, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+
+
             }
-               
+
             // Check if it is free throws
             if (isFreeThrows == 1)
             {
+                InjuryCheck();
+                InjuryStaminaChecks();
                 // Need to check if there are any subs to be made
                 SubCheckFT();
 
@@ -2610,6 +2697,8 @@ namespace ABASim.api.Controllers
             else
             {
                 // Need to check for subs
+                InjuryCheck();
+                InjuryStaminaChecks();
                 SubCheck();
                 Inbounds();
             }
@@ -2630,15 +2719,24 @@ namespace ABASim.api.Controllers
 
                 int fouler = _random.Next(1, totalRating + 1);
 
-                if (fouler < awayPGFoulRating) {
+                if (fouler < awayPGFoulRating)
+                {
                     return 1;
-                } else if (fouler >= awayPGFoulRating && fouler < (awayPGFoulRating + awaySGFoulRating)) {
+                }
+                else if (fouler >= awayPGFoulRating && fouler < (awayPGFoulRating + awaySGFoulRating))
+                {
                     return 2;
-                } else if (fouler >= (awayPGFoulRating + awaySGFoulRating) && fouler < (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating)) {
+                }
+                else if (fouler >= (awayPGFoulRating + awaySGFoulRating) && fouler < (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating))
+                {
                     return 3;
-                } else if (fouler >= (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating) && fouler < (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating + awayPFFoulRating)) {
+                }
+                else if (fouler >= (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating) && fouler < (awayPGFoulRating + awaySGFoulRating + awaySFFoulRating + awayPFFoulRating))
+                {
                     return 4;
-                } else {
+                }
+                else
+                {
                     return 5;
                 }
             }
@@ -2655,15 +2753,24 @@ namespace ABASim.api.Controllers
 
                 int fouler = _random.Next(1, totalRating + 1);
 
-                if (fouler < homePGFoulRating) {
+                if (fouler < homePGFoulRating)
+                {
                     return 1;
-                } else if (fouler >= homePGFoulRating && fouler < (homePGFoulRating + homeSGFoulRating)) {
+                }
+                else if (fouler >= homePGFoulRating && fouler < (homePGFoulRating + homeSGFoulRating))
+                {
                     return 2;
-                } else if (fouler >= (homePGFoulRating + homeSGFoulRating) && fouler < (homePGFoulRating + homeSGFoulRating + homeSFFoulRating)) {
+                }
+                else if (fouler >= (homePGFoulRating + homeSGFoulRating) && fouler < (homePGFoulRating + homeSGFoulRating + homeSFFoulRating))
+                {
                     return 3;
-                } else if (fouler >= (homePGFoulRating + homeSGFoulRating + homeSFFoulRating) && fouler < (homePGFoulRating + homeSGFoulRating + homeSFFoulRating + homePFFoulRating)) {
+                }
+                else if (fouler >= (homePGFoulRating + homeSGFoulRating + homeSFFoulRating) && fouler < (homePGFoulRating + homeSGFoulRating + homeSFFoulRating + homePFFoulRating))
+                {
                     return 4;
-                } else {
+                }
+                else
+                {
                     return 5;
                 }
             }
@@ -2694,7 +2801,7 @@ namespace ABASim.api.Controllers
                         int index = _homeBoxScores.FindIndex(x => x.Id == currentPlayerRating.PlayerId);
                         _homeBoxScores[index] = temp;
                         _homeScore++;
-                    } 
+                    }
                     else
                     {
                         BoxScore temp = _awayBoxScores.Find(x => x.Id == currentPlayerRating.PlayerId);
@@ -2711,7 +2818,7 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     // Console.WriteLine(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                } 
+                }
                 else
                 {
                     // Free throw is missed
@@ -2753,7 +2860,7 @@ namespace ABASim.api.Controllers
             _playerPassed = null;
 
             // Update the timer
-            int timeValue = _random.Next(1, 6);            
+            int timeValue = _random.Next(1, 6);
 
             // Need to check if the time has not gone past 0 and update the time value appropriately
             if (timeValue > _time || timeValue > _shotClock)
@@ -2777,7 +2884,7 @@ namespace ABASim.api.Controllers
 
             UpdateTimeInBoxScore(timeValue);
             StaminaUpdates(timeValue);
-            
+
             // Player has committed a turnover
             int result = _random.Next(1, 51);
             PlayerRating current = GetCurrentPlayersRatings();
@@ -2816,18 +2923,23 @@ namespace ABASim.api.Controllers
                         // Player needs to be subbed out due to foul trouble
                         Substitution(1, fouler);
 
-                        // Now need to sort out the sub commentary
-                        string inPlayer = GetPlayerFullNameForPositionForFouler(0, GetPlayerIdForPosition(0, fouler));
-                            
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                    } 
+                        if (subError == 0)
+                        {
+                            // Now need to sort out the sub commentary
+                            string inPlayer = GetPlayerFullNameForPositionForFouler(0, GetPlayerIdForPosition(0, fouler));
+
+                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                        }
+
+
+                    }
                     // else if (sub == 6) {
                     //     // player has fouled out
                     //     int pid = GetPlayerIdForPosition(1, fouler);
                     //     fouledOutPlayers.Add(pid);
-                        
+
                     //     // call substituion
                     //     Substitution(1, fouler);
                     // }
@@ -2861,22 +2973,27 @@ namespace ABASim.api.Controllers
                     if (sub == 1)
                     {
                         string outPlayer = GetPlayerFullNameForPositionForFouler(1, GetPlayerIdForPosition(1, fouler));
-                    
+
                         // Player needs to be subbed out due to foul trouble
                         Substitution(1, fouler);
 
-                        // Now need to sort out the sub commentary
-                        string inPlayer = GetPlayerFullNameForPositionForFouler(1, GetPlayerIdForPosition(1, fouler));
-                            
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                    } 
+                        if (subError == 0)
+                        {
+                            // Now need to sort out the sub commentary
+                            string inPlayer = GetPlayerFullNameForPositionForFouler(1, GetPlayerIdForPosition(1, fouler));
+
+                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                        }
+
+
+                    }
                     // else if (sub == 6) {
                     //     // player has fouled out
                     //     int pid = GetPlayerIdForPosition(1, fouler);
                     //     fouledOutPlayers.Add(pid);
-                        
+
                     //     // call substituion
                     //     Substitution(1, fouler);
                     // }
@@ -2894,6 +3011,7 @@ namespace ABASim.api.Controllers
                 _teamPossession = 0;
             }
             _shotClock = 24;
+            InjuryCheck();
             SubCheck();
         }
 
@@ -2904,7 +3022,7 @@ namespace ABASim.api.Controllers
             _playerPassed = null;
 
             _shotClock = 24;
-            
+
             if (_teamPossession == 0)
             {
                 _teamPossession = 1;
@@ -2920,6 +3038,8 @@ namespace ABASim.api.Controllers
             PlayByPlayTracker(comm.GetShotClockTurnoverCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
 
             // Now it would go to check for SUBS
+            InjuryCheck();
+            InjuryStaminaChecks();
             SubCheck();
 
             // Inbounds the ball to continue on
@@ -2929,255 +3049,410 @@ namespace ABASim.api.Controllers
         public void EndGameShootBonus()
         {
             int diff = 0;
-            if (_teamPossession == 0) {
+            if (_teamPossession == 0)
+            {
                 diff = _awayScore - _homeScore;
 
-                if (diff < 0) {
+                if (diff < 0)
+                {
                     // home team is winning
-                    if (_time > 16 || _shotClock > 16) {
+                    if (_time > 16 || _shotClock > 16)
+                    {
                         _endGameShotClockBonus = -200;
-                    } else if (_time > 12 || _shotClock > 12) {
+                    }
+                    else if (_time > 12 || _shotClock > 12)
+                    {
                         _endGameShotClockBonus = -100;
-                    } else if (_time > 8 || _shotClock > 8) {
+                    }
+                    else if (_time > 8 || _shotClock > 8)
+                    {
                         _endGameShotClockBonus = 100;
-                    } else if (_time > 4 || _shotClock > 4) {
+                    }
+                    else if (_time > 4 || _shotClock > 4)
+                    {
                         _endGameShotClockBonus = 300;
-                    } else {
+                    }
+                    else
+                    {
                         _endGameShotClockBonus = 500;
                     }
-                    
-                    if (diff <= 3) {
+
+                    if (diff <= 3)
+                    {
                         // Defensive teams actions
                         // increased steal chance
                         _endGameStealAddition = 500;
-    
+
                         // much increased in fouls
                         _endGameFoulAddition = 800;
                     }
-                } else if (diff > 0) {
+                }
+                else if (diff > 0)
+                {
                     // home team is losing
                     // losing margins
-                    if (diff == 5 || diff == 6) {
+                    if (diff == 5 || diff == 6)
+                    {
                         // Shooting liklihood is increase significantly and 3's are increased most
                         // team will shoot quicker
-                        if (_time > 16 || _shotClock > 16) {
+                        if (_time > 16 || _shotClock > 16)
+                        {
                             _endGameShotClockBonus = 50;
-                        } else if (_time > 14 || _shotClock > 14) {
+                        }
+                        else if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = 150;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 200;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 300;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 400;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 500;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
 
                         // increase in 3s taken
-                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
 
                         // Result increase by 15% due to tough shots
                         _endGameResultIncrease = 150;
 
                         // Apply winning to team
                         // no changes for defensive team
-                    } else if (diff == 4) {
+                    }
+                    else if (diff == 4)
+                    {
                         // team will shoot quicker
-                        if (_time > 16 || _shotClock > 16) {
+                        if (_time > 16 || _shotClock > 16)
+                        {
                             _endGameShotClockBonus = 50;
-                        } else if (_time > 14 || _shotClock > 14) {
+                        }
+                        else if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = 150;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 200;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 300;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 400;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 500;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
-                        
+
                         // random between 5 and 10% added to shot result
                         _endGameResultIncrease = (_random.Next(50, 101));
 
                         // No change for the defensive team
-                    } else if (diff == 3) {
+                    }
+                    else if (diff == 3)
+                    {
                         // 33% increase of shooting the 3 ball
-                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
                         // increase is shot overall
-                        if (_time > 14 || _shotClock > 14) {
+                        if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = 0;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = 50;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 150;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 250;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 450;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
 
                         // no defensive change
-                    } else if (diff <= 2) {
+                    }
+                    else if (diff <= 2)
+                    {
                         // normal tendancies
                         // increase shot bonus as time runs out
-                        if (_time > 14 || _shotClock > 14) {
+                        if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = -100;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = -50;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 0;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 250;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 450;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
 
                         // no defencive change
                     }
                 }
-            } else {
+            }
+            else
+            {
                 diff = _homeScore - _awayScore;
 
-                if (diff < 0) {
+                if (diff < 0)
+                {
                     // away team is winning
-                    if (_time > 16 || _shotClock > 16) {
+                    if (_time > 16 || _shotClock > 16)
+                    {
                         _endGameShotClockBonus = -200;
-                    } else if (_time > 12 || _shotClock > 12) {
+                    }
+                    else if (_time > 12 || _shotClock > 12)
+                    {
                         _endGameShotClockBonus = -100;
-                    } else if (_time > 8 || _shotClock > 8) {
+                    }
+                    else if (_time > 8 || _shotClock > 8)
+                    {
                         _endGameShotClockBonus = 100;
-                    } else if (_time > 4 || _shotClock > 4) {
+                    }
+                    else if (_time > 4 || _shotClock > 4)
+                    {
                         _endGameShotClockBonus = 300;
-                    } else {
+                    }
+                    else
+                    {
                         _endGameShotClockBonus = 500;
                     }
 
-                    
-                    if (diff <= 3 && (_shotClock > _time)) {
+
+                    if (diff <= 3 && (_shotClock > _time))
+                    {
                         // Defensive teams actions
                         // increased steal chance
                         _endGameStealAddition = 500;
-    
+
                         // much increased in fouls
                         _endGameFoulAddition = 800;
                     }
-                } else if (diff > 0) {
+                }
+                else if (diff > 0)
+                {
                     // away team is losing
                     // losing margins
-                    if (diff == 5 || diff == 6) {
+                    if (diff == 5 || diff == 6)
+                    {
                         // Shooting liklihood is increase significantly and 3's are increased most
                         // team will shoot quicker
-                        if (_time > 16 || _shotClock > 16) {
+                        if (_time > 16 || _shotClock > 16)
+                        {
                             _endGameShotClockBonus = 50;
-                        } else if (_time > 14 || _shotClock > 14) {
+                        }
+                        else if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = 150;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 200;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 300;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 400;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 500;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
 
                         // increase in 3s taken
-                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
 
                         // Result increase by 15% due to tough shots
                         _endGameResultIncrease = 150;
 
                         // Apply winning to team
                         // no changes for defensive team
-                    } else if (diff == 4) {
+                    }
+                    else if (diff == 4)
+                    {
                         // team will shoot quicker
-                        if (_time > 16 || _shotClock > 16) {
+                        if (_time > 16 || _shotClock > 16)
+                        {
                             _endGameShotClockBonus = 50;
-                        } else if (_time > 14 || _shotClock > 14) {
+                        }
+                        else if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = 150;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 200;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 300;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 400;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 500;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
-                        
+
                         // random between 5 and 10% added to shot result
                         _endGameResultIncrease = (_random.Next(50, 101));
 
                         // No change for the defensive team
-                    } else if (diff == 3) {
+                    }
+                    else if (diff == 3)
+                    {
                         // 33% increase of shooting the 3 ball
-                        _endGameThreePointAddition = (int) (GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
                         // increase is shot overall
-                        if (_time > 14 || _shotClock > 14) {
+                        if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = 0;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = 50;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 150;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 250;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 450;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
 
                         // no defensive change
-                    } else if (diff <= 2) {
+                    }
+                    else if (diff <= 2)
+                    {
                         // normal tendancies
                         // increase shot bonus as time runs out
-                        if (_time > 14 || _shotClock > 14) {
+                        if (_time > 14 || _shotClock > 14)
+                        {
                             _endGameShotClockBonus = -100;
-                        } else if (_time > 12 || _shotClock > 12) {
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
                             _endGameShotClockBonus = -50;
-                        } else if (_time > 10 || _shotClock > 10) {
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
                             _endGameShotClockBonus = 0;
-                        } else if (_time > 8 || _shotClock > 8) {
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
                             _endGameShotClockBonus = 100;
-                        } else if (_time > 6 || _shotClock > 6) {
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
                             _endGameShotClockBonus = 250;
-                        } else if (_time > 4 || _shotClock > 4) {
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
                             _endGameShotClockBonus = 450;
-                        } else {
+                        }
+                        else
+                        {
                             _endGameShotClockBonus = 600;
                         }
 
                         // no defencive change
                     }
-                } 
+                }
             }
         }
 
@@ -3194,7 +3469,7 @@ namespace ABASim.api.Controllers
             else if (_shotClock > 18)
             {
                 return -25;
-            } 
+            }
             else if (_shotClock > 14)
             {
                 return 35;
@@ -3257,7 +3532,9 @@ namespace ABASim.api.Controllers
                     if (_awayScore == _homeScore)
                     {
                         StaminaQuarterEffects(_quarter);
-                    } else {
+                    }
+                    else
+                    {
                         // End of Game commentary
                         commentaryData.Add(comm.EndGameCommentary(_awayTeam, _homeTeam, _awayScore, _homeScore));
                         // Console.WriteLine(comm.EndGameCommentary(_awayTeam, _homeTeam, _awayScore, _homeScore));
@@ -3267,13 +3544,13 @@ namespace ABASim.api.Controllers
                 default:
                     break;
             }
-            
+
         }
 
         public void Inbounds()
         {
-             // Update the timer
-            int timeValue = _random.Next(0, 6);            
+            // Update the timer
+            int timeValue = _random.Next(0, 6);
 
             // Need to check if the time has not gone past 0 and update the time value appropriately
             if (timeValue > _time || timeValue > _shotClock)
@@ -3340,7 +3617,8 @@ namespace ABASim.api.Controllers
                         passerSet = 1;
                     }
                 }
-            } else
+            }
+            else
             {
                 while (passerSet == 0)
                 {
@@ -3531,7 +3809,8 @@ namespace ABASim.api.Controllers
 
         public void SubFoulTrouble(int team, int player)
         {
-            if (team == 0) {
+            if (team == 0)
+            {
                 List<int> onCourtIds = new List<int>();
                 onCourtIds.Add(homePG.Id);
                 onCourtIds.Add(homeSG.Id);
@@ -3548,11 +3827,12 @@ namespace ABASim.api.Controllers
                         dc = _homeDepth.FirstOrDefault(x => x.Depth == depth && x.Position == 1);
                         var exists = onCourtIds.Contains(dc.PlayerId);
 
-                        if(!exists)
+                        if (!exists)
                         {
                             int check = FoulTroubleCheck(team, dc.PlayerId);
 
-                            if (check == 0) {
+                            if (check == 0)
+                            {
                                 // The player is not in foul trouble
                                 Player current = homePG;
                                 homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
@@ -3570,7 +3850,9 @@ namespace ABASim.api.Controllers
                                 _homeStaminas[index] = stOn;
 
                                 _homeSubTracker.CurrentPG = depth;
-                            } else if (depth != 3) {
+                            }
+                            else if (depth != 3)
+                            {
                                 depth++;
 
                                 Player current = homePG;
@@ -3590,7 +3872,9 @@ namespace ABASim.api.Controllers
 
                                 _homeSubTracker.CurrentPG = depth;
                             }
-                        } else if (depth != 3) {
+                        }
+                        else if (depth != 3)
+                        {
                             depth++;
 
                             Player current = homePG;
@@ -3608,7 +3892,7 @@ namespace ABASim.api.Controllers
                             index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
                             _homeStaminas[index] = stOn;
 
-                            _homeSubTracker.CurrentPG = depth;   
+                            _homeSubTracker.CurrentPG = depth;
                         }
                         break;
                     case 2:
@@ -3616,11 +3900,12 @@ namespace ABASim.api.Controllers
                         dc = _homeDepth.FirstOrDefault(x => x.Depth == depth2 && x.Position == 2);
                         var exists2 = onCourtIds.Contains(dc.PlayerId);
 
-                        if(!exists2)
+                        if (!exists2)
                         {
                             int check = FoulTroubleCheck(team, dc.PlayerId);
 
-                            if (check == 0) {
+                            if (check == 0)
+                            {
                                 // The player is not in foul trouble
                                 Player current = homeSG;
                                 homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
@@ -3638,7 +3923,9 @@ namespace ABASim.api.Controllers
                                 _homeStaminas[index] = stOn;
 
                                 _homeSubTracker.CurrentSG = depth2;
-                            } else if (depth2 != 3) {
+                            }
+                            else if (depth2 != 3)
+                            {
                                 depth2++;
 
                                 Player current = homeSG;
@@ -3658,7 +3945,9 @@ namespace ABASim.api.Controllers
 
                                 _homeSubTracker.CurrentPG = depth2;
                             }
-                        } else if (depth2 != 3) {
+                        }
+                        else if (depth2 != 3)
+                        {
                             depth2++;
 
                             Player current = homeSG;
@@ -3676,7 +3965,7 @@ namespace ABASim.api.Controllers
                             index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
                             _homeStaminas[index] = stOn;
 
-                            _homeSubTracker.CurrentPG = depth2;   
+                            _homeSubTracker.CurrentPG = depth2;
                         }
                         break;
                     case 3:
@@ -3688,17 +3977,16 @@ namespace ABASim.api.Controllers
                     default:
                         break;
                 }
-            } else {
+            }
+            else
+            {
 
             }
         }
-       
+
         public void Substitution(int team, int position)
         {
-            // // Now need to sort out the sub commentary
-            // string outPlayer = "";
-            // string inPlayer = "";
-
+            subError = 0;
             if (team == 0)
             {
                 // Need to find the correct position
@@ -3720,7 +4008,8 @@ namespace ABASim.api.Controllers
                             DepthChart dc = filterDepth[i];
 
                             var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -3732,13 +4021,29 @@ namespace ABASim.api.Controllers
                                 onCourtIds.Add(homeC.Id);
 
                                 var exists = onCourtIds.Contains(dc.PlayerId);
-                                if(!exists)
+                                if (!exists)
                                 {
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
 
-                                    if (check == 0)
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _homeInjuries.Find(x => x.PlayerId == dc.PlayerId);
+
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -3772,6 +4077,7 @@ namespace ABASim.api.Controllers
                         {
                             // We do not have a player set for the sub
                             // The player stays on
+                            throw new Exception("No player to sub on");
                         }
                         break;
                     case 2:
@@ -3788,7 +4094,8 @@ namespace ABASim.api.Controllers
                             DepthChart dc = homeSGfilterDepth[i];
 
                             var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -3807,7 +4114,23 @@ namespace ABASim.api.Controllers
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
 
-                                    if (check == 0)
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _homeInjuries.Find(x => x.PlayerId == dc.PlayerId);
+
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -3841,6 +4164,7 @@ namespace ABASim.api.Controllers
                         {
                             // We do not have a player set for the sub
                             // LEave him on the court
+                            throw new Exception("No player to sub on");
                         }
                         break;
                     case 3:
@@ -3857,7 +4181,8 @@ namespace ABASim.api.Controllers
                             DepthChart dc = homeSFfilterDepth[i];
 
                             var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -3875,8 +4200,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _homeInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -3910,6 +4250,7 @@ namespace ABASim.api.Controllers
                         {
                             // We do not have a player set for the sub
                             // Leave the player on the court
+                            throw new Exception("No player to sub on");
                         }
                         break;
                     case 4:
@@ -3925,7 +4266,8 @@ namespace ABASim.api.Controllers
                         {
                             DepthChart dc = homePFfilterDepth[i];
                             var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -3943,8 +4285,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _homeInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -3978,6 +4335,7 @@ namespace ABASim.api.Controllers
                         {
                             // We do not have a player set for the sub
                             // LEave the player on the court
+                            throw new Exception("No player to sub on");
                         }
                         break;
                     case 5:
@@ -3993,7 +4351,8 @@ namespace ABASim.api.Controllers
                         {
                             DepthChart dc = homeCfilterDepth[i];
                             var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
                                 List<int> onCourtIds = new List<int>();
@@ -4010,8 +4369,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _homeInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -4044,10 +4418,12 @@ namespace ABASim.api.Controllers
                         {
                             // We do not have a player set for the sub
                             // LEave player on the court
+                            throw new Exception("No player to sub on");
                         }
                         break;
                     default:
-                        commentaryData.Add("Error making substitution");
+                        // commentaryData.Add("Error making substitution");
+                        subError = 1;
                         break;
                 }
             }
@@ -4068,7 +4444,8 @@ namespace ABASim.api.Controllers
                         {
                             DepthChart dc = filterDepth[i];
                             var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -4086,8 +4463,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _awayInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -4119,6 +4511,7 @@ namespace ABASim.api.Controllers
                         if (awayPGSet != 1)
                         {
                             // We do not have a player set for the sub
+                            throw new Exception("No player to sub on");
 
                         }
                         break;
@@ -4135,7 +4528,8 @@ namespace ABASim.api.Controllers
                         {
                             DepthChart dc = awaySGfilterDepth[i];
                             var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -4153,8 +4547,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _awayInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -4185,6 +4594,7 @@ namespace ABASim.api.Controllers
                         if (awaySGSet != 1)
                         {
                             // We do not have a player set for the sub
+                            throw new Exception("No player to sub on");
 
                         }
                         break;
@@ -4201,7 +4611,8 @@ namespace ABASim.api.Controllers
                         {
                             DepthChart dc = awaySFfilterDepth[i];
                             var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -4219,8 +4630,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _awayInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -4251,6 +4677,7 @@ namespace ABASim.api.Controllers
                         if (awaySFSet != 1)
                         {
                             // We do not have a player set for the sub
+                            throw new Exception("No player to sub on");
 
                         }
                         break;
@@ -4267,7 +4694,8 @@ namespace ABASim.api.Controllers
                         {
                             DepthChart dc = awayPFfilterDepth[i];
                             var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -4285,8 +4713,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _awayInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -4318,6 +4761,7 @@ namespace ABASim.api.Controllers
                         if (awayPFSet != 1)
                         {
                             // We do not have a player set for the sub
+                            throw new Exception("No player to sub on");
 
                         }
                         break;
@@ -4334,7 +4778,8 @@ namespace ABASim.api.Controllers
                         {
                             DepthChart dc = awayCfilterDepth[i];
                             var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-                            if (bs.Fouls < 6) {
+                            if (bs.Fouls < 6)
+                            {
                                 // Carry on as it is the correct position
                                 // Need to check that the player is not on the court in another position
                                 // Get list of the all of the current player ids
@@ -4352,8 +4797,23 @@ namespace ABASim.api.Controllers
                                     // That way we don't accidently keep the same player on
                                     // Now need to check whether this player is not in foul trouble too
                                     int check = FoulTroubleCheck(team, dc.PlayerId);
+                                    // Need to also check that the player is not injured
+                                    var injuryCheck = _awayInjuries.Find(x => x.PlayerId == dc.PlayerId);
 
-                                    if (check == 0)
+                                    int ic = 0;
+                                    if (injuryCheck != null)
+                                    {
+                                        if (injuryCheck.Severity < 3)
+                                        {
+                                            ic = 0;
+                                        }
+                                        else
+                                        {
+                                            ic = 1;
+                                        }
+                                    }
+
+                                    if (check == 0 && ic == 0)
                                     {
                                         // Player can be subbed
                                         // Now need to get the player object from the roster
@@ -4385,112 +4845,377 @@ namespace ABASim.api.Controllers
                         if (awayCSet != 1)
                         {
                             // We do not have a player set for the sub
+                            throw new Exception("No player to sub on");
                         }
                         break;
                     default:
-                        commentaryData.Add("Error making substitution");
+                        // commentaryData.Add("Error making substitution");
+                        subError = 1;
                         break;
                 }
             }
 
-            
+
         }
 
         public void SubCheck()
         {
-            if (_quarter > 3 && _time <= 240) {
+            if (_quarter > 3 && _time <= 240)
+            {
                 // This will now change how the subs are done - will go to a closing lineup
                 // var starters = _homeDepth/ (x => x.Depth == 1);
 
-                for (int i = 1; i < 6; i++) {
+                for (int i = 1; i < 6; i++)
+                {
                     var starter = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == i);
 
-                    // have the starter that should be on
-                    switch (i)
-                    {   
-                        case 1:
-                            if (starter.PlayerId != homePG.Id) {
-                                // Sub needed
-                                SubToStarter(0, i);
+                    // Need to check whether this starter is injured or not
+                    var result = _homeInjuries.Find(x => x.PlayerId == starter.PlayerId);
+
+                    if (result == null || result.Severity < 3)
+                    {
+                        // have the starter that should be on
+                        switch (i)
+                        {
+                            case 1:
+                                if (starter.PlayerId != homePG.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 2:
+                                if (starter.PlayerId != homeSG.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 3:
+                                if (starter.PlayerId != homeSF.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 4:
+                                if (starter.PlayerId != homePF.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 5:
+                                if (starter.PlayerId != homeC.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // Player is injured and cannot come back on
+                        var backup = _homeDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                        // Need to check whether this starter is injured or not
+                        // starter.Id
+                        var res = _homeInjuries.Find(x => x.PlayerId == backup.PlayerId);
+
+                        if (res == null || res.Severity < 3)
+                        {
+                            // have the starter that should be on
+                            switch (i)
+                            {
+                                case 1:
+                                    if (backup.PlayerId != homePG.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 2:
+                                    if (backup.PlayerId != homeSG.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 3:
+                                    if (backup.PlayerId != homeSF.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 4:
+                                    if (backup.PlayerId != homePF.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 5:
+                                    if (backup.PlayerId != homeC.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
-                            break;
-                        case 2:
-                            if (starter.PlayerId != homeSG.Id) {
-                                // Sub needed
-                                SubToStarter(0, i);
+                        }
+                        else
+                        {
+                            // Backup player is also injured!!
+                            // Player is injured and cannot come back on
+                            var last = _homeDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                            // Need to check whether this starter is injured or not
+                            // starter.Id
+                            var r = _homeInjuries.Find(x => x.PlayerId == last.PlayerId);
+
+                            if (r == null || r.Severity < 3)
+                            {
+                                // have the starter that should be on
+                                switch (i)
+                                {
+                                    case 1:
+                                        if (last.PlayerId != homePG.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 2:
+                                        if (last.PlayerId != homeSG.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 3:
+                                        if (last.PlayerId != homeSF.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 4:
+                                        if (last.PlayerId != homePF.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 5:
+                                        if (last.PlayerId != homeC.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                            break;
-                        case 3:
-                            if (starter.PlayerId != homeSF.Id) {
-                                // Sub needed
-                                SubToStarter(0, i);
+                            else
+                            {
+                                // All three players are injured.
                             }
-                            break;
-                        case 4:
-                            if (starter.PlayerId != homePF.Id) {
-                                // Sub needed
-                                SubToStarter(0, i);
-                            }
-                            break;
-                        case 5:
-                            if (starter.PlayerId != homeC.Id) {
-                                // Sub needed
-                                SubToStarter(0, i);
-                            }
-                            break;
-                        default:
-                            break;
+                        }
                     }
                 }
 
-                 for (int i = 1; i < 6; i++) {
+                for (int i = 1; i < 6; i++)
+                {
                     var starter = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == i);
+                    // Need to check whether this starter is injured or not
+                    var result = _awayInjuries.Find(x => x.PlayerId == starter.PlayerId);
 
-                    // have the starter that should be on
-                    switch (i)
-                    {   
-                        case 1:
-                            if (starter.PlayerId != awayPG.Id) {
-                                // Sub needed
-                                SubToStarter(1, i);
+                    if (result == null || result.Severity < 3)
+                    {
+                        // have the starter that should be on
+                        switch (i)
+                        {
+                            case 1:
+                                if (starter.PlayerId != awayPG.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 2:
+                                if (starter.PlayerId != awaySG.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 3:
+                                if (starter.PlayerId != awaySF.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 4:
+                                if (starter.PlayerId != awayPF.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 5:
+                                if (starter.PlayerId != awayC.Id)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // Player is injured and cannot come back on
+                        var backup = _awayDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                        // Need to check whether this starter is injured or not
+                        // starter.Id
+                        var res = _awayInjuries.Find(x => x.PlayerId == backup.PlayerId);
+
+                        if (res == null || res.Severity < 3)
+                        {
+                            // have the starter that should be on
+                            switch (i)
+                            {
+                                case 1:
+                                    if (backup.PlayerId != awayPG.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(1, i);
+                                    }
+                                    break;
+                                case 2:
+                                    if (backup.PlayerId != awaySG.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(1, i);
+                                    }
+                                    break;
+                                case 3:
+                                    if (backup.PlayerId != awaySF.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(1, i);
+                                    }
+                                    break;
+                                case 4:
+                                    if (backup.PlayerId != awayPF.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(1, i);
+                                    }
+                                    break;
+                                case 5:
+                                    if (backup.PlayerId != awayC.Id)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(1, i);
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
-                            break;
-                        case 2:
-                            if (starter.PlayerId != awaySG.Id) {
-                                // Sub needed
-                                SubToStarter(1, i);
+                        }
+                        else
+                        {
+                            // Backup player is also injured!!
+                            // Player is injured and cannot come back on
+                            var last = _awayDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                            // Need to check whether this starter is injured or not
+                            // starter.Id
+                            var r = _awayInjuries.Find(x => x.PlayerId == last.PlayerId);
+
+                            if (r == null || r.Severity < 3)
+                            {
+                                // have the starter that should be on
+                                switch (i)
+                                {
+                                    case 1:
+                                        if (last.PlayerId != awayPG.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(1, i);
+                                        }
+                                        break;
+                                    case 2:
+                                        if (last.PlayerId != awaySG.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(1, i);
+                                        }
+                                        break;
+                                    case 3:
+                                        if (last.PlayerId != awaySF.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(1, i);
+                                        }
+                                        break;
+                                    case 4:
+                                        if (last.PlayerId != awayPF.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(1, i);
+                                        }
+                                        break;
+                                    case 5:
+                                        if (last.PlayerId != awayC.Id)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(1, i);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                            break;
-                        case 3:
-                            if (starter.PlayerId != awaySF.Id) {
-                                // Sub needed
-                                SubToStarter(1, i);
+                            else
+                            {
+                                // All three players are injured.
                             }
-                            break;
-                        case 4:
-                            if (starter.PlayerId != awayPF.Id) {
-                                // Sub needed
-                                SubToStarter(1, i);
-                            }
-                            break;
-                        case 5:
-                            if (starter.PlayerId != awayC.Id) {
-                                // Sub needed
-                                SubToStarter(1, i);
-                            }
-                            break;
-                        default:
-                            break;
+                        }
                     }
                 }
-            } else {
+            }
+            else
+            {
                 // This is for normal sub patterns based off stamina   
                 // First Check the Home Team
                 for (int i = 0; i < _homeStaminas.Count; i++)
                 {
                     StaminaTrack st = _homeStaminas[i];
 
-                    if (st.StaminaValue > 700 && st.OnOff == 1)
+                    var injury = _homeInjuries.Find(x => x.PlayerId == st.PlayerId);
+
+                    int injuryCheck = 0;
+                    if (injury != null)
+                    {
+                        if (injury.Severity > 2)
+                        {
+                            injuryCheck = 1;
+                        }
+                    }
+
+                    if ((st.StaminaValue > 700 && st.OnOff == 1) || injuryCheck == 1)
                     {
                         // Player should be subbed out
                         // Need to determine which position the player is currently at
@@ -4526,32 +5251,35 @@ namespace ABASim.api.Controllers
 
                         Substitution(0, position);
 
-                        // Now need to sort out the sub commentary
-                        string outPlayer = current.FirstName + " " + current.Surname;
-                        string inPlayer = "";
-
-                        switch (position)
+                        if (subError == 0)
                         {
-                            case 1:
-                                inPlayer = homePG.FirstName + " " + homePG.Surname;
-                                break;
-                            case 2:
-                                inPlayer = homeSG.FirstName + " " + homeSG.Surname;
-                                break;
-                            case 3:
-                                inPlayer = homeSF.FirstName + " " + homeSF.Surname;
-                                break;
-                            case 4:
-                                inPlayer = homePF.FirstName + " " + homePF.Surname;
-                                break;
-                            case 5:
-                                inPlayer = homeC.FirstName + " " + homeC.Surname;
-                                break;
+                            // Now need to sort out the sub commentary
+                            string outPlayer = current.FirstName + " " + current.Surname;
+                            string inPlayer = "";
+
+                            switch (position)
+                            {
+                                case 1:
+                                    inPlayer = homePG.FirstName + " " + homePG.Surname;
+                                    break;
+                                case 2:
+                                    inPlayer = homeSG.FirstName + " " + homeSG.Surname;
+                                    break;
+                                case 3:
+                                    inPlayer = homeSF.FirstName + " " + homeSF.Surname;
+                                    break;
+                                case 4:
+                                    inPlayer = homePF.FirstName + " " + homePF.Surname;
+                                    break;
+                                case 5:
+                                    inPlayer = homeC.FirstName + " " + homeC.Surname;
+                                    break;
+                            }
+
+                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                         }
-                        
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                     }
                 }
 
@@ -4561,7 +5289,18 @@ namespace ABASim.api.Controllers
                     StaminaTrack st = _awayStaminas[i];
                     PlayerRating currentShooter = GetCurrentPlayersRatings();
 
-                    if (st.StaminaValue > 700 && st.OnOff == 1)
+                    var injury = _awayInjuries.Find(x => x.PlayerId == st.PlayerId);
+
+                    int injuryCheck = 0;
+                    if (injury != null)
+                    {
+                        if (injury.Severity > 2)
+                        {
+                            injuryCheck = 1;
+                        }
+                    }
+
+                    if ((st.StaminaValue > 700 && st.OnOff == 1) || injuryCheck == 1)
                     {
                         // Player should be subbed out
                         // Need to determine which position the player is currently at
@@ -4597,31 +5336,36 @@ namespace ABASim.api.Controllers
 
                         Substitution(1, position);
 
-                        // Now need to sort out the sub commentary
-                        string outPlayer = current.FirstName + " " + current.Surname;
-                        string inPlayer = "";
-
-                        switch (position)
+                        if (subError == 0)
                         {
-                            case 1:
-                                inPlayer = awayPG.FirstName + " " + awayPG.Surname;
-                                break;
-                            case 2:
-                                inPlayer = awaySG.FirstName + " " + awaySG.Surname;
-                                break;
-                            case 3:
-                                inPlayer = awaySF.FirstName + " " + awaySF.Surname;
-                                break;
-                            case 4:
-                                inPlayer = awayPF.FirstName + " " + awayPF.Surname;
-                                break;
-                            case 5:
-                                inPlayer = awayC.FirstName + " " + awayC.Surname;
-                                break;
+                            // Now need to sort out the sub commentary
+                            string outPlayer = current.FirstName + " " + current.Surname;
+                            string inPlayer = "";
+
+                            switch (position)
+                            {
+                                case 1:
+                                    inPlayer = awayPG.FirstName + " " + awayPG.Surname;
+                                    break;
+                                case 2:
+                                    inPlayer = awaySG.FirstName + " " + awaySG.Surname;
+                                    break;
+                                case 3:
+                                    inPlayer = awaySF.FirstName + " " + awaySF.Surname;
+                                    break;
+                                case 4:
+                                    inPlayer = awayPF.FirstName + " " + awayPF.Surname;
+                                    break;
+                                case 5:
+                                    inPlayer = awayC.FirstName + " " + awayC.Surname;
+                                    break;
+                            }
+                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                         }
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                        // Console.WriteLine(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+
+
                     }
                 }
             }
@@ -4629,93 +5373,346 @@ namespace ABASim.api.Controllers
 
         public void SubCheckFT()
         {
-            if (_quarter > 3 && _time <= 240) {
+            if (_quarter > 3 && _time <= 240)
+            {
                 // This will now change how the subs are done - will go to a closing lineup
                 // var starters = _homeDepth/ (x => x.Depth == 1);
                 PlayerRating currentShooter = GetCurrentPlayersRatings();
 
-                for (int i = 1; i < 6; i++) {
+                for (int i = 1; i < 6; i++)
+                {
                     var starter = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == i);
 
-                    // have the starter that should be on
-                    switch (i)
-                    {   
-                        case 1:
-                            if (starter.PlayerId != homePG.Id && homePG.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(0, i);
+                    // Need to check whether this starter is injured or not
+                    var result = _homeInjuries.Find(x => x.PlayerId == starter.PlayerId);
+
+                    if (result == null || result.Severity < 3)
+                    {
+                        // have the starter that should be on
+                        switch (i)
+                        {
+                            case 1:
+                                if (starter.PlayerId != homePG.Id && homePG.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 2:
+                                if (starter.PlayerId != homeSG.Id && homeSG.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 3:
+                                if (starter.PlayerId != homeSF.Id && homeSF.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 4:
+                                if (starter.PlayerId != homePF.Id && homePF.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            case 5:
+                                if (starter.PlayerId != homeC.Id && homeC.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(0, i);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // Player is injured and cannot come back on
+                        var backup = _homeDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                        // Need to check whether this starter is injured or not
+                        // starter.Id
+                        var res = _homeInjuries.Find(x => x.PlayerId == backup.PlayerId);
+
+                        if (res == null || res.Severity < 3)
+                        {
+                            // have the starter that should be on
+                            switch (i)
+                            {
+                                case 1:
+                                    if (backup.PlayerId != homePG.Id && homePG.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 2:
+                                    if (backup.PlayerId != homeSG.Id && homeSG.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 3:
+                                    if (backup.PlayerId != homeSF.Id && homeSF.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 4:
+                                    if (backup.PlayerId != homePF.Id && homePF.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 5:
+                                    if (backup.PlayerId != homeC.Id && homeC.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
-                            break;
-                        case 2:
-                            if (starter.PlayerId != homeSG.Id && homeSG.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(0, i);
+                        }
+                        else
+                        {
+                            // Backup player is also injured!!
+                            // Player is injured and cannot come back on
+                            var last = _homeDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                            // Need to check whether this starter is injured or not
+                            // starter.Id
+                            var r = _homeInjuries.Find(x => x.PlayerId == last.PlayerId);
+
+                            if (r == null || r.Severity < 3)
+                            {
+                                // have the starter that should be on
+                                switch (i)
+                                {
+                                    case 1:
+                                        if (last.PlayerId != homePG.Id && homePG.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 2:
+                                        if (last.PlayerId != homeSG.Id && homeSG.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 3:
+                                        if (last.PlayerId != homeSF.Id && homeSF.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 4:
+                                        if (last.PlayerId != homePF.Id && homePF.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 5:
+                                        if (last.PlayerId != homeC.Id && homeC.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                            break;
-                        case 3:
-                            if (starter.PlayerId != homeSF.Id && homeSF.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(0, i);
+                            else
+                            {
+                                // All three players are injured.
                             }
-                            break;
-                        case 4:
-                            if (starter.PlayerId != homePF.Id && homePF.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(0, i);
-                            }
-                            break;
-                        case 5:
-                            if (starter.PlayerId != homeC.Id && homeC.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(0, i);
-                            }
-                            break;
-                        default:
-                            break;
+                        }
                     }
                 }
 
-                 for (int i = 1; i < 6; i++) {
+                for (int i = 1; i < 6; i++)
+                {
                     var starter = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == i);
 
-                    // have the starter that should be on
-                    switch (i)
-                    {   
-                        case 1:
-                            if (starter.PlayerId != awayPG.Id && awayPG.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(1, i);
+                    // Need to check whether this starter is injured or not
+                    var result = _awayInjuries.Find(x => x.PlayerId == starter.PlayerId);
+
+                    if (result == null || result.Severity < 3)
+                    {
+                        // have the starter that should be on
+                        switch (i)
+                        {
+                            case 1:
+                                if (starter.PlayerId != awayPG.Id && awayPG.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 2:
+                                if (starter.PlayerId != awaySG.Id && awaySG.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 3:
+                                if (starter.PlayerId != awaySF.Id && awaySF.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 4:
+                                if (starter.PlayerId != awayPF.Id && awayPF.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            case 5:
+                                if (starter.PlayerId != awayC.Id && awayC.Id != currentShooter.PlayerId)
+                                {
+                                    // Sub needed
+                                    SubToStarter(1, i);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // Player is injured and cannot come back on
+                        var backup = _awayDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                        // Need to check whether this starter is injured or not
+                        // starter.Id
+                        var res = _awayInjuries.Find(x => x.PlayerId == backup.PlayerId);
+
+                        if (res == null || res.Severity < 3)
+                        {
+                            // have the starter that should be on
+                            switch (i)
+                            {
+                                case 1:
+                                    if (backup.PlayerId != awayPG.Id && awayPG.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 2:
+                                    if (backup.PlayerId != awaySG.Id && awaySG.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 3:
+                                    if (backup.PlayerId != awaySF.Id && awaySF.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 4:
+                                    if (backup.PlayerId != awayPF.Id && awayPF.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                case 5:
+                                    if (backup.PlayerId != awayC.Id && awayC.Id != currentShooter.PlayerId)
+                                    {
+                                        // Sub needed
+                                        SubToStarter(0, i);
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
-                            break;
-                        case 2:
-                            if (starter.PlayerId != awaySG.Id && awaySG.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(1, i);
+                        }
+                        else
+                        {
+                            // Backup player is also injured!!
+                            // Player is injured and cannot come back on
+                            var last = _awayDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == i);
+
+                            // Need to check whether this starter is injured or not
+                            // starter.Id
+                            var r = _awayInjuries.Find(x => x.PlayerId == last.PlayerId);
+
+                            if (r == null || r.Severity < 3)
+                            {
+                                // have the starter that should be on
+                                switch (i)
+                                {
+                                    case 1:
+                                        if (last.PlayerId != awayPG.Id && awayPG.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 2:
+                                        if (last.PlayerId != awaySG.Id && awaySG.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 3:
+                                        if (last.PlayerId != awaySF.Id && awaySF.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 4:
+                                        if (last.PlayerId != awayPF.Id && awayPF.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    case 5:
+                                        if (last.PlayerId != awayC.Id && awayC.Id != currentShooter.PlayerId)
+                                        {
+                                            // Sub needed
+                                            SubToStarter(0, i);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                            break;
-                        case 3:
-                            if (starter.PlayerId != awaySF.Id && awaySF.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(1, i);
+                            else
+                            {
+                                // All three players are injured.
                             }
-                            break;
-                        case 4:
-                            if (starter.PlayerId != awayPF.Id && awayPF.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(1, i);
-                            }
-                            break;
-                        case 5:
-                            if (starter.PlayerId != awayC.Id && awayC.Id != currentShooter.PlayerId) {
-                                // Sub needed
-                                SubToStarter(1, i);
-                            }
-                            break;
-                        default:
-                            break;
+                        }
                     }
                 }
-            } else {
+            }
+            else
+            {
                 // This is for normal sub patterns based off stamina
 
                 // First Check the Home Team
@@ -4726,7 +5723,18 @@ namespace ABASim.api.Controllers
 
                     if (st.PlayerId != currentShooter.PlayerId)
                     {
-                        if (st.StaminaValue > 700 && st.OnOff == 1)
+                        var injury = _homeInjuries.Find(x => x.PlayerId == st.PlayerId);
+
+                        int injuryCheck = 0;
+                        if (injury != null)
+                        {
+                            if (injury.Severity > 2)
+                            {
+                                injuryCheck = 1;
+                            }
+                        }
+
+                        if ((st.StaminaValue > 700 && st.OnOff == 1) || injuryCheck == 1)
                         {
                             // Player should be subbed out
                             // Need to determine which position the player is currently at
@@ -4762,31 +5770,36 @@ namespace ABASim.api.Controllers
 
                             Substitution(0, position);
 
-                            // Now need to sort out the sub commentary
-                            string outPlayer = current.FirstName + " " + current.Surname;
-                            string inPlayer = "";
-
-                            switch (position)
+                            if (subError == 0)
                             {
-                                case 1:
-                                    inPlayer = homePG.FirstName + " " + homePG.Surname;
-                                    break;
-                                case 2:
-                                    inPlayer = homeSG.FirstName + " " + homeSG.Surname;
-                                    break;
-                                case 3:
-                                    inPlayer = homeSF.FirstName + " " + homeSF.Surname;
-                                    break;
-                                case 4:
-                                    inPlayer = homePF.FirstName + " " + homePF.Surname;
-                                    break;
-                                case 5:
-                                    inPlayer = homeC.FirstName + " " + homeC.Surname;
-                                    break;
+                                // Now need to sort out the sub commentary
+                                string outPlayer = current.FirstName + " " + current.Surname;
+                                string inPlayer = "";
+
+                                switch (position)
+                                {
+                                    case 1:
+                                        inPlayer = homePG.FirstName + " " + homePG.Surname;
+                                        break;
+                                    case 2:
+                                        inPlayer = homeSG.FirstName + " " + homeSG.Surname;
+                                        break;
+                                    case 3:
+                                        inPlayer = homeSF.FirstName + " " + homeSF.Surname;
+                                        break;
+                                    case 4:
+                                        inPlayer = homePF.FirstName + " " + homePF.Surname;
+                                        break;
+                                    case 5:
+                                        inPlayer = homeC.FirstName + " " + homeC.Surname;
+                                        break;
+                                }
+
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                             }
 
-                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+
                         }
                     }
                 }
@@ -4798,8 +5811,18 @@ namespace ABASim.api.Controllers
                     PlayerRating currentShooter = GetCurrentPlayersRatings();
                     if (st.PlayerId != currentShooter.PlayerId)
                     {
+                        var injury = _awayInjuries.Find(x => x.PlayerId == st.PlayerId);
 
-                        if (st.StaminaValue > 700 && st.OnOff == 1)
+                        int injuryCheck = 0;
+                        if (injury != null)
+                        {
+                            if (injury.Severity > 2)
+                            {
+                                injuryCheck = 1;
+                            }
+                        }
+
+                        if ((st.StaminaValue > 700 && st.OnOff == 1) || injuryCheck == 1)
                         {
                             // Player should be subbed out
                             // Need to determine which position the player is currently at
@@ -4835,30 +5858,35 @@ namespace ABASim.api.Controllers
 
                             Substitution(1, position);
 
-                            // Now need to sort out the sub commentary
-                            string outPlayer = current.FirstName + " " + current.Surname;
-                            string inPlayer = "";
-
-                            switch (position)
+                            if (subError == 0)
                             {
-                                case 1:
-                                    inPlayer = awayPG.FirstName + " " + awayPG.Surname;
-                                    break;
-                                case 2:
-                                    inPlayer = awaySG.FirstName + " " + awaySG.Surname;
-                                    break;
-                                case 3:
-                                    inPlayer = awaySF.FirstName + " " + awaySF.Surname;
-                                    break;
-                                case 4:
-                                    inPlayer = awayPF.FirstName + " " + awayPF.Surname;
-                                    break;
-                                case 5:
-                                    inPlayer = awayC.FirstName + " " + awayC.Surname;
-                                    break;
+                                // Now need to sort out the sub commentary
+                                string outPlayer = current.FirstName + " " + current.Surname;
+                                string inPlayer = "";
+
+                                switch (position)
+                                {
+                                    case 1:
+                                        inPlayer = awayPG.FirstName + " " + awayPG.Surname;
+                                        break;
+                                    case 2:
+                                        inPlayer = awaySG.FirstName + " " + awaySG.Surname;
+                                        break;
+                                    case 3:
+                                        inPlayer = awaySF.FirstName + " " + awaySF.Surname;
+                                        break;
+                                    case 4:
+                                        inPlayer = awayPF.FirstName + " " + awayPF.Surname;
+                                        break;
+                                    case 5:
+                                        inPlayer = awayC.FirstName + " " + awayC.Surname;
+                                        break;
+                                }
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                             }
-                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+
+
                         }
                     }
                 }
@@ -4877,313 +5905,346 @@ namespace ABASim.api.Controllers
             Player current = new Player();
             var subbed = 0;
 
-            if (team == 0) {
+            if (team == 0)
+            {
 
-                    if (position == 1) {
-                        current = homePG;
+                if (position == 1)
+                {
+                    current = homePG;
 
-                        // Get the player from the depth chart
-                        var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
-                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+                    // Get the player from the depth chart
+                    var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
+                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        if (bs.Fouls < 6) {
-                            homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                            homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                    if (bs.Fouls < 6)
+                    {
+                        homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                        homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _homeStaminas[index] = stOff;
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _homeStaminas[index] = stOff;
 
-                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
-                            stOn.OnOff = 1;
-                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _homeStaminas[index] = stOn;
+                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
+                        stOn.OnOff = 1;
+                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _homeStaminas[index] = stOn;
 
-                            subbed = 1;
-                        }
-                    } else if (position == 2) {
-                        current = homeSG;
-
-                        // Get the player from the depth chart
-                        var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
-
-                         var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {    
-                            homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                            homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _homeStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
-                            stOn.OnOff = 1;
-                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _homeStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    } else if (position == 3) {
-                        current = homeSF;
-
-                        // Get the player from the depth chart
-                        var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
-                         var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                            homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _homeStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
-                            stOn.OnOff = 1;
-                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _homeStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    } else if (position == 4) {
-                        current = homePF;
-
-                        // Get the player from the depth chart
-                        var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
-                         var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                            homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _homeStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
-                            stOn.OnOff = 1;
-                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _homeStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    } else if (position == 5) {
-                        current = homeC;
-
-                        // Get the player from the depth chart
-                        var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
-                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                            homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _homeStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
-                            stOn.OnOff = 1;
-                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _homeStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    }
-
-                    if (subbed == 1) {
-                        // Now need to sort out the sub commentary
-                        string outPlayer = current.FirstName + " " + current.Surname;
-                        string inPlayer = "";
-
-                        switch (position)
-                        {
-                            case 1:
-                                inPlayer = homePG.FirstName + " " + homePG.Surname;
-                                break;
-                            case 2:
-                                inPlayer = homeSG.FirstName + " " + homeSG.Surname;
-                                break;
-                            case 3:
-                                inPlayer = homeSF.FirstName + " " + homeSF.Surname;
-                                break;
-                            case 4:
-                                inPlayer = homePF.FirstName + " " + homePF.Surname;
-                                break;
-                            case 5:
-                                inPlayer = homeC.FirstName + " " + homeC.Surname;
-                                break;
-                        }
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
-                    }
-            } else {
-                    if (position == 1) {
-                        current = awayPG;
-
-                        // Get the player from the depth chart
-                        var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
-                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                            awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _awayStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
-                            stOn.OnOff = 1;
-                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _awayStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    } else if (position == 2) {
-                        current = awaySG;
-
-                        // Get the player from the depth chart
-                        var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
-                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                            awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _awayStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
-                            stOn.OnOff = 1;
-                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _awayStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    } else if (position == 3) {
-                        current = awaySF;
-
-                        // Get the player from the depth chart
-                        var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
-                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                            awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _awayStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
-                            stOn.OnOff = 1;
-                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _awayStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    } else if (position == 4) {
-                        current = awayPF;
-
-                        // Get the player from the depth chart
-                        var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
-                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                            awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _awayStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
-                            stOn.OnOff = 1;
-                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _awayStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    } else if (position == 5) {
-                        current = awayC;
-
-                        // Get the player from the depth chart
-                        var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
-                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                        if (bs.Fouls < 6) {
-                            awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                            awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
-
-                            // Need to update the stamina track objects for on and off court
-                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                            stOff.OnOff = 0;
-                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                            _awayStaminas[index] = stOff;
-
-                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
-                            stOn.OnOff = 1;
-                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                            _awayStaminas[index] = stOn;
-
-                            subbed = 1;
-                        }
-                    }
-
-                    if (subbed == 1) {
-                        // Now need to sort out the sub commentary
-                        string outPlayer = current.FirstName + " " + current.Surname;
-                        string inPlayer = "";
-
-                        switch (position)
-                        {
-                            case 1:
-                                inPlayer = awayPG.FirstName + " " + awayPG.Surname;
-                                break;
-                            case 2:
-                                inPlayer = awaySG.FirstName + " " + awaySG.Surname;
-                                break;
-                            case 3:
-                                inPlayer = awaySF.FirstName + " " + awaySF.Surname;
-                                break;
-                            case 4:
-                                inPlayer = awayPF.FirstName + " " + awayPF.Surname;
-                                break;
-                            case 5:
-                                inPlayer = awayC.FirstName + " " + awayC.Surname;
-                                break;
-                        }
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                        subbed = 1;
                     }
                 }
+                else if (position == 2)
+                {
+                    current = homeSG;
+
+                    // Get the player from the depth chart
+                    var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
+
+                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                        homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _homeStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
+                        stOn.OnOff = 1;
+                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _homeStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+                else if (position == 3)
+                {
+                    current = homeSF;
+
+                    // Get the player from the depth chart
+                    var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
+                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                        homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _homeStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
+                        stOn.OnOff = 1;
+                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _homeStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+                else if (position == 4)
+                {
+                    current = homePF;
+
+                    // Get the player from the depth chart
+                    var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
+                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                        homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _homeStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
+                        stOn.OnOff = 1;
+                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _homeStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+                else if (position == 5)
+                {
+                    current = homeC;
+
+                    // Get the player from the depth chart
+                    var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
+                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                        homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _homeStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
+                        stOn.OnOff = 1;
+                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _homeStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+
+                if (subbed == 1)
+                {
+                    // Now need to sort out the sub commentary
+                    string outPlayer = current.FirstName + " " + current.Surname;
+                    string inPlayer = "";
+
+                    switch (position)
+                    {
+                        case 1:
+                            inPlayer = homePG.FirstName + " " + homePG.Surname;
+                            break;
+                        case 2:
+                            inPlayer = homeSG.FirstName + " " + homeSG.Surname;
+                            break;
+                        case 3:
+                            inPlayer = homeSF.FirstName + " " + homeSF.Surname;
+                            break;
+                        case 4:
+                            inPlayer = homePF.FirstName + " " + homePF.Surname;
+                            break;
+                        case 5:
+                            inPlayer = homeC.FirstName + " " + homeC.Surname;
+                            break;
+                    }
+                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                }
+            }
+            else
+            {
+                if (position == 1)
+                {
+                    current = awayPG;
+
+                    // Get the player from the depth chart
+                    var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
+                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                        awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _awayStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
+                        stOn.OnOff = 1;
+                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _awayStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+                else if (position == 2)
+                {
+                    current = awaySG;
+
+                    // Get the player from the depth chart
+                    var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
+                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                        awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _awayStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
+                        stOn.OnOff = 1;
+                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _awayStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+                else if (position == 3)
+                {
+                    current = awaySF;
+
+                    // Get the player from the depth chart
+                    var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
+                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                        awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _awayStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
+                        stOn.OnOff = 1;
+                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _awayStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+                else if (position == 4)
+                {
+                    current = awayPF;
+
+                    // Get the player from the depth chart
+                    var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
+                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                        awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _awayStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
+                        stOn.OnOff = 1;
+                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _awayStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+                else if (position == 5)
+                {
+                    current = awayC;
+
+                    // Get the player from the depth chart
+                    var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
+                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    if (bs.Fouls < 6)
+                    {
+                        awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                        awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                        // Need to update the stamina track objects for on and off court
+                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                        stOff.OnOff = 0;
+                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                        _awayStaminas[index] = stOff;
+
+                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
+                        stOn.OnOff = 1;
+                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                        _awayStaminas[index] = stOn;
+
+                        subbed = 1;
+                    }
+                }
+
+                if (subbed == 1)
+                {
+                    // Now need to sort out the sub commentary
+                    string outPlayer = current.FirstName + " " + current.Surname;
+                    string inPlayer = "";
+
+                    switch (position)
+                    {
+                        case 1:
+                            inPlayer = awayPG.FirstName + " " + awayPG.Surname;
+                            break;
+                        case 2:
+                            inPlayer = awaySG.FirstName + " " + awaySG.Surname;
+                            break;
+                        case 3:
+                            inPlayer = awaySF.FirstName + " " + awaySF.Surname;
+                            break;
+                        case 4:
+                            inPlayer = awayPF.FirstName + " " + awayPF.Surname;
+                            break;
+                        case 5:
+                            inPlayer = awayC.FirstName + " " + awayC.Surname;
+                            break;
+                    }
+                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                }
+            }
         }
 
         public void BackToStarters()
         {
             // Home Team
-            for (int i=1; i<6; i++)
+            for (int i = 1; i < 6; i++)
             {
                 DepthChart dc = null;
                 List<int> onCourtIds = null;
@@ -5480,7 +6541,7 @@ namespace ABASim.api.Controllers
 
                         exists = onCourtIds.Contains(dc.PlayerId);
 
-                        if(!exists)
+                        if (!exists)
                         {
                             awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
                             awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
@@ -5496,7 +6557,7 @@ namespace ABASim.api.Controllers
                             stOn.OnOff = 1;
                             index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
                             _awayStaminas[index] = stOn;
-                            
+
                         }
                         break;
                     case 5:
@@ -5541,26 +6602,39 @@ namespace ABASim.api.Controllers
             int decision = 0;
             int diff = ScoreDiffCheck();
 
-            if (diff == 0) {
+            if (diff == 0)
+            {
                 // returns to normal
                 decision = GetPlayerDecision();
-            } else {
-                if (_teamPossession == 0 && diff < 0) {
+            }
+            else
+            {
+                if (_teamPossession == 0 && diff < 0)
+                {
                     // Home team is winning and has the ball
-                } else if (_teamPossession == 1 && diff > 0) {
+                }
+                else if (_teamPossession == 1 && diff > 0)
+                {
                     // Away Team is winning and has the ball
-                } else {
+                }
+                else
+                {
                     // Whoever has the ball is losing
-                    if (_teamPossession == 0 && diff > 0) {
+                    if (_teamPossession == 0 && diff > 0)
+                    {
                         // home has the ball and is losing
-                        if (diff <= 2) {
+                        if (diff <= 2)
+                        {
 
                         }
 
-                    } else if (_teamPossession == 1 && diff < 0) {
+                    }
+                    else if (_teamPossession == 1 && diff < 0)
+                    {
                         // away has the ball and is losing
-                        if (diff <= -2) {
-                            
+                        if (diff <= -2)
+                        {
+
                         }
                     }
                 }
@@ -5582,7 +6656,7 @@ namespace ABASim.api.Controllers
             int index;
 
             // Home PG
-            BoxScore homePGBS = _homeBoxScores.Find(x => x.Id == homePG.Id);    
+            BoxScore homePGBS = _homeBoxScores.Find(x => x.Id == homePG.Id);
             minutes = homePGBS.Minutes;
             homePGBS.Minutes = minutes + time;
             index = _homeBoxScores.FindIndex(x => x.Id == homePG.Id);
@@ -5667,7 +6741,7 @@ namespace ABASim.api.Controllers
                     PlayerRating current = _awayRatings.Find(x => x.PlayerId == st.PlayerId);
 
                     // Determine how much of the rating gets applied for the time passed
-                    decimal percantageToApply = (decimal) time / 60;
+                    decimal percantageToApply = (decimal)time / 60;
                     decimal staminaUpdateAmount = current.StaminaRating * percantageToApply;
                     // Update the players stamina rating
                     decimal currentStamina = st.StaminaValue;
@@ -5676,7 +6750,9 @@ namespace ABASim.api.Controllers
                     // Add the StaminaTrack record back into the awayStaminas list
                     int index = _awayStaminas.FindIndex(x => x.PlayerId == st.PlayerId);
                     _awayStaminas[index] = st;
-                } else {
+                }
+                else
+                {
                     // player is off the court
                     // Do this check as if the player has not stamina effect that can not receive any more
                     if (st.StaminaValue > 0)
@@ -5685,7 +6761,7 @@ namespace ABASim.api.Controllers
                         PlayerRating current = _awayRatings.Find(x => x.PlayerId == st.PlayerId);
 
                         // Determine how much of the rating gets applied for the time passed
-                        decimal percantageToApply = (decimal) time / 120; // making this have half the effect of playing
+                        decimal percantageToApply = (decimal)time / 120; // making this have half the effect of playing
                         decimal staminaUpdateAmount = current.StaminaRating * percantageToApply;
 
                         // Update the players stamina rating
@@ -5749,7 +6825,7 @@ namespace ABASim.api.Controllers
 
         public int StaminaEffect(int playerid, int team, int rating)
         {
-            if(team == 0)
+            if (team == 0)
             {
                 // Home
                 StaminaTrack st = _homeStaminas.Find(x => x.PlayerId == playerid);
@@ -5767,7 +6843,8 @@ namespace ABASim.api.Controllers
                     int returnValue = rating - (int)newRating;
                     return returnValue;
                 }
-            } else
+            }
+            else
             {
                 // Away
                 StaminaTrack st = _awayStaminas.Find(x => x.PlayerId == playerid);
@@ -5797,7 +6874,7 @@ namespace ABASim.api.Controllers
             }
             else if (quarter == 2)
             {
-                value = (decimal) 2.5;
+                value = (decimal)2.5;
             }
 
             // Away Team
@@ -5841,6 +6918,316 @@ namespace ABASim.api.Controllers
                 int index = _homeStaminas.FindIndex(x => x.PlayerId == st.PlayerId);
                 _homeStaminas[index] = st;
             }
+        }
+
+        public void InjuryCheck()
+        {
+            // Go through Away players first
+            List<Player> currentAwayPlayers = new List<Player>();
+            currentAwayPlayers.Add(awayPG);
+            currentAwayPlayers.Add(awaySG);
+            currentAwayPlayers.Add(awaySF);
+            currentAwayPlayers.Add(awayPF);
+            currentAwayPlayers.Add(awayC);
+
+            // Now go through home players
+            List<Player> currentHomePlayers = new List<Player>();
+            currentHomePlayers.Add(homePG);
+            currentHomePlayers.Add(homeSG);
+            currentHomePlayers.Add(homeSF);
+            currentHomePlayers.Add(homePF);
+            currentHomePlayers.Add(homeC);
+
+            foreach (var player in currentAwayPlayers)
+            {
+                int result = _random.Next(1, 5001);
+
+                if (result > 4980)
+                {
+                    // Player has been injured and needs to be actioned accordingly
+                    // Injury severity
+                    int severity = InjurySeverityValue();
+
+                    List<InjuryType> injuryTypes = _repo.GetInjuryTypesForSeverity(severity);
+                    int count = injuryTypes.Count;
+                    int injuryNumber = _random.Next(0, count);
+                    InjuryType injury = injuryTypes[injuryNumber];
+
+                    int impact = 0;
+                    if (severity >= 3)
+                    {
+                        impact = 1;
+                    }
+
+                    int staminaImpact = 0;
+                    int timeLength = 0;
+                    int endQuarter = _quarter;
+
+                    if (severity <= 2)
+                    {
+                        staminaImpact = (severity * 100);
+                        timeLength = _random.Next(200, 1200);
+
+                        if (timeLength > _time)
+                        {
+                            endQuarter = endQuarter++;
+
+                            int temp = timeLength - _time;
+                            timeLength = timeLength - temp;
+                        }
+                        else
+                        {
+                            timeLength = _time - timeLength;
+                        }
+                    }
+
+                    // Populate the injury DTO
+                    InjuryDto injuryDto = new InjuryDto
+                    {
+                        Id = 0,
+                        InjuryTypeName = injury.Type,
+                        Severity = severity,
+                        PlayerId = player.Id,
+                        Impact = impact,
+                        StaminaImpact = staminaImpact,
+                        StartQuarterImpact = _quarter,
+                        EndQuarterImpact = endQuarter,
+                        StartTimeImpact = _time,
+                        EndTimeImpact = timeLength,
+                    };
+
+                    _awayInjuries.Add(injuryDto);
+
+                    // Next item of the injury process
+
+                    // Need to add the commentary
+                    string playerName = player.FirstName + " " + player.Surname;
+                    commentaryData.Add(comm.GetInjuryCommentary(playerName, severity, injury.Type));
+                    PlayByPlayTracker(comm.GetInjuryCommentary(playerName, severity, injury.Type), 0);
+
+                    // The injury sub will be included in sub check and sub free throw checks
+                }
+            }
+
+            foreach (var player in currentHomePlayers)
+            {
+                int result = _random.Next(1, 5001);
+
+
+                if (result > 4980)
+                {
+                    // Player has been injured and needs to be actioned accordingly
+                    // Injury severity
+                    int severity = InjurySeverityValue();
+
+                    List<InjuryType> injuryTypes = _repo.GetInjuryTypesForSeverity(severity);
+                    int count = injuryTypes.Count;
+                    int injuryNumber = _random.Next(0, count);
+                    InjuryType injury = injuryTypes[injuryNumber];
+
+                    int impact = 0;
+                    if (severity >= 3)
+                    {
+                        impact = 1;
+                    }
+
+                    int staminaImpact = 0;
+                    int timeLength = 0;
+                    int endQuarter = _quarter;
+
+                    if (severity <= 2)
+                    {
+                        staminaImpact = (severity * 100);
+                        timeLength = _random.Next(200, 1200);
+
+                        if (timeLength > _time)
+                        {
+                            endQuarter = endQuarter++;
+
+                            int temp = timeLength - _time;
+                            timeLength = timeLength - temp;
+                        }
+                        else
+                        {
+                            timeLength = _time - timeLength;
+                        }
+                    }
+
+                    // Populate the injury DTO
+                    InjuryDto injuryDto = new InjuryDto
+                    {
+                        Id = 0,
+                        InjuryTypeName = injury.Type,
+                        Severity = severity,
+                        PlayerId = player.Id,
+                        Impact = impact,
+                        StaminaImpact = staminaImpact,
+                        StartQuarterImpact = _quarter,
+                        EndQuarterImpact = endQuarter,
+                        StartTimeImpact = _time,
+                        EndTimeImpact = timeLength,
+                    };
+
+                    _homeInjuries.Add(injuryDto);
+
+                    // Next item of the injury process
+
+                    // Need to add the commentary
+                    string playerName = player.FirstName + " " + player.Surname;
+                    commentaryData.Add(comm.GetInjuryCommentary(playerName, severity, injury.Type));
+                    PlayByPlayTracker(comm.GetInjuryCommentary(playerName, severity, injury.Type), 0);
+
+                    // The injury sub will be included in sub check and sub free throw checks
+                }
+            }
+        }
+
+        public void InjuryStaminaChecks()
+        {
+            // Home - only need to check if sev 1 or 2
+            var homeInjuries = _homeInjuries.FindAll(x => x.Severity == 1 || x.Severity == 2);
+            foreach (var injury in homeInjuries)
+            {
+                // Firstly, check to see if the injury is still active
+                if (injury.Impact == 0)
+                {
+                    // Need to check to see if the injury is to be applied
+                    // Injury is still in play
+                    // Same quarter injury
+                    if (injury.StartQuarterImpact <= _quarter)
+                    {
+                        if (injury.StartQuarterImpact == _quarter && injury.StartTimeImpact <= _time)
+                        {
+                            StaminaTrack st = _homeStaminas.Find(x => x.PlayerId == injury.PlayerId);
+
+                            // Update the players stamina rating
+                            decimal currentStamina = st.StaminaValue;
+                            st.StaminaValue = currentStamina + injury.StaminaImpact;
+
+                            // Add the StaminaTrack record back into the awayStaminas list
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == st.PlayerId);
+                            _homeStaminas[index] = st;
+                            injury.Impact = 1;
+                        }
+                        else if (injury.StartQuarterImpact < _quarter)
+                        {
+                            StaminaTrack st = _homeStaminas.Find(x => x.PlayerId == injury.PlayerId);
+
+                            // Update the players stamina rating
+                            decimal currentStamina = st.StaminaValue;
+                            st.StaminaValue = currentStamina + injury.StaminaImpact;
+
+                            // Add the StaminaTrack record back into the awayStaminas list
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == st.PlayerId);
+                            _homeStaminas[index] = st;
+                            injury.Impact = 1;
+                        }
+                    }
+                }
+                else
+                {
+                    // Need to check if the injury has expired
+                    if (injury.EndQuarterImpact <= _quarter)
+                    {
+                        // Filters out the injuries that are before the end quarter
+                        if (injury.EndQuarterImpact == _quarter && injury.EndTimeImpact > _time)
+                        {
+                            injury.Impact = 0;
+                        }
+                        else if (injury.EndQuarterImpact < _quarter)
+                        {
+                            injury.Impact = 0;
+                        }
+                    }
+                }
+            }
+
+            // Away
+            var awayInjuries = _awayInjuries.FindAll(x => x.Severity == 1 || x.Severity == 2);
+            foreach (var injury in awayInjuries)
+            {
+                // Firstly, check to see if the injury is still active
+                if (injury.Impact == 0)
+                {
+                    // Need to check to see if the injury is to be applied
+                    // Injury is still in play
+                    // Same quarter injury
+                    if (injury.StartQuarterImpact <= _quarter)
+                    {
+                        if (injury.StartQuarterImpact == _quarter && injury.StartTimeImpact <= _time)
+                        {
+                            StaminaTrack st = _awayStaminas.Find(x => x.PlayerId == injury.PlayerId);
+
+                            // Update the players stamina rating
+                            decimal currentStamina = st.StaminaValue;
+                            st.StaminaValue = currentStamina + injury.StaminaImpact;
+
+                            // Add the StaminaTrack record back into the awayStaminas list
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == st.PlayerId);
+                            _awayStaminas[index] = st;
+                            injury.Impact = 1;
+                        }
+                        else if (injury.StartQuarterImpact < _quarter)
+                        {
+                            StaminaTrack st = _awayStaminas.Find(x => x.PlayerId == injury.PlayerId);
+
+                            // Update the players stamina rating
+                            decimal currentStamina = st.StaminaValue;
+                            st.StaminaValue = currentStamina + injury.StaminaImpact;
+
+                            // Add the StaminaTrack record back into the awayStaminas list
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == st.PlayerId);
+                            _awayStaminas[index] = st;
+                            injury.Impact = 1;
+                        }
+                    }
+                }
+                else
+                {
+                    // Need to check if the injury has expired
+                    if (injury.EndQuarterImpact <= _quarter)
+                    {
+                        // Filters out the injuries that are before the end quarter
+                        if (injury.EndQuarterImpact == _quarter && injury.EndTimeImpact > _time)
+                        {
+                            injury.Impact = 0;
+                        }
+                        else if (injury.EndQuarterImpact < _quarter)
+                        {
+                            injury.Impact = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        public int InjurySeverityValue()
+        {
+            int injurySeverity = 0;
+            int severityResult = _random.Next(1, 101);
+
+            if (severityResult <= 35)
+            {
+                injurySeverity = 1;
+            }
+            else if (severityResult > 35 && severityResult <= 60)
+            {
+                injurySeverity = 2;
+            }
+            else if (severityResult > 60 && severityResult <= 80)
+            {
+                injurySeverity = 3;
+            }
+            else if (severityResult > 80 && severityResult <= 95)
+            {
+                injurySeverity = 4;
+            }
+            else
+            {
+                injurySeverity = 5;
+            }
+
+            return injurySeverity;
         }
 
         /* REFACTORED */
@@ -6268,7 +7655,7 @@ namespace ABASim.api.Controllers
             }
             return name;
         }
-    
+
         /* REFACTORED */
         public PlayerRating GetCurrentPlayersRatings()
         {
@@ -6381,7 +7768,8 @@ namespace ABASim.api.Controllers
 
         public int GetPlayerIdForPosition(int team, int position)
         {
-            if (team == 0) {
+            if (team == 0)
+            {
                 switch (position)
                 {
                     case 1:
@@ -6397,7 +7785,9 @@ namespace ABASim.api.Controllers
                     default:
                         return 0;
                 }
-            } else {
+            }
+            else
+            {
                 switch (position)
                 {
                     case 1:
@@ -6415,44 +7805,53 @@ namespace ABASim.api.Controllers
                 }
             }
         }
-    
+
         /* REFACTORED */
         public int CheckCurrentPosition(int playerId)
         {
             if (awayPG.Id == playerId)
             {
                 return 1;
-            } else if (awaySG.Id == playerId)
+            }
+            else if (awaySG.Id == playerId)
             {
                 return 2;
-            } else if (awaySF.Id == playerId)
+            }
+            else if (awaySF.Id == playerId)
             {
                 return 3;
-            } else if (awayPF.Id == playerId)
+            }
+            else if (awayPF.Id == playerId)
             {
                 return 4;
-            } else if (awayC.Id == playerId)
+            }
+            else if (awayC.Id == playerId)
             {
                 return 5;
-            } else if (homePG.Id == playerId)
+            }
+            else if (homePG.Id == playerId)
             {
                 return 1;
-            } else if (homeSG.Id == playerId)
+            }
+            else if (homeSG.Id == playerId)
             {
                 return 2;
-            } else if (homeSF.Id == playerId)
+            }
+            else if (homeSF.Id == playerId)
             {
                 return 3;
-            } else if (homePF.Id == playerId)
+            }
+            else if (homePF.Id == playerId)
             {
                 return 4;
-            } else if (homeC.Id == playerId)
+            }
+            else if (homeC.Id == playerId)
             {
                 return 5;
             }
             return 0;
         }
-    
+
         /* REFACTORED */
         [HttpGet("getboxscoresforgameid/{gameId}")]
         public async Task<IEnumerable<BoxScore>> GetBoxScoresForGameId(int gameId)
@@ -6481,7 +7880,8 @@ namespace ABASim.api.Controllers
 
             _ordering++;
 
-            if (endOfPlay == 1) {
+            if (endOfPlay == 1)
+            {
                 _playNumber++;
             }
         }

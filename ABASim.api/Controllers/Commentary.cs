@@ -548,5 +548,14 @@ namespace ABASim.api.Controllers
 
             return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " holds onto the ball.";
         }
+
+        public string GetInjuryCommentary(string playername, int severity, string injuryType)
+        {
+            if (severity <= 2) {
+                return "INJURY - " + playername + " has picked up a minor injury to his " + injuryType + ". How much will this effect his play?";
+            } else {
+                return "INJURY - " + playername + " has picked up a significant injury to his " + injuryType + ". He will not be able to continue.";
+            }
+        }
     }
 }

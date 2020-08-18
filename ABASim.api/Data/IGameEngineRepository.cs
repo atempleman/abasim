@@ -39,5 +39,7 @@ namespace ABASim.api.Data
          Task<bool> SaveSeasonResult(int awayScore, int homeScore, int winningTeamId, int gameId, int losingTeamId);
 
          Task<bool> SavePlayoffResult(int awayScore, int homeScore, int winningTeamId, int gameId, int losingTeamId);
+
+         List<InjuryType> GetInjuryTypesForSeverity(int severity);
     }
 }

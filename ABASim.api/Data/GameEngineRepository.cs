@@ -315,5 +315,17 @@ namespace ABASim.api.Data
             }
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public List<InjuryType> GetInjuryTypesForSeverity(int severity)
+        {
+            List<InjuryType> result = new List<InjuryType>();
+            var injuryTypes = _context.InjuryTypes.Where(x => x.SeverityId == severity).ToList();
+
+            foreach (var it in injuryTypes)
+            {
+                result.Add(it);
+            }
+            return result;
+        }
     }
 }
