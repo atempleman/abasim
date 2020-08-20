@@ -327,5 +327,21 @@ namespace ABASim.api.Data
             }
             return result;
         }
+
+        public async Task<bool> SaveInjury(List<PlayerInjury> injuries)
+        {
+            foreach (var injury in injuries)
+            {
+                await _context.AddAsync(injury);
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<PlayerInjury> GetPlayerInjury(int playerId)
+        {
+            var playerInjury = await _context.PlayerInjuries.FirstOrDefaultAsync(x => x.CurrentlyInjured == 1 && x.PlayerId == playerId);
+            return playerInjury;
+        }
     }
 }

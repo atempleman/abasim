@@ -89,5 +89,7 @@ namespace ABASim.api.Data
         public DbSet<InjurySeverity> InjurySeverities { get; set; }
 
         public DbSet<InjuryType> InjuryTypes { get; set; }
+
+        public DbSet<PlayerInjury> PlayerInjuries { get; set; }
     }
 }

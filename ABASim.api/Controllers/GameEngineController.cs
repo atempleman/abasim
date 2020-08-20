@@ -119,6 +119,9 @@ namespace ABASim.api.Controllers
             var result1 = await SetupRosters();
             var result2 = await SetupDepthCharts();
             var result3 = await GetPlayerDetails();
+            var result4 = await GetPlayerInjuries();
+            // Get player injuries
+
             SetStartingLineups();
 
             commentaryData.Add(comm.GetGameIntroCommentry(_awayTeam, _homeTeam)); // Need a way to block this out when run games for real
@@ -208,6 +211,7 @@ namespace ABASim.api.Controllers
         [HttpPost("startPlayoffGame")]
         public async Task<IActionResult> StartPlayoffGame(SimGameDto game)
         {
+            // Need to get the player injuries
             await StartGame(game);
 
             // Will need to update the play by play saving here
@@ -233,6 +237,139 @@ namespace ABASim.api.Controllers
                 losingTeamId = _awayTeam.Id;
             }
             bool savedGame = await _repo.SavePlayoffResult(_awayScore, _homeScore, winningTeamId, game.GameId, losingTeamId);
+
+            List<PlayerInjury> playerInjuries = new List<PlayerInjury>();
+            // end of game injuries
+            foreach (var injury in _homeInjuries)
+            {
+                PlayerInjury pi = new PlayerInjury();
+                if (injury.Severity == 1) {
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = 0;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 2) {
+                    int tm = _random.Next(1, 1000);
+                    int daysMissed = 0;
+                    if (tm >= 900 && tm < 950) {
+                        daysMissed = 1;
+                    } else if (tm >= 950) {
+                        daysMissed = 2;
+                    }
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 3) {
+                    int tm = _random.Next(3, 21);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 4) {
+                    int tm = _random.Next(21, 50);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 5) {
+                    int tm = _random.Next(51, 180);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                }
+                playerInjuries.Add(pi);
+            }
+
+            foreach (var injury in _awayInjuries)
+            {
+                PlayerInjury pi = new PlayerInjury();
+                if (injury.Severity == 1) {
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = 0;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 2) {
+                    int tm = _random.Next(1, 1000);
+                    int daysMissed = 0;
+                    if (tm >= 900 && tm < 950) {
+                        daysMissed = 1;
+                    } else if (tm >= 950) {
+                        daysMissed = 2;
+                    }
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 3) {
+                    int tm = _random.Next(3, 21);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 4) {
+                    int tm = _random.Next(21, 50);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                } else if (injury.Severity == 5) {
+                    int tm = _random.Next(51, 180);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                    pi.CurrentlyInjured = 0;
+                }
+                playerInjuries.Add(pi);
+            }
+            // Need to save all records now
+            await _repo.SaveInjury(playerInjuries);
+
             return Ok(true);
         }
 
@@ -265,8 +402,132 @@ namespace ABASim.api.Controllers
             }
             bool savedGame = await _repo.SaveSeasonResult(_awayScore, _homeScore, winningTeamId, game.GameId, losingTeamId);
 
+            List<PlayerInjury> playerInjuries = new List<PlayerInjury>();
+            // end of game injuries
+            foreach (var injury in _homeInjuries)
+            {
+                PlayerInjury pi = new PlayerInjury();
+                if (injury.Severity == 1) {
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = 0;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 2) {
+                    int tm = _random.Next(1, 1000);
+                    int daysMissed = 0;
+                    if (tm >= 900 && tm < 950) {
+                        daysMissed = 1;
+                    } else if (tm >= 950) {
+                        daysMissed = 2;
+                    }
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 3) {
+                    int tm = _random.Next(3, 21);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 4) {
+                    int tm = _random.Next(21, 50);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 5) {
+                    int tm = _random.Next(51, 180);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                }
+                playerInjuries.Add(pi);
+            }
+
+            foreach (var injury in _awayInjuries)
+            {
+                PlayerInjury pi = new PlayerInjury();
+                if (injury.Severity == 1) {
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = 0;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 2) {
+                    int tm = _random.Next(1, 1000);
+                    int daysMissed = 0;
+                    if (tm >= 900 && tm < 950) {
+                        daysMissed = 1;
+                    } else if (tm >= 950) {
+                        daysMissed = 2;
+                    }
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 3) {
+                    int tm = _random.Next(3, 21);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 4) {
+                    int tm = _random.Next(21, 50);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                } else if (injury.Severity == 5) {
+                    int tm = _random.Next(51, 180);
+                    int daysMissed = tm;
+
+                    pi.PlayerId = injury.PlayerId;
+                    pi.Severity = injury.Severity;
+                    pi.StartDay = 0;
+                    pi.EndDay = 0;
+                    pi.TimeMissed = daysMissed;
+                    pi.Type = injury.InjuryTypeName;
+                }
+                playerInjuries.Add(pi);
+            }
+            // Need to save all records now
+            await _repo.SaveInjury(playerInjuries);
+
             return Ok(true);
         }
+
+
 
 
         public async Task<IActionResult> SetupTeams()
@@ -324,6 +585,52 @@ namespace ABASim.api.Controllers
             _awayDepth = (List<DepthChart>)adc;
             _homeDepth = (List<DepthChart>)hdc;
 
+            return Ok(true);
+        }
+
+        public async Task<IActionResult> GetPlayerInjuries()
+        {
+            for (int i = 0; i < _awayRoster.Count; i++)
+            {
+                var injury = await _repo.GetPlayerInjury(_awayRoster[i].PlayerId);
+                if (injury != null) {
+                    InjuryDto dto = new InjuryDto
+                    {
+                        Id = injury.Id,
+                        InjuryTypeName = injury.Type,
+                        Severity = injury.Severity,
+                        PlayerId = injury.PlayerId,
+                        Impact = 2,
+                        StaminaImpact = 0,
+                        StartQuarterImpact = 1,
+                        EndQuarterImpact = 4,
+                        StartTimeImpact = 720,
+                        EndTimeImpact = 0
+                    };
+                    _awayInjuries.Add(dto);
+                }
+            }
+
+            for (int i = 0; i < _homeRoster.Count; i++)
+            {
+                var injury = await _repo.GetPlayerInjury(_homeRoster[i].PlayerId);
+                if (injury != null) {
+                    InjuryDto dto = new InjuryDto
+                    {
+                        Id = injury.Id,
+                        InjuryTypeName = injury.Type,
+                        Severity = injury.Severity,
+                        PlayerId = injury.PlayerId,
+                        Impact = 2,
+                        StaminaImpact = 0,
+                        StartQuarterImpact = 1,
+                        EndQuarterImpact = 4,
+                        StartTimeImpact = 720,
+                        EndTimeImpact = 0
+                    };
+                    _homeInjuries.Add(dto);
+                }
+            }
             return Ok(true);
         }
 
