@@ -288,6 +288,12 @@ namespace ABASim.api.Data
             return playerInjuries;
         }
 
+        public async Task<PlayerInjury> GetInjuryForPlayer(int playerId)
+        {
+            var injury = await _context.PlayerInjuries.FirstOrDefaultAsync(x => x.CurrentlyInjured == 1 && x.PlayerId == playerId);
+            return injury;
+        }
+
         public async Task<IEnumerable<PlayerInjury>> GetPlayerInjuriesForTeam(int teamId)
         {
             List<PlayerInjury> playerInjuries = new List<PlayerInjury>();

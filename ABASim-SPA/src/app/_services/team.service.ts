@@ -117,4 +117,8 @@ export class TeamService {
     return this.http.get<PlayerInjury[]>(this.baseUrl + 'getinjuriesforfreeagents');
   }
 
+  getInjuryForPlayer(playerId: number): Observable<PlayerInjury> {
+    return this.http.get<PlayerInjury>(this.baseUrl + 'getinjuryforplayer/' + playerId);
+  }
+
 }

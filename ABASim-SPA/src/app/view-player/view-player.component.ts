@@ -8,6 +8,7 @@ import { TransferService } from '../_services/transfer.service';
 import { PlayerService } from '../_services/player.service';
 import { CompletePlayer } from '../_models/completePlayer';
 import { League } from '../_models/league';
+import { PlayerInjury } from '../_models/playerInjury';
 
 @Component({
   selector: 'app-view-player',
@@ -24,6 +25,9 @@ export class ViewPlayerComponent implements OnInit {
   statusGrades = false;
   statusRatings = false;
   statusTendancies = false;
+
+  playerInjury: PlayerInjury;
+  injurySet = 0;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private transferService: TransferService,
@@ -43,6 +47,13 @@ export class ViewPlayerComponent implements OnInit {
       console.log(this.detailedPlayer);
     }, error => {
       this.alertify.error('Error getting player profile');
+    });
+
+    this.teamService.getInjuryForPlayer(this.playerId).subscribe(result => {
+      this.playerInjury = result;
+      this.injurySet = 1;
+    }, error => {
+      this.alertify.error('Error checking player injury');
     });
   }
 

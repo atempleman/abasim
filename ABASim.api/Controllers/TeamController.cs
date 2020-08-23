@@ -183,5 +183,12 @@ namespace ABASim.api.Controllers
             var playerInjuries = await _repo.GetInjuriesForFreeAgents();
             return Ok(playerInjuries);
         }
+
+        [HttpGet("getinjuryforplayer/{playerId}")]
+        public async Task<IActionResult> GetInjuryForPlayer(int playerId)
+        {
+            var injury = await _repo.GetInjuryForPlayer(playerId);
+            return Ok(injury);
+        }
     }
 }

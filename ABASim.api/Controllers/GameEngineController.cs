@@ -243,7 +243,8 @@ namespace ABASim.api.Controllers
             foreach (var injury in _homeInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.Severity == 1) {
+                if (injury.Severity == 1)
+                {
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
@@ -251,12 +252,17 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 2) {
+                }
+                else if (injury.Severity == 2)
+                {
                     int tm = _random.Next(1, 1000);
                     int daysMissed = 0;
-                    if (tm >= 900 && tm < 950) {
+                    if (tm >= 900 && tm < 950)
+                    {
                         daysMissed = 1;
-                    } else if (tm >= 950) {
+                    }
+                    else if (tm >= 950)
+                    {
                         daysMissed = 2;
                     }
 
@@ -267,7 +273,9 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 3) {
+                }
+                else if (injury.Severity == 3)
+                {
                     int tm = _random.Next(3, 21);
                     int daysMissed = tm;
 
@@ -278,7 +286,9 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 4) {
+                }
+                else if (injury.Severity == 4)
+                {
                     int tm = _random.Next(21, 50);
                     int daysMissed = tm;
 
@@ -289,7 +299,9 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 5) {
+                }
+                else if (injury.Severity == 5)
+                {
                     int tm = _random.Next(51, 180);
                     int daysMissed = tm;
 
@@ -307,7 +319,8 @@ namespace ABASim.api.Controllers
             foreach (var injury in _awayInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.Severity == 1) {
+                if (injury.Severity == 1)
+                {
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
@@ -315,12 +328,17 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 2) {
+                }
+                else if (injury.Severity == 2)
+                {
                     int tm = _random.Next(1, 1000);
                     int daysMissed = 0;
-                    if (tm >= 900 && tm < 950) {
+                    if (tm >= 900 && tm < 950)
+                    {
                         daysMissed = 1;
-                    } else if (tm >= 950) {
+                    }
+                    else if (tm >= 950)
+                    {
                         daysMissed = 2;
                     }
 
@@ -331,7 +349,9 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 3) {
+                }
+                else if (injury.Severity == 3)
+                {
                     int tm = _random.Next(3, 21);
                     int daysMissed = tm;
 
@@ -342,7 +362,9 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 4) {
+                }
+                else if (injury.Severity == 4)
+                {
                     int tm = _random.Next(21, 50);
                     int daysMissed = tm;
 
@@ -353,7 +375,9 @@ namespace ABASim.api.Controllers
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
-                } else if (injury.Severity == 5) {
+                }
+                else if (injury.Severity == 5)
+                {
                     int tm = _random.Next(51, 180);
                     int daysMissed = tm;
 
@@ -407,19 +431,25 @@ namespace ABASim.api.Controllers
             foreach (var injury in _homeInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.Severity == 1) {
+                if (injury.Severity == 1)
+                {
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
                     pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 2) {
+                }
+                else if (injury.Severity == 2)
+                {
                     int tm = _random.Next(1, 1000);
                     int daysMissed = 0;
-                    if (tm >= 900 && tm < 950) {
+                    if (tm >= 900 && tm < 950)
+                    {
                         daysMissed = 1;
-                    } else if (tm >= 950) {
+                    }
+                    else if (tm >= 950)
+                    {
                         daysMissed = 2;
                     }
 
@@ -429,7 +459,9 @@ namespace ABASim.api.Controllers
                     pi.EndDay = 0;
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 3) {
+                }
+                else if (injury.Severity == 3)
+                {
                     int tm = _random.Next(3, 21);
                     int daysMissed = tm;
 
@@ -439,7 +471,9 @@ namespace ABASim.api.Controllers
                     pi.EndDay = 0;
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 4) {
+                }
+                else if (injury.Severity == 4)
+                {
                     int tm = _random.Next(21, 50);
                     int daysMissed = tm;
 
@@ -449,7 +483,9 @@ namespace ABASim.api.Controllers
                     pi.EndDay = 0;
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 5) {
+                }
+                else if (injury.Severity == 5)
+                {
                     int tm = _random.Next(51, 180);
                     int daysMissed = tm;
 
@@ -466,19 +502,25 @@ namespace ABASim.api.Controllers
             foreach (var injury in _awayInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.Severity == 1) {
+                if (injury.Severity == 1)
+                {
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
                     pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 2) {
+                }
+                else if (injury.Severity == 2)
+                {
                     int tm = _random.Next(1, 1000);
                     int daysMissed = 0;
-                    if (tm >= 900 && tm < 950) {
+                    if (tm >= 900 && tm < 950)
+                    {
                         daysMissed = 1;
-                    } else if (tm >= 950) {
+                    }
+                    else if (tm >= 950)
+                    {
                         daysMissed = 2;
                     }
 
@@ -488,7 +530,9 @@ namespace ABASim.api.Controllers
                     pi.EndDay = 0;
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 3) {
+                }
+                else if (injury.Severity == 3)
+                {
                     int tm = _random.Next(3, 21);
                     int daysMissed = tm;
 
@@ -498,7 +542,9 @@ namespace ABASim.api.Controllers
                     pi.EndDay = 0;
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 4) {
+                }
+                else if (injury.Severity == 4)
+                {
                     int tm = _random.Next(21, 50);
                     int daysMissed = tm;
 
@@ -508,7 +554,9 @@ namespace ABASim.api.Controllers
                     pi.EndDay = 0;
                     pi.TimeMissed = daysMissed;
                     pi.Type = injury.InjuryTypeName;
-                } else if (injury.Severity == 5) {
+                }
+                else if (injury.Severity == 5)
+                {
                     int tm = _random.Next(51, 180);
                     int daysMissed = tm;
 
@@ -593,7 +641,8 @@ namespace ABASim.api.Controllers
             for (int i = 0; i < _awayRoster.Count; i++)
             {
                 var injury = await _repo.GetPlayerInjury(_awayRoster[i].PlayerId);
-                if (injury != null) {
+                if (injury != null)
+                {
                     InjuryDto dto = new InjuryDto
                     {
                         Id = injury.Id,
@@ -614,7 +663,8 @@ namespace ABASim.api.Controllers
             for (int i = 0; i < _homeRoster.Count; i++)
             {
                 var injury = await _repo.GetPlayerInjury(_homeRoster[i].PlayerId);
-                if (injury != null) {
+                if (injury != null)
+                {
                     InjuryDto dto = new InjuryDto
                     {
                         Id = injury.Id,
@@ -754,9 +804,19 @@ namespace ABASim.api.Controllers
                 switch (ad[i].Position)
                 {
                     case 1:
-                        awayPG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
-                        awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
-                        awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        {
+                            awayPG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
+                        else
+                        {
+                            ad = _awayDepth.FindAll(x => x.Depth == 2);
+                            awayPG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
 
                         StaminaTrack awatSTPG = _awayStaminas.Find(x => x.PlayerId == ad[i].PlayerId);
                         awatSTPG.OnOff = 1;
@@ -764,9 +824,19 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awatSTPG;
                         break;
                     case 2:
-                        awaySG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
-                        awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
-                        awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        {
+                            awaySG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
+                        else
+                        {
+                            ad = _awayDepth.FindAll(x => x.Depth == 2);
+                            awaySG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
 
                         StaminaTrack awaySTSG = _awayStaminas.Find(x => x.PlayerId == ad[i].PlayerId);
                         awaySTSG.OnOff = 1;
@@ -774,6 +844,19 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTSG;
                         break;
                     case 3:
+                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        {
+                            awaySF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
+                        else
+                        {
+                            ad = _awayDepth.FindAll(x => x.Depth == 2);
+                            awaySF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
                         awaySF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                         awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
                         awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -784,9 +867,19 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTSF;
                         break;
                     case 4:
-                        awayPF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
-                        awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
-                        awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        {
+                            awayPF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
+                        else
+                        {
+                            ad = _awayDepth.FindAll(x => x.Depth == 2);
+                            awayPF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
 
                         StaminaTrack awaySTPF = _awayStaminas.Find(x => x.PlayerId == ad[i].PlayerId);
                         awaySTPF.OnOff = 1;
@@ -794,9 +887,19 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTPF;
                         break;
                     case 5:
-                        awayC = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
-                        awayCRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
-                        awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        {
+                            awayC = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awayCRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
+                        else
+                        {
+                            ad = _awayDepth.FindAll(x => x.Depth == 2);
+                            awayC = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
+                            awayCRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
+                            awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
+                        }
 
                         StaminaTrack awaySTC = _awayStaminas.Find(x => x.PlayerId == ad[i].PlayerId);
                         awaySTC.OnOff = 1;
@@ -814,6 +917,19 @@ namespace ABASim.api.Controllers
                 switch (hd[i].Position)
                 {
                     case 1:
+                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        {
+                            homePG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
+                        else
+                        {
+                            hd = _homeDepth.FindAll(x => x.Depth == 2);
+                            homePG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
                         homePG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                         homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
                         homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -824,9 +940,19 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTPG;
                         break;
                     case 2:
-                        homeSG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
-                        homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
-                        homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        {
+                            homeSG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
+                        else
+                        {
+                            hd = _homeDepth.FindAll(x => x.Depth == 2);
+                            homeSG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
 
                         StaminaTrack homeSTSG = _homeStaminas.Find(x => x.PlayerId == hd[i].PlayerId);
                         homeSTSG.OnOff = 1;
@@ -834,9 +960,19 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTSG;
                         break;
                     case 3:
-                        homeSF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
-                        homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
-                        homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        {
+                            homeSF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
+                        else
+                        {
+                            hd = _homeDepth.FindAll(x => x.Depth == 2);
+                            homeSF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
 
                         StaminaTrack homeSTSF = _homeStaminas.Find(x => x.PlayerId == hd[i].PlayerId);
                         homeSTSF.OnOff = 1;
@@ -844,9 +980,19 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTSF;
                         break;
                     case 4:
-                        homePF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
-                        homePFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
-                        homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        {
+                            homePF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homePFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
+                        else
+                        {
+                            hd = _homeDepth.FindAll(x => x.Depth == 2);
+                            homePF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homePFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
 
                         StaminaTrack homeSTPF = _homeStaminas.Find(x => x.PlayerId == hd[i].PlayerId);
                         homeSTPF.OnOff = 1;
@@ -854,9 +1000,19 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTPF;
                         break;
                     case 5:
-                        homeC = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
-                        homeCRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
-                        homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        {
+                            homeC = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homeCRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
+                        else
+                        {
+                            hd = _homeDepth.FindAll(x => x.Depth == 2);
+                            homeC = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
+                            homeCRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
+                            homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
+                        }
 
                         StaminaTrack homeSTC = _homeStaminas.Find(x => x.PlayerId == hd[i].PlayerId);
                         homeSTC.OnOff = 1;
