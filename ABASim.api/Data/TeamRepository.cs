@@ -273,6 +273,35 @@ namespace ABASim.api.Data
             return players;
         }
 
+        public async Task<IEnumerable<PlayerInjury>> GetInjuriesForFreeAgents()
+        {
+            List<PlayerInjury> playerInjuries = new List<PlayerInjury>();
+            var players = await _context.PlayerTeams.Where(x => x.TeamId == 0 || x.TeamId == 31).ToListAsync();
+
+            foreach (var player in players)
+            {
+                var injury = await _context.PlayerInjuries.FirstOrDefaultAsync(x => x.PlayerId == player.PlayerId && x.CurrentlyInjured == 1);
+                if (injury != null) {
+                    playerInjuries.Add(injury);
+                }
+            }
+            return playerInjuries;
+        }
+
+        public async Task<IEnumerable<PlayerInjury>> GetPlayerInjuriesForTeam(int teamId)
+        {
+            List<PlayerInjury> playerInjuries = new List<PlayerInjury>();
+            var players = await _context.Rosters.Where(x => x.TeamId == teamId).ToListAsync();
+            foreach (var player in players)
+            {
+                var injury = await _context.PlayerInjuries.FirstOrDefaultAsync(x => x.PlayerId == player.PlayerId && x.CurrentlyInjured == 1);
+                if (injury != null) {
+                    playerInjuries.Add(injury);
+                }
+            }
+            return playerInjuries;
+        }
+
         public async Task<IEnumerable<Player>> GetRosterForTeam(int teamId)
         {
             List<Player> players = new List<Player>();

@@ -12,6 +12,7 @@ import { TransferService } from '../_services/transfer.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { SignedPlayer } from '../_models/signedPlayer';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { PlayerInjury } from '../_models/playerInjury';
 
 @Component({
   selector: 'app-freeagents',
@@ -25,6 +26,7 @@ export class FreeagentsComponent implements OnInit {
   freeAgents: Player[] = [];
   selectedPlayer: Player;
   public modalRef: BsModalRef;
+  teamsInjuries: PlayerInjury[] = [];
 
   constructor(private alertify: AlertifyService, private playerService: PlayerService, private teamService: TeamService,
               private authService: AuthService, private router: Router, private transferService: TransferService,
@@ -51,8 +53,27 @@ export class FreeagentsComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting free agents');
     }, () => {
+      this.getFreeAgentInjuries();
       this.spinner.hide();
     });
+  }
+
+  getFreeAgentInjuries() {
+    this.teamService.getInjruiesForFreeAgents().subscribe(result => {
+      this.teamsInjuries = result;
+    }, error => {
+      this.alertify.error('Error getting teams injuries');
+    });
+  }
+
+  checkIfInjured(playerId: number) {
+    const injured = this.teamsInjuries.find(x => x.playerId === playerId);
+
+    if(injured) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
   CheckRosterSpots() {

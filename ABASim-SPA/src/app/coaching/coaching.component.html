@@ -73,8 +73,8 @@
 						<td *ngIf="this.coachSetting?.goToPlayerOne == 0 && this.isEdit == 0">
 							No player set
 						</td>
-						<td *ngIf="this.coachSetting?.goToPlayerOne != 0 && this.isEdit == 0">
-							{{ this.getPlayerName(this.coachSetting?.goToPlayerOne) }}
+						<td *ngIf="this.coachSetting?.goToPlayerOne != 0 && this.isEdit == 0" [style.color]="this.injuredOne == 1 ? 'red' : ''">
+							{{ this.getPlayerNameWithInjuredCheck(this.coachSetting?.goToPlayerOne, 1) }}
 						</td>
 						<td *ngIf="this.isEdit == 1">
 							<select [(ngModel)]="gotoOne">
@@ -87,8 +87,8 @@
 						<td *ngIf="this.coachSetting?.goToPlayerTwo == 0 && this.isEdit == 0">
 							No player set
 						</td>
-						<td *ngIf="this.coachSetting?.goToPlayerTwo != 0 && this.isEdit == 0">
-							{{ this.getPlayerName(this.coachSetting?.goToPlayerTwo) }}
+						<td *ngIf="this.coachSetting?.goToPlayerTwo != 0 && this.isEdit == 0" [style.color]="this.injuredTwo == 1 ? 'red' : ''">
+							{{ this.getPlayerNameWithInjuredCheck(this.coachSetting?.goToPlayerTwo, 2) }}
 						</td>
 						<td *ngIf="this.isEdit == 1">
 							<select [(ngModel)]="gotoTwo">
@@ -101,8 +101,8 @@
 						<td *ngIf="this.coachSetting?.goToPlayerThree == 0 && this.isEdit == 0">
 							No player set
 						</td>
-						<td *ngIf="this.coachSetting?.goToPlayerThree != 0 && this.isEdit == 0">
-							{{ this.getPlayerName(this.coachSetting?.goToPlayerThree) }}
+						<td *ngIf="this.coachSetting?.goToPlayerThree != 0 && this.isEdit == 0" [style.color]="this.injuredThree == 1 ? 'red' : ''">
+							{{ this.getPlayerNameWithInjuredCheck(this.coachSetting?.goToPlayerThree, 3) }}
 						</td>
 						<td *ngIf="this.isEdit == 1">
 							<select [(ngModel)]="gotoThree">

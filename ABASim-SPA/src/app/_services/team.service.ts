@@ -12,6 +12,7 @@ import { SignedPlayer } from '../_models/signedPlayer';
 import { Trade } from '../_models/trade';
 import { TradeMessage } from '../_models/tradeMessage';
 import { TeamDraftPick } from '../_models/teamDraftPick';
+import { PlayerInjury } from '../_models/playerInjury';
 
 @Injectable({
   providedIn: 'root'
@@ -106,6 +107,14 @@ export class TeamService {
 
   getTeamDraftPicks(teamId: number): Observable<TeamDraftPick[]> {
     return this.http.get<TeamDraftPick[]>(this.baseUrl + 'getteamsdraftpicks/' + teamId);
+  }
+
+  getPlayerInjuriesForTeam(teamId: number): Observable<PlayerInjury[]> {
+    return this.http.get<PlayerInjury[]>(this.baseUrl + 'getinjuriesforteam/' + teamId);
+  }
+
+  getInjruiesForFreeAgents(): Observable<PlayerInjury[]> {
+    return this.http.get<PlayerInjury[]>(this.baseUrl + 'getinjuriesforfreeagents');
   }
 
 }

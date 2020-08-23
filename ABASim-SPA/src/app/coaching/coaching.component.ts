@@ -7,6 +7,7 @@ import { Team } from '../_models/team';
 import { CoachSetting } from '../_models/coachSetting';
 import { ExtendedPlayer } from '../_models/extendedPlayer';
 import { Player } from '../_models/player';
+import { PlayerInjury } from '../_models/playerInjury';
 
 @Component({
   selector: 'app-coaching',
@@ -22,6 +23,11 @@ export class CoachingComponent implements OnInit {
   gotoOne: number;
   gotoTwo: number;
   gotoThree: number;
+  teamsInjuries: PlayerInjury[] = [];
+
+  injuredOne = 0;
+  injuredTwo = 0;
+  injuredThree = 0;
 
   constructor(private router: Router, private alertify: AlertifyService, private authService: AuthService,
               private teamService: TeamService) { }
@@ -35,7 +41,16 @@ export class CoachingComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting your Team');
     }, () => {
+      this.getPlayerInjuries();
       this.getCoachSettings();
+    });
+  }
+
+  getPlayerInjuries() {
+    this.teamService.getPlayerInjuriesForTeam(this.team.id).subscribe(result => {
+      this.teamsInjuries = result;
+    }, error => {
+      this.alertify.error('Error getting teams injuries');
     });
   }
 
@@ -44,6 +59,15 @@ export class CoachingComponent implements OnInit {
       this.extendedPlayers = result;
     }, error => {
       this.alertify.error('Error getting players');
+    }, () => {
+      this.extendedPlayers.forEach(element => {
+        const injured = this.teamsInjuries.find(x => x.playerId === element.id);
+
+        if (injured) {
+          const index = this.extendedPlayers.indexOf(element, 0);
+          this.extendedPlayers.splice(index, 1);
+        }
+      });
     });
 
     this.teamService.getCoachingSettings(this.team.id).subscribe(result => {
@@ -52,6 +76,23 @@ export class CoachingComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting Coach Settings');
     });
+  }
+
+  getPlayerNameWithInjuredCheck(playerId: number, gtPlayerNumber: number) {
+    // Check if the player is injured
+    const injured = this.teamsInjuries.find(x => x.playerId === playerId);
+    if (injured) {
+      if (gtPlayerNumber === 1) {
+        this.injuredOne = 1;
+      } else if (gtPlayerNumber === 2) {
+        this.injuredTwo = 1;
+      } else if (gtPlayerNumber === 3) {
+        this.injuredThree = 1;
+      }
+    } else {
+      const player = this.extendedPlayers.find(x => x.id === playerId);
+      return player.firstName + ' ' + player.surname;
+    }
   }
 
   getPlayerName(playerId: number) {

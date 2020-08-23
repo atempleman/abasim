@@ -10,6 +10,7 @@ import { ExtendedPlayer } from '../_models/extendedPlayer';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { WaivedPlayer } from '../_models/waivedPlayer';
 import { TransferService } from '../_services/transfer.service';
+import { PlayerInjury } from '../_models/playerInjury';
 
 @Component({
   selector: 'app-team',
@@ -26,6 +27,8 @@ export class TeamComponent implements OnInit {
   message: number;
 
   public modalRef: BsModalRef;
+
+  teamsInjuries: PlayerInjury[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private modalService: BsModalService,
@@ -48,8 +51,27 @@ export class TeamComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting your Team');
     }, () => {
+      this.getPlayerInjuries();
       this.getRosterForTeam();
     });
+  }
+
+  getPlayerInjuries() {
+    this.teamService.getPlayerInjuriesForTeam(this.team.id).subscribe(result => {
+      this.teamsInjuries = result;
+    }, error => {
+      this.alertify.error('Error getting teams injuries');
+    });
+  }
+
+  checkIfInjured(playerId: number) {
+    const injured = this.teamsInjuries.find(x => x.playerId === playerId);
+
+    if(injured) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
   public openModal(template: TemplateRef<any>, player: ExtendedPlayer) {

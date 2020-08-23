@@ -8,6 +8,7 @@ import { Team } from '../_models/team';
 import { Player } from '../_models/player';
 import { DepthChart } from '../_models/depthChart';
 import { Router } from '@angular/router';
+import { PlayerInjury } from '../_models/playerInjury';
 
 @Component({
   selector: 'app-depthchart',
@@ -19,6 +20,7 @@ export class DepthchartComponent implements OnInit {
   team: Team;
   playingRoster: Player[] = [];
   depthCharts: DepthChart[] = [];
+  teamsInjuries: PlayerInjury[] = [];
 
   pg01Id = 0;
   pg02Id = 0;
@@ -36,8 +38,24 @@ export class DepthchartComponent implements OnInit {
   c02Id = 0;
   c03Id = 0;
 
+  injuryPg01Id = 0;
+  injuryPg02Id = 0;
+  injuryPg03Id = 0;
+  injurySg01Id = 0;
+  injurySg02Id = 0;
+  injurySg03Id = 0;
+  injurySf01Id = 0;
+  injurySf02Id = 0;
+  injurySf03Id = 0;
+  injuryPf01Id = 0;
+  injuryPf02Id = 0;
+  injuryPf03Id = 0;
+  injuryC01Id = 0;
+  injuryC02Id = 0;
+  injuryC03Id = 0;
+
   constructor(private alertify: AlertifyService, private teamService: TeamService, private authService: AuthService,
-              private router: Router) { }
+    private router: Router) { }
 
   ngOnInit() {
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
@@ -45,7 +63,16 @@ export class DepthchartComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting your team');
     }, () => {
+      this.getPlayerInjuries();
       this.getRosterForTeam();
+    });
+  }
+
+  getPlayerInjuries() {
+    this.teamService.getPlayerInjuriesForTeam(this.team.id).subscribe(result => {
+      this.teamsInjuries = result;
+    }, error => {
+      this.alertify.error('Error getting teams injuries');
     });
   }
 
@@ -79,6 +106,14 @@ export class DepthchartComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting your roster');
     }, () => {
+      this.playingRoster.forEach(element => {
+        const injured = this.teamsInjuries.find(x => x.playerId === element.id);
+
+        if (injured) {
+          const index = this.playingRoster.indexOf(element, 0);
+          this.playingRoster.splice(index, 1);
+        }
+      });
       this.getDepthCharts();
     });
   }
@@ -94,6 +129,42 @@ export class DepthchartComponent implements OnInit {
 
   getDepthChartValue(position: number, rank: number) {
     const dc = this.depthCharts.find(x => x.position === position && x.depth === rank);
+
+    // Check if the player is injured
+    const injured = this.teamsInjuries.find(x => x.playerId === dc.playerId);
+    if (injured) {
+      if (position === 1 && rank === 1) {
+        this.injuryPg01Id = 1;
+      } else if (position === 1 && rank === 2) {
+        this.injuryPg02Id = 1;
+      } else if (position === 1 && rank === 3) {
+        this.injuryPg03Id = 1;
+      } else if (position === 2 && rank === 1) {
+        this.injurySg01Id = 1;
+      } else if (position === 2 && rank === 2) {
+        this.injurySg02Id = 1;
+      } else if (position === 2 && rank === 3) {
+        this.injurySg03Id = 1;
+      } else if (position === 3 && rank === 1) {
+        this.injurySf01Id = 1;
+      } else if (position === 3 && rank === 2) {
+        this.injurySf02Id = 1;
+      } else if (position === 3 && rank === 3) {
+        this.injurySf03Id = 1;
+      } else if (position === 4 && rank === 1) {
+        this.injuryPf01Id = 1;
+      } else if (position === 4 && rank === 2) {
+        this.injuryPf02Id = 1;
+      } else if (position === 4 && rank === 3) {
+        this.injuryPf03Id = 1;
+      } else if (position === 5 && rank === 1) {
+        this.injuryC01Id = 1;
+      } else if (position === 5 && rank === 2) {
+        this.injuryC02Id = 1;
+      } else if (position === 5 && rank === 3) {
+        this.injuryC03Id = 1;
+      }
+    }
     const player = this.playingRoster.find(x => x.id === dc.playerId);
     return player.firstName + ' ' + player.surname;
   }
@@ -101,6 +172,47 @@ export class DepthchartComponent implements OnInit {
   getPlayerName(playerId: number) {
     const player = this.playingRoster.find(x => x.id === playerId);
     return player.firstName + ' ' + player.surname;
+  }
+
+  getPlayerNameWithInjuryCheck(playerId: number, gtPlayerNumber: number) {
+    // Check if the player is injured
+    const injured = this.teamsInjuries.find(x => x.playerId === playerId);
+    if (injured) {
+      if (gtPlayerNumber === 1) {
+        this.injuryPg01Id = 1;
+      } else if (gtPlayerNumber === 2) {
+        this.injuryPg02Id = 1;
+      } else if (gtPlayerNumber === 3) {
+        this.injuryPg03Id = 1;
+      } else if (gtPlayerNumber === 4) {
+        this.injurySg01Id = 1;
+      } else if (gtPlayerNumber === 5) {
+        this.injurySg02Id = 1;
+      } else if (gtPlayerNumber === 6) {
+        this.injurySg03Id = 1;
+      } else if (gtPlayerNumber === 7) {
+        this.injurySf01Id = 1;
+      } else if (gtPlayerNumber === 8) {
+        this.injurySf02Id = 1;
+      } else if (gtPlayerNumber === 9) {
+        this.injurySf03Id = 1;
+      } else if (gtPlayerNumber === 10) {
+        this.injuryPf01Id = 1;
+      } else if (gtPlayerNumber === 11) {
+        this.injuryPf02Id = 1;
+      } else if (gtPlayerNumber === 12) {
+        this.injuryPf03Id = 1;
+      } else if (gtPlayerNumber === 13) {
+        this.injuryC01Id = 1;
+      } else if (gtPlayerNumber === 14) {
+        this.injuryC02Id = 1;
+      } else if (gtPlayerNumber === 15) {
+        this.injuryC03Id = 1;
+      }
+    } else {
+      const player = this.playingRoster.find(x => x.id === playerId);
+      return player.firstName + ' ' + player.surname;
+    }
   }
 
   saveDepthChart() {

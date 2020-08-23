@@ -52,5 +52,9 @@ namespace ABASim.api.Data
         Task<TradeMessageDto> GetTradeMessage(int tradeId);
 
         Task<IEnumerable<TeamDraftPickDto>> GetTeamsDraftPicks(int teamId);
+
+        Task<IEnumerable<PlayerInjury>> GetPlayerInjuriesForTeam(int teamId);
+
+        Task<IEnumerable<PlayerInjury>> GetInjuriesForFreeAgents();
     }
 }

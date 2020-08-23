@@ -71,7 +71,7 @@
     <tbody>
         <tr class="table-secondary" *ngFor="let player of this.freeAgents">
             <td>
-                {{ player.firstName }} {{ player.surname }}
+                {{ player.firstName }} {{ player.surname }}  <span *ngIf="checkIfInjured(player.id) == 1"><i class="fa fa-medkit fa-2x"></i></span>
             </td>
             <td>
               <ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
