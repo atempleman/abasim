@@ -45,5 +45,7 @@ namespace ABASim.api.Data
          Task<bool> SaveInjury(List<PlayerInjury> injuries);
 
          Task<PlayerInjury> GetPlayerInjury(int playerId);
+
+         Task<IEnumerable<CoachSetting>> GetCoachSettings(int teamId);
     }
 }

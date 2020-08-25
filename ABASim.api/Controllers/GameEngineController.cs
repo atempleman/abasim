@@ -99,6 +99,15 @@ namespace ABASim.api.Controllers
         List<InjuryDto> _awayInjuries = new List<InjuryDto>();
         List<InjuryDto> _homeInjuries = new List<InjuryDto>();
 
+        List<CoachSetting> _homeSettings = new List<CoachSetting>();
+        List<CoachSetting> _awaySettings = new List<CoachSetting>();
+        int awayGoToOne;
+        int awayGoToTwo;
+        int awayGoToThree;
+        int homeGoToOne;
+        int homeGoToTwo;
+        int homeGoToThree;
+
         public GameEngineController(IGameEngineRepository repo)
         {
             _repo = repo;
@@ -120,6 +129,7 @@ namespace ABASim.api.Controllers
             var result2 = await SetupDepthCharts();
             var result3 = await GetPlayerDetails();
             var result4 = await GetPlayerInjuries();
+            var result5 = await GetCoachSettings();
             // Get player injuries
 
             SetStartingLineups();
@@ -632,6 +642,56 @@ namespace ABASim.api.Controllers
             var hdc = await _repo.GetDepthChart(_homeTeam.Id);
             _awayDepth = (List<DepthChart>)adc;
             _homeDepth = (List<DepthChart>)hdc;
+
+            return Ok(true);
+        }
+
+        public async Task<IActionResult> GetCoachSettings()
+        {
+            var settings = await _repo.GetCoachSettings(_homeTeam.Id);
+            _homeSettings = (List<CoachSetting>)settings;
+
+            settings = await _repo.GetCoachSettings(_awayTeam.Id);
+            _awaySettings = (List<CoachSetting>)settings;
+
+            // Now need to setup the variables for go to players
+            if (_homeSettings != null) {
+                homeGoToOne = _homeSettings[0].GoToPlayerOne;
+                homeGoToTwo = _homeSettings[0].GoToPlayerTwo;
+                homeGoToThree = _homeSettings[0].GoToPlayerThree;
+            }
+
+            if (_awaySettings != null) {
+                awayGoToOne = _awaySettings[0].GoToPlayerOne;
+                awayGoToTwo = _awaySettings[0].GoToPlayerTwo;
+                awayGoToThree = _awaySettings[0].GoToPlayerThree;
+            }
+
+            for (int i=0; i< _homeRatings.Count; i++) {
+                if (_homeRatings[i].PlayerId == homeGoToOne) {
+                    var usageRating =  _homeRatings[i].UsageRating;
+                    _homeRatings[i].UsageRating = usageRating + 75;
+                } else if (_homeRatings[i].PlayerId == homeGoToTwo) {
+                    var usageRating =  _homeRatings[i].UsageRating;
+                    _homeRatings[i].UsageRating = usageRating + 50;
+                } else if (_homeRatings[i].PlayerId == homeGoToThree) {
+                    var usageRating =  _homeRatings[i].UsageRating;
+                    _homeRatings[i].UsageRating = usageRating + 25;
+                }
+            }
+
+            for (int i=0; i< _awayRatings.Count; i++) {
+                if (_awayRatings[i].PlayerId == awayGoToOne) {
+                    var usageRating =  _awayRatings[i].UsageRating;
+                    _awayRatings[i].UsageRating = usageRating + 75;
+                } else if (_awayRatings[i].PlayerId == awayGoToTwo) {
+                    var usageRating =  _awayRatings[i].UsageRating;
+                    _awayRatings[i].UsageRating = usageRating + 50;
+                } else if (_awayRatings[i].PlayerId == awayGoToThree) {
+                    var usageRating =  _awayRatings[i].UsageRating;
+                    _awayRatings[i].UsageRating = usageRating + 25;
+                }
+            }
 
             return Ok(true);
         }
@@ -1412,6 +1472,8 @@ namespace ABASim.api.Controllers
             int totalUsage = 0;
             string receiver = "";
             string passer = "";
+
+
 
             // Check 
             if (_teamPossession == 0)
@@ -3540,14 +3602,14 @@ namespace ABASim.api.Controllers
                         _endGameShotClockBonus = 500;
                     }
 
-                    if (diff <= 3)
+                    if (diff <= 3 && (_shotClock > _time))
                     {
                         // Defensive teams actions
                         // increased steal chance
                         _endGameStealAddition = 500;
 
                         // much increased in fouls
-                        _endGameFoulAddition = 800;
+                        _endGameFoulAddition = 1000;
                     }
                 }
                 else if (diff > 0)
@@ -3594,8 +3656,8 @@ namespace ABASim.api.Controllers
                         // increase in 3s taken
                         _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
 
-                        // Result increase by 15% due to tough shots
-                        _endGameResultIncrease = 150;
+                        // Result increase by 10% due to tough shots
+                        _endGameResultIncrease = 100;
 
                         // Apply winning to team
                         // no changes for defensive team
@@ -3637,7 +3699,7 @@ namespace ABASim.api.Controllers
                         }
 
                         // random between 5 and 10% added to shot result
-                        _endGameResultIncrease = (_random.Next(50, 101));
+                        _endGameResultIncrease = (_random.Next(20, 51));
 
                         // No change for the defensive team
                     }
@@ -3750,7 +3812,7 @@ namespace ABASim.api.Controllers
                         _endGameStealAddition = 500;
 
                         // much increased in fouls
-                        _endGameFoulAddition = 800;
+                        _endGameFoulAddition = 1000;
                     }
                 }
                 else if (diff > 0)
@@ -3798,7 +3860,7 @@ namespace ABASim.api.Controllers
                         _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.2);
 
                         // Result increase by 15% due to tough shots
-                        _endGameResultIncrease = 150;
+                        _endGameResultIncrease = 100;
 
                         // Apply winning to team
                         // no changes for defensive team
@@ -3840,7 +3902,7 @@ namespace ABASim.api.Controllers
                         }
 
                         // random between 5 and 10% added to shot result
-                        _endGameResultIncrease = (_random.Next(50, 101));
+                        _endGameResultIncrease = (_random.Next(20, 51));
 
                         // No change for the defensive team
                     }

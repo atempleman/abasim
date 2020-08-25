@@ -343,5 +343,11 @@ namespace ABASim.api.Data
             var playerInjury = await _context.PlayerInjuries.FirstOrDefaultAsync(x => x.CurrentlyInjured == 1 && x.PlayerId == playerId);
             return playerInjury;
         }
+
+        public async Task<IEnumerable<CoachSetting>> GetCoachSettings(int teamId)
+        {
+            var coachSettings = await _context.CoachSettings.Where(x => x.TeamId == teamId).ToListAsync();
+            return coachSettings;
+        }
     }
 }
