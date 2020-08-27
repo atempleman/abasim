@@ -177,6 +177,9 @@ namespace ABASim.api.Data
                         }
                     }
                 }
+                // Need to check the injuries and update appropriately
+                await DailyInjuriesUpdate(league.StateId, league.Day);
+
                 league.Day = league.Day + 1;
             }
             else if (league.StateId == 8 || league.StateId == 9 || league.StateId == 10 || league.StateId == 11)
@@ -264,6 +267,9 @@ namespace ABASim.api.Data
                     }
                     await _context.SaveChangesAsync(); // something here is breaking!
                 }
+
+                // Need to check the injuries and update appropriately
+                await DailyInjuriesUpdate(league.StateId, league.Day);
 
                 // Need to do the next days schedule
                 league.Day = league.Day + 1;
@@ -427,6 +433,33 @@ namespace ABASim.api.Data
             _context.Update(league);
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DailyInjuriesUpdate(int state, int day)
+        {
+            var newInjuries = await _context.PlayerInjuries.Where(x => x.CurrentlyInjured == 0 && x.StartDay == 0).ToListAsync();
+
+            foreach (var injury in newInjuries)
+            {
+                injury.StartDay = day;
+                injury.EndDay = day + injury.TimeMissed;
+                if (injury.TimeMissed != 0) {
+                    injury.CurrentlyInjured = 1;
+                }
+                _context.Update(injury);    
+            }
+            await _context.SaveChangesAsync();
+
+            var existingActiveInjuries = await _context.PlayerInjuries.Where(x => x.CurrentlyInjured == 1 && x.EndDay < day).ToListAsync();
+            
+            foreach (var injury in existingActiveInjuries)
+            {
+                injury.CurrentlyInjured = 0;
+                _context.Update(injury);
+            }
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> CheckGamesRun()

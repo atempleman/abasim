@@ -655,40 +655,54 @@ namespace ABASim.api.Controllers
             _awaySettings = (List<CoachSetting>)settings;
 
             // Now need to setup the variables for go to players
-            if (_homeSettings != null) {
+            if (_homeSettings.Count != 0)
+            {
                 homeGoToOne = _homeSettings[0].GoToPlayerOne;
                 homeGoToTwo = _homeSettings[0].GoToPlayerTwo;
                 homeGoToThree = _homeSettings[0].GoToPlayerThree;
             }
 
-            if (_awaySettings != null) {
+            if (_awaySettings.Count != 0)
+            {
                 awayGoToOne = _awaySettings[0].GoToPlayerOne;
                 awayGoToTwo = _awaySettings[0].GoToPlayerTwo;
                 awayGoToThree = _awaySettings[0].GoToPlayerThree;
             }
 
-            for (int i=0; i< _homeRatings.Count; i++) {
-                if (_homeRatings[i].PlayerId == homeGoToOne) {
-                    var usageRating =  _homeRatings[i].UsageRating;
+            for (int i = 0; i < _homeRatings.Count; i++)
+            {
+                if (_homeRatings[i].PlayerId == homeGoToOne)
+                {
+                    var usageRating = _homeRatings[i].UsageRating;
                     _homeRatings[i].UsageRating = usageRating + 75;
-                } else if (_homeRatings[i].PlayerId == homeGoToTwo) {
-                    var usageRating =  _homeRatings[i].UsageRating;
+                }
+                else if (_homeRatings[i].PlayerId == homeGoToTwo)
+                {
+                    var usageRating = _homeRatings[i].UsageRating;
                     _homeRatings[i].UsageRating = usageRating + 50;
-                } else if (_homeRatings[i].PlayerId == homeGoToThree) {
-                    var usageRating =  _homeRatings[i].UsageRating;
+                }
+                else if (_homeRatings[i].PlayerId == homeGoToThree)
+                {
+                    var usageRating = _homeRatings[i].UsageRating;
                     _homeRatings[i].UsageRating = usageRating + 25;
                 }
             }
 
-            for (int i=0; i< _awayRatings.Count; i++) {
-                if (_awayRatings[i].PlayerId == awayGoToOne) {
-                    var usageRating =  _awayRatings[i].UsageRating;
+            for (int i = 0; i < _awayRatings.Count; i++)
+            {
+                if (_awayRatings[i].PlayerId == awayGoToOne)
+                {
+                    var usageRating = _awayRatings[i].UsageRating;
                     _awayRatings[i].UsageRating = usageRating + 75;
-                } else if (_awayRatings[i].PlayerId == awayGoToTwo) {
-                    var usageRating =  _awayRatings[i].UsageRating;
+                }
+                else if (_awayRatings[i].PlayerId == awayGoToTwo)
+                {
+                    var usageRating = _awayRatings[i].UsageRating;
                     _awayRatings[i].UsageRating = usageRating + 50;
-                } else if (_awayRatings[i].PlayerId == awayGoToThree) {
-                    var usageRating =  _awayRatings[i].UsageRating;
+                }
+                else if (_awayRatings[i].PlayerId == awayGoToThree)
+                {
+                    var usageRating = _awayRatings[i].UsageRating;
                     _awayRatings[i].UsageRating = usageRating + 25;
                 }
             }
@@ -864,7 +878,7 @@ namespace ABASim.api.Controllers
                 switch (ad[i].Position)
                 {
                     case 1:
-                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        if (! _awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
                         {
                             awayPG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -884,7 +898,7 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awatSTPG;
                         break;
                     case 2:
-                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        if (! _awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
                         {
                             awaySG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -904,7 +918,7 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTSG;
                         break;
                     case 3:
-                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        if (! _awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
                         {
                             awaySF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -917,9 +931,6 @@ namespace ABASim.api.Controllers
                             awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
                             awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
                         }
-                        awaySF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
-                        awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
-                        awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad[i].PlayerId);
 
                         StaminaTrack awaySTSF = _awayStaminas.Find(x => x.PlayerId == ad[i].PlayerId);
                         awaySTSF.OnOff = 1;
@@ -927,7 +938,7 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTSF;
                         break;
                     case 4:
-                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        if (! _awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
                         {
                             awayPF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -947,7 +958,7 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTPF;
                         break;
                     case 5:
-                        if (_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        if (! _awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
                         {
                             awayC = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayCRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -977,7 +988,7 @@ namespace ABASim.api.Controllers
                 switch (hd[i].Position)
                 {
                     case 1:
-                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        if (! _homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
                         {
                             homePG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -990,9 +1001,6 @@ namespace ABASim.api.Controllers
                             homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
                             homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
                         }
-                        homePG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
-                        homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
-                        homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd[i].PlayerId);
 
                         StaminaTrack homeSTPG = _homeStaminas.Find(x => x.PlayerId == hd[i].PlayerId);
                         homeSTPG.OnOff = 1;
@@ -1000,7 +1008,7 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTPG;
                         break;
                     case 2:
-                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        if (! _homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
                         {
                             homeSG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1020,7 +1028,7 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTSG;
                         break;
                     case 3:
-                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        if (! _homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
                         {
                             homeSF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1040,7 +1048,7 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTSF;
                         break;
                     case 4:
-                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        if (! _homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
                         {
                             homePF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homePFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1060,7 +1068,7 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTPF;
                         break;
                     case 5:
-                        if (_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        if (! _homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
                         {
                             homeC = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeCRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -3602,7 +3610,7 @@ namespace ABASim.api.Controllers
                         _endGameShotClockBonus = 500;
                     }
 
-                    if (diff <= 3 && (_shotClock > _time))
+                    if (diff >= -3 && diff < 0 && (_shotClock > _time))
                     {
                         // Defensive teams actions
                         // increased steal chance
@@ -3805,7 +3813,7 @@ namespace ABASim.api.Controllers
                     }
 
 
-                    if (diff <= 3 && (_shotClock > _time))
+                    if (diff >= -3 && diff < 0 && (_shotClock > _time))
                     {
                         // Defensive teams actions
                         // increased steal chance
@@ -6439,25 +6447,32 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
-                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
 
-                        subbed = 1;
+                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                        if (bs.Fouls < 6)
+                        {
+                            homePG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homePGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
+
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 2)
@@ -6467,25 +6482,28 @@ namespace ABASim.api.Controllers
                     // Get the player from the depth chart
                     var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
 
-                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            homeSG = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeSGRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 3)
@@ -6494,25 +6512,29 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
-                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            homeSF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeSFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 4)
@@ -6521,25 +6543,29 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
-                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            homePF = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homePFRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 5)
@@ -6548,25 +6574,28 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _homeDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
-                    var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
-                        homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _homeStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            homeC = _homePlayers.Find(x => x.Id == dc.PlayerId);
+                            homeCRatings = _homeRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
-                        stOn.OnOff = 1;
-                        index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _homeStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _homeStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _homeStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
+                            stOn.OnOff = 1;
+                            index = _homeStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _homeStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
 
@@ -6606,25 +6635,28 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 1);
-                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            awayPG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayPGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 2)
@@ -6633,25 +6665,28 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 2);
-                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            awaySG = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awaySGRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 3)
@@ -6660,25 +6695,28 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 3);
-                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            awaySF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awaySFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 4)
@@ -6687,25 +6725,28 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 4);
-                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            awayPF = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayPFRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
                 else if (position == 5)
@@ -6714,25 +6755,28 @@ namespace ABASim.api.Controllers
 
                     // Get the player from the depth chart
                     var dc = _awayDepth.FirstOrDefault(x => x.Depth == 1 && x.Position == 5);
-                    var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
-
-                    if (bs.Fouls < 6)
+                    if (dc.PlayerId != current.Id)
                     {
-                        awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
-                        awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
+                        var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                        // Need to update the stamina track objects for on and off court
-                        StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
-                        stOff.OnOff = 0;
-                        int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
-                        _awayStaminas[index] = stOff;
+                        if (bs.Fouls < 6)
+                        {
+                            awayC = _awayPlayers.Find(x => x.Id == dc.PlayerId);
+                            awayCRatings = _awayRatings.Find(x => x.PlayerId == dc.PlayerId);
 
-                        StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
-                        stOn.OnOff = 1;
-                        index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
-                        _awayStaminas[index] = stOn;
+                            // Need to update the stamina track objects for on and off court
+                            StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
+                            stOff.OnOff = 0;
+                            int index = _awayStaminas.FindIndex(x => x.PlayerId == stOff.PlayerId);
+                            _awayStaminas[index] = stOff;
 
-                        subbed = 1;
+                            StaminaTrack stOn = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
+                            stOn.OnOff = 1;
+                            index = _awayStaminas.FindIndex(x => x.PlayerId == stOn.PlayerId);
+                            _awayStaminas[index] = stOn;
+
+                            subbed = 1;
+                        }
                     }
                 }
 
@@ -7467,7 +7511,7 @@ namespace ABASim.api.Controllers
             {
                 int result = _random.Next(1, 5001);
 
-                if (result > 4980)
+                if (result > 4990)
                 {
                     // Player has been injured and needs to be actioned accordingly
                     // Injury severity
@@ -7539,7 +7583,7 @@ namespace ABASim.api.Controllers
                 int result = _random.Next(1, 5001);
 
 
-                if (result > 4980)
+                if (result > 4990)
                 {
                     // Player has been injured and needs to be actioned accordingly
                     // Injury severity
