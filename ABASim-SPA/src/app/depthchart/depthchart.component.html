@@ -62,7 +62,7 @@
 					</tr>
 				  </thead>
 				<tbody>
-					<tr class="table-secondary">
+					<tr class="table-secondary" *ngIf="this.rosterSet == 1">
             <td>Point Guard</td>
             <td *ngIf="this.isEdit == 0" [style.color]="this.injuryPg01Id == 1 ? 'red' : ''">
 							{{ getDepthChartValue(1, 1) }}
@@ -99,7 +99,7 @@
             </td>
           </tr>
           
-          <tr class="table-secondary">
+          <tr class="table-secondary" *ngIf="this.rosterSet == 1">
             <td>Shooting Guard</td>
             <td *ngIf="this.isEdit == 0" [style.color]="this.injurySg01Id == 1 ? 'red' : ''">
 							{{ getDepthChartValue(2, 1) }}
@@ -136,7 +136,7 @@
             </td>
           </tr>
 
-          <tr class="table-secondary">
+          <tr class="table-secondary" *ngIf="this.rosterSet == 1">
             <td>Small Forward</td>
             <td *ngIf="this.isEdit == 0" [style.color]="this.injurySf01Id == 1 ? 'red' : ''">
 							{{ getDepthChartValue(3, 1) }}
@@ -173,7 +173,7 @@
             </td>
           </tr>
 
-          <tr class="table-secondary">
+          <tr class="table-secondary" *ngIf="this.rosterSet == 1">
             <td>Power Forward</td>
             <td *ngIf="this.isEdit == 0" [style.color]="this.injuryPf01Id == 1 ? 'red' : ''">
 							{{ getDepthChartValue(4, 1) }}
@@ -210,7 +210,7 @@
             </td>
           </tr>
 
-          <tr class="table-secondary">
+          <tr class="table-secondary" *ngIf="this.rosterSet == 1">
             <td>Centre</td>
             <td *ngIf="this.isEdit == 0" [style.color]="this.injuryC01Id == 1 ? 'red' : ''">
 							{{ getDepthChartValue(5, 1) }}

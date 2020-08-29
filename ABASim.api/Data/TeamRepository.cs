@@ -477,21 +477,10 @@ namespace ABASim.api.Data
 
         public async Task<bool> SaveDepthChartForTeam(DepthChart[] charts)
         {
-            var exists = await _context.DepthCharts.FirstOrDefaultAsync(x => x.TeamId == charts[0].TeamId);
+            int teamId = charts[0].TeamId;
+            var exists = await _context.DepthCharts.Where(x => x.TeamId == teamId).ToListAsync();
 
-            if(exists == null) {
-                // its and update
-                foreach (var dc in charts)
-                {
-                    var depth = new DepthChart {
-                        PlayerId = dc.PlayerId,
-                        Position = dc.Position,
-                        TeamId = dc.TeamId,
-                        Depth = dc.Depth
-                    };
-                    _context.Update(depth);
-                }
-            } else {
+            if(exists.Count == 0 || exists == null) {
                 // its an add
                 foreach (var dc in charts)
                 {
@@ -502,6 +491,14 @@ namespace ABASim.api.Data
                         Depth = dc.Depth
                     };
                     await _context.AddAsync(depth);
+                }
+            } else {
+                // its an update
+                foreach (var dc in exists)
+                {
+                    var depth = charts.FirstOrDefault(x => x.Position == dc.Position && x.Depth == dc.Depth);
+                    dc.PlayerId = depth.PlayerId;
+                    _context.Update(dc);
                 }
             }
             return await _context.SaveChangesAsync() > 0;

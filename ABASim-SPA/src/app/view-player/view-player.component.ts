@@ -41,6 +41,7 @@ export class ViewPlayerComponent implements OnInit {
     });
 
     this.playerId = this.transferService.getData();
+    console.log('value: ' + this.playerId);
     this.playerService.playerForPlayerProfileById(this.playerId).subscribe(result => {
       this.detailedPlayer = result;
       console.log(result);
@@ -51,7 +52,9 @@ export class ViewPlayerComponent implements OnInit {
 
     this.teamService.getInjuryForPlayer(this.playerId).subscribe(result => {
       this.playerInjury = result;
-      this.injurySet = 1;
+      if (this.playerInjury) {
+        this.injurySet = 1;
+      }
     }, error => {
       this.alertify.error('Error checking player injury');
     });

@@ -115,6 +115,7 @@ export class DashboardComponent implements OnInit {
   }
 
   viewPlayer(player: number) {
+    console.log(player);
     this.transferService.setData(player);
     this.router.navigate(['/view-player']);
   }

@@ -54,8 +54,10 @@ export class DepthchartComponent implements OnInit {
   injuryC02Id = 0;
   injuryC03Id = 0;
 
+  rosterSet = 0;
+
   constructor(private alertify: AlertifyService, private teamService: TeamService, private authService: AuthService,
-    private router: Router) { }
+              private router: Router) { }
 
   ngOnInit() {
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
@@ -64,7 +66,7 @@ export class DepthchartComponent implements OnInit {
       this.alertify.error('Error getting your team');
     }, () => {
       this.getPlayerInjuries();
-      this.getRosterForTeam();
+      
     });
   }
 
@@ -73,6 +75,8 @@ export class DepthchartComponent implements OnInit {
       this.teamsInjuries = result;
     }, error => {
       this.alertify.error('Error getting teams injuries');
+    }, () => {
+      this.getRosterForTeam();
     });
   }
 
@@ -114,6 +118,7 @@ export class DepthchartComponent implements OnInit {
           this.playingRoster.splice(index, 1);
         }
       });
+      console.log('test ash');
       this.getDepthCharts();
     });
   }
@@ -124,49 +129,213 @@ export class DepthchartComponent implements OnInit {
       console.log(this.depthCharts);
     }, error => {
       this.alertify.error('Error getting depth charts');
+    }, () => {
+      if (this.depthCharts.length === 0) {
+        // Depth Chart is new
+        const dc101: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 1,
+          depth: 1
+        };
+        this.depthCharts.push(dc101);
+
+        const dc102: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 1,
+          depth: 2
+        };
+        this.depthCharts.push(dc102);
+
+        const dc103: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 1,
+          depth: 3
+        };
+        this.depthCharts.push(dc103);
+
+        const dc201: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 2,
+          depth: 1
+        };
+        this.depthCharts.push(dc201);
+
+        const dc202: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 2,
+          depth: 2
+        };
+        this.depthCharts.push(dc202);
+
+        const dc203: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 2,
+          depth: 3
+        };
+        this.depthCharts.push(dc203);
+
+        const dc301: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 3,
+          depth: 1
+        };
+        this.depthCharts.push(dc301);
+
+        const dc302: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 3,
+          depth: 2
+        };
+        this.depthCharts.push(dc302);
+
+        const dc303: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 3,
+          depth: 3
+        };
+        this.depthCharts.push(dc303);
+
+        const dc401: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 4,
+          depth: 1
+        };
+        this.depthCharts.push(dc401);
+
+        const dc402: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 4,
+          depth: 2
+        };
+        this.depthCharts.push(dc402);
+
+        const dc403: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 4,
+          depth: 3
+        };
+        this.depthCharts.push(dc403);
+
+        const dc501: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 5,
+          depth: 1
+        };
+        this.depthCharts.push(dc501);
+
+        const dc502: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 5,
+          depth: 2
+        };
+        this.depthCharts.push(dc502);
+
+        const dc503: DepthChart = {
+          id: 0,
+          teamId: this.team.id,
+          playerId: 0,
+          position: 5,
+          depth: 3
+        };
+        this.depthCharts.push(dc503);
+      }
+      this.rosterSet = 1;
     });
   }
 
   getDepthChartValue(position: number, rank: number) {
     const dc = this.depthCharts.find(x => x.position === position && x.depth === rank);
 
+    let isSet = 0;
     // Check if the player is injured
     const injured = this.teamsInjuries.find(x => x.playerId === dc.playerId);
     if (injured) {
       if (position === 1 && rank === 1) {
         this.injuryPg01Id = 1;
+        isSet = 1;
       } else if (position === 1 && rank === 2) {
         this.injuryPg02Id = 1;
+        isSet = 1;
       } else if (position === 1 && rank === 3) {
         this.injuryPg03Id = 1;
+        isSet = 1;
       } else if (position === 2 && rank === 1) {
         this.injurySg01Id = 1;
+        isSet = 1;
       } else if (position === 2 && rank === 2) {
         this.injurySg02Id = 1;
+        isSet = 1;
       } else if (position === 2 && rank === 3) {
         this.injurySg03Id = 1;
+        isSet = 1;
       } else if (position === 3 && rank === 1) {
         this.injurySf01Id = 1;
+        isSet = 1;
       } else if (position === 3 && rank === 2) {
         this.injurySf02Id = 1;
+        isSet = 1;
       } else if (position === 3 && rank === 3) {
         this.injurySf03Id = 1;
+        isSet = 1;
       } else if (position === 4 && rank === 1) {
         this.injuryPf01Id = 1;
+        isSet = 1;
       } else if (position === 4 && rank === 2) {
         this.injuryPf02Id = 1;
+        isSet = 1;
       } else if (position === 4 && rank === 3) {
         this.injuryPf03Id = 1;
+        isSet = 1;
       } else if (position === 5 && rank === 1) {
         this.injuryC01Id = 1;
+        isSet = 1;
       } else if (position === 5 && rank === 2) {
         this.injuryC02Id = 1;
+        isSet = 1;
       } else if (position === 5 && rank === 3) {
         this.injuryC03Id = 1;
+        isSet = 1;
       }
     }
-    const player = this.playingRoster.find(x => x.id === dc.playerId);
-    return player.firstName + ' ' + player.surname;
+
+    console.log(dc);
+    console.log(this.depthCharts);
+    console.log('ash');
+    console.log(this.playingRoster);
+    if (isSet === 1 || dc.playerId === 0) {
+      return '';
+    } else {
+      const player = this.playingRoster.find(x => x.id === dc.playerId);
+      return player.firstName + ' ' + player.surname;
+    }
   }
 
   getPlayerName(playerId: number) {
@@ -220,6 +389,8 @@ export class DepthchartComponent implements OnInit {
       const pid = this.getPlayerIdForDepthChartPosition(dc.position, dc.depth);
       dc.playerId = pid;
     });
+
+    console.log(this.depthCharts);
 
     // Now call the service passing the array
     this.teamService.saveDepthCharts(this.depthCharts).subscribe(result => {

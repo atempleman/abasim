@@ -287,7 +287,23 @@ namespace ABASim.api.Data
                     BlkStats = 0,
                     FlsStats = 0,
                     ToStats = 0,
-                    PtsStats = 0
+                    PtsStats = 0,
+                    PlayoffGamesStats = 0,
+                    PlayoffMinutesStats = 0,
+                    PlayoffFgmStats = 0,
+                    PlayoffFgaStats = 0,
+                    PlayoffThreeFgmStats = 0,
+                    PlayoffThreeFgaStats = 0,
+                    PlayoffFtmStats = 0,
+                    PlayoffFtaStats = 0,
+                    PlayoffOrebsStats = 0,
+                    PlayoffDrebsStats = 0,
+                    PlayoffAstStats = 0,
+                    PlayoffStlStats = 0,
+                    PlayoffBlkStats = 0,
+                    PlayoffFlsStats = 0,
+                    PlayoffToStats = 0,
+                    PlayoffPtsStats = 0,
                 };
                 return player;
             }
