@@ -4556,6 +4556,10 @@ namespace ABASim.api.Controllers
                 }
             }
 
+            if (bs == null) {
+                string s = "";
+            }
+
             if (bs.Fouls >= 6)
             {
                 currentFouledOut = 1;
@@ -4965,11 +4969,16 @@ namespace ABASim.api.Controllers
             List<Player> players = new List<Player>();
             Player current = new Player();
             Player newPlayer = new Player();
+            List<DepthChart> dc = new List<DepthChart>();
+            List<StaminaTrack> st = new List<StaminaTrack>();
             int playerSubbed = 0;
 
             // Now need to decide who comes on
             if (team == 0)
             {
+                dc = _homeDepth;
+                st = _homeStaminas;
+
                 // Home team
                 switch (position)
                 {
@@ -5000,6 +5009,9 @@ namespace ABASim.api.Controllers
             }
             else
             {
+                dc = _awayDepth;
+                st = _awayStaminas;
+
                 // Away team
                 switch (position)
                 {
@@ -5028,17 +5040,57 @@ namespace ABASim.api.Controllers
                 }
             }
 
+            // Firstly we want to check the deptch chart again
+            var options = dc.FindAll(x => x.Position == position);
+
+            foreach (var option in options)
+            {
+                int playerId = option.PlayerId; 
+                var player = players.FirstOrDefault(x => x.Id == playerId);
+
+                int result = 1;
+                if (player != null) {
+                    result = CheckSubEligility(player, team);
+                }
+
+                
+                if (result == 0)
+                {
+                    // The player can be checked for the new fatigue
+                    var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                    if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                    {
+                        // Player should be subbed on
+                        // Need action to make the sub
+                        SubPlayer(team, position, player);
+                        newPlayer = player;
+                        playerSubbed = 1;
+                        break;
+                    }
+                }
+            }
+
             foreach (var player in players)
             {
-                int result = CheckSubEligility(player, 0);
+                // Now need to check if the current player is NOT in the positions DC
+                var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
 
-                if (result == 0) // can sub the player on
+                if (res == null)
                 {
-                    // Need action to make the sub
-                    SubPlayer(team, position, player);
-                    newPlayer = player;
-                    playerSubbed = 1;
-                    break;
+                    int result = CheckSubEligility(player, team);
+
+                    if (result == 0) // can sub the player on
+                    {
+                        var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                        if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                        {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -5095,15 +5147,24 @@ namespace ABASim.api.Controllers
 
             foreach (var player in players)
             {
-                int result = CheckSubEligility(player, 0);
+                var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
 
-                if (result == 0) // can sub the player on
+                if (res == null)
                 {
-                    // Need action to make the sub
-                    SubPlayer(team, position, player);
-                    newPlayer = player;
-                    playerSubbed = 1;
-                    break;
+                    int result = CheckSubEligility(player, team);
+
+                    if (result == 0) // can sub the player on
+                    {
+                        var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                        if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                        {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -5160,15 +5221,24 @@ namespace ABASim.api.Controllers
 
             foreach (var player in players)
             {
-                int result = CheckSubEligility(player, 0);
+                var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
 
-                if (result == 0) // can sub the player on
+                if (res == null)
                 {
-                    // Need action to make the sub
-                    SubPlayer(team, position, player);
-                    newPlayer = player;
-                    playerSubbed = 1;
-                    break;
+                    int result = CheckSubEligility(player, team);
+
+                    if (result == 0) // can sub the player on
+                    {
+                        var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                        if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                        {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                        }
+                    }
                 }
             }
 
