@@ -7,7 +7,7 @@
   <div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" >
-        <a class="nav-link"  [routerLink]="['/dashboard']">Dashboard</a>
+        <a class="nav-link" *ngIf="loggedIn()" [routerLink]="['/dashboard']">Dashboard</a>
       </li>
       <li class="nav-item" *ngIf="loggedIn()">
         <a class="nav-link" [routerLink]="['/league']">League</a>
@@ -27,7 +27,7 @@
           <span *ngIf="this.countOfMessages?.countOfMessages == 0">( 0 )</span>
         </a>      
       </li>
-      <li class="nav-item" *ngIf="loggedIn()">
+      <li class="nav-item" *ngIf="loggedIn() && this.isAdmin == 1">
         <a class="nav-link" [routerLink]="['/admin']" *ngIf="this.isAdmin == 1">Admin</a>
       </li>
       <li class="nav-item" *ngIf="loggedIn()">

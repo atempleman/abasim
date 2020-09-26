@@ -195,12 +195,4 @@ export class HomeComponent implements OnInit {
   loggedIn() {
     return this.authService.loggedIn();
   }
-
-  loginDisplayToggle() {
-    if (this.loginDisplay) {
-      this.loginDisplay = false;
-    } else {
-      this.loginDisplay = true;
-    }
-  }
 }

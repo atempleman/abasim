@@ -1,14 +1,51 @@
-.jumbotron {
-    text-align: center;
-    padding: 30px 0;
+.main-content {
     position: relative;
+    background: #696969;
+    overflow: hidden;
+}
+.main-content h1, p, ul {
+    padding: 10px;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+    color: #ffffff;
+} 
+.main-content img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    z-index: 1;
+    opacity: 0.5;
+}
+ul {
+    display:list-item;
+    list-style-position: outside;
 }
 
-.lead {
-      text-align: center;
-      position: relative;
-}
-
-.form-section {
-    padding: 20px;
-  }
+ * {
+    box-sizing: border-box;
+ }
+ .card {
+    color: white;
+    float: left;
+    width: calc(33% - 20px);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    height: auto; /*550px; /* make this dynamic */
+ }
+ .card p {
+    font-size: 18px;
+ }
+ .cardContainer:after {
+    content: "";
+    display: table;
+    clear: both;
+ }
+ @media screen and (max-width: 600px) {
+    .card {
+       width: 100%;
+    }
+ }
