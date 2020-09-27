@@ -94,7 +94,7 @@ namespace ABASim.api.Data
             var temp = chatDto.Username;
             var userId = Convert.ToInt32(temp);
 
-            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == userId);
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.UserId == userId);
 
             GlobalChat chatRecord = new GlobalChat
             {

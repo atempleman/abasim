@@ -19,6 +19,7 @@ export class ViewPlayerComponent implements OnInit {
   playerId: number;
   detailedPlayer: CompletePlayer;
   league: League;
+  imageSrc = 'http://placehold.it/150x150';
 
   statusStats = true;
   statusPlayoffStats = false;
@@ -44,8 +45,7 @@ export class ViewPlayerComponent implements OnInit {
     console.log('value: ' + this.playerId);
     this.playerService.playerForPlayerProfileById(this.playerId).subscribe(result => {
       this.detailedPlayer = result;
-      console.log(result);
-      console.log(this.detailedPlayer);
+      this.imageSrc = 'https://nba-players.herokuapp.com/players/' + this.detailedPlayer.surname + '/' + this.detailedPlayer.firstName;
     }, error => {
       this.alertify.error('Error getting player profile');
     });
