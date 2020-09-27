@@ -1,8 +1,47 @@
-.jumbotron {
+.dashboard-area {
+    position: relative;
+    text-align: center;
+    background: #202120;
+    overflow: hidden;
+}
+.dashboard-area h3, span {
+    padding: 10px;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+    color: #ffffff;
+}
+
+.card {
+    color: white;
+    float: left;
+    width: calc(33% - 20px);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    height: auto; /*550px; /* make this dynamic */
+    text-align: center;
+ }
+ .card p {
+    font-size: 18px;
+ }
+ .cardContainer:after {
+    content: "";
+    display: table;
+    clear: both;
+ }
+ @media screen and (max-width: 600px) {
+    .card {
+       width: 100%;
+    }
+ }
+
+
+/* .jumbotron {
     text-align: center;
     padding: 30px 0;
     position: relative;
-}
+} */
 
 .lead {
     text-align: center;
@@ -54,50 +93,3 @@ table {
   .carousel {
     margin: 0 auto;
   }
-/* 
-  .slideclass {
-
-  } */
-
-/* .border-info { */
-    /* text-align: center;  centers all of the text - not how i want it*/
-/* } */
-
-/* .text-left {
-    text-align: left !important;
-} */
-
-
-
-
-
-
-
-/* body{
-    background: #eee;
-}
-span{
-    font-size:15px;
-}
-a{
-  text-decoration:none; 
-  color: #0062cc;
-  border-bottom:2px solid #0062cc;
-}
-.box{
-    padding:60px 0px;
-}
-
-.box-part{
-    background:#FFF;
-    border-radius:0;
-    padding:60px 10px;
-    margin:30px 0px;
-}
-.text{
-    margin:20px 0px;
-}
-
-.fa{
-     color:#222222;
-} */
