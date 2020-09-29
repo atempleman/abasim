@@ -17,6 +17,8 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<Team>> GetAllTeams();
 
+         Task<IEnumerable<Team>> GetTeamInitialLotteryOrder();
+
          Task<IEnumerable<DepthChart>> GetDepthChartForTeam(int teamId);
 
          Task<bool> SaveDepthChartForTeam(DepthChart[] charts);

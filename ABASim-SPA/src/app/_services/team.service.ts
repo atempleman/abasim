@@ -58,6 +58,10 @@ export class TeamService {
     return this.http.get<boolean>(this.baseUrl + 'rosterSpotCheck/' + teamId);
   }
 
+  getTeamInitialLotteryOrder(): Observable<Team[]> {
+    return this.http.get<Team[]>(this.baseUrl + 'getTeamInitialLotteryOrder');
+  }
+
   waivePlayer(waivedPlayer: WaivedPlayer) {
     return this.http.post(this.baseUrl + 'waiveplayer', waivedPlayer);
   }

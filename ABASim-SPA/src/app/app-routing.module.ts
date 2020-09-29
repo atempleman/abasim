@@ -61,6 +61,7 @@ const routes: Routes = [
   { path: 'full-game-comm', component: FullgamepbpComponent, canActivate: [AuthGuard]},
   { path: 'admintestengine', component: AdmintestengineComponent, canActivate: [AuthGuard] },
   { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard] },
+  { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

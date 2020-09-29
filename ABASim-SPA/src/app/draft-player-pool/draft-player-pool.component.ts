@@ -182,4 +182,16 @@ export class DraftPlayerPoolComponent implements OnInit {
       });
     }
 
+    draftHQClicked() {
+      this.router.navigate(['/draft']);
+    }
+
+    rankingsClicked() {
+      this.router.navigate(['/draftboard']);
+    }
+
+    lotteryClicked() {
+      this.router.navigate(['/initiallottery']);
+    }
+
 }

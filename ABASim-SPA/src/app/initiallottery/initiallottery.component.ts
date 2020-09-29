@@ -19,7 +19,6 @@ export class InitiallotteryComponent implements OnInit {
   ngOnInit() {
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
-      // console.log(this.league);
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {
@@ -28,11 +27,19 @@ export class InitiallotteryComponent implements OnInit {
   }
 
   getTeams() {
-    this.teamService.getAllTeams().subscribe(result => {
-      this.teams = result;
-    }, error => {
-      this.alertify.error('Error getting all teams');
-    });
+    if (this.league.stateId < 3) {
+      this.teamService.getAllTeams().subscribe(result => {
+        this.teams = result;
+      }, error => {
+        this.alertify.error('Error getting all teams');
+      });
+    } else if (this.league.stateId > 2) {
+      this.teamService.getTeamInitialLotteryOrder().subscribe(result => {
+        this.teams = result;
+      }, error => {
+        this.alertify.error('Error getting lottery order');
+      });
+    }
   }
 
 }

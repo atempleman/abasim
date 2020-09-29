@@ -1,76 +1,120 @@
-<div class="jumbotron">
+<section class="dashboard-area">
   <h3 class="display">Draft Player Pool</h3>
+</section>
+
+<div class="box">
+  <div class="container">
+    <div class="row cards-row">
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>Draft Headquarters</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View the Draft Headquarters where all draft actions take place.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="draftHQClicked()">Go to
+              Draft HQ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-users fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>Draftboard</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View your draftboard and order your auto-picks..</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="rankingsClicked()">Go to
+              Draftboard</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>Draft Lottery</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View the draft lottery and see what the odds or draft order.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="lotteryClicked()">Go to Draft
+              Lottery</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<div class="row ml-2 mr-2 textdesc">
+  <p>The following table provides details on all of the players who are available in the draft. You can add players to your draftboard here.</p>
+</div>
 
 <div class="box">
   <ngx-spinner [fullScreen]="false" type="pacman" size="medium">
-		<p class="loading">Loading Player Pool...</p>
-	</ngx-spinner>
-  <div class="container">
-    <div class="row cards-row text-center">
-      <table *ngIf="this.draftPlayers?.length != 0" class="table table-striped custab">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Position(s)</th>
-            <th>2s</th>
-            <th>3s</th>
-            <th>FTs</th>
-            <th>O-Rebs</th>
-            <th>D-Rebs</th>
-            <th>Handles</th>
-            <th>Steals</th>
-            <th>Blocks</th>
-            <th>Stamina</th>
-            <th>Pass</th>
-            <th>Intangibles</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tr *ngFor="let player of this.draftPlayers">
-          <td>{{ player.firstName }} {{ player.surname }}</td>
-          <td>
-            <ng-container *ngIf="player.pgPosition == 1">PG </ng-container>
-            <ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
-            <ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
-            <ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
-            <ng-container *ngIf="player.cPosition == 1">C </ng-container>
-          </td>
-          <td>{{ player.twoGrade }}</td>
-          <td>{{ player.threeGrade }}</td>
-          <td>{{ player.ftGrade }}</td>
-          <td>{{ player.oRebGrade }}</td>
-          <td>{{ player.dRebGrade }}</td>
-          <td>{{ player.handlingGrade }}</td>
-          <td>{{ player.stealGrade }}</td>
-          <td>{{ player.blockGrade }}</td>
-          <td>{{ player.staminaGrade }}</td>
-          <td>{{ player.passingGrade }}</td>
-          <td>{{ player.intangiblesGrade }}</td>
-          <td class="text-center">
-            <a (click)="viewPlayer(player?.playerId)" class="btn btn-primary btn-xs mt-1"><span class="fa fa-info"></span></a>
-            <a *ngIf="checkPlayer(player?.playerId) == 0" (click)="this.addPlayerToDraftRank(player)"
-              class="btn btn-info btn-xs mt-1 ml-1"><span class="fa fa-plus"></span></a>
-            <a *ngIf="checkPlayer(player?.playerId) == 1" (click)="this.removePlayerDraftRank(player)"
-              class="btn btn-danger btn-xs mt-1 ml-1"><span class="fa fa-minus"></span></a>
-          </td>
+    <p class="loading">Loading Player Pool...</p>
+  </ngx-spinner>
+  <div class="row table-row text-center ml-2 mr-2">
+    <table *ngIf="this.draftPlayers?.length != 0" class="table table-striped custab">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Pos(s)</th>
+          <th>2s</th>
+          <th>3s</th>
+          <th>FTs</th>
+          <th>ORebs</th>
+          <th>DRebs</th>
+          <th>Hands</th>
+          <th>Stls</th>
+          <th>Blks</th>
+          <th>Stam</th>
+          <th>Pass</th>
+          <th>Int</th>
+          <th></th>
         </tr>
-      </table>
+      </thead>
+      <tr *ngFor="let player of this.draftPlayers">
+        <td>{{ player.firstName }} {{ player.surname }}</td>
+        <td>
+          <ng-container *ngIf="player.pgPosition == 1">PG </ng-container>
+          <ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
+          <ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
+          <ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
+          <ng-container *ngIf="player.cPosition == 1">C </ng-container>
+        </td>
+        <td>{{ player.twoGrade }}</td>
+        <td>{{ player.threeGrade }}</td>
+        <td>{{ player.ftGrade }}</td>
+        <td>{{ player.oRebGrade }}</td>
+        <td>{{ player.dRebGrade }}</td>
+        <td>{{ player.handlingGrade }}</td>
+        <td>{{ player.stealGrade }}</td>
+        <td>{{ player.blockGrade }}</td>
+        <td>{{ player.staminaGrade }}</td>
+        <td>{{ player.passingGrade }}</td>
+        <td>{{ player.intangiblesGrade }}</td>
+        <td class="text-center">
+          <a (click)="viewPlayer(player?.playerId)" class="btn btn-primary btn-xs mt-1"><span
+              class="fa fa-info"></span></a>
+          <a *ngIf="checkPlayer(player?.playerId) == 0" (click)="this.addPlayerToDraftRank(player)"
+            class="btn btn-info btn-xs mt-1 ml-1"><span class="fa fa-plus"></span></a>
+          <a *ngIf="checkPlayer(player?.playerId) == 1" (click)="this.removePlayerDraftRank(player)"
+            class="btn btn-danger btn-xs mt-1 ml-1"><span class="fa fa-minus"></span></a>
+        </td>
+      </tr>
+    </table>
 
-      <div class="text-center">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" (click)="pagerPrev()">&laquo;</a>
-          </li>
-          <li class="page-item" *ngFor="let page of counter(this.pages); let i = index;">
-            <a class="page-link" (click)="goToPage(i+1)">{{ i + 1 }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" (click)="pagerNext()">&raquo;</a>
-          </li>
-        </ul>
-      </div>      
+    <div class="text-center">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" (click)="pagerPrev()">&laquo;</a>
+        </li>
+        <li class="page-item" *ngFor="let page of counter(this.pages); let i = index;">
+          <a class="page-link" (click)="goToPage(i+1)">{{ i + 1 }}</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" (click)="pagerNext()">&raquo;</a>
+        </li>
+      </ul>
     </div>
   </div>
 </div>

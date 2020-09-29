@@ -45,6 +45,8 @@ import { PlayoffResultsComponent } from './playoff-results/playoff-results.compo
 import { FullgamepbpComponent } from './fullgamepbp/fullgamepbp.component';
 import { InboxComponent } from './inbox/inbox.component';
 
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
 export function tokenGetter() {
    return localStorage.getItem('token');
 }
@@ -110,7 +112,8 @@ export function tokenGetter() {
       ErrorInterceptorProvider,
       AlertifyService,
       BsModalService,
-      BsModalRef
+      BsModalRef,
+      {provide: LocationStrategy, useClass: HashLocationStrategy}
    ],
    bootstrap: [
       AppComponent

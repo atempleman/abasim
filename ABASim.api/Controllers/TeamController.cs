@@ -59,6 +59,13 @@ namespace ABASim.api.Controllers
             return Ok(teams);
         }
 
+        [HttpGet("getTeamInitialLotteryOrder")]
+        public async Task<IActionResult> GetTeamInitialLotteryOrder()
+        {
+            var teams = await _repo.GetTeamInitialLotteryOrder();
+            return Ok(teams);
+        }
+
         [HttpGet("getteamdepthchart/{teamId}")]
         public async Task<IActionResult> GetDepthChartForTeam(int teamId)
         {
