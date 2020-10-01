@@ -1,11 +1,53 @@
-<div class="jumbotron">
+<section class="dashboard-area">
   <h3 class="display">Draftboard</h3>
+</section>
+
+<div class="box">
+  <div class="container">
+    <div class="row cards-row">
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>Draft Headquarters</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View the Draft Headquarters where all draft actions take place.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="draftHQClicked()">Go to
+              Draft HQ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-users fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>Player Pool</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View the available players in the draft.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="playerPoolClicked()">Go to
+              Player Pool</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+        <div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
+            class="header-card ml-3"><strong>Draft Lottery</strong></span></div>
+        <div class="card-body">
+          <p class="card-text">View the draft lottery and see what the odds or draft order.</p>
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-link text-left" (click)="lotteryClicked()">Go to Draft
+              Lottery</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="box">
-  <ngx-spinner [fullScreen]="false" type="pacman" size="medium">
-		<p class="loading">Loading Draftboard...</p>
-	</ngx-spinner>
+  <ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
+    <p class="loading">Loading Draftboard...</p>
+  </ngx-spinner>
   <div class="container">
     <div class="row cards-row text-center">
       <table *ngIf="this.draftPlayers?.length != 0" class="table table-striped custab">
@@ -48,6 +90,8 @@
           <td>{{ player.passingGrade }}</td>
           <td>{{ player.intangiblesGrade }}</td>
           <td class="text-center">
+            <a (click)="viewPlayer(player?.playerId)" class="btn btn-primary btn-xs mt-1"><span
+              class="fa fa-info"></span></a>
             <a class="btn btn-danger btn-xs" (click)="removeDraftRanking(player)"><span class="fa fa-minus"></span></a>
             <a class="btn btn-info btn-xs" *ngIf="i != 0" (click)="moveUp(player)"><span class="fa fa-arrow-up ml-1"></span></a>
             <a class="btn btn-info btn-xs" *ngIf="i != this.draftPlayers?.length - 1" (click)="moveDown(player)"><span class="fa fa-arrow-down ml-1"></span></a>

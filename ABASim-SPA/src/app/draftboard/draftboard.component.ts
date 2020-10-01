@@ -6,6 +6,9 @@ import { AuthService } from '../_services/auth.service';
 import { TeamService } from '../_services/team.service';
 import { Team } from '../_models/team';
 import { AddDraftRank } from '../_models/addDraftRank';
+import { Router } from '@angular/router';
+import { TransferService } from '../_services/transfer.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-draftboard',
@@ -17,9 +20,11 @@ export class DraftboardComponent implements OnInit {
   team: Team;
 
   constructor(private alertify: AlertifyService, private draftService: DraftService, private authService: AuthService,
-              private teamService: TeamService) { }
+              private teamService: TeamService, private router: Router, private transferService: TransferService,
+              private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
+    this.spinner.show();
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
       this.team = result;
     }, error => {
@@ -34,16 +39,16 @@ export class DraftboardComponent implements OnInit {
       this.draftPlayers = result;
     }, error => {
       this.alertify.error('Error getting draftboard');
+      this.spinner.hide();
+    }, () => {
+      this.spinner.hide();
     });
   }
 
   removeDraftRanking(player: DraftPlayer) {
     const newRanking = {} as AddDraftRank;
-    // console.log(player.playerId);
     newRanking.playerId = player.playerId;
     newRanking.teamId = this.team.id;
-
-    // console.log(player.playerId);
 
     this.draftService.removeDraftPlayerRanking(newRanking).subscribe(result => {
     }, error => {
@@ -77,6 +82,23 @@ export class DraftboardComponent implements OnInit {
     }, () => {
       this.getDraftboardPlayers();
     });
+  }
+
+  draftHQClicked() {
+    this.router.navigate(['/draft']);
+  }
+
+  playerPoolClicked() {
+    this.router.navigate(['/draftplayerpool']);
+  }
+
+  lotteryClicked() {
+    this.router.navigate(['/initiallottery']);
+  }
+
+  viewPlayer(player: number) {
+    this.transferService.setData(player);
+    this.router.navigate(['/view-player']);
   }
 
 }
