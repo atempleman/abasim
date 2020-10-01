@@ -49,9 +49,25 @@
 </div>
 
 <div class="box">
-  <ngx-spinner [fullScreen]="false" type="pacman" size="medium">
+  <ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
     <p class="loading">Loading Player Pool...</p>
   </ngx-spinner>
+  <div class="row table-row text-center ml-2 mr-2" *ngIf="this.draftPlayers?.length != 0">
+    <form id="filter_form" class="btn-group" [formGroup]="searchForm">
+      <input type="text" id="filter_keywords" name="filter_keywords" placeholder="Filter by name" formControlName="filter"/>
+      <input class="btn btn-default" type="submit" id="filter_submit" name="filter_submit" value="Go" (click)="filterTable()"/>
+      <input class="btn btn-default" type="reset" id="filter_reset" name="filter_reset" value="Reset" (click)="resetFilter()"/>
+    </form>
+    <div class="btn-group" role="group" aria-label="First group">
+      <span class="filtertitle mr-1 ml-2">Filter by Position:</span>
+      <button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 1 }" (click)="filterByPos(1)">PG</button>
+      <button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 2 }" (click)="filterByPos(2)">SG</button>
+      <button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 3 }" (click)="filterByPos(3)">SF</button>
+      <button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 4 }" (click)="filterByPos(4)">PF</button>
+      <button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 5 }" (click)="filterByPos(5)">C</button>
+      <button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 0 }" (click)="filterByPos(0)">ALL</button>
+    </div>
+  </div>
   <div class="row table-row text-center ml-2 mr-2">
     <table *ngIf="this.draftPlayers?.length != 0" class="table table-striped custab">
       <thead>
@@ -73,25 +89,25 @@
         </tr>
       </thead>
       <tr *ngFor="let player of this.draftPlayers">
-        <td>{{ player.firstName }} {{ player.surname }}</td>
-        <td>
+        <td class="text-center">{{ player.firstName }} {{ player.surname }}</td>
+        <td class="text-center">
           <ng-container *ngIf="player.pgPosition == 1">PG </ng-container>
           <ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
           <ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
           <ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
           <ng-container *ngIf="player.cPosition == 1">C </ng-container>
         </td>
-        <td>{{ player.twoGrade }}</td>
-        <td>{{ player.threeGrade }}</td>
-        <td>{{ player.ftGrade }}</td>
-        <td>{{ player.oRebGrade }}</td>
-        <td>{{ player.dRebGrade }}</td>
-        <td>{{ player.handlingGrade }}</td>
-        <td>{{ player.stealGrade }}</td>
-        <td>{{ player.blockGrade }}</td>
-        <td>{{ player.staminaGrade }}</td>
-        <td>{{ player.passingGrade }}</td>
-        <td>{{ player.intangiblesGrade }}</td>
+        <td class="text-center">{{ player.twoGrade }}</td>
+        <td class="text-center">{{ player.threeGrade }}</td>
+        <td class="text-center">{{ player.ftGrade }}</td>
+        <td class="text-center">{{ player.oRebGrade }}</td>
+        <td class="text-center">{{ player.dRebGrade }}</td>
+        <td class="text-center">{{ player.handlingGrade }}</td>
+        <td class="text-center">{{ player.stealGrade }}</td>
+        <td class="text-center">{{ player.blockGrade }}</td>
+        <td class="text-center">{{ player.staminaGrade }}</td>
+        <td class="text-center">{{ player.passingGrade }}</td>
+        <td class="text-center">{{ player.intangiblesGrade }}</td>
         <td class="text-center">
           <a (click)="viewPlayer(player?.playerId)" class="btn btn-primary btn-xs mt-1"><span
               class="fa fa-info"></span></a>
@@ -103,7 +119,7 @@
       </tr>
     </table>
 
-    <div class="text-center">
+    <div class="pager" *ngIf="this.displayPaging == 0">
       <ul class="pagination">
         <li class="page-item">
           <a class="page-link" (click)="pagerPrev()">&laquo;</a>

@@ -62,5 +62,19 @@ namespace ABASim.api.Controllers
             var count = _repo.GetCountOfDraftPlayers();
             return Ok(count);
         }
+
+        [HttpGet("filterdraftplayers/{value}")]
+        public async Task<IActionResult> FilterInitialDraftPlayers(string value)
+        {
+            var players = await _repo.FilterInitialDraftPlayerPool(value);
+            return Ok(players);
+        }
+
+        [HttpGet("draftpoolfilterbyposition/{pos}")]
+        public async Task<IActionResult> DraftPoolFilterByPosition(int pos)
+        {
+            var players = await _repo.DraftPoolFilterByPosition(pos);
+            return Ok(players);
+        }
     }
 }

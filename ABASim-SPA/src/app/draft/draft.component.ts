@@ -66,7 +66,6 @@ export class DraftComponent implements OnInit {
       if (this.league.stateId === 3) {
         this.getDraftDetails();
       } else if (this.league.stateId === 4) {
-        this.getDraftDetails();
         this.getDraftTracker();
       }
     });
@@ -77,6 +76,7 @@ export class DraftComponent implements OnInit {
       this.alertify.error('Error getting your team');
     });
 
+    console.log('getting initial players');
     this.playerService.getAllInitialDraftPlayers().subscribe(result => {
       this.draftablePlayers = result;
     }, error => {
@@ -85,7 +85,6 @@ export class DraftComponent implements OnInit {
     });
 
     this.pageInterval = setInterval(() => {
-      this.getDraftDetails();
       this.getDraftTracker();
     }, 10000);
   }
@@ -137,6 +136,8 @@ export class DraftComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting draft tracker');
     }, () => {
+      this.currentRound = this.tracker.round;
+      this.getDraftDetails();
       this.onClockLoaded++;
       this.timerDisplay();
     });

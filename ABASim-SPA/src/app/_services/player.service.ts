@@ -41,4 +41,12 @@ export class PlayerService {
   playerForPlayerProfileById(playerId: number) {
     return this.http.get<CompletePlayer>(this.baseUrl + 'getcompleteplayer/' + playerId);
   }
+
+  filterDraftPlayerPool(value: string): Observable<DraftPlayer[]> {
+    return this.http.get<DraftPlayer[]>(this.baseUrl + 'filterdraftplayers/' + value);
+  }
+
+  getDraftPlayerPoolByPos(pos: number): Observable<DraftPlayer[]> {
+    return this.http.get<DraftPlayer[]>(this.baseUrl + 'draftpoolfilterbyposition/' + pos);
+  }
 }

@@ -212,7 +212,7 @@ namespace ABASim.api.Data
             // Need to check whether the team has set a draft board
             var draftboard = await _context.DraftRankings.Where(x => x.TeamId == teamId) .OrderBy(x => x.Rank).ToListAsync();
 
-            if (draftboard != null) {
+            if (draftboard.Count > 0) {
                 foreach (var db in draftboard)
                 {
                     var playerTeamForPlayerId = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == db.PlayerId);
