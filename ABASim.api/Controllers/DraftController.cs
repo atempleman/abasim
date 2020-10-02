@@ -100,5 +100,12 @@ namespace ABASim.api.Controllers
             var draftPicks = await _repo.GetInitialDraftPicksForPage(page);
             return Ok(draftPicks);
         }
+
+        [HttpGet("getdashboardcurrentpick/{pick}")]
+        public async Task<IActionResult> GetDashboardCurrentPick(int pick)
+        {
+            var draftPicks = await _repo.GetDashboardDraftPick(pick);
+            return Ok(draftPicks);
+        }
     }
 }

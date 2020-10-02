@@ -9,6 +9,7 @@ import { Team } from '../_models/team';
 import { DraftSelection } from '../_models/draftSelection';
 import { DraftPick } from '../_models/draftPick';
 import { environment } from 'src/environments/environment';
+import { DashboardDraftPick } from '../_models/dashboardDraftPick';
 
 @Injectable({
   providedIn: 'root'
@@ -60,5 +61,9 @@ export class DraftService {
 
   getDraftPicksForRound(page: number): Observable<DraftPick[]> {
     return this.http.get<DraftPick[]>(this.baseUrl + 'getinitialdraftpicksforround/' + page);
+  }
+
+  getDashboardPicks(pick: number): Observable<DashboardDraftPick> {
+    return this.http.get<DashboardDraftPick>(this.baseUrl + 'getdashboardcurrentpick/' + pick);
   }
 }

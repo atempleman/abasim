@@ -102,8 +102,20 @@
 		<p>The draft lottery has now been run. View the draft order and all things draft related under the draft menu option and don't forget to set your draftboard to cover the auto-picks! The draft will begin soon, exact time and date will be posted in the chat.</p>
 	</div>
 	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 4">
-		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
-		<p>The draft is now underway! Go to the Draft menu option to view all things draft related.</p>
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Draft HQ</h4>
+		<p>Round #{{ this.tracker.round }}</p>
+		<div class="small-card">
+			<div class="row">
+				<p>#{{ this.previousPick.pick }} - {{ this.previousPick.teamMascot }} - {{ this.previousPick.playerName }}</p>
+			</div>
+			<div class="row">
+				<p>#{{ this.currentPick.pick }} - {{ this.currentPick.teamMascot }} - ON THE CLOCK</p>
+			</div>
+			<div class="row">
+				<p>#{{ this.nextPick.pick }} - {{ this.nextPick.teamMascot }} - UP NEXT</p>
+			</div>
+		</div>
+
 	</div>
 
 	<div class="card" style="background-color:rgb(22, 24, 100);">

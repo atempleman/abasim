@@ -1,5 +1,6 @@
 <section class="dashboard-area">
   <h3 class="display">Draftboard</h3>
+  <p>The draftboard allows you to set up your preferred draft order. Players can be added via the Player Pool and then ordered so if you miss your pick, Auto Pick will select your top ranked player.</p>
 </section>
 
 <div class="box">
@@ -90,11 +91,11 @@
           <td>{{ player.passingGrade }}</td>
           <td>{{ player.intangiblesGrade }}</td>
           <td class="text-center">
-            <a (click)="viewPlayer(player?.playerId)" class="btn btn-primary btn-xs mt-1"><span
-              class="fa fa-info"></span></a>
-            <a class="btn btn-danger btn-xs" (click)="removeDraftRanking(player)"><span class="fa fa-minus"></span></a>
-            <a class="btn btn-info btn-xs" *ngIf="i != 0" (click)="moveUp(player)"><span class="fa fa-arrow-up ml-1"></span></a>
-            <a class="btn btn-info btn-xs" *ngIf="i != this.draftPlayers?.length - 1" (click)="moveDown(player)"><span class="fa fa-arrow-down ml-1"></span></a>
+            <a (click)="viewPlayer(player?.playerId)" class="btn btn-primary small-btn mt-1"><i
+              class="fa fa-info"></i></a>
+            <a class="btn btn-danger small-btn ml-1 mt-1" (click)="removeDraftRanking(player)"><i class="fa fa-minus"></i></a>
+            <a class="btn btn-info small-btn ml-1 mt-1" *ngIf="i != 0" (click)="moveUp(player)"><i class="fa fa-arrow-up ml-1"></i></a>
+            <a class="btn btn-info small-btn ml-1 mt-1" *ngIf="i != this.draftPlayers?.length - 1" (click)="moveDown(player)"><i class="fa fa-arrow-down ml-1"></i></a>
           </td>
         </tr>
       </table>

@@ -22,6 +22,14 @@
     height: auto; /*550px; /* make this dynamic */
     text-align: center;
  }
+ .small-card {
+    color: white;
+    float: center;
+    padding: 5x;
+    border-radius: 5px;
+    height: auto; /*550px; /* make this dynamic */
+    text-align: center;
+ }
  .card p {
     font-size: 18px;
  }

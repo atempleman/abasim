@@ -265,5 +265,54 @@ namespace ABASim.api.Data
             }
             return draftPicks;
         }
+
+        public async Task<DashboardDraftPickDto> GetDashboardDraftPick(int pickSpot)
+        {
+            DashboardDraftPickDto pickDto = new DashboardDraftPickDto();
+
+            // Get the draft tracker
+            var draftTracker = await _context.DraftTrackers.FirstOrDefaultAsync();
+
+            // TODO NEED TO ADD IN END OF ROUND AND DRAFT CHECKS
+            int pickNumber = draftTracker.Pick;
+            int roundNumber = draftTracker.Round;
+
+            if (pickSpot == 0) {
+                // current pick
+                pickDto.Pick = pickNumber;
+            } else if (pickSpot == 1) {
+                // next pick
+                if (pickNumber == 30) {
+                    roundNumber = roundNumber + 1;
+                    pickDto.Pick = 30;
+                } else {
+                    pickDto.Pick = pickNumber + 1;
+                }
+            } else if (pickSpot == -1) {
+                // previous pick
+                if (pickNumber == 1) {
+                    roundNumber = roundNumber - 1;
+                    pickDto.Pick = 30;
+                } else {
+                    pickDto.Pick = draftTracker.Pick - 1;    
+                }
+            }
+
+            // Now need to get the team for that pick
+            var pick = await _context.InitialDrafts.FirstOrDefaultAsync(x => x.Round == roundNumber && x.Pick == pickDto.Pick);
+
+            // Now need the team
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == pick.TeamId);
+            pickDto.TeamMascot = team.Mascot;
+
+            if (pickSpot == -1) {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == pick.PlayerId);
+                pickDto.PlayerName = player.FirstName + " " + player.Surname;
+            } else {
+                pickDto.PlayerName = "";
+            }
+
+            return pickDto;
+        }
     }
 }

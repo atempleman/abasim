@@ -28,5 +28,7 @@ namespace ABASim.api.Data
          Task<bool> MakeAutoPick(InitialDraftPicksDto draftPick);
 
          Task<IEnumerable<DraftPickDto>> GetInitialDraftPicksForPage(int page);
+
+         Task<DashboardDraftPickDto> GetDashboardDraftPick(int pickSpot);
     }
 }

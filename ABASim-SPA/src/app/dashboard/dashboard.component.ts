@@ -26,6 +26,9 @@ import { User } from '../_models/user';
 // import { DatePipe } from '@angular/common';
 import {formatDate} from '@angular/common';
 import { ContactService } from '../_services/contact.service';
+import { DraftTracker } from '../_models/draftTracker';
+import { DraftService } from '../_services/draft.service';
+import { DashboardDraftPick } from '../_models/dashboardDraftPick';
 
 @Component({
   selector: 'app-dashboard',
@@ -53,10 +56,15 @@ export class DashboardComponent implements OnInit {
   user: User;
   interval;
 
+  tracker: DraftTracker;
+  currentPick: DashboardDraftPick;
+  previousPick: DashboardDraftPick;
+  nextPick: DashboardDraftPick;
+
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private adminService: AdminService,
               private gameEngine: GameEngineService, private transferService: TransferService, private spinner: NgxSpinnerService,
-              private fb: FormBuilder, private contactService: ContactService) { }
+              private fb: FormBuilder, private contactService: ContactService, private draftService: DraftService) { }
 
   ngOnInit() {
     // Check to see if the user is an admin user
@@ -77,7 +85,9 @@ export class DashboardComponent implements OnInit {
       this.alertify.error('Error getting League Details');
     }, () => {
       this.spinner.show();
-      if (this.league.stateId === 7) {
+      if (this.league.stateId === 4) {
+        this.getDraftTracker();
+      } else if (this.league.stateId === 7) {
         this.getLeagueLeaders();
       } else if (this.league.stateId === 8) {
         // get the playoff series
@@ -406,6 +416,40 @@ export class DashboardComponent implements OnInit {
   createChatForm() {
     this.chatForm = this.fb.group({
       message: ['', Validators.required]
+    });
+  }
+
+  getDraftTracker() {
+    this.draftService.getDraftTracker().subscribe(result => {
+      this.tracker = result;
+    }, error => {
+      this.alertify.error('Error getting draft tracker');
+    }, () => {
+      // Now need to get the Previous, Current and Next picks
+      this.getPicksToDisplay();
+    });
+  }
+
+  getPicksToDisplay() {
+    // Get the previous pick
+    this.draftService.getDashboardPicks(-1).subscribe(result => {
+      this.previousPick = result;
+    }, error => {
+      this.alertify.error('Error getting last pick');
+    });
+
+    // Get the Current pick
+    this.draftService.getDashboardPicks(0).subscribe(result => {
+      this.currentPick = result;
+    }, error => {
+      this.alertify.error('Error getting current pick');
+    });
+
+    // Get Next Pick
+    this.draftService.getDashboardPicks(1).subscribe(result => {
+      this.nextPick = result;
+    }, error => {
+      this.alertify.error('Error getting next pick');
     });
   }
 
