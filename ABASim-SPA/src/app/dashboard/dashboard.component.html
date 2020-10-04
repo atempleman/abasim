@@ -124,7 +124,7 @@
 		<h4><i class="fa fa-commenting-o" aria-hidden="true"></i> GLOBAL CHAT <button class="btn btn-secondary ml-2"
 				(click)="refreshChat()"><i class="fa fa-refresh"></i></button></h4>
 		<p *ngIf="this.chatRecords.length == 0">No chat records exist</p>
-		<table class="table table-hover events-table">
+		<!-- <table class="table table-hover events-table">
 			<tbody>
 				<tr class="table-secondary" *ngFor="let item of this.chatRecords">
 					<td>
@@ -133,7 +133,23 @@
 					</td>
 				</tr>
 			</tbody>
-		</table>
+		</table> -->
+		<div class="container">
+			<div class="row">
+				<div class="message-wrap col-lg-12">
+					<div class="msg-wrap">
+						<div class="media msg" *ngFor="let item of this.chatRecords">
+							<div class="media-body">
+								<small class="pull-right time"><i class="fa fa-clock-o"></i> {{ item.chatTime }}</small>
+		
+								<h5 class="media-heading">{{ item.username }}</h5>
+								<small class="col-lg-10">{{ item.chatText }}</small>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<br />
 		<div class="form-group">
 			<form [formGroup]="chatForm" accept-charset="UTF-8" role="form" (ngSubmit)="sendChat()">
