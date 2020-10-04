@@ -1,6 +1,7 @@
 <section class="dashboard-area">
   <h3 class="display">Draftboard</h3>
-  <p>The draftboard allows you to set up your preferred draft order. Players can be added via the Player Pool and then ordered so if you miss your pick, Auto Pick will select your top ranked player.</p>
+  <p>The draftboard allows you to set up your preferred draft order. Players can be added via the Player Pool and then
+    ordered so if you miss your pick, Auto Pick will select your top ranked player.</p>
 </section>
 
 <div class="box">
@@ -73,7 +74,7 @@
         <tr *ngFor="let player of this.draftPlayers; let i = index">
           <td>{{ player.firstName }} {{ player.surname }}</td>
           <td>
-            <ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
+            <ng-container *ngIf="player.pgPosition == 1">PG </ng-container>
             <ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
             <ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
             <ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
@@ -92,19 +93,41 @@
           <td>{{ player.intangiblesGrade }}</td>
           <td class="text-center">
             <a (click)="viewPlayer(player?.playerId)" class="btn btn-primary small-btn mt-1"><i
-              class="fa fa-info"></i></a>
-            <a class="btn btn-danger small-btn ml-1 mt-1" (click)="removeDraftRanking(player)"><i class="fa fa-minus"></i></a>
-            <a class="btn btn-info small-btn ml-1 mt-1" *ngIf="i != 0" (click)="moveUp(player)"><i class="fa fa-arrow-up ml-1"></i></a>
-            <a class="btn btn-info small-btn ml-1 mt-1" *ngIf="i != this.draftPlayers?.length - 1" (click)="moveDown(player)"><i class="fa fa-arrow-down ml-1"></i></a>
+                class="fa fa-info"></i></a>
+            <a class="btn btn-danger small-btn ml-1 mt-1" (click)="removeDraftRanking(player)"><i
+                class="fa fa-minus"></i></a>
+            <a class="btn btn-info small-btn ml-1 mt-1" *ngIf="i != 0" (click)="moveUp(player)"><i
+                class="fa fa-arrow-up ml-1"></i></a>
+            <a class="btn btn-info small-btn ml-1 mt-1" *ngIf="i != this.draftPlayers?.length - 1"
+              (click)="moveDown(player)"><i class="fa fa-arrow-down ml-1"></i></a>
+            <ng-container *ngIf="this.team.id == this.currentPick.teamId">
+              <button type="submit" class="btn btn-primary" (click)="openModal(makePick, player)">Select</button>
+            </ng-container>
           </td>
         </tr>
       </table>
       <div *ngIf="this.draftPlayers?.length == 0">
-        There are no players left on your draftboard. Add some through the draft draft pool. These will be used for Auto-picks if necessary.
+        There are no players left on your draftboard. Add some through the draft draft pool. These will be used for
+        Auto-picks if necessary.
       </div>
     </div>
   </div>
 </div>
 
-  
-  
+
+<ng-template #makePick>
+  <div class="modal-header">
+    <h4 class="modal-title">Make Draft Selection - Round #{{ this.currentPick?.round }} Pick
+      #{{ this.currentPick?.pick }}</h4>
+    <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+  </div>
+  <form #draftPlayerForm>
+    <div class="modal-body">
+      <p>Are you sure you want to select {{ this.selection.firstName }} {{ this.selection.surname }}?</p>
+    </div>
+    <div class="modal-footer form-group text-center">
+      <button type="submit" class="btn btn-primary" (click)="makeDraftPick()">Select</button>
+      <button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+    </div>
+  </form>
+</ng-template>

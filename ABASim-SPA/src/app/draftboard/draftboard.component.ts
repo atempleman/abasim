@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { AlertifyService } from '../_services/alertify.service';
 import { DraftService } from '../_services/draft.service';
 import { DraftPlayer } from '../_models/draftPlayer';
@@ -9,6 +9,11 @@ import { AddDraftRank } from '../_models/addDraftRank';
 import { Router } from '@angular/router';
 import { TransferService } from '../_services/transfer.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DraftTracker } from '../_models/draftTracker';
+import { InitialDraftPicks } from '../_models/initialDraftPicks';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { AdminService } from '../_services/admin.service';
+import { DraftSelection } from '../_models/draftSelection';
 
 @Component({
   selector: 'app-draftboard',
@@ -18,10 +23,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class DraftboardComponent implements OnInit {
   draftPlayers: DraftPlayer[] = [];
   team: Team;
+  public modalRef: BsModalRef;
+  currentPick: InitialDraftPicks;
+  selection: DraftPlayer;
 
   constructor(private alertify: AlertifyService, private draftService: DraftService, private authService: AuthService,
               private teamService: TeamService, private router: Router, private transferService: TransferService,
-              private spinner: NgxSpinnerService) { }
+              private spinner: NgxSpinnerService, private modalService: BsModalService, private adminService: AdminService) { }
 
   ngOnInit() {
     this.spinner.show();
@@ -31,6 +39,21 @@ export class DraftboardComponent implements OnInit {
       this.alertify.error('Error getting your team');
     }, () => {
       this.getDraftboardPlayers();
+    });
+
+    // this.draftService.getDraftTracker().subscribe(result => {
+    //   this.tracker = result;
+    // }, error => {
+    //   this.alertify.error('Error getting draft tracker');
+    // }, () => {
+    //   this.currentRound = this.tracker.round;
+    // });
+
+    this.draftService.getCurrentInitialDraftPick().subscribe(result => {
+      this.currentPick = result;
+      console.log(this.currentPick);
+    }, error => {
+      this.alertify.error('Error getting current draft pick');
     });
   }
 
@@ -100,5 +123,44 @@ export class DraftboardComponent implements OnInit {
     this.transferService.setData(player);
     this.router.navigate(['/view-player']);
   }
+
+  public openModal(template: TemplateRef<any>, selection: DraftPlayer) {
+    this.selection = selection;
+    this.modalRef = this.modalService.show(template);
+  }
+
+  makeDraftPick() {
+    const selectedPick: DraftSelection = {
+      pick: this.currentPick.pick,
+      playerId: this.selection.playerId,
+      round: this.currentPick.round,
+      teamId: this.team.id
+    };
+
+    this.draftService.makeDraftPick(selectedPick).subscribe(result => {
+    }, error => {
+      this.alertify.error('Error making pick');
+    }, () => {
+      this.modalRef.hide();
+      this.alertify.success('Selection made successfully');
+
+      if (this.currentPick.round === 13 && this.currentPick.pick === 30) {
+        // Update the leage state here
+        this.adminService.updateLeagueStatus(5).subscribe(result => {
+        }, error => {
+          this.alertify.error('Error changing league state');
+        }, () => {
+          this.alertify.success('Draft Completed');
+        });
+      } else {
+        this.draftService.getCurrentInitialDraftPick().subscribe(result => {
+          this.currentPick = result;
+          console.log(this.currentPick);
+        }, error => {
+          this.alertify.error('Error getting current draft pick');
+        });
+      }
+    });
+   }
 
 }

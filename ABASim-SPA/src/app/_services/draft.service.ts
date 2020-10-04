@@ -51,6 +51,10 @@ export class DraftService {
     return this.http.get<InitialDraftPicks[]>(this.baseUrl + 'getinitialdraftpicks');
   }
 
+  getCurrentInitialDraftPick(): Observable<InitialDraftPicks> {
+    return this.http.get<InitialDraftPicks>(this.baseUrl + 'getcurrentinitialdraftpick');
+  }
+
   makeDraftPick(draftPick: DraftSelection) {
     return this.http.post(this.baseUrl + 'initialdraftselection', draftPick);
   }

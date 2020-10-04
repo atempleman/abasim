@@ -30,5 +30,7 @@ namespace ABASim.api.Data
          Task<IEnumerable<DraftPickDto>> GetInitialDraftPicksForPage(int page);
 
          Task<DashboardDraftPickDto> GetDashboardDraftPick(int pickSpot);
+
+         Task<InitialDraft> GetCurrentInitialDraftPick();
     }
 }

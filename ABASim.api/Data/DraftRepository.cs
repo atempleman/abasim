@@ -252,14 +252,6 @@ namespace ABASim.api.Data
                     playerName =  player.FirstName + " " + player.Surname;
                 }
 
-                if (currentTeam == null) {
-                    string s = "";
-                }
-
-                if (dp == null) {
-                    string s = "";
-                }
-
                 DraftPickDto dto = new DraftPickDto
                 {
                     Round = dp.Round,
@@ -321,6 +313,13 @@ namespace ABASim.api.Data
             }
 
             return pickDto;
+        }
+
+        public async Task<InitialDraft> GetCurrentInitialDraftPick()
+        {
+            var tracker = await _context.DraftTrackers.FirstOrDefaultAsync();
+            var cp = await _context.InitialDrafts.FirstOrDefaultAsync(x => x.Pick == tracker.Pick && x.Round == tracker.Round);
+            return cp;
         }
     }
 }
