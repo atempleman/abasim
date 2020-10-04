@@ -1,19 +1,20 @@
-<div class="jumbotron">
-  <h3 class="display">{{this.team?.mascot }} Inbox</h3>
-  <span class="badge badge-danger"
-    *ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
-  <span class="badge badge-info"
-    *ngIf="this.league?.stateId == 2 || this.league?.stateId == 6">{{ this.league?.state }}</span>
-  <span class="badge badge-success"
-    *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5 || this.league?.stateId == 11 || this.league?.stateId == 13 || this.league?.stateId == 14">{{ this.league?.state }}</span>
-  <span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
-  <span class="badge badge-warning"
-    *ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
-  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
-  <span
-    *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
-    - Day #{{ this.league?.day }}</span>
-</div>
+<section class="dashboard-area">
+	<h3 class="display">{{this.team?.mascot }} Inbox</h3>
+	<span class="badge badge-danger mb-3"
+		*ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-info mb-3"
+		*ngIf="this.league?.stateId == 2 || this.league?.stateId == 6">{{ this.league?.state }}</span>
+	<span class="badge badge-success mb-3"
+		*ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5 || this.league?.stateId == 11 || this.league?.stateId == 13 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+	<span class="badge badge-primary mb-3" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
+	<span class="badge badge-warning mb-3"
+		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
+	<span class="badge badge-secondary mb-3" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+	<span
+		*ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+		- Day #{{ this.league?.day }}</span>
+</section>
+
 
 
 <div class="box">
@@ -48,7 +49,7 @@
               <p>{{ mes.messageDate }}</p>
             </td>
             <td>
-              <b>{{ mes.receiverTeam }}'s GM</b>
+              <b>{{ mes.senderTeam }}'s GM</b>
             </td>
             <td>
               <b>{{ mes.subject }}</b>
@@ -61,8 +62,7 @@
         </tbody>
       </table>
       <br />
-      <button class="btn btn-info btn-xs tablebutton ml-2" (click)="openModalNew(newmessage)"><span
-          class="glyphicon glyphicon-add"></span> New</button>
+      <button class="btn btn-info btn-xs tablebutton ml-2" (click)="openModalNew(newmessage)"><i class="fa fa-plus-square"></i> New</button>
     </div>
   </div>
 </div>
@@ -92,7 +92,7 @@
       </div>
       <div class="form-group row">
         <label class="col-md-6 control-label" for="textinput">Subject: </label>
-        <input type="text" class="form-control-plaintext" id="subject">
+        <label class="col-md-6 control-label" for="textinput">{{ this.replySubject }}</label>
         <label class="col-md-6 control-label" for="textinput">Body: </label>
         <textarea class="form-control" id="body" rows="4"></textarea>
       </div>
@@ -125,7 +125,7 @@
       </div>
       <div class="form-group row">
         <label class="col-md-6 control-label" for="textinput">Subject: </label>
-        <input type="text" class="form-control-plaintext" id="subject">
+        <input type="text" class="form-control" id="subject">
         <label class="col-md-6 control-label" for="textinput">Body: </label>
         <textarea class="form-control" id="body" rows="4"></textarea>
       </div>

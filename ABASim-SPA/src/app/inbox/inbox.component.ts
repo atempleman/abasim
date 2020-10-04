@@ -24,6 +24,7 @@ export class InboxComponent implements OnInit {
   viewedMessage: InboxMessage;
   teams: Team[] = [];
   selectedTeam: number;
+  replySubject = '';
 
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private teamService: TeamService,
               private authService: AuthService, private contactService: ContactService, private modalService: BsModalService) { }
@@ -46,6 +47,9 @@ export class InboxComponent implements OnInit {
     });
 
     this.teamService.getAllTeams().subscribe(result => {
+      // find the index of the users team
+      const index = result.findIndex(x => x.id === this.team.id);
+      result.splice(index, 1);
       this.teams = result;
     }, error => {
       this.alertify.error('Error getting teams');
@@ -61,10 +65,14 @@ export class InboxComponent implements OnInit {
   }
 
   deleteMessage(message: number) {
+    console.log(message);
     this.contactService.deleteInboxMessage(message).subscribe(result => {
 
     }, error => {
       this.alertify.error('Error deleting message');
+    }, () => {
+      // Need to update the messages
+      this.getMessages();
     });
   }
 
@@ -99,13 +107,14 @@ export class InboxComponent implements OnInit {
 
   replyAction() {
     this.messageState = 2;
+    this.replySubject = 'RE: ' + this.viewedMessage.subject;
   }
 
   updateMessageForm() {
     // this.selectedTeam
     // now need to get the subject and body values
     // var inputValue = (<HTMLInputElement>document.getElementById('')).value;
-    const subjectValue = (document.getElementById('subject') as HTMLInputElement).value;
+    // const subjectValue = (document.getElementById('subject') as HTMLInputElement).value;
     const bodyValue = (document.getElementById('body') as HTMLInputElement).value;
     const dt = formatDate(new Date(), 'dd/MM/yyyy', 'en');
 
@@ -119,7 +128,7 @@ export class InboxComponent implements OnInit {
       receiverId: this.viewedMessage.senderId,
       receiverName: '',
       receiverTeam: this.viewedMessage.senderTeam,
-      subject: subjectValue,
+      subject: this.replySubject,
       body: bodyValue,
       messageDate: dt,
       isNew: 1
@@ -134,19 +143,32 @@ export class InboxComponent implements OnInit {
   }
 
   newMessageForm() {
-    const subjectValue = (document.getElementById('subject') as HTMLInputElement).value;
+    let subjectValue = '';
+    if (this.messageState === 2) {
+      subjectValue = this.replySubject;
+    } else {
+      subjectValue = (document.getElementById('subject') as HTMLInputElement).value;
+    }
+
     const bodyValue = (document.getElementById('body') as HTMLInputElement).value;
     const dt = formatDate(new Date(), 'dd/MM/yyyy', 'en');
     const receivingTeam = this.teams.find(x => x.id === +this.selectedTeam);
+
+    let sender = this.team.mascot;
+    let receiver = receivingTeam.mascot;
+    if (this.messageState === 2) {
+      receiver = this.team.mascot;
+      sender = receivingTeam.mascot;
+    }
 
     const message: InboxMessage = {
       id: 0,
       senderId: this.team.id,
       senderName: '',
-      senderTeam: this.team.mascot,
+      senderTeam: sender,
       receiverId: +this.selectedTeam,
       receiverName: '',
-      receiverTeam: receivingTeam.mascot,
+      receiverTeam: receiver,
       subject: subjectValue,
       body: bodyValue,
       messageDate: dt,
