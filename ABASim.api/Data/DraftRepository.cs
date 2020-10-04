@@ -252,6 +252,14 @@ namespace ABASim.api.Data
                     playerName =  player.FirstName + " " + player.Surname;
                 }
 
+                if (currentTeam == null) {
+                    string s = "";
+                }
+
+                if (dp == null) {
+                    string s = "";
+                }
+
                 DraftPickDto dto = new DraftPickDto
                 {
                     Round = dp.Round,

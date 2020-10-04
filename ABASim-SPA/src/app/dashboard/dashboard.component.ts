@@ -24,7 +24,7 @@ import { GlobalChat } from '../_models/globalChat';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { User } from '../_models/user';
 // import { DatePipe } from '@angular/common';
-import {formatDate} from '@angular/common';
+import { formatDate } from '@angular/common';
 import { ContactService } from '../_services/contact.service';
 import { DraftTracker } from '../_models/draftTracker';
 import { DraftService } from '../_services/draft.service';
@@ -55,6 +55,7 @@ export class DashboardComponent implements OnInit {
   chatForm: FormGroup;
   user: User;
   interval;
+  draftInterval;
 
   tracker: DraftTracker;
   currentPick: DashboardDraftPick;
@@ -62,9 +63,9 @@ export class DashboardComponent implements OnInit {
   nextPick: DashboardDraftPick;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService, private teamService: TeamService, private adminService: AdminService,
-              private gameEngine: GameEngineService, private transferService: TransferService, private spinner: NgxSpinnerService,
-              private fb: FormBuilder, private contactService: ContactService, private draftService: DraftService) { }
+    private authService: AuthService, private teamService: TeamService, private adminService: AdminService,
+    private gameEngine: GameEngineService, private transferService: TransferService, private spinner: NgxSpinnerService,
+    private fb: FormBuilder, private contactService: ContactService, private draftService: DraftService) { }
 
   ngOnInit() {
     // Check to see if the user is an admin user
@@ -77,6 +78,10 @@ export class DashboardComponent implements OnInit {
     this.interval = setInterval(() => {
       this.refreshChat();
     }, 600000);
+
+    this.interval = setInterval(() => {
+      this.getPicksToDisplay();
+    }, 210000);
 
     // get the league object - TODO - roll the league state into the object as a Dto and pass back
     this.leagueService.getLeague().subscribe(result => {
@@ -287,9 +292,9 @@ export class DashboardComponent implements OnInit {
   runGame(game: GameDisplayCurrent) {
     this.noRun = 1;
     const simGame: SimGame = {
-      awayId:  game.awayTeamId,
-      homeId:  game.homeTeamId,
-      gameId:  game.id,
+      awayId: game.awayTeamId,
+      homeId: game.homeTeamId,
+      gameId: game.id,
     };
 
     this.gameEngine.startPreseasonGame(simGame).subscribe(result => {
@@ -308,9 +313,9 @@ export class DashboardComponent implements OnInit {
     console.log('ashley testing here');
     this.noRun = 1;
     const simGame: SimGame = {
-      awayId:  game.awayTeamId,
-      homeId:  game.homeTeamId,
-      gameId:  game.id,
+      awayId: game.awayTeamId,
+      homeId: game.homeTeamId,
+      gameId: game.id,
     };
 
     console.log(simGame);
@@ -330,9 +335,9 @@ export class DashboardComponent implements OnInit {
   runGameSeason(game: GameDisplayCurrent) {
     this.noRun = 1;
     const simGame: SimGame = {
-      awayId:  game.awayTeamId,
-      homeId:  game.homeTeamId,
-      gameId:  game.id,
+      awayId: game.awayTeamId,
+      homeId: game.homeTeamId,
+      gameId: game.id,
     };
 
     this.gameEngine.startSeasonGame(simGame).subscribe(result => {

@@ -30,6 +30,10 @@
     height: auto; /*550px; /* make this dynamic */
     text-align: center;
  }
+ .row {
+     text-align: center;
+     position: relative;
+ }
  .card p {
     font-size: 18px;
  }

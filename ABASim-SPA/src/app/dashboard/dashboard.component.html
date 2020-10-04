@@ -91,7 +91,9 @@
 	</div>
 	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 1">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
-		<p>Currently the league is taking on user registrations. If you know anyone get them to join the league! Once the league is full, the initial draft lottery will be run. For now use the global chat and scout players under the Players section.</p>
+		<p>Currently the league is taking on user registrations. If you know anyone get them to join the league! Once
+			the league is full, the initial draft lottery will be run. For now use the global chat and scout players
+			under the Players section.</p>
 	</div>
 	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 2">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
@@ -99,28 +101,28 @@
 	</div>
 	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 3">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
-		<p>The draft lottery has now been run. View the draft order and all things draft related under the draft menu option and don't forget to set your draftboard to cover the auto-picks! The draft will begin soon, exact time and date will be posted in the chat.</p>
+		<p>The draft lottery has now been run. View the draft order and all things draft related under the draft menu
+			option and don't forget to set your draftboard to cover the auto-picks! The draft will begin soon, exact
+			time and date will be posted in the chat.</p>
 	</div>
 	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 4">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Draft HQ</h4>
 		<p>Round #{{ this.tracker.round }}</p>
 		<div class="small-card">
-			<div class="row">
-				<p>#{{ this.previousPick.pick }} - {{ this.previousPick.teamMascot }} - {{ this.previousPick.playerName }}</p>
-			</div>
-			<div class="row">
-				<p>#{{ this.currentPick.pick }} - {{ this.currentPick.teamMascot }} - ON THE CLOCK</p>
-			</div>
-			<div class="row">
-				<p>#{{ this.nextPick.pick }} - {{ this.nextPick.teamMascot }} - UP NEXT</p>
+			<p>#{{ this.previousPick.pick }} - {{ this.previousPick.teamMascot }} - {{ this.previousPick.playerName }}
+			</p>
+			<p>#{{ this.currentPick.pick }} - {{ this.currentPick.teamMascot }} - ON THE CLOCK</p>
+			<p>#{{ this.nextPick.pick }} - {{ this.nextPick.teamMascot }} - UP NEXT</p>
+			<div style="text-align: center;">
+				<button type="button" class="btn btn-link text-left"(click)="goToDraft()">Go to Draft</button>
 			</div>
 		</div>
 
 	</div>
 
 	<div class="card" style="background-color:rgb(22, 24, 100);">
-		<h4><i class="fa fa-commenting-o" aria-hidden="true"></i> GLOBAL CHAT <button class="btn btn-secondary ml-2" (click)="refreshChat()"><i
-					class="fa fa-refresh"></i></button></h4>
+		<h4><i class="fa fa-commenting-o" aria-hidden="true"></i> GLOBAL CHAT <button class="btn btn-secondary ml-2"
+				(click)="refreshChat()"><i class="fa fa-refresh"></i></button></h4>
 		<p *ngIf="this.chatRecords.length == 0">No chat records exist</p>
 		<table class="table table-hover events-table">
 			<tbody>
