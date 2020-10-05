@@ -158,6 +158,8 @@ export class DraftboardComponent implements OnInit {
           console.log(this.currentPick);
         }, error => {
           this.alertify.error('Error getting current draft pick');
+        }, () => {
+          this.getDraftboardPlayers();
         });
       }
     });

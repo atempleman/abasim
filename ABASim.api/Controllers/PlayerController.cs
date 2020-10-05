@@ -70,10 +70,24 @@ namespace ABASim.api.Controllers
             return Ok(players);
         }
 
+        [HttpGet("filterplayers/{value}")]
+        public async Task<IActionResult> FilterPlayers(string value)
+        {
+            var players = await _repo.FilterPlayers(value);
+            return Ok(players);
+        }
+
         [HttpGet("draftpoolfilterbyposition/{pos}")]
         public async Task<IActionResult> DraftPoolFilterByPosition(int pos)
         {
             var players = await _repo.DraftPoolFilterByPosition(pos);
+            return Ok(players);
+        }
+
+        [HttpGet("filterbyposition/{pos}")]
+        public async Task<IActionResult> FilterByPosition(int pos)
+        {
+            var players = await _repo.FilterByPosition(pos);
             return Ok(players);
         }
     }

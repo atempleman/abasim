@@ -15,6 +15,10 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<DraftPlayerDto>> FilterInitialDraftPlayerPool(string value);
 
+         Task<IEnumerable<Player>> FilterPlayers(string value);
+
+         Task<IEnumerable<Player>> FilterByPosition(int pos);
+
          Task<Player> GetPlayerForId(int playerId);
 
          Task<IEnumerable<Player>> GetAllPlayers();

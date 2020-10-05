@@ -1,41 +1,101 @@
-<link rel="stylesheet" type="text/css"
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<section class="dashboard-area">
+	<h3 class="display">Players</h3>
+</section>
 
 
-<div class="jumbotron">
-	<h3 class="display">PLAYERS</h3>
+<div class="row ml-2 mr-2 textdesc">
+	<p>The following table provides a list of all players in the simulation.</p>
 </div>
 
-
 <div class="box">
+	<ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
+		<p class="loading">Loading Player Pool...</p>
+	</ngx-spinner>
+
+	<div class="row table-row text-center ml-2 mr-2" *ngIf="this.allPlayers?.length != 0">
+		<form id="filter_form" class="btn-group" [formGroup]="searchForm">
+			<input type="text" id="filter_keywords" name="filter_keywords" placeholder="Filter by name"
+				formControlName="filter" />
+			<input class="btn btn-default" type="submit" id="filter_submit" name="filter_submit" value="Go"
+				(click)="filterTable()" />
+			<input class="btn btn-default" type="reset" id="filter_reset" name="filter_reset" value="Reset"
+				(click)="resetFilter()" />
+		</form>
+		<div class="btn-group" role="group" aria-label="First group">
+			<span class="filtertitle mr-1 ml-2">Filter by Position:</span>
+			<button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 1 }"
+				(click)="filterByPos(1)">PG</button>
+			<button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 2 }"
+				(click)="filterByPos(2)">SG</button>
+			<button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 3 }"
+				(click)="filterByPos(3)">SF</button>
+			<button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 4 }"
+				(click)="filterByPos(4)">PF</button>
+			<button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 5 }"
+				(click)="filterByPos(5)">C</button>
+			<button type="button" class="btn btn-default" [ngClass]="{'fill-data-btn': this.positionFilter == 0 }"
+				(click)="filterByPos(0)">ALL</button>
+		</div>
+	</div>
+	<div class="row table-row text-center ml-2 mr-2">
+		<table *ngIf="this.allPlayers?.length != 0" class="table table-striped custab">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Position(s)</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tr *ngFor="let player of this.allPlayers">
+				<td>
+					{{ player.firstName }} {{ player.surname }}
+				</td>
+				<td>
+					<ng-container *ngIf="player.pgPosition == 1">PG </ng-container>
+					<ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
+					<ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
+					<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
+					<ng-container *ngIf="player.cPosition == 1">C </ng-container>
+				</td>
+				<td class="text-center">
+					<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"> View</button>
+				</td>
+			</tr>
+		</table>
+
+		<!-- <div class="pager" *ngIf="this.displayPaging == 0">
+			<ul class="pagination">
+				<li class="page-item">
+					<a class="page-link" (click)="pagerPrev()">&laquo;</a>
+				</li>
+				<li class="page-item" *ngFor="let page of counter(this.pages); let i = index;">
+					<a class="page-link" (click)="goToPage(i+1)">{{ i + 1 }}</a>
+				</li>
+				<li class="page-item">
+					<a class="page-link" (click)="pagerNext()">&raquo;</a>
+				</li>
+			</ul>
+		</div> -->
+	</div>
+</div>
+
+<!-- < class="box">
 	<div class="row">
 		<div class="col">
 			<table class="table table-hover roster-table">
 				<thead>
 					<tr>
-					  <th>Name</th>
-					  <th>Position(s)</th>
-					  <th></th>
+						<th>Name</th>
+						<th>Position(s)</th>
+						<th></th>
 					</tr>
-				  </thead>
+				</thead>
 				<tbody>
 					<tr class="table-secondary" *ngFor="let player of this.allPlayers">
-						<td>
-							{{ player.firstName }} {{ player.surname }}
-						</td>
-						<td>
-							<ng-container  *ngIf="player.pgPosition == 1">PG </ng-container>
-							<ng-container *ngIf="player.sgPosition == 1">SG </ng-container>
-							<ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
-							<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
-							<ng-container *ngIf="player.cPosition == 1">C </ng-container>
-						</td>
-						<td class="text-center">
-							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
-						</td>
+						
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-</div>
+</> -->

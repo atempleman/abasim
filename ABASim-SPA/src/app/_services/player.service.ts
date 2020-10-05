@@ -34,6 +34,10 @@ export class PlayerService {
     return this.http.get<Player[]>(this.baseUrl + 'getallplayers');
   }
 
+  filterPlayers(value: string): Observable<Player[]> {
+    return this.http.get<Player[]>(this.baseUrl + 'filteredplayers/' + value);
+  }
+
   getFreeAgents(): Observable<Player[]> {
     return this.http.get<Player[]>(this.baseUrl + 'getfreeagents');
   }
@@ -48,5 +52,10 @@ export class PlayerService {
 
   getDraftPlayerPoolByPos(pos: number): Observable<DraftPlayer[]> {
     return this.http.get<DraftPlayer[]>(this.baseUrl + 'draftpoolfilterbyposition/' + pos);
+  }
+
+  getPlayerByPos(pos: number): Observable<Player[]> {
+    console.log('ash2');
+    return this.http.get<Player[]>(this.baseUrl + 'filterbyposition/' + pos);
   }
 }

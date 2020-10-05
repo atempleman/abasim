@@ -72,6 +72,24 @@ namespace ABASim.api.Data
             return draftPool;
         }
 
+        public async Task<IEnumerable<Player>> FilterByPosition(int pos)
+        {
+            List<Player> players = new List<Player>();
+
+            if (pos == 1) {
+                players = await _context.Players.Where(x => x.PGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 2) {
+                players = await _context.Players.Where(x => x.SGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 3) {
+                players = await _context.Players.Where(x => x.SFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 4) {
+                players = await _context.Players.Where(x => x.PFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 5) {
+                players = await _context.Players.Where(x => x.CPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            }
+            return players;
+        }
+
         public async Task<IEnumerable<DraftPlayerDto>> FilterInitialDraftPlayerPool(string value)
         {
              List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();
@@ -115,6 +133,14 @@ namespace ABASim.api.Data
                 }
             }
             return draftPool;
+        }
+
+        public async Task<IEnumerable<Player>> FilterPlayers(string value)
+        {
+            List<Player> players = new List<Player>();
+            var query = String.Format("SELECT * FROM Players where Surname like '%" + value + "%' or FirstName like '%" + value + "%'");
+            players = await _context.Players.FromSqlRaw(query).ToListAsync();
+            return players;
         }
 
         public async Task<IEnumerable<Player>> GetAllPlayers()
