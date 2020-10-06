@@ -13,6 +13,7 @@ import { Trade } from '../_models/trade';
 import { TradeMessage } from '../_models/tradeMessage';
 import { TeamDraftPick } from '../_models/teamDraftPick';
 import { PlayerInjury } from '../_models/playerInjury';
+import { CompletePlayer } from '../_models/completePlayer';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +31,8 @@ export class TeamService {
     return this.http.get<Player[]>(this.baseUrl + 'getrosterforteam/' + teamId);
   }
 
-  getExtendedRosterForTeam(teamId: number): Observable<ExtendedPlayer[]> {
-    return this.http.get<ExtendedPlayer[]>(this.baseUrl + 'getextendedroster/' + teamId);
+  getExtendedRosterForTeam(teamId: number): Observable<CompletePlayer[]> {
+    return this.http.get<CompletePlayer[]>(this.baseUrl + 'getextendedroster/' + teamId);
   }
 
   getTeamForUserId(userId: number) {
@@ -52,6 +53,14 @@ export class TeamService {
 
   saveDepthCharts(depthCharts: DepthChart[]) {
     return this.http.post(this.baseUrl + 'savedepthchart', depthCharts);
+  }
+
+  getTeamForTeamName(name: string): Observable<Team> {
+    return this.http.get<Team>(this.baseUrl + 'getteamforteamname/' + name);
+  }
+
+  getTeamForTeamMascot(name: string): Observable<Team> {
+    return this.http.get<Team>(this.baseUrl + 'getteamformascot/' + name);
   }
 
   rosterSpotCheck(teamId: number) {

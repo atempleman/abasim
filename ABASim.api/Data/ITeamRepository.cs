@@ -19,13 +19,17 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<Team>> GetTeamInitialLotteryOrder();
 
+         Task<Team> GetTeamForTeamName(string name);
+
+         Task<Team> GetTeamForTeamMascot(string name);
+
          Task<IEnumerable<DepthChart>> GetDepthChartForTeam(int teamId);
 
          Task<bool> SaveDepthChartForTeam(DepthChart[] charts);
 
          Task<bool> RosterSpotCheck(int teamId);
 
-         Task<IEnumerable<ExtendedPlayerDto>> GetExtendPlayersForTeam(int teamId);
+         Task<IEnumerable<CompletePlayerDto>> GetExtendPlayersForTeam(int teamId);
 
          Task<bool> WaivePlayer(WaivePlayerDto waived);
 

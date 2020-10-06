@@ -1,58 +1,37 @@
-import { Component, OnInit, TemplateRef, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LeagueService } from '../_services/league.service';
-import { AlertifyService } from '../_services/alertify.service';
-import { AuthService } from '../_services/auth.service';
-import { TeamService } from '../_services/team.service';
-import { League } from '../_models/league';
-import { Team } from '../_models/team';
-import { ExtendedPlayer } from '../_models/extendedPlayer';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { WaivedPlayer } from '../_models/waivedPlayer';
-import { TransferService } from '../_services/transfer.service';
-import { PlayerInjury } from '../_models/playerInjury';
 import { CompletePlayer } from '../_models/completePlayer';
+import { ExtendedPlayer } from '../_models/extendedPlayer';
+import { PlayerInjury } from '../_models/playerInjury';
+import { Team } from '../_models/team';
+import { AlertifyService } from '../_services/alertify.service';
+import { TeamService } from '../_services/team.service';
+import { TransferService } from '../_services/transfer.service';
 
 @Component({
-  selector: 'app-team',
-  templateUrl: './team.component.html',
-  styleUrls: ['./team.component.css']
+  selector: 'app-view-team',
+  templateUrl: './view-team.component.html',
+  styleUrls: ['./view-team.component.css']
 })
-export class TeamComponent implements OnInit {
-  league: League;
+export class ViewTeamComponent implements OnInit {
   team: Team;
+  teamId: number;
+  teamsInjuries: PlayerInjury[] = [];
   playingRoster: CompletePlayer[] = [];
-  isAdmin = 0;
   playerCount = 0;
-  selectedPlayer: CompletePlayer;
-  message: number;
   statusGrades = 1;
   statusStats = 0;
 
-  public modalRef: BsModalRef;
-
-  teamsInjuries: PlayerInjury[] = [];
-
-  constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService, private teamService: TeamService, private modalService: BsModalService,
-              private transferService: TransferService) { }
+  constructor(private alertify: AlertifyService, private transferService: TransferService, private teamService: TeamService,
+              private router: Router) { }
 
   ngOnInit() {
-    // Check to see if the user is an admin user
-    this.isAdmin = this.authService.isAdmin();
+    this.teamId = this.transferService.getData();
 
-    // get the league object - TODO - roll the league state into the object as a Dto and pass back
-    this.leagueService.getLeague().subscribe(result => {
-      this.league = result;
-    }, error => {
-      this.alertify.error('Error getting League Details');
-    }, () => {
-    });
-
-    this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
+    this.teamService.getTeamForTeamId(this.teamId).subscribe(result => {
       this.team = result;
     }, error => {
-      this.alertify.error('Error getting your Team');
+      this.alertify.error('Error getting team');
     }, () => {
       this.getPlayerInjuries();
       this.getRosterForTeam();
@@ -69,16 +48,12 @@ export class TeamComponent implements OnInit {
 
   checkIfInjured(playerId: number) {
     const injured = this.teamsInjuries.find(x => x.playerId === playerId);
-    if (injured) {
+
+    if(injured) {
       return 1;
     } else {
       return 0;
     }
-  }
-
-  public openModal(template: TemplateRef<any>, player: CompletePlayer) {
-    this.selectedPlayer = player;
-    this.modalRef = this.modalService.show(template);
   }
 
   getRosterForTeam() {
@@ -90,40 +65,9 @@ export class TeamComponent implements OnInit {
     });
   }
 
-  confirmedWaived() {
-    const waivePlayer: WaivedPlayer = {
-      teamId: this.team.id,
-      playerId: this.selectedPlayer.playerId
-    };
-    this.teamService.waivePlayer(waivePlayer).subscribe(result => {
-
-    }, error => {
-      this.alertify.error('Error waiving player');
-    }, () => {
-      this.getRosterForTeam();
-      this.modalRef.hide();
-    });
-  }
-
-  viewPlayer(player: ExtendedPlayer) {
+  viewPlayer(player: CompletePlayer) {
     this.transferService.setData(player.playerId);
     this.router.navigate(['/view-player']);
-  }
-
-  goToCoaching() {
-    this.router.navigate(['/coaching']);
-  }
-
-  goToDepthCharts() {
-    this.router.navigate(['/depthchart']);
-  }
-
-  goToFreeAgents() {
-    this.router.navigate(['/freeagents']);
-  }
-
-  goToTrades() {
-    this.router.navigate(['/trades']);
   }
 
   gradesClick() {

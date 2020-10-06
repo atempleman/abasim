@@ -13,7 +13,7 @@
                             <div class="userData ml-3">
                                 <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold">
                                     {{ this.detailedPlayer?.firstName }} {{ this.detailedPlayer?.surname }}</h2>
-                                <h6 class="d-block">Team: {{ this.detailedPlayer?.teamName }}</h6>
+                                <h6 class="d-block">Team: </h6><button (click)="viewTeam()">{{ this.detailedPlayer?.teamName }}</button>
                                 <h6 class="d-block">
                                     Position: 
                                     <ng-container  *ngIf="this.detailedPlayer?.pgPosition == 1">PG </ng-container>

@@ -15,6 +15,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PlayerService } from '../_services/player.service';
 import { DraftSelection } from '../_models/draftSelection';
 import { AdminService } from '../_services/admin.service';
+import { TransferService } from '../_services/transfer.service';
 
 @Component({
   selector: 'app-draft',
@@ -51,7 +52,8 @@ export class DraftComponent implements OnInit {
 
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private router: Router,
               private draftService: DraftService, private teamService: TeamService, private authService: AuthService,
-              private modalService: BsModalService, private playerService: PlayerService, private adminService: AdminService) { }
+              private modalService: BsModalService, private playerService: PlayerService, private adminService: AdminService,
+              private transferService: TransferService) { }
 
   ngOnInit() {
     this.isAdmin = +localStorage.getItem('isAdmin');
@@ -110,7 +112,7 @@ export class DraftComponent implements OnInit {
       const dtPick = new Date(time);
       const currentTime = new Date();
 
-      this.timeRemaining =  dtPick.getTime() - currentTime.getTime();
+      this.timeRemaining = dtPick.getTime() - currentTime.getTime();
       const value = (this.timeRemaining / 1000).toFixed(0);
       this.timeRemaining = +value;
 
@@ -127,7 +129,7 @@ export class DraftComponent implements OnInit {
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return minutes + ':' + (value - minutes * 60);
- }
+  }
 
   getDraftTracker() {
     // Get the draft tracker
@@ -197,9 +199,22 @@ export class DraftComponent implements OnInit {
         this.getDraftTracker();
       }
     });
-   }
+  }
 
-   autoPickAction() {
+  viewTeam(teamId: number) {
+    let team: Team;
+    // Need to go a call to get the team id
+    this.teamService.getTeamForTeamId(teamId).subscribe(result => {
+      team = result;
+    }, error => {
+      this.alertify.error('Error getting players team');
+    }, () => {
+      this.transferService.setData(team.id);
+      this.router.navigate(['/view-team']);
+    });
+  }
+
+  autoPickAction() {
     console.log('Auto-picking');
     const selectedPick: DraftSelection = {
       pick: this.tracker.pick,
@@ -226,7 +241,7 @@ export class DraftComponent implements OnInit {
         this.getDraftTracker();
       }
     });
-   }
+  }
 
   playerPoolClicked() {
     this.router.navigate(['/draftplayerpool']);

@@ -46,6 +46,7 @@ import { FullgamepbpComponent } from './fullgamepbp/fullgamepbp.component';
 import { InboxComponent } from './inbox/inbox.component';
 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ViewTeamComponent } from './view-team/view-team.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -87,7 +88,8 @@ export function tokenGetter() {
       PlayoffResultsComponent,
       BoxScoreComponent,
       FullgamepbpComponent,
-      InboxComponent
+      InboxComponent,
+      ViewTeamComponent
    ],
    imports: [
       BrowserModule,

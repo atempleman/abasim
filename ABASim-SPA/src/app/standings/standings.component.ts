@@ -4,6 +4,9 @@ import { LeagueService } from '../_services/league.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Standing } from '../_models/standing';
 import { Router } from '@angular/router';
+import { TeamService } from '../_services/team.service';
+import { Team } from '../_models/team';
+import { TransferService } from '../_services/transfer.service';
 
 @Component({
   selector: 'app-standings',
@@ -27,8 +30,8 @@ export class StandingsComponent implements OnInit {
   pacificStandings: Standing[] = [];
   southwestStandings: Standing[] = [];
 
-  constructor(private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService, private router: Router) { }
+  constructor(private leagueService: LeagueService, private alertify: AlertifyService, private transferService: TransferService,
+              private authService: AuthService, private router: Router, private teamService: TeamService) { }
 
   ngOnInit() {
     this.leagueService.getConferenceStandings(1).subscribe(result => {
@@ -156,6 +159,19 @@ export class StandingsComponent implements OnInit {
 
   goToTransactions() {
     this.router.navigate(['/transactions']);
+  }
+
+  viewTeam(name: string) {
+    // Need to go a call to get the team id
+    let team: Team;
+    this.teamService.getTeamForTeamName(name).subscribe(result => {
+      team = result;
+    }, error => {
+      this.alertify.error('Error getting players team');
+    }, () => {
+      this.transferService.setData(team.id);
+      this.router.navigate(['/view-team']);
+    });
   }
 
 }

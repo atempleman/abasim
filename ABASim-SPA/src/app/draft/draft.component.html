@@ -49,7 +49,7 @@
                 <div class="card-body">
                     <p class="card-text">View the draft lottery and see what the odds or draft order.</p>
                     <div style="text-align: right;">
-                        <button type="button" class="btn btn-link text-left" (click)="lotteryClicked()">Go to Draft
+                        <button class="teamlink" type="button" class="btn btn-link text-left" (click)="lotteryClicked()">Go to Draft
                             Lottery</button>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                 </thead>
                 <tr *ngFor="let picks of this.draftPicks; let i = index">
                     <td>{{ i + 1 }}</td>
-                    <td>{{ picks.teamName }}</td>
+                    <td><button class="teamlink" (click)="viewTeam(this.picks.teamId)">{{ picks.teamName }}</button></td>
                     <td>{{ picks.playerName }}</td>
                     <td></td>
                     <td>

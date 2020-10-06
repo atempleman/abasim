@@ -458,4 +458,17 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  viewTeam(teamMascot: string) {
+    let team: Team;
+    // Need to go a call to get the team id
+    this.teamService.getTeamForTeamMascot(teamMascot).subscribe(result => {
+      team = result;
+    }, error => {
+      this.alertify.error('Error getting players team');
+    }, () => {
+      this.transferService.setData(team.id);
+      this.router.navigate(['/view-team']);
+    });
+  }
+
 }

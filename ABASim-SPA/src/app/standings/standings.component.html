@@ -2,56 +2,6 @@
 	<h3 class="display">STANDINGS</h3>
 </div>
 
-<!-- <div class="box">
-	<div class="container">
-		<div class="row cards-row">
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-home fa-2x"></i><span
-						class="header-card ml-3"><strong>LEAGUE HOME</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Go to the league page. View recent results and upcoming games.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToLeague()">Go to League</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-signal fa-2x"></i><span
-						class="header-card ml-3"><strong>STATISTICS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the statistics of players and teams.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToStats()">Go to Statistics</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>SCHEDULE</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the league schedule, upcoming and past games.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToSchedule()">Schedule</button>
-					</div>
-				</div>
-			</div>
-      
-      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToTransactions()">Go to Transactions</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> -->
-
 <div class="box">
   <div class="container">
     <div class="row">
@@ -82,7 +32,7 @@
                 <tbody>
                     <tr *ngFor="let stand of this.eastStandings; let i = index" [ngClass]="i < 8 ? 'table-primary' : 'table-secondary'">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -110,7 +60,7 @@
                 <tbody>
                     <tr *ngFor="let stand of this.westStandings; let i = index" [ngClass]="i < 8 ? 'table-primary' : 'table-secondary'">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -140,7 +90,7 @@
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.atlanticStandings">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -168,7 +118,7 @@
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.centralstandings">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -196,7 +146,7 @@
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.southeastStandings">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -224,7 +174,7 @@
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.northwestStandings">
                         <td>
-                          {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -252,7 +202,7 @@
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.pacificStandings">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -280,7 +230,7 @@
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.southwestStandings">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}
@@ -309,7 +259,7 @@
                 <tbody>
                     <tr class="table-secondary" *ngFor="let stand of this.allStandings">
                         <td>
-                            {{ stand.team }}
+                          <button (click)="viewTeam(stand.team)">{{ stand.team }}</button>
                         </td>
                         <td>
                           {{ stand.wins }}

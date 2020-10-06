@@ -1,61 +1,6 @@
-<link rel="stylesheet" type="text/css"
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-
 <section class="dashboard-area">
 	<h3 class="display">{{ this.team?.teamname }} {{this.team?.mascot }}</h3>
 </section>
-
-<div class="box">
-	<div class="container">
-		<div class="row cards-row">
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-address-card fa-2x"></i><span
-						class="header-card ml-3"><strong>COACHING</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Modify your team's strategy and coach them to victory.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToCoaching()">Coaching</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-address-book fa-2x"></i><span
-						class="header-card ml-3"><strong>DEPTH CHART</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Manage your team's depth chart. Decide who plays at every position,</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToDepthCharts()">Set Depth
-							Chart</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>TRADES</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Improve your team. Offer other teams trades.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToTrades()">Make Trades</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>FREE AGENTS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the available free agents and sign players.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToFreeAgents()">Go to Free
-							Agents</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
 
 <div class="box ml-3 mr-2">
@@ -141,7 +86,6 @@
 						</td>
 						<td class="text-center">
 							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><i class="fa fa-edit"></i> View</button>
-							<button class="btn btn-danger btn-xs tablebutton" (click)="openModal(waive, player)"><i class="fa fa-trash"></i> Waive</button>
 						</td>
 					</tr>
 				</tbody>
@@ -244,21 +188,3 @@
 		</div>
 	</div>
 </div>
-
-
-<!-- WAIVE MODAL -->
-<ng-template #waive>
-	<div class="modal-header">
-		<h5 class="modal-title">Waive Player</h5>
-		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
-	</div>
-	<form #draftlotteryForm>
-		<div class="modal-body">
-			<p>Are you sure you want to waive {{ this.selectedPlayer.firstName }} {{ this.selectedPlayer.surname }}?</p>
-		</div>
-		<div class="modal-footer form-group text-center">
-			<button type="submit" class="btn btn-primary" (click)="confirmedWaived()">Waive</button>
-			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
-		</div>
-	</form>
-</ng-template>

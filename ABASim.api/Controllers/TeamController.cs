@@ -73,6 +73,20 @@ namespace ABASim.api.Controllers
             return Ok(depthCharts);
         }
 
+        [HttpGet("getteamforteamname/{name}")]
+        public async Task<IActionResult> GetTeamForTeamName(string name)
+        {
+            var team = await _repo.GetTeamForTeamName(name);
+            return Ok(team);
+        }
+
+        [HttpGet("getteamformascot/{name}")]
+        public async Task<IActionResult> GetTeamForTeamMascot(string name)
+        {
+            var team = await _repo.GetTeamForTeamMascot(name);
+            return Ok(team);
+        }
+
         [HttpPost("savedepthchart")]
         public async Task<IActionResult> SaveDepthChart(DepthChart[] depthCharts)
         {

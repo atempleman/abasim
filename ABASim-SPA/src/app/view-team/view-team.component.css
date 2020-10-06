@@ -11,18 +11,3 @@
     position: relative;
     color: #ffffff;
 }
-
-table { 
-    border-spacing: 10px;
-    /* border-collapse: separate; */
-}
-
-.tablebutton {
-    margin-left:5px;
-}
-
-.cards-row {
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-}

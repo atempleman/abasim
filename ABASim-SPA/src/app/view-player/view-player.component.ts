@@ -9,6 +9,7 @@ import { PlayerService } from '../_services/player.service';
 import { CompletePlayer } from '../_models/completePlayer';
 import { League } from '../_models/league';
 import { PlayerInjury } from '../_models/playerInjury';
+import { Team } from '../_models/team';
 
 @Component({
   selector: 'app-view-player',
@@ -29,6 +30,8 @@ export class ViewPlayerComponent implements OnInit {
 
   playerInjury: PlayerInjury;
   injurySet = 0;
+
+  playersTeam: Team;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private transferService: TransferService,
@@ -332,5 +335,17 @@ export class ViewPlayerComponent implements OnInit {
     this.statusStats = false;
     this.statusRatings = false;
     this.statusTendancies = true;
+  }
+
+  viewTeam() {
+    // Need to go a call to get the team id
+    this.teamService.getTeamForTeamName(this.detailedPlayer.teamName).subscribe(result => {
+      this.playersTeam = result;
+    }, error => {
+      this.alertify.error('Error getting players team');
+    }, () => {
+      this.transferService.setData(this.playersTeam.id);
+      this.router.navigate(['/view-team']);
+    });
   }
 }

@@ -25,7 +25,8 @@ namespace ABASim.api.Data
                 var newTeamId = tp.ReceivingTeam;
                 var oldTeamId = tp.TradingTeam;
 
-                if (playerId != 0) {
+                if (playerId != 0)
+                {
                     // Player
                     var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
                     playerTeam.TeamId = newTeamId;
@@ -45,21 +46,24 @@ namespace ABASim.api.Data
                     // Now need to make sure the player is not in a coach setting record
                     var csRecord = await _context.CoachSettings.FirstOrDefaultAsync(x => x.TeamId == oldTeamId && (x.GoToPlayerOne == playerId || x.GoToPlayerTwo == playerId || x.GoToPlayerThree == playerId));
 
-                    if (csRecord != null) {
+                    if (csRecord != null)
+                    {
                         // Player needs to be removed from CS - in this case updated with any player on the team
                         var newCSPlayer = await _context.Rosters.FirstOrDefaultAsync(x => x.TeamId == oldTeamId);
-                        
+
                         if (csRecord.GoToPlayerOne == playerId)
                         {
                             csRecord.GoToPlayerOne = newCSPlayer.PlayerId;
-                        } else if (csRecord.GoToPlayerTwo == playerId)
+                        }
+                        else if (csRecord.GoToPlayerTwo == playerId)
                         {
                             csRecord.GoToPlayerTwo = newCSPlayer.PlayerId;
-                        } else if (csRecord.GoToPlayerThree == playerId)
+                        }
+                        else if (csRecord.GoToPlayerThree == playerId)
                         {
                             csRecord.GoToPlayerThree = newCSPlayer.PlayerId;
                         }
-                        
+
                         _context.Update(csRecord);
                     }
 
@@ -88,7 +92,9 @@ namespace ABASim.api.Data
                         PickText = ""
                     };
                     await _context.AddAsync(trans);
-                } else {
+                }
+                else
+                {
                     // pick
                     // Need to update the pick
                     // var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
@@ -118,7 +124,7 @@ namespace ABASim.api.Data
                 _context.Update(tp);
             }
 
-            return await  _context.SaveChangesAsync() > 0;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> CheckForAvailableTeams()
@@ -141,7 +147,8 @@ namespace ABASim.api.Data
                 var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
 
                 var playerName = "";
-                if (trade.PlayerId != 0) {
+                if (trade.PlayerId != 0)
+                {
                     var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
                     playerName = player.FirstName + " " + player.Surname;
                 }
@@ -176,7 +183,8 @@ namespace ABASim.api.Data
                 var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
 
                 var playerName = "";
-                if (trade.PlayerId != 0) {
+                if (trade.PlayerId != 0)
+                {
                     var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
                     playerName = player.FirstName + " " + player.Surname;
                 }
@@ -217,7 +225,8 @@ namespace ABASim.api.Data
         {
             var coachingSetting = await _context.CoachSettings.FirstOrDefaultAsync(x => x.TeamId == teamId);
 
-            if (coachingSetting == null) {
+            if (coachingSetting == null)
+            {
                 coachingSetting = new CoachSetting
                 {
                     Id = 0,
@@ -237,38 +246,304 @@ namespace ABASim.api.Data
             return deptchCharts;
         }
 
-        public async Task<IEnumerable<ExtendedPlayerDto>> GetExtendPlayersForTeam(int teamId)
+        public async Task<IEnumerable<CompletePlayerDto>> GetExtendPlayersForTeam(int teamId)
         {
-            List<ExtendedPlayerDto> players = new List<ExtendedPlayerDto>();
+            List<CompletePlayerDto> players = new List<CompletePlayerDto>();
             var teamsRosteredPlayers = await _context.Rosters.Where(x => x.TeamId == teamId).ToListAsync();
-            
+
             // Now need to get the player details
-            foreach(var rosterPlayer in teamsRosteredPlayers)
+            foreach (var rosterPlayer in teamsRosteredPlayers)
             {
-                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == rosterPlayer.PlayerId);
+                var league = await _context.Leagues.FirstOrDefaultAsync();
+                var playerDetails = await _context.Players.FirstOrDefaultAsync(x => x.Id == rosterPlayer.PlayerId);
+                var playerRatings = await _context.PlayerRatings.FirstOrDefaultAsync(x => x.PlayerId == rosterPlayer.PlayerId);
+                var playerTendancies = await _context.PlayerTendancies.FirstOrDefaultAsync(x => x.PlayerId == rosterPlayer.PlayerId);
                 var playerGrades = await _context.PlayerGradings.FirstOrDefaultAsync(x => x.PlayerId == rosterPlayer.PlayerId);
-                ExtendedPlayerDto newPlayer = new ExtendedPlayerDto();
-                newPlayer.PlayerId = player.Id;
-                newPlayer.BlockGrade = playerGrades.BlockGrade;
-                newPlayer.CPosition = player.CPosition;
-                newPlayer.DRebGrade = playerGrades.DRebGrade;
-                newPlayer.FirstName = player.FirstName;
-                newPlayer.FTGrade = playerGrades.FTGrade;
-                newPlayer.HandlingGrade = playerGrades.HandlingGrade;
-                newPlayer.IntangiblesGrade = playerGrades.IntangiblesGrade;
-                newPlayer.ORebGrade = playerGrades.ORebGrade;
-                newPlayer.PassingGrade = playerGrades.PassingGrade;
-                newPlayer.PFPosition = player.PFPosition;
-                newPlayer.PGPosition = player.PGPosition;
-                newPlayer.SFPosition = player.SFPosition;
-                newPlayer.SGPosition = player.SGPosition;
-                newPlayer.StaminaGrade = playerGrades.StaminaGrade;
-                newPlayer.StealGrade = playerGrades.StealGrade;
-                newPlayer.Surname = player.Surname;
-                newPlayer.ThreeGrade = playerGrades.ThreeGrade;
-                newPlayer.TwoGrade = playerGrades.TwoGrade;
-                
-                players.Add(newPlayer);
+                var playerStats = await _context.PlayerStats.FirstOrDefaultAsync(x => x.PlayerId == rosterPlayer.PlayerId);
+
+                // need to get the players team
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == rosterPlayer.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+                string teamname = "Free Agent";
+
+                if (team != null)
+                {
+                    teamname = team.Teamname + " " + team.Mascot;
+                }
+
+                if (playerStats != null)
+                {
+                    PlayerStatsPlayoff psp = new PlayerStatsPlayoff();
+                    if (league.StateId > 8 || (league.StateId == 8 && league.StateId > 0))
+                    {
+                        psp = await _context.PlayerStatsPlayoffs.FirstOrDefaultAsync(x => x.PlayerId == rosterPlayer.PlayerId);
+
+                        if (psp == null)
+                        {
+                            psp = new PlayerStatsPlayoff
+                            {
+                                PlayerId = rosterPlayer.PlayerId,
+                                GamesPlayed = 0,
+                                Minutes = 0,
+                                Points = 0,
+                                Rebounds = 0,
+                                Assists = 0,
+                                Steals = 0,
+                                Blocks = 0,
+                                FieldGoalsMade = 0,
+                                FieldGoalsAttempted = 0,
+                                ThreeFieldGoalsMade = 0,
+                                ThreeFieldGoalsAttempted = 0,
+                                FreeThrowsMade = 0,
+                                FreeThrowsAttempted = 0,
+                                ORebs = 0,
+                                DRebs = 0,
+                                Turnovers = 0,
+                                Fouls = 0,
+                                Ppg = 0,
+                                Apg = 0,
+                                Rpg = 0,
+                                Spg = 0,
+                                Bpg = 0,
+                                Mpg = 0,
+                                Fpg = 0,
+                                Tpg = 0
+                            };
+                        }
+
+                        CompletePlayerDto player = new CompletePlayerDto
+                        {
+                            PlayerId = rosterPlayer.PlayerId,
+                            FirstName = playerDetails.FirstName,
+                            Surname = playerDetails.Surname,
+                            PGPosition = playerDetails.PGPosition,
+                            SGPosition = playerDetails.SGPosition,
+                            SFPosition = playerDetails.SFPosition,
+                            PFPosition = playerDetails.PGPosition,
+                            CPosition = playerDetails.CPosition,
+                            TwoGrade = playerGrades.TwoGrade,
+                            ThreeGrade = playerGrades.ThreeGrade,
+                            FTGrade = playerGrades.FTGrade,
+                            ORebGrade = playerGrades.ORebGrade,
+                            DRebGrade = playerGrades.DRebGrade,
+                            StealGrade = playerGrades.StealGrade,
+                            BlockGrade = playerGrades.BlockGrade,
+                            StaminaGrade = playerGrades.StaminaGrade,
+                            HandlingGrade = playerGrades.HandlingGrade,
+                            TwoPointTendancy = playerTendancies.TwoPointTendancy,
+                            ThreePointTendancy = playerTendancies.ThreePointTendancy,
+                            PassTendancy = playerTendancies.PassTendancy,
+                            FouledTendancy = playerTendancies.FouledTendancy,
+                            TurnoverTendancy = playerTendancies.TurnoverTendancy,
+                            TwoRating = playerRatings.TwoRating,
+                            ThreeRating = playerRatings.ThreeRating,
+                            FtRating = playerRatings.FTRating,
+                            OrebRating = playerRatings.ORebRating,
+                            DrebRating = playerRatings.DRebRating,
+                            AssistRating = playerRatings.AssitRating,
+                            PassAssistRating = playerRatings.PassAssistRating,
+                            StealRating = playerRatings.StealRating,
+                            BlockRating = playerRatings.BlockRating,
+                            UsageRating = playerRatings.UsageRating,
+                            StaminaRating = playerRatings.StaminaRating,
+                            OrpmRating = playerRatings.ORPMRating,
+                            DrpmRating = playerRatings.DRPMRating,
+                            FoulingRating = playerRatings.FoulingRating,
+                            PassingGrade = playerGrades.PassingGrade,
+                            IntangiblesGrade = playerGrades.IntangiblesGrade,
+                            TeamName = teamname,
+                            GamesStats = playerStats.GamesPlayed,
+                            MinutesStats = playerStats.Minutes,
+                            FgmStats = playerStats.FieldGoalsMade,
+                            FgaStats = playerStats.FieldGoalsAttempted,
+                            ThreeFgmStats = playerStats.ThreeFieldGoalsMade,
+                            ThreeFgaStats = playerStats.ThreeFieldGoalsAttempted,
+                            FtmStats = playerStats.FreeThrowsMade,
+                            FtaStats = playerStats.FreeThrowsAttempted,
+                            OrebsStats = playerStats.ORebs,
+                            DrebsStats = playerStats.DRebs,
+                            AstStats = playerStats.Assists,
+                            StlStats = playerStats.Steals,
+                            BlkStats = playerStats.Blocks,
+                            FlsStats = playerStats.Fouls,
+                            ToStats = playerStats.Turnovers,
+                            PtsStats = playerStats.Points,
+                            PlayoffGamesStats = psp.GamesPlayed,
+                            PlayoffMinutesStats = psp.Minutes,
+                            PlayoffFgmStats = psp.FieldGoalsMade,
+                            PlayoffFgaStats = psp.FieldGoalsAttempted,
+                            PlayoffThreeFgmStats = psp.ThreeFieldGoalsMade,
+                            PlayoffThreeFgaStats = psp.ThreeFieldGoalsAttempted,
+                            PlayoffFtmStats = psp.FreeThrowsMade,
+                            PlayoffFtaStats = psp.FreeThrowsAttempted,
+                            PlayoffOrebsStats = psp.ORebs,
+                            PlayoffDrebsStats = psp.DRebs,
+                            PlayoffAstStats = psp.Assists,
+                            PlayoffStlStats = psp.Steals,
+                            PlayoffBlkStats = psp.Blocks,
+                            PlayoffFlsStats = psp.Steals,
+                            PlayoffToStats = psp.Turnovers,
+                            PlayoffPtsStats = psp.Points
+                        };
+                        players.Add(player);
+                    }
+                    else
+                    {
+                        CompletePlayerDto player = new CompletePlayerDto
+                        {
+                            PlayerId = rosterPlayer.PlayerId,
+                            FirstName = playerDetails.FirstName,
+                            Surname = playerDetails.Surname,
+                            PGPosition = playerDetails.PGPosition,
+                            SGPosition = playerDetails.SGPosition,
+                            SFPosition = playerDetails.SFPosition,
+                            PFPosition = playerDetails.PGPosition,
+                            CPosition = playerDetails.CPosition,
+                            TwoGrade = playerGrades.TwoGrade,
+                            ThreeGrade = playerGrades.ThreeGrade,
+                            FTGrade = playerGrades.FTGrade,
+                            ORebGrade = playerGrades.ORebGrade,
+                            DRebGrade = playerGrades.DRebGrade,
+                            StealGrade = playerGrades.StealGrade,
+                            BlockGrade = playerGrades.BlockGrade,
+                            StaminaGrade = playerGrades.StaminaGrade,
+                            HandlingGrade = playerGrades.HandlingGrade,
+                            TwoPointTendancy = playerTendancies.TwoPointTendancy,
+                            ThreePointTendancy = playerTendancies.ThreePointTendancy,
+                            PassTendancy = playerTendancies.PassTendancy,
+                            FouledTendancy = playerTendancies.FouledTendancy,
+                            TurnoverTendancy = playerTendancies.TurnoverTendancy,
+                            TwoRating = playerRatings.TwoRating,
+                            ThreeRating = playerRatings.ThreeRating,
+                            FtRating = playerRatings.FTRating,
+                            OrebRating = playerRatings.ORebRating,
+                            DrebRating = playerRatings.DRebRating,
+                            AssistRating = playerRatings.AssitRating,
+                            PassAssistRating = playerRatings.PassAssistRating,
+                            StealRating = playerRatings.StealRating,
+                            BlockRating = playerRatings.BlockRating,
+                            UsageRating = playerRatings.UsageRating,
+                            StaminaRating = playerRatings.StaminaRating,
+                            OrpmRating = playerRatings.ORPMRating,
+                            DrpmRating = playerRatings.DRPMRating,
+                            FoulingRating = playerRatings.FoulingRating,
+                            PassingGrade = playerGrades.PassingGrade,
+                            IntangiblesGrade = playerGrades.IntangiblesGrade,
+                            TeamName = teamname,
+                            GamesStats = playerStats.GamesPlayed,
+                            MinutesStats = playerStats.Minutes,
+                            FgmStats = playerStats.FieldGoalsMade,
+                            FgaStats = playerStats.FieldGoalsAttempted,
+                            ThreeFgmStats = playerStats.ThreeFieldGoalsMade,
+                            ThreeFgaStats = playerStats.ThreeFieldGoalsAttempted,
+                            FtmStats = playerStats.FreeThrowsMade,
+                            FtaStats = playerStats.FreeThrowsAttempted,
+                            OrebsStats = playerStats.ORebs,
+                            DrebsStats = playerStats.DRebs,
+                            AstStats = playerStats.Assists,
+                            StlStats = playerStats.Steals,
+                            BlkStats = playerStats.Blocks,
+                            FlsStats = playerStats.Fouls,
+                            ToStats = playerStats.Turnovers,
+                            PtsStats = playerStats.Points,
+                            PlayoffGamesStats = 0,
+                            PlayoffMinutesStats = 0,
+                            PlayoffFgmStats = 0,
+                            PlayoffFgaStats = 0,
+                            PlayoffThreeFgmStats = 0,
+                            PlayoffThreeFgaStats = 0,
+                            PlayoffFtmStats = 0,
+                            PlayoffFtaStats = 0,
+                            PlayoffOrebsStats = 0,
+                            PlayoffDrebsStats = 0,
+                            PlayoffAstStats = 0,
+                            PlayoffStlStats = 0,
+                            PlayoffBlkStats = 0,
+                            PlayoffFlsStats = 0,
+                            PlayoffToStats = 0,
+                            PlayoffPtsStats = 0
+                        };
+                        players.Add(player);
+                    }
+                }
+                else
+                {
+                    CompletePlayerDto player = new CompletePlayerDto
+                    {
+                        PlayerId = rosterPlayer.PlayerId,
+                        FirstName = playerDetails.FirstName,
+                        Surname = playerDetails.Surname,
+                        PGPosition = playerDetails.PGPosition,
+                        SGPosition = playerDetails.SGPosition,
+                        SFPosition = playerDetails.SFPosition,
+                        PFPosition = playerDetails.PGPosition,
+                        CPosition = playerDetails.CPosition,
+                        TwoGrade = playerGrades.TwoGrade,
+                        ThreeGrade = playerGrades.ThreeGrade,
+                        FTGrade = playerGrades.FTGrade,
+                        ORebGrade = playerGrades.ORebGrade,
+                        DRebGrade = playerGrades.DRebGrade,
+                        StealGrade = playerGrades.StealGrade,
+                        BlockGrade = playerGrades.BlockGrade,
+                        StaminaGrade = playerGrades.StaminaGrade,
+                        HandlingGrade = playerGrades.HandlingGrade,
+                        TwoPointTendancy = playerTendancies.TwoPointTendancy,
+                        ThreePointTendancy = playerTendancies.ThreePointTendancy,
+                        PassTendancy = playerTendancies.PassTendancy,
+                        FouledTendancy = playerTendancies.FouledTendancy,
+                        TurnoverTendancy = playerTendancies.TurnoverTendancy,
+                        TwoRating = playerRatings.TwoRating,
+                        ThreeRating = playerRatings.ThreeRating,
+                        FtRating = playerRatings.FTRating,
+                        OrebRating = playerRatings.ORebRating,
+                        DrebRating = playerRatings.DRebRating,
+                        AssistRating = playerRatings.AssitRating,
+                        PassAssistRating = playerRatings.PassAssistRating,
+                        StealRating = playerRatings.StealRating,
+                        BlockRating = playerRatings.BlockRating,
+                        UsageRating = playerRatings.UsageRating,
+                        StaminaRating = playerRatings.StaminaRating,
+                        OrpmRating = playerRatings.ORPMRating,
+                        DrpmRating = playerRatings.DRPMRating,
+                        FoulingRating = playerRatings.FoulingRating,
+                        PassingGrade = playerGrades.PassingGrade,
+                        IntangiblesGrade = playerGrades.IntangiblesGrade,
+                        TeamName = teamname,
+                        GamesStats = 0,
+                        MinutesStats = 0,
+                        FgmStats = 0,
+                        FgaStats = 0,
+                        ThreeFgmStats = 0,
+                        ThreeFgaStats = 0,
+                        FtmStats = 0,
+                        FtaStats = 0,
+                        OrebsStats = 0,
+                        DrebsStats = 0,
+                        AstStats = 0,
+                        StlStats = 0,
+                        BlkStats = 0,
+                        FlsStats = 0,
+                        ToStats = 0,
+                        PtsStats = 0,
+                        PlayoffGamesStats = 0,
+                        PlayoffMinutesStats = 0,
+                        PlayoffFgmStats = 0,
+                        PlayoffFgaStats = 0,
+                        PlayoffThreeFgmStats = 0,
+                        PlayoffThreeFgaStats = 0,
+                        PlayoffFtmStats = 0,
+                        PlayoffFtaStats = 0,
+                        PlayoffOrebsStats = 0,
+                        PlayoffDrebsStats = 0,
+                        PlayoffAstStats = 0,
+                        PlayoffStlStats = 0,
+                        PlayoffBlkStats = 0,
+                        PlayoffFlsStats = 0,
+                        PlayoffToStats = 0,
+                        PlayoffPtsStats = 0,
+                    };
+                    players.Add(player);
+                }
             }
             return players;
         }
@@ -281,7 +556,8 @@ namespace ABASim.api.Data
             foreach (var player in players)
             {
                 var injury = await _context.PlayerInjuries.FirstOrDefaultAsync(x => x.PlayerId == player.PlayerId && x.CurrentlyInjured == 1);
-                if (injury != null) {
+                if (injury != null)
+                {
                     playerInjuries.Add(injury);
                 }
             }
@@ -301,7 +577,8 @@ namespace ABASim.api.Data
             foreach (var player in players)
             {
                 var injury = await _context.PlayerInjuries.FirstOrDefaultAsync(x => x.PlayerId == player.PlayerId && x.CurrentlyInjured == 1);
-                if (injury != null) {
+                if (injury != null)
+                {
                     playerInjuries.Add(injury);
                 }
             }
@@ -312,9 +589,9 @@ namespace ABASim.api.Data
         {
             List<Player> players = new List<Player>();
             var teamsRosteredPlayers = await _context.Rosters.Where(x => x.TeamId == teamId).ToListAsync();
-            
+
             // Now need to get the player details
-            foreach(var rosterPlayer in teamsRosteredPlayers)
+            foreach (var rosterPlayer in teamsRosteredPlayers)
             {
                 var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == rosterPlayer.PlayerId);
                 players.Add(player);
@@ -325,6 +602,19 @@ namespace ABASim.api.Data
         public async Task<Team> GetTeamForTeamId(int teamId)
         {
             var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
+            return team;
+        }
+
+        public async Task<Team> GetTeamForTeamMascot(string name)
+        {
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Mascot == name);
+            return team;
+        }
+
+        public async Task<Team> GetTeamForTeamName(string name)
+        {
+            string[] components = name.Split(' ');
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == components[0] && x.Mascot == components[1]);
             return team;
         }
 
@@ -372,7 +662,8 @@ namespace ABASim.api.Data
                         CurrentTeamName = currentTeam.ShortCode
                     };
                     draftPicks.Add(dto);
-                } else 
+                }
+                else
                 {
                     TeamDraftPickDto dto = new TeamDraftPickDto
                     {
@@ -412,7 +703,8 @@ namespace ABASim.api.Data
                 var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
 
                 var playerName = "";
-                if (trade.PlayerId != 0) {
+                if (trade.PlayerId != 0)
+                {
                     var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
                     playerName = player.FirstName + " " + player.Surname;
                 }
@@ -456,7 +748,8 @@ namespace ABASim.api.Data
             }
 
             var messageString = "";
-            if (message.IsMessage == 1) {
+            if (message.IsMessage == 1)
+            {
                 messageString = message.Message;
             }
 
@@ -476,9 +769,12 @@ namespace ABASim.api.Data
         public async Task<bool> RosterSpotCheck(int teamId)
         {
             var rosterSpotsUsed = await _context.Rosters.Where(x => x.TeamId == teamId).ToListAsync();
-            if (rosterSpotsUsed.Count < 15) {
+            if (rosterSpotsUsed.Count < 15)
+            {
                 return true;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
@@ -494,11 +790,13 @@ namespace ABASim.api.Data
             int teamId = charts[0].TeamId;
             var exists = await _context.DepthCharts.Where(x => x.TeamId == teamId).ToListAsync();
 
-            if(exists.Count == 0 || exists == null) {
+            if (exists.Count == 0 || exists == null)
+            {
                 // its an add
                 foreach (var dc in charts)
                 {
-                    var depth = new DepthChart {
+                    var depth = new DepthChart
+                    {
                         PlayerId = dc.PlayerId,
                         Position = dc.Position,
                         TeamId = dc.TeamId,
@@ -506,7 +804,9 @@ namespace ABASim.api.Data
                     };
                     await _context.AddAsync(depth);
                 }
-            } else {
+            }
+            else
+            {
                 // its an update
                 foreach (var dc in exists)
                 {
@@ -525,7 +825,8 @@ namespace ABASim.api.Data
             var tradesNullCheck = await _context.Trades.FirstOrDefaultAsync();
 
             int lastTradeId = 0;
-            if (tradesNullCheck != null) {
+            if (tradesNullCheck != null)
+            {
                 lastTradeId = await _context.Trades.MaxAsync(x => x.TradeId);
             }
 
