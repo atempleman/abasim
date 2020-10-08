@@ -443,11 +443,60 @@ namespace ABASim.api.Data
             return count;
         }
 
+        public async Task<IEnumerable<Player>> GetFilteredFreeAgents(string value)
+        {
+            List<Player> freeAgents = new List<Player>();
+            var query = String.Format("SELECT * FROM Players where Surname like '%" + value + "%' or FirstName like '%" + value + "%'");
+            var players = await _context.Players.FromSqlRaw(query).ToListAsync();
+
+            foreach (var player in players)
+            {
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+
+                if (playerTeam.TeamId == 31 || playerTeam.TeamId == 0)
+                {
+                    // Player is free agent
+                    freeAgents.Add(player);
+                }
+            }
+            return freeAgents;
+        }
+
         public async Task<IEnumerable<Player>> GetFreeAgents()
         {
             List<Player> freeAgents = new List<Player>();
             var players = await _context.Players.ToListAsync();
 
+            foreach (var player in players)
+            {
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+
+                if (playerTeam.TeamId == 31 || playerTeam.TeamId == 0)
+                {
+                    // Player is free agent
+                    freeAgents.Add(player);
+                }
+            }
+            return freeAgents;
+        }
+
+        public async Task<IEnumerable<Player>> GetFreeAgentsByPos(int pos)
+        {
+            List<Player> freeAgents = new List<Player>();
+            List<Player> players = new List<Player>();
+
+            if (pos == 1) {
+                players = await _context.Players.Where(x => x.PGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 2) {
+                players = await _context.Players.Where(x => x.SGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 3) {
+                players = await _context.Players.Where(x => x.SFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 4) {
+                players = await _context.Players.Where(x => x.PFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            } else if (pos == 5) {
+                players = await _context.Players.Where(x => x.CPosition == 1).OrderBy(x => x.Surname).ToListAsync();
+            }
+            
             foreach (var player in players)
             {
                 var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);

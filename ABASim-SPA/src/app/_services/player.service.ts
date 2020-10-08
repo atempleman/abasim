@@ -42,6 +42,14 @@ export class PlayerService {
     return this.http.get<Player[]>(this.baseUrl + 'getfreeagents');
   }
 
+  getFreeAgentsByPos(pos: number): Observable<Player[]> {
+    return this.http.get<Player[]>(this.baseUrl + 'getfreeagentsbypos/' + pos);
+  }
+
+  filterFreeAgents(value: string): Observable<Player[]> {
+    return this.http.get<Player[]>(this.baseUrl + 'getfilteredfreeagents/' + value);
+  }
+
   playerForPlayerProfileById(playerId: number) {
     return this.http.get<CompletePlayer>(this.baseUrl + 'getcompleteplayer/' + playerId);
   }

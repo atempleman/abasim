@@ -90,5 +90,19 @@ namespace ABASim.api.Controllers
             var players = await _repo.FilterByPosition(pos);
             return Ok(players);
         }
+
+        [HttpGet("getfreeagentsbypos/{pos}")]
+        public async Task<IActionResult> GetFreeAgentsByPos(int pos)
+        {
+            var players = await _repo.GetFreeAgentsByPos(pos);
+            return Ok(players);
+        }
+
+        [HttpGet("getfilteredfreeagents/{value}")]
+        public async Task<IActionResult> GetFilteredFreeAgents(string value)
+        {
+            var players = await _repo.GetFilteredFreeAgents(value);
+            return Ok(players);
+        }
     }
 }

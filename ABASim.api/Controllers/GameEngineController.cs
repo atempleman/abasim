@@ -5053,9 +5053,9 @@ namespace ABASim.api.Controllers
                     result = CheckSubEligility(player, team);
                 }
 
-                result = CheckIfPlayerIsOnCourt(team, player.Id);
+                int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
                 
-                if (result == 0)
+                if (result == 0 && onCourt == 0)
                 {
                     // The player can be checked for the new fatigue
                     var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
@@ -5079,9 +5079,9 @@ namespace ABASim.api.Controllers
                 if (res == null)
                 {
                     int result = CheckSubEligility(player, team);
-                    result = CheckIfPlayerIsOnCourt(team, player.Id);
+                    int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
 
-                    if (result == 0) // can sub the player on
+                    if (result == 0 && onCourt == 0) // can sub the player on
                     {
                         var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
                         if ((st != null) && (stam.StaminaValue > 500))
@@ -5154,8 +5154,9 @@ namespace ABASim.api.Controllers
                 if (res == null)
                 {
                     int result = CheckSubEligility(player, team);
+                    int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
 
-                    if (result == 0) // can sub the player on
+                    if (result == 0 && onCourt == 0) // can sub the player on
                     {
                         var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
                         if ((st != null) && (stam.StaminaValue > 500))
@@ -5228,8 +5229,9 @@ namespace ABASim.api.Controllers
                 if (res == null)
                 {
                     int result = CheckSubEligility(player, team);
+                    int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
 
-                    if (result == 0) // can sub the player on
+                    if (result == 0 && onCourt == 0) // can sub the player on
                     {
                         var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
                         if ((st != null) && (stam.StaminaValue > 500))

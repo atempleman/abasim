@@ -13,6 +13,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { SignedPlayer } from '../_models/signedPlayer';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerInjury } from '../_models/playerInjury';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-freeagents',
@@ -27,10 +28,13 @@ export class FreeagentsComponent implements OnInit {
   selectedPlayer: Player;
   public modalRef: BsModalRef;
   teamsInjuries: PlayerInjury[] = [];
+  searchForm: FormGroup;
+  positionFilter = 0;
+  displayPaging = 0;
 
   constructor(private alertify: AlertifyService, private playerService: PlayerService, private teamService: TeamService,
               private authService: AuthService, private router: Router, private transferService: TransferService,
-              private modalService: BsModalService, private spinner: NgxSpinnerService) { }
+              private modalService: BsModalService, private spinner: NgxSpinnerService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
@@ -42,6 +46,10 @@ export class FreeagentsComponent implements OnInit {
     });
 
     this.GetFreeAgents();
+
+    this.searchForm = this.fb.group({
+      filter: ['']
+    });
   }
 
   GetFreeAgents() {
@@ -69,7 +77,7 @@ export class FreeagentsComponent implements OnInit {
   checkIfInjured(playerId: number) {
     const injured = this.teamsInjuries.find(x => x.playerId === playerId);
 
-    if(injured) {
+    if (injured) {
       return 1;
     } else {
       return 0;
@@ -128,5 +136,54 @@ export class FreeagentsComponent implements OnInit {
 
   goToTrades() {
     this.router.navigate(['/trades']);
+  }
+
+  filterByPos(pos: number) {
+    this.spinner.show();
+    this.positionFilter = pos;
+
+    if (pos === 0) {
+      // this.displayPaging = 0;
+
+      this.GetFreeAgents();
+    } else {
+      // this.displayPaging = 1;
+
+      // Now we need to update the listing appropriately
+      this.playerService.getFreeAgentsByPos(this.positionFilter).subscribe(result => {
+        this.freeAgents = result;
+      }, error => {
+        this.alertify.error('Error getting filtered players');
+        this.spinner.hide();
+      }, () => {
+        this.spinner.hide();
+      });
+    }
+  }
+
+  filterTable() {
+    this.spinner.show();
+    this.displayPaging = 1;
+    const filter = this.searchForm.value.filter;
+
+    // Need to call service
+    this.playerService.filterFreeAgents(filter).subscribe(result => {
+      this.freeAgents = result;
+    }, error => {
+      this.alertify.error('Error getting filtered players');
+      this.spinner.hide();
+    }, () => {
+      this.spinner.hide();
+    });
+  }
+
+  resetFilter() {
+    this.spinner.show();
+    this.displayPaging = 0;
+    this.GetFreeAgents();
+
+    this.searchForm = this.fb.group({
+      filter: ['']
+    });
   }
 }
