@@ -96,6 +96,8 @@ export class FreeagentsComponent implements OnInit {
       playerId: this.selectedPlayer.id
     };
 
+    this.CheckRosterSpots();
+
     this.teamService.signPlayer(signedPlayer).subscribe(result => {
 
     }, error => {

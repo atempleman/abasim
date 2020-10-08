@@ -124,13 +124,13 @@ namespace ABASim.api.Data
 
         public async Task<PlayerRating> GetPlayerRating(int playerId)
         {
-            var playerRating = await _context.PlayerRatings.FirstOrDefaultAsync(x => x.Id == playerId);
+            var playerRating = await _context.PlayerRatings.FirstOrDefaultAsync(x => x.PlayerId == playerId);
             return playerRating;
         }
 
         public async Task<PlayerTendancy> GetPlayerTendancy(int playerId)
         {
-            var playerTendancy = await _context.PlayerTendancies.FirstOrDefaultAsync(x => x.Id == playerId);
+            var playerTendancy = await _context.PlayerTendancies.FirstOrDefaultAsync(x => x.PlayerId == playerId);
             return playerTendancy;
         }
 

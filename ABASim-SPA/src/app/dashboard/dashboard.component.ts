@@ -79,10 +79,6 @@ export class DashboardComponent implements OnInit {
       this.refreshChat();
     }, 600000);
 
-    this.interval = setInterval(() => {
-      this.getPicksToDisplay();
-    }, 210000);
-
     // get the league object - TODO - roll the league state into the object as a Dto and pass back
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
@@ -105,6 +101,13 @@ export class DashboardComponent implements OnInit {
       } else if (this.league.stateId === 11) {
         this.getFinalsSummaries();
       }
+      console.log(this.league);
+      if (this.league.stateId === 3 || this.league.stateId === 4) {
+        this.interval = setInterval(() => {
+          this.getPicksToDisplay();
+        }, 210000);
+      }
+
       this.getTodaysEvents();
 
       if (this.league.stateId === 11 && this.league.day > 28) {
@@ -365,8 +368,6 @@ export class DashboardComponent implements OnInit {
   }
 
   viewBoxScore(gameId: number) {
-    console.log(gameId);
-    console.log('testb');
     this.transferService.setData(gameId);
     this.router.navigate(['/box-score']);
   }

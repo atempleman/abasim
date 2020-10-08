@@ -427,6 +427,9 @@ namespace ABASim.api.Data
                     }
                 }
 
+            } else if (league.StateId == 6) {
+                // Preseaon - just rollover day
+                league.Day = league.Day + 1;
             }
 
             // Need to rollover the day to the next day

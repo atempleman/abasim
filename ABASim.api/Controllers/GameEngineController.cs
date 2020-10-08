@@ -5053,12 +5053,13 @@ namespace ABASim.api.Controllers
                     result = CheckSubEligility(player, team);
                 }
 
+                result = CheckIfPlayerIsOnCourt(team, player.Id);
                 
                 if (result == 0)
                 {
                     // The player can be checked for the new fatigue
                     var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
-                    if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                    if ((st != null) && (stam.StaminaValue > 500))
                     {
                         // Player should be subbed on
                         // Need action to make the sub
@@ -5078,11 +5079,12 @@ namespace ABASim.api.Controllers
                 if (res == null)
                 {
                     int result = CheckSubEligility(player, team);
+                    result = CheckIfPlayerIsOnCourt(team, player.Id);
 
                     if (result == 0) // can sub the player on
                     {
                         var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
-                        if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                        if ((st != null) && (stam.StaminaValue > 500))
                         {
                             // Need action to make the sub
                             SubPlayer(team, position, player);
@@ -5156,7 +5158,7 @@ namespace ABASim.api.Controllers
                     if (result == 0) // can sub the player on
                     {
                         var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
-                        if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                        if ((st != null) && (stam.StaminaValue > 500))
                         {
                             // Need action to make the sub
                             SubPlayer(team, position, player);
@@ -5230,7 +5232,7 @@ namespace ABASim.api.Controllers
                     if (result == 0) // can sub the player on
                     {
                         var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
-                        if ((st != null) && (stam.StaminaValue > 500 && stam.OnOff == 1))
+                        if ((st != null) && (stam.StaminaValue > 500))
                         {
                             // Need action to make the sub
                             SubPlayer(team, position, player);

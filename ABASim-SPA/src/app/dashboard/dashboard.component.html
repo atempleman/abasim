@@ -117,23 +117,20 @@
 				<button type="button" class="btn btn-link text-left"(click)="goToDraft()">Go to Draft</button>
 			</div>
 		</div>
-
+	</div>
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 5">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
+		<p>The draft is no complete. Teams can fill out their rosters via Teams. A roster may contain up to 15 players. Teams are required to set their depth charts via the Team section which is required. Teams may also choose to set go to players via the Team section.</p>
+	</div>
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 6">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Preseason</h4>
+		<p>Preseason has now begun. Each team will play 4 games - 1 per day. Now is the time to try and work out your lineups.</p>
 	</div>
 
 	<div class="card" style="background-color:rgb(22, 24, 100);">
 		<h4><i class="fa fa-commenting-o" aria-hidden="true"></i> GLOBAL CHAT <button class="btn btn-secondary ml-2"
 				(click)="refreshChat()"><i class="fa fa-refresh"></i></button></h4>
 		<p *ngIf="this.chatRecords.length == 0">No chat records exist</p>
-		<!-- <table class="table table-hover events-table">
-			<tbody>
-				<tr class="table-secondary" *ngFor="let item of this.chatRecords">
-					<td>
-						<b>{{ item.username }}:</b>
-						<p>{{ item.chatText }}</p>
-					</td>
-				</tr>
-			</tbody>
-		</table> -->
 		<div class="container">
 			<div class="row">
 				<div class="message-wrap col-lg-12">
