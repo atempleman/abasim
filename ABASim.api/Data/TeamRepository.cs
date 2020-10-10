@@ -319,7 +319,7 @@ namespace ABASim.api.Data
                             PGPosition = playerDetails.PGPosition,
                             SGPosition = playerDetails.SGPosition,
                             SFPosition = playerDetails.SFPosition,
-                            PFPosition = playerDetails.PGPosition,
+                            PFPosition = playerDetails.PFPosition,
                             CPosition = playerDetails.CPosition,
                             TwoGrade = playerGrades.TwoGrade,
                             ThreeGrade = playerGrades.ThreeGrade,

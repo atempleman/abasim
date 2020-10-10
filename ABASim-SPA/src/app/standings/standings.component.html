@@ -1,8 +1,11 @@
-<div class="jumbotron">
-	<h3 class="display">STANDINGS</h3>
-</div>
+<section class="dashboard-area">
+  <h3 class="display">Standings</h3>
+</section>
 
 <div class="box">
+  <ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
+		<p class="loading">Loading Standings...</p>
+	</ngx-spinner>
   <div class="container">
     <div class="row">
       <div class="col-12">

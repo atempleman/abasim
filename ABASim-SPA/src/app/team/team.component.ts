@@ -87,6 +87,8 @@ export class TeamComponent implements OnInit {
       this.playerCount = this.playingRoster.length;
     }, error => {
       this.alertify.error('Error getting your roster');
+    }, () => {
+      console.log(this.playingRoster);
     });
   }
 

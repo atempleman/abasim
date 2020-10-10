@@ -140,8 +140,10 @@
 							{{ player.intangiblesGrade }}
 						</td>
 						<td class="text-center">
-							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><i class="fa fa-edit"></i> View</button>
-							<button class="btn btn-danger btn-xs tablebutton" (click)="openModal(waive, player)"><i class="fa fa-trash"></i> Waive</button>
+							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><i
+									class="fa fa-edit"></i> View</button>
+							<button class="btn btn-danger btn-xs tablebutton" (click)="openModal(waive, player)"><i
+									class="fa fa-trash"></i> Waive</button>
 						</td>
 					</tr>
 				</tbody>
@@ -151,28 +153,28 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-						  <th>G</th>
-						  <th>MP</th>
-						  <th>FG</th>
-						  <th>FGA</th>
-						  <th>FG%</th>
-						  <th>3P</th>
-						  <th>3PA</th>
-						  <th>3P%</th>
-						  <th>FT</th>
-						  <th>FTA</th>
-						  <th>FT%</th>
-						  <th>ORB</th>
-						  <th>DRB</th>
-						  <th>TRB</th>
-						  <th>AST</th>
-						  <th>STL</th>
-						  <th>BLK</th>
-						  <th>TOV</th>
-						  <th>PF</th>
-						  <th>PTS</th>
+							<th>G</th>
+							<th>MP</th>
+							<th>FG</th>
+							<th>FGA</th>
+							<th>FG%</th>
+							<th>3P</th>
+							<th>3PA</th>
+							<th>3P%</th>
+							<th>FT</th>
+							<th>FTA</th>
+							<th>FT%</th>
+							<th>ORB</th>
+							<th>DRB</th>
+							<th>TRB</th>
+							<th>AST</th>
+							<th>STL</th>
+							<th>BLK</th>
+							<th>TOV</th>
+							<th>PF</th>
+							<th>PTS</th>
 						</tr>
-					  </thead>
+					</thead>
 					<tbody>
 						<tr class="table-secondary" *ngFor="let player of this.playingRoster">
 							<td>
@@ -241,24 +243,25 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
 		</div>
 	</div>
-</div>
 
 
-<!-- WAIVE MODAL -->
-<ng-template #waive>
-	<div class="modal-header">
-		<h5 class="modal-title">Waive Player</h5>
-		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
-	</div>
-	<form #draftlotteryForm>
-		<div class="modal-body">
-			<p>Are you sure you want to waive {{ this.selectedPlayer.firstName }} {{ this.selectedPlayer.surname }}?</p>
+	<!-- WAIVE MODAL -->
+	<ng-template #waive>
+		<div class="modal-header">
+			<h5 class="modal-title">Waive Player</h5>
+			<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
 		</div>
-		<div class="modal-footer form-group text-center">
-			<button type="submit" class="btn btn-primary" (click)="confirmedWaived()">Waive</button>
-			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
-		</div>
-	</form>
-</ng-template>
+		<form #draftlotteryForm>
+			<div class="modal-body">
+				<p>Are you sure you want to waive {{ this.selectedPlayer.firstName }} {{ this.selectedPlayer.surname }}?
+				</p>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary" (click)="confirmedWaived()">Waive</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			</div>
+		</form>
+	</ng-template>

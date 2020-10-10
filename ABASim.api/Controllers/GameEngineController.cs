@@ -1946,7 +1946,7 @@ namespace ABASim.api.Controllers
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
                 {
-                    int assistRating = (_playerRatingPassed.AssitRating * 6);
+                    int assistRating = (_playerRatingPassed.AssitRating * 5);
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -2160,7 +2160,7 @@ namespace ABASim.api.Controllers
                 if (_playerRatingPassed != null)
                 {
 
-                    int assistRating = (_playerRatingPassed.AssitRating * 6); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
+                    int assistRating = (_playerRatingPassed.AssitRating * 5); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)

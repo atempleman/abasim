@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { TeamService } from '../_services/team.service';
 import { Team } from '../_models/team';
 import { TransferService } from '../_services/transfer.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-standings',
@@ -31,23 +32,30 @@ export class StandingsComponent implements OnInit {
   southwestStandings: Standing[] = [];
 
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private transferService: TransferService,
-              private authService: AuthService, private router: Router, private teamService: TeamService) { }
+              private authService: AuthService, private router: Router, private teamService: TeamService,
+              private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.leagueService.getConferenceStandings(1).subscribe(result => {
+      this.spinner.show();
       // tslint:disable-next-line: max-line-length
       this.eastStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
       // this.eastStandings = result;
     }, error => {
       this.alertify.success('Error getting eastern conference standings');
+    }, () => {
+      this.spinner.hide();
     });
 
     this.leagueService.getConferenceStandings(2).subscribe(result => {
+      this.spinner.show();
       // tslint:disable-next-line: max-line-length
       this.westStandings = result.sort((a, b) => (a.wins / a.gamesPlayed) < (b.wins / b.gamesPlayed) ? 1 : (a.wins / a.gamesPlayed) > (b.wins / b.gamesPlayed) ? -1 : 0);
       // this.westStandings = result;
     }, error => {
       this.alertify.success('Error getting western conference standings');
+    }, () => {
+      this.spinner.hide();
     });
   }
 
