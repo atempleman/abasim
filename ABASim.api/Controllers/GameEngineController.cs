@@ -4556,7 +4556,8 @@ namespace ABASim.api.Controllers
                 }
             }
 
-            if (bs == null) {
+            if (bs == null)
+            {
                 string s = "";
             }
 
@@ -5005,7 +5006,6 @@ namespace ABASim.api.Controllers
                     default:
                         break;
                 }
-
             }
             else
             {
@@ -5045,16 +5045,17 @@ namespace ABASim.api.Controllers
 
             foreach (var option in options)
             {
-                int playerId = option.PlayerId; 
+                int playerId = option.PlayerId;
                 var player = players.FirstOrDefault(x => x.Id == playerId);
 
                 int result = 1;
-                if (player != null) {
+                int onCourt = 1;
+                if (player != null)
+                {
                     result = CheckSubEligility(player, team);
+                    onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
                 }
 
-                int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
-                
                 if (result == 0 && onCourt == 0)
                 {
                     // The player can be checked for the new fatigue
@@ -5071,26 +5072,29 @@ namespace ABASim.api.Controllers
                 }
             }
 
-            foreach (var player in players)
+            if (playerSubbed == 0)
             {
-                // Now need to check if the current player is NOT in the positions DC
-                var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
-
-                if (res == null)
+                foreach (var player in players)
                 {
-                    int result = CheckSubEligility(player, team);
-                    int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+                    // Now need to check if the current player is NOT in the positions DC
+                    var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
 
-                    if (result == 0 && onCourt == 0) // can sub the player on
+                    if (res != null)
                     {
-                        var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
-                        if ((st != null) && (stam.StaminaValue > 500))
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
                         {
-                            // Need action to make the sub
-                            SubPlayer(team, position, player);
-                            newPlayer = player;
-                            playerSubbed = 1;
-                            break;
+                            var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            if ((st != null) && (stam.StaminaValue > 500))
+                            {
+                                // Need action to make the sub
+                                SubPlayer(team, position, player);
+                                newPlayer = player;
+                                playerSubbed = 1;
+                                break;
+                            }
                         }
                     }
                 }
@@ -5147,30 +5151,32 @@ namespace ABASim.api.Controllers
                 }
             }
 
-            foreach (var player in players)
+            if (playerSubbed == 0)
             {
-                var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
-
-                if (res == null)
+                foreach (var player in players)
                 {
-                    int result = CheckSubEligility(player, team);
-                    int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+                    var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
 
-                    if (result == 0 && onCourt == 0) // can sub the player on
+                    if (res != null)
                     {
-                        var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
-                        if ((st != null) && (stam.StaminaValue > 500))
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
                         {
-                            // Need action to make the sub
-                            SubPlayer(team, position, player);
-                            newPlayer = player;
-                            playerSubbed = 1;
-                            break;
+                            var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            if ((st != null) && (stam.StaminaValue > 500))
+                            {
+                                // Need action to make the sub
+                                SubPlayer(team, position, player);
+                                newPlayer = player;
+                                playerSubbed = 1;
+                                break;
+                            }
                         }
                     }
                 }
             }
-
             if (playerSubbed == 0)
             {
                 // Need to go to fallback options
@@ -5222,33 +5228,36 @@ namespace ABASim.api.Controllers
                 }
             }
 
-            foreach (var player in players)
+            if (playerSubbed == 0)
             {
-                var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
-
-                if (res == null)
+                foreach (var player in players)
                 {
-                    int result = CheckSubEligility(player, team);
-                    int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+                    var res = dc.FirstOrDefault(x => x.Position == position && x.PlayerId == player.Id);
 
-                    if (result == 0 && onCourt == 0) // can sub the player on
+                    if (res != null)
                     {
-                        var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
-                        if ((st != null) && (stam.StaminaValue > 500))
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
                         {
-                            // Need action to make the sub
-                            SubPlayer(team, position, player);
-                            newPlayer = player;
-                            playerSubbed = 1;
-                            break;
+                            var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            if ((st != null) && (stam.StaminaValue > 500))
+                            {
+                                // Need action to make the sub
+                                SubPlayer(team, position, player);
+                                newPlayer = player;
+                                playerSubbed = 1;
+                                break;
+                            }
                         }
                     }
                 }
             }
-
             if (playerSubbed == 0)
             {
-                throw new Exception("No player to sub on");
+                // Need to put another call in here to go to another sub check
+                FinalSubCheck(team, position);
             }
             else
             {
@@ -5266,6 +5275,672 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                 }
+            }
+        }
+
+        public void FinalSubCheck(int team, int position)
+        {
+            List<DepthChart> dc = new List<DepthChart>();
+            List<Player> players = new List<Player>();
+            Player current = new Player();
+            Player newPlayer = new Player();
+            List<StaminaTrack> st = new List<StaminaTrack>();
+            int playerSubbed = 0;
+
+            if (team == 0)
+            {
+                // Home
+                dc = _homeDepth;
+                players = _homePlayers;
+                st = _homeStaminas;
+
+                switch (position)
+                {
+                    case 1:
+                        current = homePG;
+                        break;
+                    case 2:
+                        current = homeSG;
+                        break;
+                    case 3:
+                        current = homeSF;
+                        break;
+                    case 4:
+                        current = homePF;
+                        break;
+                    case 5:
+                        current = homeC;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                // Away
+                dc = _awayDepth;
+                players = _awayPlayers;
+                st = _awayStaminas;
+
+                switch (position)
+                {
+                    case 1:
+                        current = awayPG;
+                        break;
+                    case 2:
+                        current = awaySG;
+                        break;
+                    case 3:
+                        current = awaySF;
+                        break;
+                    case 4:
+                        current = awayPF;
+                        break;
+                    case 5:
+                        current = awayC;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Now need to work through the options
+            List<Player> pgPlayers = players.FindAll(x => x.PGPosition == 1);
+            List<Player> sgPlayers = players.FindAll(x => x.SGPosition == 1);
+            List<Player> sfPlayers = players.FindAll(x => x.SFPosition == 1);
+            List<Player> pfPlayers = players.FindAll(x => x.PFPosition == 1);
+            List<Player> cPlayers = players.FindAll(x => x.CPosition == 1);
+
+            if (position == 1)
+            {
+                // Now go through a specific order
+                // PG
+                foreach (var player in pgPlayers)
+                {
+                    int result = CheckSubEligility(player, team);
+                    int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                    if (result == 0 && onCourt == 0) // can sub the player on
+                    {
+                        // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                        // if ((st != null) && (stam.StaminaValue > 500))
+                        // {
+                        // Need action to make the sub
+                        SubPlayer(team, position, player);
+                        newPlayer = player;
+                        playerSubbed = 1;
+                        break;
+                        // }
+                    }
+                }
+
+                // SG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // SF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+
+                // PF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // C    
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in cPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+            }
+            else if (position == 2)
+            {
+                // SG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // SF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // PG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // PF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // C
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in cPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+            }
+            else if (position == 3)
+            {
+                // SF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // SG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // PF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // PG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // C
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in cPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+            }
+            else if (position == 4)
+            {
+                // PF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // C
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in cPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // SF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // SG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // PG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+            }
+            else if (position == 5)
+            {
+                // C
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in cPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // PF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // SF
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sfPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // SG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in sgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+
+                // PG
+                if (playerSubbed == 0)
+                {
+                    foreach (var player in pgPlayers)
+                    {
+                        int result = CheckSubEligility(player, team);
+                        int onCourt = CheckIfPlayerIsOnCourt(team, player.Id);
+
+                        if (result == 0 && onCourt == 0) // can sub the player on
+                        {
+                            // var stam = st.FirstOrDefault(x => x.PlayerId == player.Id);
+                            // if ((st != null) && (stam.StaminaValue > 500))
+                            // {
+                            // Need action to make the sub
+                            SubPlayer(team, position, player);
+                            newPlayer = player;
+                            playerSubbed = 1;
+                            break;
+                            // }
+                        }
+                    }
+                }
+            }
+
+            if (playerSubbed == 0)
+            {
+                throw new Exception("No player to sub on");
             }
         }
 
@@ -5319,7 +5994,8 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                 }
-                else if (dc.PlayerId == current.Id) {
+                else if (dc.PlayerId == current.Id)
+                {
                     // Player is already on the court - nothing is required
                 }
                 else
@@ -5345,7 +6021,8 @@ namespace ABASim.api.Controllers
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
                         PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     }
-                    else if (dc2.PlayerId == current.Id) {
+                    else if (dc2.PlayerId == current.Id)
+                    {
                         // Player is already on the court - nothing is required
                     }
                     else
@@ -5371,7 +6048,8 @@ namespace ABASim.api.Controllers
                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
                             PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                         }
-                        else if (dc3.PlayerId == current.Id) {
+                        else if (dc3.PlayerId == current.Id)
+                        {
                             // Player is already on the court - nothing is required
                         }
                         else
@@ -5426,7 +6104,8 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                 }
-                else if (dc.PlayerId == current.Id) {
+                else if (dc.PlayerId == current.Id)
+                {
                     // Player is already on the court - nothing is required
                 }
                 else
@@ -5452,7 +6131,8 @@ namespace ABASim.api.Controllers
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                         PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     }
-                    else if (dc2.PlayerId == current.Id) {
+                    else if (dc2.PlayerId == current.Id)
+                    {
                         // Player is already on the court - nothing is required
                     }
                     else
@@ -5478,7 +6158,8 @@ namespace ABASim.api.Controllers
                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                             PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                         }
-                        else if (dc3.PlayerId == current.Id) {
+                        else if (dc3.PlayerId == current.Id)
+                        {
                             // Player is already on the court - nothing is required
                         }
                         else
