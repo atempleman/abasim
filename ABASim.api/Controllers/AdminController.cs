@@ -18,13 +18,6 @@ namespace ABASim.api.Controllers
             _gameRepo = gameRepo;
         }
 
-        // [HttpPost("updateleaguestatus")]
-        // public async Task<bool> UpdateLeagueStatus(LeagueState newState)
-        // {
-        //     var updated = await _repo.UpdateLeagueState(newState);
-        //     return updated;
-        // }
-
         [HttpGet("updateleaguestatus/{newStatus}")]
         public async Task<bool> UpdateLeagueStatus(int newStatus)
         {

@@ -440,28 +440,58 @@ namespace ABASim.api.Data
 
         public async Task<bool> DailyInjuriesUpdate(int state, int day)
         {
+            // Need to get the lists of injuries first
             var newInjuries = await _context.PlayerInjuries.Where(x => x.CurrentlyInjured == 0 && x.StartDay == 0).ToListAsync();
+            var existingActiveInjuries = await _context.PlayerInjuries.Where(x => x.CurrentlyInjured == 1).ToListAsync();
 
+            // Now work out new injuries
             foreach (var injury in newInjuries)
             {
-                injury.StartDay = day;
-                injury.EndDay = day + injury.TimeMissed;
-                if (injury.TimeMissed != 0) {
-                    injury.CurrentlyInjured = 1;
+                int timeMissed = 0;
+                if (injury.Severity == 1) {
+                    timeMissed = 0;
+                } else if (injury.Severity == 2) {
+                    int tm = rng.Next(1, 1000);
+                    if (tm >= 900 && tm < 950)
+                    {
+                        timeMissed = 1;
+                    }
+                    else if (tm >= 950)
+                    {
+                        timeMissed = 2;
+                    }
+                } else if (injury.Severity == 3) {
+                    int tm = rng.Next(3, 21);
+                    timeMissed = tm;
+                } else if (injury.Severity == 4) {
+                    int tm = rng.Next(21, 50);
+                    timeMissed = tm;
+                } else if (injury.Severity == 5) {
+                    int tm = rng.Next(51, 180);
+                    timeMissed = tm;
                 }
+                injury.StartDay = day;
+                injury.TimeMissed = timeMissed;
+                int endDay = day + timeMissed;
+                injury.EndDay = endDay;
+                injury.CurrentlyInjured = 1;
                 _context.Update(injury);    
             }
-            await _context.SaveChangesAsync();
 
-            var existingActiveInjuries = await _context.PlayerInjuries.Where(x => x.CurrentlyInjured == 1 && x.EndDay < day).ToListAsync();
-            
+            // Now to check the exisiting Injuries
             foreach (var injury in existingActiveInjuries)
             {
-                injury.CurrentlyInjured = 0;
+                if (injury.EndDay <= day)
+                {
+                    injury.CurrentlyInjured = 0;
+                    injury.TimeMissed = 0;
+                } else {
+                    int daysLeft = injury.TimeMissed - 1;
+                    injury.TimeMissed = daysLeft;
+                }
                 _context.Update(injury);
             }
             await _context.SaveChangesAsync();
-
             return true;
         }
 

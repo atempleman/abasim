@@ -22,18 +22,27 @@ namespace ABASim.api.Data
             List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();
             List<Player> players = new List<Player>();
             // Get players
-            if (pos == 1) {
+            if (pos == 1)
+            {
                 players = await _context.Players.Where(x => x.PGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 2) {
+            }
+            else if (pos == 2)
+            {
                 players = await _context.Players.Where(x => x.SGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 3) {
+            }
+            else if (pos == 3)
+            {
                 players = await _context.Players.Where(x => x.SFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 4) {
+            }
+            else if (pos == 4)
+            {
                 players = await _context.Players.Where(x => x.PFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 5) {
+            }
+            else if (pos == 5)
+            {
                 players = await _context.Players.Where(x => x.CPosition == 1).OrderBy(x => x.Surname).ToListAsync();
             }
-            
+
             int total = players.Count;
             foreach (var player in players)
             {
@@ -76,15 +85,24 @@ namespace ABASim.api.Data
         {
             List<Player> players = new List<Player>();
 
-            if (pos == 1) {
+            if (pos == 1)
+            {
                 players = await _context.Players.Where(x => x.PGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 2) {
+            }
+            else if (pos == 2)
+            {
                 players = await _context.Players.Where(x => x.SGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 3) {
+            }
+            else if (pos == 3)
+            {
                 players = await _context.Players.Where(x => x.SFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 4) {
+            }
+            else if (pos == 4)
+            {
                 players = await _context.Players.Where(x => x.PFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 5) {
+            }
+            else if (pos == 5)
+            {
                 players = await _context.Players.Where(x => x.CPosition == 1).OrderBy(x => x.Surname).ToListAsync();
             }
             return players;
@@ -92,7 +110,7 @@ namespace ABASim.api.Data
 
         public async Task<IEnumerable<DraftPlayerDto>> FilterInitialDraftPlayerPool(string value)
         {
-             List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();
+            List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();
 
             var query = String.Format("SELECT * FROM Players where Surname like '%" + value + "%' or FirstName like '%" + value + "%'");
             var players = await _context.Players.FromSqlRaw(query).ToListAsync();
@@ -149,6 +167,200 @@ namespace ABASim.api.Data
             return players;
         }
 
+        public async Task<IEnumerable<CareerStatsDto>> GetCareerStats(int playerId)
+        {
+            List<CareerStatsDto> careerStats = new List<CareerStatsDto>();
+            var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+            var currentSeasonPlayerStats = await _context.PlayerStats.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+            var currentPlayoffStats = await _context.PlayerStatsPlayoffs.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var pastSeasonStats = await _context.PlayerCareerStats.Where(x => x.PlayerId == playerId).ToListAsync();
+            var pastSeasonPlayoffStats = await _context.PlayerCareerStatsPlayoffs.Where(x => x.PlayerId == playerId).ToListAsync();
+
+            foreach (var season in pastSeasonStats)
+            {
+                var matchingPlayoffs = pastSeasonPlayoffStats.Find(x => x.SeasonId == season.SeasonId);
+
+                if (matchingPlayoffs == null)
+                {
+                    CareerStatsDto dto = new CareerStatsDto
+                    {
+                        PlayerId = season.PlayerId,
+                        SeasonId = season.SeasonId,
+                        TeamName = season.Team,
+                        GamesStats = season.GamesPlayed,
+                        MinutesStats = season.Minutes,
+                        FgmStats = season.FieldGoalsMade,
+                        FgaStats = season.FieldGoalsAttempted,
+                        ThreeFgmStats = season.ThreeFieldGoalsMade,
+                        ThreeFgaStats = season.ThreeFieldGoalsAttempted,
+                        FtmStats = season.FreeThrowsMade,
+                        FtaStats = season.FreeThrowsAttempted,
+                        OrebsStats = season.ORebs,
+                        DrebsStats = season.DRebs,
+                        AstStats = season.Assists,
+                        StlStats = season.Steals,
+                        BlkStats = season.Blocks,
+                        FlsStats = season.Fouls,
+                        ToStats = season.Turnovers,
+                        PtsStats = season.Points,
+                        PlayoffGamesStats = matchingPlayoffs.GamesPlayed,
+                        PlayoffMinutesStats = matchingPlayoffs.Minutes,
+                        PlayoffFgmStats = matchingPlayoffs.FieldGoalsMade,
+                        PlayoffFgaStats = matchingPlayoffs.FieldGoalsMade,
+                        PlayoffThreeFgmStats = matchingPlayoffs.ThreeFieldGoalsMade,
+                        PlayoffThreeFgaStats = matchingPlayoffs.ThreeFieldGoalsAttempted,
+                        PlayoffFtmStats = matchingPlayoffs.FreeThrowsMade,
+                        PlayoffFtaStats = matchingPlayoffs.FreeThrowsAttempted,
+                        PlayoffOrebsStats = matchingPlayoffs.ORebs,
+                        PlayoffDrebsStats = matchingPlayoffs.DRebs,
+                        PlayoffAstStats = matchingPlayoffs.Assists,
+                        PlayoffStlStats = matchingPlayoffs.Steals,
+                        PlayoffBlkStats = matchingPlayoffs.Blocks,
+                        PlayoffFlsStats = matchingPlayoffs.Fouls,
+                        PlayoffToStats = matchingPlayoffs.Turnovers,
+                        PlayoffPtsStats = matchingPlayoffs.Points
+                    };
+                    careerStats.Add(dto);
+                }
+                else
+                {
+                    CareerStatsDto dto = new CareerStatsDto
+                    {
+                        PlayerId = season.PlayerId,
+                        SeasonId = season.SeasonId,
+                        TeamName = season.Team,
+                        GamesStats = season.GamesPlayed,
+                        MinutesStats = season.Minutes,
+                        FgmStats = season.FieldGoalsMade,
+                        FgaStats = season.FieldGoalsAttempted,
+                        ThreeFgmStats = season.ThreeFieldGoalsMade,
+                        ThreeFgaStats = season.ThreeFieldGoalsAttempted,
+                        FtmStats = season.FreeThrowsMade,
+                        FtaStats = season.FreeThrowsAttempted,
+                        OrebsStats = season.ORebs,
+                        DrebsStats = season.DRebs,
+                        AstStats = season.Assists,
+                        StlStats = season.Steals,
+                        BlkStats = season.Blocks,
+                        FlsStats = season.Fouls,
+                        ToStats = season.Turnovers,
+                        PtsStats = season.Points,
+                        PlayoffGamesStats = 0,
+                        PlayoffMinutesStats = 0,
+                        PlayoffFgmStats = 0,
+                        PlayoffFgaStats = 0,
+                        PlayoffThreeFgmStats = 0,
+                        PlayoffThreeFgaStats = 0,
+                        PlayoffFtmStats = 0,
+                        PlayoffFtaStats = 0,
+                        PlayoffOrebsStats = 0,
+                        PlayoffDrebsStats = 0,
+                        PlayoffAstStats = 0,
+                        PlayoffStlStats = 0,
+                        PlayoffBlkStats = 0,
+                        PlayoffFlsStats = 0,
+                        PlayoffToStats = 0,
+                        PlayoffPtsStats = 0
+                    };
+                    careerStats.Add(dto);
+                }
+            }
+
+            // Now need to add the current season
+            if (currentSeasonPlayerStats != null)
+            {
+                if (currentPlayoffStats == null)
+                {
+                    CareerStatsDto dto = new CareerStatsDto
+                    {
+                        PlayerId = currentSeasonPlayerStats.PlayerId,
+                        SeasonId = league.Id,
+                        TeamName = team.Mascot,
+                        GamesStats = currentSeasonPlayerStats.GamesPlayed,
+                        MinutesStats = currentSeasonPlayerStats.Minutes,
+                        FgmStats = currentSeasonPlayerStats.FieldGoalsMade,
+                        FgaStats = currentSeasonPlayerStats.FieldGoalsAttempted,
+                        ThreeFgmStats = currentSeasonPlayerStats.ThreeFieldGoalsMade,
+                        ThreeFgaStats = currentSeasonPlayerStats.ThreeFieldGoalsAttempted,
+                        FtmStats = currentSeasonPlayerStats.FreeThrowsMade,
+                        FtaStats = currentSeasonPlayerStats.FreeThrowsAttempted,
+                        OrebsStats = currentSeasonPlayerStats.ORebs,
+                        DrebsStats = currentSeasonPlayerStats.DRebs,
+                        AstStats = currentSeasonPlayerStats.Assists,
+                        StlStats = currentSeasonPlayerStats.Steals,
+                        BlkStats = currentSeasonPlayerStats.Blocks,
+                        FlsStats = currentSeasonPlayerStats.Fouls,
+                        ToStats = currentSeasonPlayerStats.Turnovers,
+                        PtsStats = currentSeasonPlayerStats.Points,
+                        PlayoffGamesStats = 0,
+                        PlayoffMinutesStats = 0,
+                        PlayoffFgmStats = 0,
+                        PlayoffFgaStats = 0,
+                        PlayoffThreeFgmStats = 0,
+                        PlayoffThreeFgaStats = 0,
+                        PlayoffFtmStats = 0,
+                        PlayoffFtaStats = 0,
+                        PlayoffOrebsStats = 0,
+                        PlayoffDrebsStats = 0,
+                        PlayoffAstStats = 0,
+                        PlayoffStlStats = 0,
+                        PlayoffBlkStats = 0,
+                        PlayoffFlsStats = 0,
+                        PlayoffToStats = 0,
+                        PlayoffPtsStats = 0
+                    };
+                    careerStats.Add(dto);
+                }
+                else
+                {
+                    CareerStatsDto dto = new CareerStatsDto
+                    {
+                        PlayerId = currentSeasonPlayerStats.PlayerId,
+                        SeasonId = league.Id,
+                        TeamName = team.Mascot,
+                        GamesStats = currentSeasonPlayerStats.GamesPlayed,
+                        MinutesStats = currentSeasonPlayerStats.Minutes,
+                        FgmStats = currentSeasonPlayerStats.FieldGoalsMade,
+                        FgaStats = currentSeasonPlayerStats.FieldGoalsAttempted,
+                        ThreeFgmStats = currentSeasonPlayerStats.ThreeFieldGoalsMade,
+                        ThreeFgaStats = currentSeasonPlayerStats.ThreeFieldGoalsAttempted,
+                        FtmStats = currentSeasonPlayerStats.FreeThrowsMade,
+                        FtaStats = currentSeasonPlayerStats.FreeThrowsAttempted,
+                        OrebsStats = currentSeasonPlayerStats.ORebs,
+                        DrebsStats = currentSeasonPlayerStats.DRebs,
+                        AstStats = currentSeasonPlayerStats.Assists,
+                        StlStats = currentSeasonPlayerStats.Steals,
+                        BlkStats = currentSeasonPlayerStats.Blocks,
+                        FlsStats = currentSeasonPlayerStats.Fouls,
+                        ToStats = currentSeasonPlayerStats.Turnovers,
+                        PtsStats = currentSeasonPlayerStats.Points,
+                        PlayoffGamesStats = currentPlayoffStats.GamesPlayed,
+                        PlayoffMinutesStats = currentPlayoffStats.Minutes,
+                        PlayoffFgmStats = currentPlayoffStats.FieldGoalsMade,
+                        PlayoffFgaStats = currentPlayoffStats.FieldGoalsAttempted,
+                        PlayoffThreeFgmStats = currentPlayoffStats.ThreeFieldGoalsMade,
+                        PlayoffThreeFgaStats = currentPlayoffStats.ThreeFieldGoalsAttempted,
+                        PlayoffFtmStats = currentPlayoffStats.FreeThrowsMade,
+                        PlayoffFtaStats = currentPlayoffStats.FreeThrowsAttempted,
+                        PlayoffOrebsStats = currentPlayoffStats.ORebs,
+                        PlayoffDrebsStats = currentPlayoffStats.DRebs,
+                        PlayoffAstStats = currentPlayoffStats.Assists,
+                        PlayoffStlStats = currentPlayoffStats.Steals,
+                        PlayoffBlkStats = currentPlayoffStats.Blocks,
+                        PlayoffFlsStats = currentPlayoffStats.Fouls,
+                        PlayoffToStats = currentPlayoffStats.Turnovers,
+                        PlayoffPtsStats = currentPlayoffStats.Points
+                    };
+                    careerStats.Add(dto);
+                }
+            }
+
+            return careerStats;
+        }
+
         public async Task<CompletePlayerDto> GetCompletePlayer(int playerId)
         {
             var league = await _context.Leagues.FirstOrDefaultAsync();
@@ -163,18 +375,20 @@ namespace ABASim.api.Data
             var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
             string teamname = "Free Agent";
 
-            if(team != null)
+            if (team != null)
             {
                 teamname = team.Teamname + " " + team.Mascot;
             }
 
-            if (playerStats != null) {
+            if (playerStats != null)
+            {
                 PlayerStatsPlayoff psp = new PlayerStatsPlayoff();
                 if (league.StateId > 8 || (league.StateId == 8 && league.StateId > 0))
                 {
                     psp = await _context.PlayerStatsPlayoffs.FirstOrDefaultAsync(x => x.PlayerId == playerId);
 
-                    if (psp == null) {
+                    if (psp == null)
+                    {
                         psp = new PlayerStatsPlayoff
                         {
                             PlayerId = playerId,
@@ -214,7 +428,7 @@ namespace ABASim.api.Data
                         PGPosition = playerDetails.PGPosition,
                         SGPosition = playerDetails.SGPosition,
                         SFPosition = playerDetails.SFPosition,
-                        PFPosition = playerDetails.PGPosition,
+                        PFPosition = playerDetails.PFPosition,
                         CPosition = playerDetails.CPosition,
                         TwoGrade = playerGrades.TwoGrade,
                         ThreeGrade = playerGrades.ThreeGrade,
@@ -281,7 +495,9 @@ namespace ABASim.api.Data
                         PlayoffPtsStats = psp.Points
                     };
                     return player;
-                } else {
+                }
+                else
+                {
                     CompletePlayerDto player = new CompletePlayerDto
                     {
                         PlayerId = playerId,
@@ -290,7 +506,7 @@ namespace ABASim.api.Data
                         PGPosition = playerDetails.PGPosition,
                         SGPosition = playerDetails.SGPosition,
                         SFPosition = playerDetails.SFPosition,
-                        PFPosition = playerDetails.PGPosition,
+                        PFPosition = playerDetails.PFPosition,
                         CPosition = playerDetails.CPosition,
                         TwoGrade = playerGrades.TwoGrade,
                         ThreeGrade = playerGrades.ThreeGrade,
@@ -358,7 +574,9 @@ namespace ABASim.api.Data
                     };
                     return player;
                 }
-            } else {
+            }
+            else
+            {
                 CompletePlayerDto player = new CompletePlayerDto
                 {
                     PlayerId = playerId,
@@ -367,7 +585,7 @@ namespace ABASim.api.Data
                     PGPosition = playerDetails.PGPosition,
                     SGPosition = playerDetails.SGPosition,
                     SFPosition = playerDetails.SFPosition,
-                    PFPosition = playerDetails.PGPosition,
+                    PFPosition = playerDetails.PFPosition,
                     CPosition = playerDetails.CPosition,
                     TwoGrade = playerGrades.TwoGrade,
                     ThreeGrade = playerGrades.ThreeGrade,
@@ -439,7 +657,7 @@ namespace ABASim.api.Data
 
         public int GetCountOfDraftPlayers()
         {
-            var count =  _context.PlayerTeams.Where(x => x.TeamId == 0 || x.TeamId == 31).Count();
+            var count = _context.PlayerTeams.Where(x => x.TeamId == 0 || x.TeamId == 31).Count();
             return count;
         }
 
@@ -485,18 +703,27 @@ namespace ABASim.api.Data
             List<Player> freeAgents = new List<Player>();
             List<Player> players = new List<Player>();
 
-            if (pos == 1) {
+            if (pos == 1)
+            {
                 players = await _context.Players.Where(x => x.PGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 2) {
+            }
+            else if (pos == 2)
+            {
                 players = await _context.Players.Where(x => x.SGPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 3) {
+            }
+            else if (pos == 3)
+            {
                 players = await _context.Players.Where(x => x.SFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 4) {
+            }
+            else if (pos == 4)
+            {
                 players = await _context.Players.Where(x => x.PFPosition == 1).OrderBy(x => x.Surname).ToListAsync();
-            } else if (pos == 5) {
+            }
+            else if (pos == 5)
+            {
                 players = await _context.Players.Where(x => x.CPosition == 1).OrderBy(x => x.Surname).ToListAsync();
             }
-            
+
             foreach (var player in players)
             {
                 var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
@@ -513,7 +740,7 @@ namespace ABASim.api.Data
         public async Task<IEnumerable<DraftPlayerDto>> GetInitialDraftPlayerPool(int page)
         {
             List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();
-            
+
             // Get players
             int start = (page * 50) - 50;
             int end = (page * 50);

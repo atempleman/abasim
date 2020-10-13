@@ -1,0 +1,37 @@
+export interface CareerStats {
+    playerId: number;
+    seasonId: number;
+    teamName: string;
+    gamesStats: number;
+    minutesStats: number;
+    fgmStats: number;
+    fgaStats: number;
+    threeFgmStats: number;
+    threeFgaStats: number;
+    ftmStats: number;
+    ftaStats: number;
+    orebsStats: number;
+    drebsStats: number;
+    astStats: number;
+    stlStats: number;
+    blkStats: number;
+    flsStats: number;
+    toStats: number;
+    ptsStats: number;
+    playoffGamesStats: number;
+    playoffMinutesStats: number;
+    playoffFgmStats: number;
+    playoffFgaStats: number;
+    playoffThreeFgmStats: number;
+    playoffThreeFgaStats: number;
+    playoffFtmStats: number;
+    playoffFtaStats: number;
+    playoffOrebsStats: number;
+    playoffDrebsStats: number;
+    playoffAstStats: number;
+    playoffStlStats: number;
+    playoffBlkStats: number;
+    playoffFlsStats: number;
+    playoffToStats: number;
+    playoffPtsStats: number;
+}

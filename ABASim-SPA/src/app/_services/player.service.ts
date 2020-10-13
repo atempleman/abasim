@@ -5,6 +5,7 @@ import { DraftPlayer } from '../_models/draftPlayer';
 import { Player } from '../_models/player';
 import { environment } from 'src/environments/environment';
 import { CompletePlayer } from '../_models/completePlayer';
+import { CareerStats } from '../_models/careerStats';
 
 @Injectable({
   providedIn: 'root'
@@ -65,5 +66,9 @@ export class PlayerService {
   getPlayerByPos(pos: number): Observable<Player[]> {
     console.log('ash2');
     return this.http.get<Player[]>(this.baseUrl + 'filterbyposition/' + pos);
+  }
+
+  getCareerStats(playerId: number): Observable<CareerStats[]> {
+    return this.http.get<CareerStats[]>(this.baseUrl + 'getcareerstats/' + playerId);
   }
 }

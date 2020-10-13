@@ -56,6 +56,13 @@ namespace ABASim.api.Controllers
             return Ok(player);
         }
 
+        [HttpGet("getcareerstats/{playerId}")]
+        public async Task<IActionResult> GetCareerStats(int playerId)
+        {
+            var player = await _repo.GetCareerStats(playerId);
+            return Ok(player);
+        }
+
         [HttpGet("getcountofdraftplayers")]
         public async Task<IActionResult> GetCountOfDraftPlayers()
         {
