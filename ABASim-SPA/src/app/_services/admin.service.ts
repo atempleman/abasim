@@ -56,4 +56,8 @@ export class AdminService {
   endSeason() {
     return this.http.get<boolean>(this.baseUrl + 'endseason');
   }
+
+  runTeamDraftPicksSetup() {
+    return this.http.get<boolean>(this.baseUrl + 'runteamdraftpicks');
+  }
 }

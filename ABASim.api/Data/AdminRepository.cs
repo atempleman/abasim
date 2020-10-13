@@ -427,7 +427,9 @@ namespace ABASim.api.Data
                     }
                 }
 
-            } else if (league.StateId == 6) {
+            }
+            else if (league.StateId == 6)
+            {
                 // Preseaon - just rollover day
                 league.Day = league.Day + 1;
             }
@@ -448,9 +450,12 @@ namespace ABASim.api.Data
             foreach (var injury in newInjuries)
             {
                 int timeMissed = 0;
-                if (injury.Severity == 1) {
+                if (injury.Severity == 1)
+                {
                     timeMissed = 0;
-                } else if (injury.Severity == 2) {
+                }
+                else if (injury.Severity == 2)
+                {
                     int tm = rng.Next(1, 1000);
                     if (tm >= 900 && tm < 950)
                     {
@@ -460,13 +465,19 @@ namespace ABASim.api.Data
                     {
                         timeMissed = 2;
                     }
-                } else if (injury.Severity == 3) {
+                }
+                else if (injury.Severity == 3)
+                {
                     int tm = rng.Next(3, 21);
                     timeMissed = tm;
-                } else if (injury.Severity == 4) {
+                }
+                else if (injury.Severity == 4)
+                {
                     int tm = rng.Next(21, 50);
                     timeMissed = tm;
-                } else if (injury.Severity == 5) {
+                }
+                else if (injury.Severity == 5)
+                {
                     int tm = rng.Next(51, 180);
                     timeMissed = tm;
                 }
@@ -475,7 +486,7 @@ namespace ABASim.api.Data
                 int endDay = day + timeMissed;
                 injury.EndDay = endDay;
                 injury.CurrentlyInjured = 1;
-                _context.Update(injury);    
+                _context.Update(injury);
             }
 
             // Now to check the exisiting Injuries
@@ -485,7 +496,9 @@ namespace ABASim.api.Data
                 {
                     injury.CurrentlyInjured = 0;
                     injury.TimeMissed = 0;
-                } else {
+                }
+                else
+                {
                     int daysLeft = injury.TimeMissed - 1;
                     injury.TimeMissed = daysLeft;
                 }
@@ -1292,7 +1305,7 @@ namespace ABASim.api.Data
                     Tpg = ps.Tpg,
                     Fpg = ps.Fpg
                 };
-                await _context.AddAsync(stats);        
+                await _context.AddAsync(stats);
             }
             await _context.SaveChangesAsync();
 
@@ -1334,11 +1347,56 @@ namespace ABASim.api.Data
                     Tpg = ps.Tpg,
                     Fpg = ps.Fpg
                 };
-                await _context.AddAsync(stats);        
+                await _context.AddAsync(stats);
             }
             await _context.SaveChangesAsync();
 
-            return true;
+            // Now need to update the draft picks for the next additional season
+            var teams = await _context.Teams.ToListAsync();
+            int newSeasonForPicks = league.Id + 6;
+
+            foreach (var team in teams)
+            {
+                for (int j = 1; j < 3; j++)
+                {
+                    TeamDraftPick dp = new TeamDraftPick
+                    {
+                        Year = newSeasonForPicks,
+                        Round = j,
+                        OriginalTeam = team.Id,
+                        CurrentTeam = team.Id
+                    };
+                    await _context.AddAsync(dp);
+                }
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RunTeamDraftPicks()
+        {
+            var teams = await _context.Teams.ToListAsync();
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+
+            foreach (var team in teams)
+            {
+                int start = league.Id + 1;
+                for (int i = start; i < start + 6; i++)
+                {
+                    for (int j = 1; j < 3; j++)
+                    {
+                        // Now need to create the Team Draft Pick object
+                        TeamDraftPick dp = new TeamDraftPick
+                        {
+                            Year = i,
+                            Round = j,
+                            OriginalTeam = team.Id,
+                            CurrentTeam = team.Id
+                        };
+                        await _context.AddAsync(dp);
+                    }
+                }
+            }
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

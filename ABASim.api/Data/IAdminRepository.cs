@@ -29,5 +29,7 @@ namespace ABASim.api.Data
          Task<bool> GenerateAutoPickOrder();
 
          Task<bool> EndSeason();
+
+         Task<bool> RunTeamDraftPicks();
     }
 }

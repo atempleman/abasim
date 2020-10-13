@@ -95,5 +95,9 @@ namespace ABASim.api.Data
         public DbSet<CareerPlayerStat> PlayerCareerStats { get; set; }
 
         public DbSet<CareerPlayerStatsPlayoff> PlayerCareerStatsPlayoffs { get; set; }
+
+        public DbSet<SalaryCap> SalaryCaps { get; set; }
+
+        public DbSet<TeamSalaryCap> TeamSalaryCaps { get; set; }
     }
 }

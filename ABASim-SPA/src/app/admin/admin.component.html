@@ -142,6 +142,17 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-step-forward"></i><span
+						class="header-card ml-3"><strong>Setup Draft Picks</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Setup teams draft picks for the first 5 seasons. Should only ever be run once.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(setupdraftpicks, 7)">Setup picks</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -337,3 +348,20 @@
 			  </div>
 		</form>
 	</ng-template> 
+
+	<ng-template #setupdraftpicks>
+		<div class="modal-header">
+		  <h4 class="modal-title">Run draft picks</h4>
+		  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+		</div>
+		<form #draftlotteryForm (ngSubmit)="runDraftPicks()">
+			<div class="modal-body">
+		  <p>Setup up team draft picks</p>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Run</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			  </div>
+		</form>
+	</ng-template> 
+

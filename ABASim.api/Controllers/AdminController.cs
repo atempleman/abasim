@@ -98,5 +98,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.EndSeason();
             return result;
         }
+
+        [HttpGet("runteamdraftpicks")]
+        public async Task<bool> RunTeamDraftPicks()
+        {
+            var result = await _repo.RunTeamDraftPicks();
+            return result;
+        }
     }
 }

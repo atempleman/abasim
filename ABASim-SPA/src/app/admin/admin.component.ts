@@ -256,4 +256,15 @@ export class AdminComponent implements OnInit {
       this.modalRef.hide();
     });
   }
+
+  runDraftPicks() {
+    this.adminService.runTeamDraftPicksSetup().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error running team pick setup');
+    }, () => {
+      this.alertify.success('Team pick setup run successfully');
+      this.modalRef.hide();
+    });
+  }
 }
