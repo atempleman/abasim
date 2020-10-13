@@ -1250,5 +1250,95 @@ namespace ABASim.api.Data
             }
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> EndSeason()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            // Update Player Career Stats
+            var playerStats = await _context.PlayerStats.ToListAsync();
+
+            foreach (var ps in playerStats)
+            {
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+                CareerPlayerStat stats = new CareerPlayerStat
+                {
+                    PlayerId = ps.PlayerId,
+                    SeasonId = league.Id,
+                    Team = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Minutes = ps.Minutes,
+                    Points = ps.Points,
+                    Rebounds = ps.Rebounds,
+                    Assists = ps.Assists,
+                    Steals = ps.Steals,
+                    Blocks = ps.Blocks,
+                    FieldGoalsMade = ps.FieldGoalsMade,
+                    FieldGoalsAttempted = ps.FieldGoalsAttempted,
+                    ThreeFieldGoalsMade = ps.ThreeFieldGoalsMade,
+                    ThreeFieldGoalsAttempted = ps.ThreeFieldGoalsAttempted,
+                    FreeThrowsMade = ps.FreeThrowsMade,
+                    FreeThrowsAttempted = ps.FreeThrowsAttempted,
+                    ORebs = ps.ORebs,
+                    DRebs = ps.DRebs,
+                    Turnovers = ps.Turnovers,
+                    Fouls = ps.Fouls,
+                    Ppg = ps.Ppg,
+                    Apg = ps.Apg,
+                    Rpg = ps.Rpg,
+                    Spg = ps.Spg,
+                    Bpg = ps.Bpg,
+                    Mpg = ps.Mpg,
+                    Tpg = ps.Tpg,
+                    Fpg = ps.Fpg
+                };
+                await _context.AddAsync(stats);        
+            }
+            await _context.SaveChangesAsync();
+
+            // Update Player Career Playoff Stats
+            var playerStatsPlayoffs = await _context.PlayerStatsPlayoffs.ToListAsync();
+
+            foreach (var ps in playerStatsPlayoffs)
+            {
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+                CareerPlayerStatsPlayoff stats = new CareerPlayerStatsPlayoff
+                {
+                    PlayerId = ps.PlayerId,
+                    SeasonId = league.Id,
+                    Team = team.ShortCode,
+                    GamesPlayed = ps.GamesPlayed,
+                    Minutes = ps.Minutes,
+                    Points = ps.Points,
+                    Rebounds = ps.Rebounds,
+                    Assists = ps.Assists,
+                    Steals = ps.Steals,
+                    Blocks = ps.Blocks,
+                    FieldGoalsMade = ps.FieldGoalsMade,
+                    FieldGoalsAttempted = ps.FieldGoalsAttempted,
+                    ThreeFieldGoalsMade = ps.ThreeFieldGoalsMade,
+                    ThreeFieldGoalsAttempted = ps.ThreeFieldGoalsAttempted,
+                    FreeThrowsMade = ps.FreeThrowsMade,
+                    FreeThrowsAttempted = ps.FreeThrowsAttempted,
+                    ORebs = ps.ORebs,
+                    DRebs = ps.DRebs,
+                    Turnovers = ps.Turnovers,
+                    Fouls = ps.Fouls,
+                    Ppg = ps.Ppg,
+                    Apg = ps.Apg,
+                    Rpg = ps.Rpg,
+                    Spg = ps.Spg,
+                    Bpg = ps.Bpg,
+                    Mpg = ps.Mpg,
+                    Tpg = ps.Tpg,
+                    Fpg = ps.Fpg
+                };
+                await _context.AddAsync(stats);        
+            }
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

@@ -48,7 +48,12 @@ export class AdminService {
   beginConfFinals() {
     return this.http.get<boolean>(this.baseUrl + 'beginconffinals');
   }
+
   beginFinals() {
     return this.http.get<boolean>(this.baseUrl + 'beginfinals');
+  }
+
+  endSeason() {
+    return this.http.get<boolean>(this.baseUrl + 'endseason');
   }
 }

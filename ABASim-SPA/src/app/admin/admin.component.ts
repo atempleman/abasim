@@ -89,6 +89,9 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  endSeason() {
+  }
+
   beginConfSemis() {
     this.adminService.beginConfSemis().subscribe(result => {
 

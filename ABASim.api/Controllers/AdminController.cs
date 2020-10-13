@@ -91,5 +91,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.BeginFinals();
             return result;
         }
+
+        [HttpGet("endseason")]
+        public async Task<bool> EndSeason()
+        {
+            var result = await _repo.EndSeason();
+            return result;
+        }
     }
 }

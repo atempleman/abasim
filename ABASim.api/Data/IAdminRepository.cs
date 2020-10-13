@@ -27,5 +27,7 @@ namespace ABASim.api.Data
          Task<bool> BeginFinals();
 
          Task<bool> GenerateAutoPickOrder();
+
+         Task<bool> EndSeason();
     }
 }
