@@ -1,10 +1,10 @@
-<div class="jumbotron">
-  <h3 class="display">STATISTICS</h3>
-</div>
+<section class="dashboard-area">
+  <h3 class="display">Statistics</h3>
+</section>
 
 <div class="box">
   <div class="container">
-    <ngx-spinner [fullScreen]="false" type="pacman" size="medium">
+    <ngx-spinner [fullScreen]="true" type="ball-spin-fade" size="medium">
       <p class="loading">Loading Stats...</p>
     </ngx-spinner>
 
@@ -66,8 +66,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ (player.points / player.gamesPlayed).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 
@@ -86,8 +85,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ (player.assists / player.gamesPlayed).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 
@@ -106,8 +104,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ (player.rebounds / player.gamesPlayed).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 
@@ -126,8 +123,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ (player.blocks / player.gamesPlayed).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 
@@ -146,8 +142,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ (player.steals / player.gamesPlayed).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 
@@ -166,8 +161,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ (player.turnovers / player.gamesPlayed).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 
@@ -186,8 +180,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ (player.fouls / player.gamesPlayed).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 
@@ -206,8 +199,7 @@
               <td>{{ player.playerName }}</td>
               <td>{{ player.teamShortCode }}</td>
               <td>{{ ((player.minutes / player.gamesPlayed) / 60).toFixed(2) }}</td>
-              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><span
-                    class="glyphicon glyphicon-edit"></span> View</button></td>
+              <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)">View</button></td>
             </tr>
           </table>
 

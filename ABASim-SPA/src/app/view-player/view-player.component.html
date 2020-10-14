@@ -26,6 +26,8 @@
                                     <h6> {{ this.playerInjury.type }} Injury - will miss
                                         {{ this.playerInjury.timeMissed }} days</h6>
                                 </span>
+                                <br />
+                                <span>Player contract placeholder</span>
                             </div>
                         </div>
                     </div>
@@ -49,6 +51,11 @@
                                     <a class="nav-link" [routerLink]=""
                                         [ngClass]="this.statusTendancies ? 'active' : ''"
                                         (click)="tendanciesClick()">Tendancies</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" [routerLink]=""
+                                        [ngClass]="this.statusContract ? 'active' : ''"
+                                        (click)="contractClick()">Contract</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" [routerLink]=""

@@ -670,17 +670,17 @@ namespace ABASim.api.Controllers
                 if (_homeRatings[i].PlayerId == homeGoToOne)
                 {
                     var usageRating = _homeRatings[i].UsageRating;
-                    _homeRatings[i].UsageRating = usageRating + 75;
+                    _homeRatings[i].UsageRating = usageRating + 30;
                 }
                 else if (_homeRatings[i].PlayerId == homeGoToTwo)
                 {
                     var usageRating = _homeRatings[i].UsageRating;
-                    _homeRatings[i].UsageRating = usageRating + 50;
+                    _homeRatings[i].UsageRating = usageRating + 20;
                 }
                 else if (_homeRatings[i].PlayerId == homeGoToThree)
                 {
                     var usageRating = _homeRatings[i].UsageRating;
-                    _homeRatings[i].UsageRating = usageRating + 25;
+                    _homeRatings[i].UsageRating = usageRating + 10;
                 }
             }
 
@@ -689,17 +689,17 @@ namespace ABASim.api.Controllers
                 if (_awayRatings[i].PlayerId == awayGoToOne)
                 {
                     var usageRating = _awayRatings[i].UsageRating;
-                    _awayRatings[i].UsageRating = usageRating + 75;
+                    _awayRatings[i].UsageRating = usageRating + 30;
                 }
                 else if (_awayRatings[i].PlayerId == awayGoToTwo)
                 {
                     var usageRating = _awayRatings[i].UsageRating;
-                    _awayRatings[i].UsageRating = usageRating + 50;
+                    _awayRatings[i].UsageRating = usageRating + 20;
                 }
                 else if (_awayRatings[i].PlayerId == awayGoToThree)
                 {
                     var usageRating = _awayRatings[i].UsageRating;
-                    _awayRatings[i].UsageRating = usageRating + 25;
+                    _awayRatings[i].UsageRating = usageRating + 10;
                 }
             }
             return Ok(true);

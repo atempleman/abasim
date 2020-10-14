@@ -614,8 +614,34 @@ namespace ABASim.api.Data
         public async Task<Team> GetTeamForTeamName(string name)
         {
             string[] components = name.Split(' ');
-            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == components[0] && x.Mascot == components[1]);
-            return team;
+            int componentCount = components.Length;
+
+            string teamname = "";
+            string mascot = "";
+            if (componentCount == 2) {
+                // What if there is a 2 word last name?
+                teamname = components[0];
+                mascot = components[1];
+
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == teamname && x.Mascot == mascot);
+                return team;
+            } else if (componentCount == 3) {
+                teamname = components[0];
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == teamname);
+
+                if (team == null) {
+                    // 2 name team name
+                    teamname = components[0] + " " + components[1];
+                    mascot = components[2];
+                    var team2 = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == teamname && x.Mascot == mascot);
+                    return team2;
+                } else {
+                    // 2 name team name
+                    return team;
+                }
+            } else {
+                return null;
+            }
         }
 
         public async Task<Team> GetTeamForUserId(int userId)

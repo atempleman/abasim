@@ -21,7 +21,7 @@
       <li class="nav-item" *ngIf="loggedIn()">
         <a class="nav-link" [routerLink]="['/players']">Players</a>
       </li>
-      <li class="nav-item" *ngIf="loggedIn()">
+      <li class="nav-item" *ngIf="loggedIn() && (this.league.stateId < 7 && this.league.stateId > 11)">
         <a class="nav-link" [routerLink]="['/draft']">Draft</a>
       </li>
       <li class="nav-item" *ngIf="loggedIn()">

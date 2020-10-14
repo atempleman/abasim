@@ -30,6 +30,7 @@ export class ViewPlayerComponent implements OnInit {
   statusRatings = false;
   statusTendancies = false;
   statusCareerStats = false;
+  statusContract = false;
 
   playerInjury: PlayerInjury;
   injurySet = 0;
@@ -537,6 +538,7 @@ export class ViewPlayerComponent implements OnInit {
     this.statusRatings = false;
     this.statusTendancies = false;
     this.statusCareerStats = false;
+    this.statusContract = false;
     this.statusGrades = true;
   }
 
@@ -545,6 +547,7 @@ export class ViewPlayerComponent implements OnInit {
     this.statusTendancies = false;
     this.statusGrades = false;
     this.statusCareerStats = false;
+    this.statusContract = false;
     this.statusStats = true;
   }
 
@@ -554,6 +557,7 @@ export class ViewPlayerComponent implements OnInit {
     this.statusGrades = false;
     this.statusStats = false;
     this.statusCareerStats = false;
+    this.statusContract = false;
     this.statusPlayoffStats = true;
   }
 
@@ -562,6 +566,7 @@ export class ViewPlayerComponent implements OnInit {
     this.statusGrades = false;
     this.statusStats = false;
     this.statusCareerStats = false;
+    this.statusContract = false;
     this.statusRatings = true;
   }
 
@@ -570,6 +575,7 @@ export class ViewPlayerComponent implements OnInit {
     this.statusStats = false;
     this.statusRatings = false;
     this.statusCareerStats = false;
+    this.statusContract = false;
     this.statusTendancies = true;
   }
 
@@ -578,7 +584,17 @@ export class ViewPlayerComponent implements OnInit {
     this.statusStats = false;
     this.statusRatings = false;
     this.statusTendancies = false;
+    this.statusContract = false;
     this.statusCareerStats = true;
+  }
+
+  contractClick() {
+    this.statusGrades = false;
+    this.statusStats = false;
+    this.statusRatings = false;
+    this.statusTendancies = false;
+    this.statusCareerStats = false;
+    this.statusContract = true;
   }
 
   viewTeam() {

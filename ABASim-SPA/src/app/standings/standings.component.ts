@@ -171,6 +171,7 @@ export class StandingsComponent implements OnInit {
 
   viewTeam(name: string) {
     // Need to go a call to get the team id
+    console.log(name);
     let team: Team;
     this.teamService.getTeamForTeamName(name).subscribe(result => {
       team = result;

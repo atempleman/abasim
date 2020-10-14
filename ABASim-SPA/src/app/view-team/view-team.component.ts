@@ -21,6 +21,7 @@ export class ViewTeamComponent implements OnInit {
   playerCount = 0;
   statusGrades = 1;
   statusStats = 0;
+  statusContracts = 0;
 
   constructor(private alertify: AlertifyService, private transferService: TransferService, private teamService: TeamService,
               private router: Router) { }
@@ -72,12 +73,20 @@ export class ViewTeamComponent implements OnInit {
 
   gradesClick() {
     this.statusStats = 0;
+    this.statusContracts = 0;
     this.statusGrades = 1;
   }
 
   statisticsClick() {
     this.statusGrades = 0;
+    this.statusContracts = 0;
     this.statusStats = 1;
+  }
+
+  contractsClick() {
+    this.statusGrades = 0;
+    this.statusStats = 0;
+    this.statusContracts = 1;
   }
 
   getMinutesAverage(detailedPlayer: CompletePlayer) {
