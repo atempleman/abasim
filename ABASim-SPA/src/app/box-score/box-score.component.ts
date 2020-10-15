@@ -8,6 +8,9 @@ import { GameEngineService } from '../_services/game-engine.service';
 import { BoxScore } from '../_models/boxScore';
 import { League } from '../_models/league';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Router } from '@angular/router';
+import { PlayerService } from '../_services/player.service';
+import { Player } from '@angular/core/src/render3/interfaces/player';
 
 @Component({
   selector: 'app-box-score',
@@ -55,13 +58,11 @@ export class BoxScoreComponent implements OnInit {
   home3FGM = 0;
 
   constructor(private alertify: AlertifyService, private authService: AuthService, private leagueService: LeagueService,
-              private transferService: TransferService, private engineService: GameEngineService, private spinner: NgxSpinnerService) { }
+              private transferService: TransferService, private engineService: GameEngineService, private spinner: NgxSpinnerService,
+              private router: Router, private playerService: PlayerService) { }
 
   ngOnInit() {
     this.gameId = this.transferService.getData();
-
-    console.log('ash');
-    console.log(this.gameId);
 
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
@@ -115,22 +116,17 @@ export class BoxScoreComponent implements OnInit {
     if (this.league.stateId === 8 || this.league.stateId === 9 || this.league.stateId === 10 || this.league.stateId === 11) {
       this.engineService.getBoxScoreForGameIdPlayoffs(this.gameId).subscribe(result => {
         this.boxScores = result;
-        console.log(this.boxScores);
-        console.log(this.boxScores[0].fga);
       }, error => {
         this.alertify.error('Wrror getting box scores');
       }, () => {
         this.boxScores = this.boxScores.sort((a, b) => a.minutes < b.minutes ? 1 : a.minutes > b.minutes ? -1 : 0);
         this.homeBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.homeTeamId);
         this.awayBoxScores = this.boxScores.filter(bs => bs.teamId === this.gameDetails.awayTeamId);
-
         this.calculateTeamTotals();
       });
     } else {
       this.engineService.getBoxScoreForGameId(this.gameId).subscribe(result => {
         this.boxScores = result;
-        console.log(this.boxScores);
-        console.log(this.boxScores[0].fga);
       }, error => {
         this.alertify.error('Wrror getting box scores');
       }, () => {
@@ -181,4 +177,17 @@ export class BoxScoreComponent implements OnInit {
     });
   }
 
+  viewPlayer(firstName: string, lastName: string) {
+    // Need to get player id for name
+    let playerId = 0;
+    const playerName = firstName + ' ' + lastName;
+    this.playerService.getPlayerForName(playerName).subscribe(result => {
+      playerId = result.id;
+    }, error => {
+      this.alertify.error('Error getting player name');
+    }, () => {
+      this.transferService.setData(playerId);
+      this.router.navigate(['/view-player']);
+    });
+  }
 }

@@ -34,5 +34,7 @@ namespace ABASim.api.Data
          Task<CompletePlayerDto> GetCompletePlayer(int playerId);
 
          int GetCountOfDraftPlayers();
+
+         Task<Player> GetPlayerForName(string name);
     }
 }

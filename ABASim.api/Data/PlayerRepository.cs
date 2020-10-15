@@ -840,5 +840,25 @@ namespace ABASim.api.Data
             var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == playerId);
             return player;
         }
+
+        public async Task<Player> GetPlayerForName(string name)
+        {
+            string[] components = name.Split(' ');
+            int componentCount = components.Length;
+
+            string first = "";
+            string surname = "";
+
+             if (componentCount == 2) {
+                // What if there is a 2 word last name?
+                first = components[0];
+                surname = components[1];
+
+                var p = await _context.Players.FirstOrDefaultAsync(x => x.FirstName == first && x.Surname == surname);
+                return p;
+            } else {
+                return null;
+            }
+        }
     }
 }

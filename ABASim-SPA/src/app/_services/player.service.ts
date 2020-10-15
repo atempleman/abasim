@@ -71,4 +71,8 @@ export class PlayerService {
   getCareerStats(playerId: number): Observable<CareerStats[]> {
     return this.http.get<CareerStats[]>(this.baseUrl + 'getcareerstats/' + playerId);
   }
+
+  getPlayerForName(name: string): Observable<Player> {
+    return this.http.get<Player>(this.baseUrl + 'getplayerforname/' + name);
+  }
 }
