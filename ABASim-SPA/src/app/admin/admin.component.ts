@@ -267,4 +267,15 @@ export class AdminComponent implements OnInit {
       this.modalRef.hide();
     });
   }
+
+  generateControcts() {
+    this.adminService.generateInitalContracts().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error generating contracts');
+    }, () => {
+      this.alertify.success('Contracts generated');
+      this.modalRef.hide();
+    });
+  }
 }

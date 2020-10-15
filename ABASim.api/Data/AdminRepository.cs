@@ -1398,5 +1398,298 @@ namespace ABASim.api.Data
             }
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> GenerateInitialContracts()
+        {
+            var initialDraftPicks = await _context.InitialDrafts.ToListAsync();
+            foreach (var dp in initialDraftPicks)
+            {
+                int years = 0;
+                int amount = 0;
+
+                // int yearOne = 
+
+                switch (dp.Round)
+                {
+                    case 1:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 5;
+                            amount = 25000000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 4;
+                            amount = 23750000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 3;
+                            amount = 22500000;
+                        }
+                        break;
+                    case 2:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 4;
+                            amount = 18750000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 3;
+                            amount = 16250000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 2;
+                            amount = 16250000;
+                        }
+                        break;
+                    case 3:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 3;
+                            amount = 15000000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 2;
+                            amount = 13750000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 13750000;
+                        }
+                        break;
+                    case 4:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 3;
+                            amount = 12500000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 2;
+                            amount = 11250000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 2;
+                            amount = 11250000;
+                        }
+                        break;
+                    case 5:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 3;
+                            amount = 10000000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 2;
+                            amount = 8750000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 8750000;
+                        }
+                        break;
+                    case 6:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 2;
+                            amount = 6250000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 2;
+                            amount = 6250000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 2;
+                            amount = 6250000;
+                        }
+                        break;
+                    case 7:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 1;
+                            amount = 6250000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 1;
+                            amount = 6250000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 6250000;
+                        }
+                        break;
+                    case 8:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 2;
+                            amount = 5000000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 2;
+                            amount = 5000000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 5000000;
+                        }
+                        break;
+                    case 9:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 2;
+                            amount = 3750000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 1;
+                            amount = 3750000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 3750000;
+                        }
+                        break;
+                    case 10:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 2;
+                            amount = 2500000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 2;
+                            amount = 2500000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 2500000;
+                        }
+                        break;
+                    case 11:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 1;
+                            amount = 2500000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 2;
+                            amount = 1250000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 2;
+                            amount = 1000000;
+                        }
+                        break;
+                    case 12:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 1;
+                            amount = 1250000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 1;
+                            amount = 1250000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 1250000;
+                        }
+                        break;
+                    case 13:
+                        if (dp.Pick > 0 && dp.Pick <= 10)
+                        {
+                            years = 1;
+                            amount = 1000000;
+                        }
+                        else if (dp.Pick > 10 && dp.Pick <= 20)
+                        {
+                            years = 1;
+                            amount = 1000000;
+                        }
+                        else if (dp.Pick > 20 && dp.Pick <= 30)
+                        {
+                            years = 1;
+                            amount = 1000000;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                int yearTwo = 0;
+                int twoGuarenteed = 0;
+                if (years >= 2) {
+                    yearTwo = amount;
+                    twoGuarenteed = 1;
+                }
+
+                int yearThree = 0;
+                int threeGuarenteed = 0;
+                if (years >= 3) {
+                    yearThree = amount;
+                    threeGuarenteed = 1;
+                }
+
+                int yearFour = 0;
+                int fourGuarenteed = 0;
+                if (years >= 4) {
+                    yearFour = amount;
+                    fourGuarenteed = 1;
+                }
+
+                int yearFive = 0;
+                int fiveGuarenteed = 0;
+                if (years >= 5) {
+                    yearFive = amount;
+                    fiveGuarenteed = 1;
+                }
+
+                int teamOption = 0;
+                if (years > 1) {
+                    teamOption = 1;
+                }
+
+                PlayerContract pc = new PlayerContract
+                {
+                    PlayerId = dp.PlayerId,
+                    TeamId = dp.TeamId,
+                    YearOne = amount,
+                    GuranteedOne = 1,
+                    YearTwo = yearTwo,
+                    GuranteedTwo = twoGuarenteed,
+                    YearThree = yearThree,
+                    GuranteedThree = threeGuarenteed,
+                    YearFour = yearFour,
+                    GuranteedFour = fourGuarenteed,
+                    YearFive = yearFive,
+                    GuranteedFive = fiveGuarenteed,
+                    PlayerOption = 0,
+                    TeamOption = teamOption
+                };
+
+                await _context.AddAsync(pc);
+            }
+            return await _context.SaveChangesAsync() > 1;
+        }
     }
 }

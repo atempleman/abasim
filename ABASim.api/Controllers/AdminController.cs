@@ -105,5 +105,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.RunTeamDraftPicks();
             return result;
         }
+
+        [HttpGet("generateinitialcontracts")]
+        public async Task<bool> GenerateInitialContracts()
+        {
+            var result = await _repo.GenerateInitialContracts();
+            return result;
+        }
     }
 }

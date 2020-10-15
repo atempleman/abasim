@@ -31,5 +31,7 @@ namespace ABASim.api.Data
          Task<bool> EndSeason();
 
          Task<bool> RunTeamDraftPicks();
+
+         Task<bool> GenerateInitialContracts();
     }
 }

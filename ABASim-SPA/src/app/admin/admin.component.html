@@ -142,7 +142,7 @@
 					</div>
 				</div>
 			</div>
-
+			
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
 				<div class="card-header"><i class="fa fa-step-forward"></i><span
 						class="header-card ml-3"><strong>Setup Draft Picks</strong></span></div>
@@ -150,6 +150,17 @@
 					<p class="card-text">Setup teams draft picks for the first 5 seasons. Should only ever be run once.</p>
 					<div style="text-align: right;">
 						<button type="button" class="btn btn-link text-left" (click)="openModal(setupdraftpicks, 7)">Setup picks</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-file-contract"></i><span
+						class="header-card ml-3"><strong>Initial Draft Contracts Update</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Temporary tool to generate initial draft contracts while not implmented.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(generatecontracts, 9)">Generate</button>
 					</div>
 				</div>
 			</div>
@@ -360,6 +371,22 @@
 			</div>
 			<div class="modal-footer form-group text-center">
 				<button type="submit" class="btn btn-primary">Run</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			  </div>
+		</form>
+	</ng-template> 
+
+	<ng-template #generatecontracts>
+		<div class="modal-header">
+		  <h4 class="modal-title">Generate Contracts</h4>
+		  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+		</div>
+		<form #draftlotteryForm (ngSubmit)="generateControcts()">
+			<div class="modal-body">
+		  <p>Generate Initial Draft Contracts</p>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Generate</button>
 				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
 			  </div>
 		</form>

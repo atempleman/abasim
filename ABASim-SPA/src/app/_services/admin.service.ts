@@ -60,4 +60,8 @@ export class AdminService {
   runTeamDraftPicksSetup() {
     return this.http.get<boolean>(this.baseUrl + 'runteamdraftpicks');
   }
+
+  generateInitalContracts() {
+    return this.http.get<boolean>(this.baseUrl + 'generateinitialcontracts');
+  }
 }
