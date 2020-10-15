@@ -784,6 +784,12 @@ namespace ABASim.api.Data
             return freeAgents;
         }
 
+        public async Task<PlayerContract> GetFullContractForPlayer(int playerId)
+        {
+            var contract = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+            return contract;
+        }
+
         public async Task<IEnumerable<DraftPlayerDto>> GetInitialDraftPlayerPool(int page)
         {
             List<DraftPlayerDto> draftPool = new List<DraftPlayerDto>();
