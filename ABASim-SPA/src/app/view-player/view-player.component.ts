@@ -11,6 +11,7 @@ import { League } from '../_models/league';
 import { PlayerInjury } from '../_models/playerInjury';
 import { Team } from '../_models/team';
 import { CareerStats } from '../_models/careerStats';
+import { PlayerContractQuickView } from '../_models/playerContractQuickView';
 
 @Component({
   selector: 'app-view-player',
@@ -36,6 +37,7 @@ export class ViewPlayerComponent implements OnInit {
   injurySet = 0;
 
   playersTeam: Team;
+  playerContractQuick: PlayerContractQuickView;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private transferService: TransferService,
@@ -70,6 +72,12 @@ export class ViewPlayerComponent implements OnInit {
       this.careerStats = result;
     }, error => {
       this.alertify.error('Error getting career stats');
+    });
+
+    this.playerService.getContractForPlayer(this.playerId).subscribe(result => {
+      this.playerContractQuick = result;
+    }, error => {
+      this.alertify.error('Error getting players contract');
     });
   }
 

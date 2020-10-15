@@ -36,5 +36,7 @@ namespace ABASim.api.Data
          int GetCountOfDraftPlayers();
 
          Task<Player> GetPlayerForName(string name);
+
+         Task<PlayerContractQuickViewDto> GetContractForPlayer(int playerId);
     }
 }

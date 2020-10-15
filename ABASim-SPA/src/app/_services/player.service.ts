@@ -6,6 +6,7 @@ import { Player } from '../_models/player';
 import { environment } from 'src/environments/environment';
 import { CompletePlayer } from '../_models/completePlayer';
 import { CareerStats } from '../_models/careerStats';
+import { PlayerContractQuickView } from '../_models/playerContractQuickView';
 
 @Injectable({
   providedIn: 'root'
@@ -74,5 +75,9 @@ export class PlayerService {
 
   getPlayerForName(name: string): Observable<Player> {
     return this.http.get<Player>(this.baseUrl + 'getplayerforname/' + name);
+  }
+
+  getContractForPlayer(playerId: number): Observable<PlayerContractQuickView> {
+    return this.http.get<PlayerContractQuickView>(this.baseUrl + 'getcontractforplayer/' + playerId);
   }
 }

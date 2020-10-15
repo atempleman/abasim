@@ -655,6 +655,53 @@ namespace ABASim.api.Data
             }
         }
 
+        public async Task<PlayerContractQuickViewDto> GetContractForPlayer(int playerId)
+        {
+            var playerContract = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+
+            if (playerContract != null)
+            {
+                int years = 0;
+                int total = 0;
+                if (playerContract.YearFive > 0) {
+                    years = 5;
+                    total = playerContract.YearFive + playerContract.YearFour + playerContract.YearThree + playerContract.YearTwo + playerContract.YearOne;
+                } else if (playerContract.YearFour > 0) {
+                    years = 4;
+                    total = playerContract.YearFour + playerContract.YearThree + playerContract.YearTwo + playerContract.YearOne;
+                } else if (playerContract.YearThree > 0) {
+                    years = 3;
+                    total = playerContract.YearThree + playerContract.YearTwo + playerContract.YearOne;
+                } else if (playerContract.YearTwo > 0) {
+                    years = 2;
+                    total = playerContract.YearTwo + playerContract.YearOne;
+                } else if (playerContract.YearOne > 0) {
+                    years = 1;
+                    total = playerContract.YearOne;
+                }
+
+                PlayerContractQuickViewDto contract = new PlayerContractQuickViewDto
+                {
+                    PlayerId = playerId,
+                    Years = years,
+                    CurrentYearAmount = playerContract.YearOne,
+                    TotalAmount = total
+                };
+                return contract;
+            }
+            else
+            {
+                PlayerContractQuickViewDto contract = new PlayerContractQuickViewDto
+                {
+                    PlayerId = playerId,
+                    Years = 0,
+                    CurrentYearAmount = 0,
+                    TotalAmount = 0
+                };
+                return contract;
+            }
+        }
+
         public int GetCountOfDraftPlayers()
         {
             var count = _context.PlayerTeams.Where(x => x.TeamId == 0 || x.TeamId == 31).Count();
@@ -849,14 +896,17 @@ namespace ABASim.api.Data
             string first = "";
             string surname = "";
 
-             if (componentCount == 2) {
+            if (componentCount == 2)
+            {
                 // What if there is a 2 word last name?
                 first = components[0];
                 surname = components[1];
 
                 var p = await _context.Players.FirstOrDefaultAsync(x => x.FirstName == first && x.Surname == surname);
                 return p;
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
