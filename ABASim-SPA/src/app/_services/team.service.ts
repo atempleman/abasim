@@ -14,6 +14,7 @@ import { TradeMessage } from '../_models/tradeMessage';
 import { TeamDraftPick } from '../_models/teamDraftPick';
 import { PlayerInjury } from '../_models/playerInjury';
 import { CompletePlayer } from '../_models/completePlayer';
+import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
 
 @Injectable({
   providedIn: 'root'
@@ -132,6 +133,10 @@ export class TeamService {
 
   getInjuryForPlayer(playerId: number): Observable<PlayerInjury> {
     return this.http.get<PlayerInjury>(this.baseUrl + 'getinjuryforplayer/' + playerId);
+  }
+
+  getTeamSalaryCapDetails(teamId: number): Observable<TeamSalaryCapInfo> {
+    return this.http.get<TeamSalaryCapInfo>(this.baseUrl + 'getteamsalarycapdetails/' + teamId);
   }
 
 }

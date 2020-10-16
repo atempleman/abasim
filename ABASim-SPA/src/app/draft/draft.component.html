@@ -76,6 +76,10 @@
             <button class="btn btn-danger ml-3" *ngIf="this.isAdmin == 1 && this.league?.stateId == 3" (click)="beginDraft()">Start Draft</button>
         </div>
 
+        <div class="row cards-row">
+            <p>View default salaries for each pick - </p><button (click)="openModal(viewsalaries)"><i class="fa fa-info-circle"></i></button>
+        </div>
+
         <div class="row cards-row" *ngIf="this.league?.stateId == 4">
             <h4 class="title">Current - Pick #{{ tracker?.pick }} <ng-container *ngIf="this.onClockLoaded == 2">{{ getTeamOnClock() }}</ng-container></h4>
         </div>
@@ -140,4 +144,30 @@
 			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
 		  </div>
 	</form>
+</ng-template> 
+
+<ng-template #viewsalaries>
+	<div class="modal-header">
+	  <h4 class="modal-title">Make Draft Selection - Round #{{ this.tracker?.round }} Pick #{{ this.tracker?.pick }}</h4>
+	  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<table>
+        <thead>
+            <tr>
+                <th>Round</th>
+                <th>Picks 1 - 10</th>
+                <th>Picks 11 - 20</th>
+                <th>Picks 21 - 30</th>
+            </tr>
+        </thead>
+        <tr *ngFor="let round of this.rounds; let i = index;">
+            <td>Round #{{ i + 1 }}</td>
+            <td>${{ getPickSalary(i + 1, 5) | number }}</td>
+            <td>${{ getPickSalary(i + 1, 15) | number }}</td>
+            <td>${{ getPickSalary(i + 1, 25) | number }}</td>
+        </tr>
+    </table>
+    <div class="modal-footer form-group text-center">
+        <button type="button" class="btn btn-danger" (click)="modalRef.hide()">Close</button>
+      </div>
 </ng-template> 

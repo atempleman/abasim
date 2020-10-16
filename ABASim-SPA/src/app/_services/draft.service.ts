@@ -10,6 +10,7 @@ import { DraftSelection } from '../_models/draftSelection';
 import { DraftPick } from '../_models/draftPick';
 import { environment } from 'src/environments/environment';
 import { DashboardDraftPick } from '../_models/dashboardDraftPick';
+import { InitialPickSalary } from '../_models/initialPickSalary';
 
 @Injectable({
   providedIn: 'root'
@@ -69,5 +70,9 @@ export class DraftService {
 
   getDashboardPicks(pick: number): Observable<DashboardDraftPick> {
     return this.http.get<DashboardDraftPick>(this.baseUrl + 'getdashboardcurrentpick/' + pick);
+  }
+
+  getInitialDraftSalaryDetails(): Observable<InitialPickSalary[]> {
+    return this.http.get<InitialPickSalary[]>(this.baseUrl + 'getinitialdraftsalarydetails');
   }
 }

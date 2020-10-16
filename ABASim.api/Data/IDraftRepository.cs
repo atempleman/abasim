@@ -32,5 +32,7 @@ namespace ABASim.api.Data
          Task<DashboardDraftPickDto> GetDashboardDraftPick(int pickSpot);
 
          Task<InitialDraft> GetCurrentInitialDraftPick();
+
+         Task<IEnumerable<InitialPickSalaryDto>> GetInitialDraftSalaryDetails();
     }
 }

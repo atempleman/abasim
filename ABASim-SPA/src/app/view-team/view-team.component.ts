@@ -4,6 +4,7 @@ import { CompletePlayer } from '../_models/completePlayer';
 import { ExtendedPlayer } from '../_models/extendedPlayer';
 import { PlayerInjury } from '../_models/playerInjury';
 import { Team } from '../_models/team';
+import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
 import { AlertifyService } from '../_services/alertify.service';
 import { TeamService } from '../_services/team.service';
 import { TransferService } from '../_services/transfer.service';
@@ -22,6 +23,8 @@ export class ViewTeamComponent implements OnInit {
   statusGrades = 1;
   statusStats = 0;
   statusContracts = 0;
+  teamCap: TeamSalaryCapInfo;
+  remainingCapSpace = 0;
 
   constructor(private alertify: AlertifyService, private transferService: TransferService, private teamService: TeamService,
               private router: Router) { }
@@ -36,6 +39,17 @@ export class ViewTeamComponent implements OnInit {
     }, () => {
       this.getPlayerInjuries();
       this.getRosterForTeam();
+      this.getSalaryCapDetails();
+    });
+  }
+
+  getSalaryCapDetails() {
+    this.teamService.getTeamSalaryCapDetails(this.team.id).subscribe(result => {
+      this.teamCap = result;
+    }, error => {
+      this.alertify.error('Error getting salary cap details');
+    }, () => {
+      this.remainingCapSpace = this.teamCap.salaryCapAmount - this.teamCap.currentSalaryAmount;
     });
   }
 

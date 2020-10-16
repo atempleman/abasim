@@ -16,6 +16,7 @@ import { PlayerService } from '../_services/player.service';
 import { DraftSelection } from '../_models/draftSelection';
 import { AdminService } from '../_services/admin.service';
 import { TransferService } from '../_services/transfer.service';
+import { InitialPickSalary } from '../_models/initialPickSalary';
 
 @Component({
   selector: 'app-draft',
@@ -50,6 +51,9 @@ export class DraftComponent implements OnInit {
   interval;
   pageInterval;
 
+  initialPickSalary: InitialPickSalary[] = [];
+  rounds: number[] = [];
+
   constructor(private leagueService: LeagueService, private alertify: AlertifyService, private router: Router,
               private draftService: DraftService, private teamService: TeamService, private authService: AuthService,
               private modalService: BsModalService, private playerService: PlayerService, private adminService: AdminService,
@@ -58,6 +62,8 @@ export class DraftComponent implements OnInit {
   ngOnInit() {
     this.isAdmin = +localStorage.getItem('isAdmin');
     this.teamId = +localStorage.getItem('teamId');
+
+    this.rounds = Array(13).fill(0).map((x, i) => i);
 
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
@@ -89,6 +95,12 @@ export class DraftComponent implements OnInit {
     this.pageInterval = setInterval(() => {
       this.getDraftTracker();
     }, 10000);
+
+    this.draftService.getInitialDraftSalaryDetails().subscribe(result => {
+      this.initialPickSalary = result;
+    }, error => {
+      this.alertify.error('Error getting salary details');
+    });
   }
 
   counter(i: number) {
@@ -253,5 +265,10 @@ export class DraftComponent implements OnInit {
 
   lotteryClicked() {
     this.router.navigate(['/initiallottery']);
+  }
+
+  getPickSalary(round: number, pick: number) {
+    const value = this.initialPickSalary.find(x => x.round === round && x.pick === pick);
+    return value.salary;
   }
 }

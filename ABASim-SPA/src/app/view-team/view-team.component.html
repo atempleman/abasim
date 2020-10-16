@@ -1,5 +1,8 @@
 <section class="dashboard-area">
 	<h3 class="display">{{ this.team?.teamname }} {{this.team?.mascot }}</h3>
+	<p>Current Salary - ${{ this.teamCap?.currentSalaryAmount | number }}</p>
+	<p>League Salary Cap - ${{ this.teamCap?.salaryCapAmount | number }}</p>
+	<p>Cap Space Remaining - ${{ this.remainingCapSpace | number }}</p>
 </section>
 
 

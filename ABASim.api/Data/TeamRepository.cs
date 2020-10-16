@@ -664,6 +664,22 @@ namespace ABASim.api.Data
             return teams;
         }
 
+        public async Task<TeamSalaryCapInfo> GetTeamSalaryCapDetails(int teamId)
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var capInfo = await _context.SalaryCaps.FirstOrDefaultAsync();
+            var teamCap = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == teamId);
+
+            TeamSalaryCapInfo info = new TeamSalaryCapInfo
+            {
+                SeasonId = league.Id,
+                SalaryCapAmount = capInfo.Cap,
+                TeamId = teamId,
+                CurrentSalaryAmount = teamCap.CurrentCapAmount
+            };
+            return info;
+        }
+
         public async Task<IEnumerable<TeamDraftPickDto>> GetTeamsDraftPicks(int teamId)
         {
             List<TeamDraftPickDto> draftPicks = new List<TeamDraftPickDto>();

@@ -211,5 +211,12 @@ namespace ABASim.api.Controllers
             var injury = await _repo.GetInjuryForPlayer(playerId);
             return Ok(injury);
         }
+
+        [HttpGet("getteamsalarycapdetails/{teamId}")]
+        public async Task<IActionResult> GetTeamSalaryCapDetails(int teamId)
+        {
+            var cap = await _repo.GetTeamSalaryCapDetails(teamId);
+            return Ok(cap);
+        }
     }
 }

@@ -1,4 +1,4 @@
-export interface TeamSalaryCapInfo {
+export interface SalaryCapInfo {
     seasonId: number;
     salaryCapAmount: number;
 }

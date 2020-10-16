@@ -12,6 +12,7 @@ import { WaivedPlayer } from '../_models/waivedPlayer';
 import { TransferService } from '../_services/transfer.service';
 import { PlayerInjury } from '../_models/playerInjury';
 import { CompletePlayer } from '../_models/completePlayer';
+import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
 
 @Component({
   selector: 'app-team',
@@ -29,6 +30,8 @@ export class TeamComponent implements OnInit {
   statusGrades = 1;
   statusStats = 0;
   statusContracts = 0;
+  teamCap: TeamSalaryCapInfo;
+  remainingCapSpace = 0;
 
   public modalRef: BsModalRef;
 
@@ -57,6 +60,17 @@ export class TeamComponent implements OnInit {
     }, () => {
       this.getPlayerInjuries();
       this.getRosterForTeam();
+      this.getSalaryCapDetails();
+    });
+  }
+
+  getSalaryCapDetails() {
+    this.teamService.getTeamSalaryCapDetails(this.team.id).subscribe(result => {
+      this.teamCap = result;
+    }, error => {
+      this.alertify.error('Error getting salary cap details');
+    }, () => {
+      this.remainingCapSpace = this.teamCap.salaryCapAmount - this.teamCap.currentSalaryAmount;
     });
   }
 

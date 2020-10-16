@@ -321,5 +321,40 @@ namespace ABASim.api.Data
             var cp = await _context.InitialDrafts.FirstOrDefaultAsync(x => x.Pick == tracker.Pick && x.Round == tracker.Round);
             return cp;
         }
+
+        public async Task<IEnumerable<InitialPickSalaryDto>> GetInitialDraftSalaryDetails()
+        {
+            List<InitialPickSalaryDto> details = new List<InitialPickSalaryDto>();
+            for (int i = 1; i < 14; i++) {
+                var info1 = await _context.InitialDraftContracts.playerTeamForPlayerId(x => x.Round == i && x.Pick == 5);
+                var info2 = await _context.InitialDraftContracts.playerTeamForPlayerId(x => x.Round == i && x.Pick == 15);
+                var info3 = await _context.InitialDraftContracts.playerTeamForPlayerId(x => x.Round == i && x.Pick == 25);
+
+                InitialPickSalaryDto dto1 = new InitialPickSalaryDto
+                {
+                    Round = i,
+                    Pick = 5,
+                    Salary = info1.SalaryAmount
+                };
+                details.Add(dto1);
+
+                InitialPickSalaryDto dto2 = new InitialPickSalaryDto
+                {
+                    Round = i,
+                    Pick = 15,
+                    Salary = info2.SalaryAmount
+                };
+                details.Add(dto2);
+
+                InitialPickSalaryDto dto3 = new InitialPickSalaryDto
+                {
+                    Round = i,
+                    Pick = 25,
+                    Salary = info3.SalaryAmount
+                };
+                details.Add(dto3);
+            }
+            return details;
+        }
     }
 }
