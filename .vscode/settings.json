@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "None",
-    "appService.deploySubpath": "ABASim.api\\bin\\Release\\netcoreapp3.1\\publish"
-}

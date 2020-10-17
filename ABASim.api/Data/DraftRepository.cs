@@ -156,6 +156,76 @@ namespace ABASim.api.Data
             await _context.AddAsync(teamRoser);
 
             var tracker = await _context.DraftTrackers.FirstOrDefaultAsync();
+
+            // Now need to add the InitialDraftPick Contract
+            var contractDetails = await _context.InitialDraftContracts.FirstOrDefaultAsync(x => x.Round == tracker.Round && x.Pick == tracker.Pick);
+            int yearOne = 0;
+            int yearTwo = 0;
+            int yearThree = 0;
+            int yearFour = 0;
+            int yearFive = 0;
+
+            int gOne = 0;
+            int gTwo = 0;
+            int gThree = 0;
+            int gFour = 0;
+            int gFive = 0;
+
+            if (contractDetails.Years == 1) {
+                yearOne = contractDetails.SalaryAmount;
+                gOne = 1;
+            } else if (contractDetails.Years == 2) {
+                yearOne = contractDetails.SalaryAmount;
+                gOne = 1;
+                yearTwo = contractDetails.SalaryAmount;
+                gTwo = 1;
+            } else if (contractDetails.Years == 3) {
+                yearOne = contractDetails.SalaryAmount;
+                gOne = 1;
+                yearTwo = contractDetails.SalaryAmount;
+                gTwo = 1;
+                yearThree = contractDetails.SalaryAmount;
+                gThree = 1;
+            } else if (contractDetails.Years == 4) {
+                yearOne = contractDetails.SalaryAmount;
+                gOne = 1;
+                yearTwo = contractDetails.SalaryAmount;
+                gTwo = 1;
+                yearThree = contractDetails.SalaryAmount;
+                gThree = 1;
+                yearFour = contractDetails.SalaryAmount;
+                gFour = 1;
+            } else if (contractDetails.Years == 5) {
+                yearOne = contractDetails.SalaryAmount;
+                gOne = 1;
+                yearTwo = contractDetails.SalaryAmount;
+                gTwo = 1;
+                yearThree = contractDetails.SalaryAmount;
+                gThree = 1;
+                yearFour = contractDetails.SalaryAmount;
+                gFour = 1;
+                yearFive = contractDetails.SalaryAmount;
+                gFive = 1;
+            }
+
+            PlayerContract pc = new PlayerContract
+            {
+                PlayerId = draftPick.PlayerId,
+                TeamId = draftPick.TeamId,
+                YearOne = yearOne,
+                GuranteedOne = gOne,
+                YearTwo = yearTwo,
+                GuranteedTwo = gTwo,
+                YearThree = yearThree,
+                GuranteedThree = gThree,
+                YearFour = yearFour,
+                GuranteedFour = gFour,
+                YearFive = yearFive,
+                GuranteedFive = gFive
+            };
+            await _context.AddAsync(pc);            
+
+            
             if (tracker.Pick < 30) {
                 tracker.Pick++;
             } else {
@@ -326,9 +396,9 @@ namespace ABASim.api.Data
         {
             List<InitialPickSalaryDto> details = new List<InitialPickSalaryDto>();
             for (int i = 1; i < 14; i++) {
-                var info1 = await _context.InitialDraftContracts.playerTeamForPlayerId(x => x.Round == i && x.Pick == 5);
-                var info2 = await _context.InitialDraftContracts.playerTeamForPlayerId(x => x.Round == i && x.Pick == 15);
-                var info3 = await _context.InitialDraftContracts.playerTeamForPlayerId(x => x.Round == i && x.Pick == 25);
+                var info1 = await _context.InitialDraftContracts.FirstOrDefaultAsync(x => x.Round == i && x.Pick == 5);
+                var info2 = await _context.InitialDraftContracts.FirstOrDefaultAsync(x => x.Round == i && x.Pick == 15);
+                var info3 = await _context.InitialDraftContracts.FirstOrDefaultAsync(x => x.Round == i && x.Pick == 25);
 
                 InitialPickSalaryDto dto1 = new InitialPickSalaryDto
                 {
