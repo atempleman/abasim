@@ -113,7 +113,7 @@
                   </tr>
                 </thead>
                 <tr *ngFor="let player of this.homeBoxScores">
-                  <td>{{ player.firstName }} {{ player.lastName }}</td>
+                  <button (click)="viewPlayer(player.firstName, player.lastName)">{{ player.firstName }} {{ player.lastName }}</button>
                   <td>{{ (player.minutes / 60).toFixed(0) }}:{{ player.minutes % 60 }}</td>
                   <td>{{ player.points }}</td>
                   <td>{{ player.rebounds }}</td>

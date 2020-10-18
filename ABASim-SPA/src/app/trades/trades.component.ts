@@ -12,6 +12,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { TradeMessage } from '../_models/tradeMessage';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TeamDraftPick } from '../_models/teamDraftPick';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-trades',
@@ -66,7 +67,7 @@ export class TradesComponent implements OnInit {
 
   constructor(private alertify: AlertifyService, private router: Router, private teamService: TeamService,
               private transferService: TransferService, private modalService: BsModalService,
-              private fb: FormBuilder) { }
+              private fb: FormBuilder, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     const teamId = +localStorage.getItem('teamId');
@@ -165,6 +166,7 @@ export class TradesComponent implements OnInit {
   }
 
   proposeTrade() {
+    this.spinner.show();
     if (this.proposedTradeSending.length !== 0 || this.proposedTradeReceiving.length !== 0) {
       // Now need to create an array to pass through into API
       this.proposedTradeSending.forEach(element => {
@@ -180,10 +182,12 @@ export class TradesComponent implements OnInit {
 
       }, error => {
         this.alertify.error('Error making trade offer');
+        this.spinner.hide();
       }, () => {
         this.alertify.success('Trade offer has been made');
         // Now need to update the screen back to its original state - do this with a page reload
-        // window.location.reload();
+        window.location.reload();
+        this.spinner.hide();
       });
     }
   }
@@ -239,6 +243,7 @@ export class TradesComponent implements OnInit {
   }
 
   acceptTrade(tradeId: number) {
+    this.spinner.show();
     let tradeResult = false;
     this.teamService.acceptTradeProposal(tradeId).subscribe(result => {
       tradeResult = result;
@@ -250,12 +255,14 @@ export class TradesComponent implements OnInit {
       } else {
         this.modalRef.hide();
         this.alertify.success('Trade completed!');
+        this.spinner.hide();
         this.goToTeam();
       }
     });
   }
 
   pullTrade(tradeId: number) {
+    this.spinner.show();
     let tradeResult = false;
     this.teamService.pullTradeProposal(tradeId).subscribe(result => {
       tradeResult = result;
@@ -268,6 +275,7 @@ export class TradesComponent implements OnInit {
         this.modalRef.hide();
         this.alertify.success('Trade has been cancelled!');
         window.location.reload();
+        this.spinner.hide();
       }
     });
   }
@@ -281,6 +289,7 @@ export class TradesComponent implements OnInit {
   }
 
   submitTradeMessage() {
+    this.spinner.show();
     let ism = 0;
     if (this.tradeText) {
       ism = 1;
@@ -296,10 +305,12 @@ export class TradesComponent implements OnInit {
       // rejectResult = result;
     }, error => {
       this.alertify.error('Error rejecting trade');
+      this.spinner.hide();
     }, () => {
       this.alertify.success('Trade has been rejected');
       this.modalRef.hide();
       window.location.reload();
+      this.spinner.hide();
     });
   }
 

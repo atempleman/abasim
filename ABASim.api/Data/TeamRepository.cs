@@ -804,9 +804,12 @@ namespace ABASim.api.Data
         public async Task<IEnumerable<TradeDto>> GetTradeOffers(int teamId)
         {
             List<TradeDto> tradesList = new List<TradeDto>();
+
+
             var trades = await _context.Trades.Where(x => (x.ReceivingTeam == teamId || x.TradingTeam == teamId) && (x.Status == 0 || x.Status == 2)).ToListAsync();
 
-            foreach (var trade in trades)
+            if (trades != null) {
+                foreach (var trade in trades)
             {
                 var tradingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.TradingTeam);
                 var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
@@ -833,6 +836,7 @@ namespace ABASim.api.Data
                     Status = trade.Status
                 };
                 tradesList.Add(newTrade);
+            }
             }
             return tradesList;
         }

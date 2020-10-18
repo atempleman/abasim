@@ -58,6 +58,9 @@
 
 
 <div class="box" *ngIf="this.tradesReady">
+	<ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
+		<p class="loading">Loading Trades...</p>
+	</ngx-spinner>
 	<div class="container">
 		<div *ngFor="let trade of this.tradesToDisplay">
 			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="trade?.tradingTeam == this.team.id">
@@ -164,9 +167,6 @@
 </div>
 
 <div class="box" *ngIf="this.displayTeams == 1">
-	<ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
-		<p class="loading">Loading Teams...</p>
-	</ngx-spinner>
 	<div class="row event-row">
 		<div class="col-lg-6 events" *ngIf="this.league?.day != 0">
 			<h4>{{ this.team?.teamname }} {{ this.team?.mascot }}</h4>
