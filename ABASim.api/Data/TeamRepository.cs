@@ -4,6 +4,7 @@ using ABASim.api.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using ABASim.api.Dtos;
+using System;
 
 namespace ABASim.api.Data
 {
@@ -808,35 +809,36 @@ namespace ABASim.api.Data
 
             var trades = await _context.Trades.Where(x => (x.ReceivingTeam == teamId || x.TradingTeam == teamId) && (x.Status == 0 || x.Status == 2)).ToListAsync();
 
-            if (trades != null) {
-                foreach (var trade in trades)
+            if (trades != null)
             {
-                var tradingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.TradingTeam);
-                var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
-
-                var playerName = "";
-                if (trade.PlayerId != 0)
+                foreach (var trade in trades)
                 {
-                    var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
-                    playerName = player.FirstName + " " + player.Surname;
+                    var tradingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.TradingTeam);
+                    var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
+
+                    var playerName = "";
+                    if (trade.PlayerId != 0)
+                    {
+                        var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
+                        playerName = player.FirstName + " " + player.Surname;
+                    }
+
+                    TradeDto newTrade = new TradeDto
+                    {
+                        TradingTeam = trade.TradingTeam,
+                        TradingTeamName = tradingTeam.Mascot,
+                        ReceivingTeam = trade.ReceivingTeam,
+                        ReceivingTeamName = receivingTeam.Mascot,
+                        TradeId = trade.TradeId,
+                        PlayerId = trade.PlayerId,
+                        PlayerName = playerName,
+                        Pick = trade.Pick,
+                        Year = trade.Year,
+                        OriginalTeamId = trade.OriginalTeam,
+                        Status = trade.Status
+                    };
+                    tradesList.Add(newTrade);
                 }
-
-                TradeDto newTrade = new TradeDto
-                {
-                    TradingTeam = trade.TradingTeam,
-                    TradingTeamName = tradingTeam.Mascot,
-                    ReceivingTeam = trade.ReceivingTeam,
-                    ReceivingTeamName = receivingTeam.Mascot,
-                    TradeId = trade.TradeId,
-                    PlayerId = trade.PlayerId,
-                    PlayerName = playerName,
-                    Pick = trade.Pick,
-                    Year = trade.Year,
-                    OriginalTeamId = trade.OriginalTeam,
-                    Status = trade.Status
-                };
-                tradesList.Add(newTrade);
-            }
             }
             return tradesList;
         }
@@ -933,6 +935,9 @@ namespace ABASim.api.Data
 
         public async Task<bool> SaveTradeProposal(TradeDto[] trades)
         {
+            int receivingTeam = 0;
+            string receivingTeamName = "";
+
             // Need to get the latest id for the TradeId
             // Need to check if Trades contains any records
             var tradesNullCheck = await _context.Trades.FirstOrDefaultAsync();
@@ -958,7 +963,31 @@ namespace ABASim.api.Data
                     Status = 0
                 };
                 await _context.AddAsync(t);
+
+                receivingTeam = trade.TradingTeam;
+                receivingTeamName = trade.TradingTeamName;
             }
+
+            // Now need to send an inbox message
+            DateTime date = new DateTime();
+            var dd = date.Day.ToString();   //.getDate(); 
+            var mm = date.Month.ToString();
+            var yyyy = date.Year.ToString();
+
+            InboxMessage im = new InboxMessage
+            {
+                SenderId = 0,
+                SenderName = "Admin",
+                SenderTeam = "System",
+                ReceiverId = receivingTeam,
+                ReceiverName = receivingTeamName,
+                ReceiverTeam = receivingTeamName,
+                Subject = "Trade Proposal Received",
+                Body = "You have received a new trade proposal. Please go to Teams > Trades to view",
+                MessageDate = dd + "/" + mm + "/" + yyyy,
+                IsNew = 1
+            };
+            await _context.AddAsync(im);
             return await _context.SaveChangesAsync() > 0;
         }
 
