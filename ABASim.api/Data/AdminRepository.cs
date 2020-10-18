@@ -450,9 +450,11 @@ namespace ABASim.api.Data
             foreach (var injury in newInjuries)
             {
                 int timeMissed = 0;
+                int currentlyInjured = 1;
                 if (injury.Severity == 1)
                 {
                     timeMissed = 0;
+                    currentlyInjured = 0;
                 }
                 else if (injury.Severity == 2)
                 {
@@ -460,32 +462,37 @@ namespace ABASim.api.Data
                     if (tm >= 900 && tm < 950)
                     {
                         timeMissed = 1;
+                        currentlyInjured = 1;
                     }
                     else if (tm >= 950)
                     {
                         timeMissed = 2;
+                        currentlyInjured = 1;
                     }
                 }
                 else if (injury.Severity == 3)
                 {
                     int tm = rng.Next(3, 21);
                     timeMissed = tm;
+                    currentlyInjured = 1;
                 }
                 else if (injury.Severity == 4)
                 {
                     int tm = rng.Next(21, 50);
                     timeMissed = tm;
+                    currentlyInjured = 1;
                 }
                 else if (injury.Severity == 5)
                 {
                     int tm = rng.Next(51, 180);
                     timeMissed = tm;
+                    currentlyInjured = 1;
                 }
                 injury.StartDay = day;
                 injury.TimeMissed = timeMissed;
                 int endDay = day + timeMissed;
                 injury.EndDay = endDay;
-                injury.CurrentlyInjured = 1;
+                injury.CurrentlyInjured = currentlyInjured;
                 _context.Update(injury);
             }
 

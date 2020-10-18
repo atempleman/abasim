@@ -66,5 +66,7 @@ namespace ABASim.api.Data
         Task<PlayerInjury> GetInjuryForPlayer(int playerId);
 
         Task<TeamSalaryCapInfo> GetTeamSalaryCapDetails(int teamId);
+
+        Task<IEnumerable<PlayerContractDetailedDto>> GetTeamContracts(int teamId);
     }
 }

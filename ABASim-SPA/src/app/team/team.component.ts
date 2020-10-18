@@ -13,6 +13,7 @@ import { TransferService } from '../_services/transfer.service';
 import { PlayerInjury } from '../_models/playerInjury';
 import { CompletePlayer } from '../_models/completePlayer';
 import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
+import { PlayerContractDetailed } from '../_models/playerContractDetailed';
 
 @Component({
   selector: 'app-team',
@@ -36,6 +37,7 @@ export class TeamComponent implements OnInit {
   public modalRef: BsModalRef;
 
   teamsInjuries: PlayerInjury[] = [];
+  teamContracts: PlayerContractDetailed[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private modalService: BsModalService,
@@ -61,6 +63,15 @@ export class TeamComponent implements OnInit {
       this.getPlayerInjuries();
       this.getRosterForTeam();
       this.getSalaryCapDetails();
+      this.getTeamContracts();
+    });
+  }
+
+  getTeamContracts() {
+    this.teamService.getTeamContracts(this.team.id).subscribe(result => {
+      this.teamContracts = result;
+    }, error => {
+      this.alertify.error('Error getting team contracts');
     });
   }
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CompletePlayer } from '../_models/completePlayer';
 import { ExtendedPlayer } from '../_models/extendedPlayer';
+import { PlayerContractDetailed } from '../_models/playerContractDetailed';
 import { PlayerInjury } from '../_models/playerInjury';
 import { Team } from '../_models/team';
 import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
@@ -25,6 +26,7 @@ export class ViewTeamComponent implements OnInit {
   statusContracts = 0;
   teamCap: TeamSalaryCapInfo;
   remainingCapSpace = 0;
+  teamContracts: PlayerContractDetailed[] = [];
 
   constructor(private alertify: AlertifyService, private transferService: TransferService, private teamService: TeamService,
               private router: Router) { }
@@ -40,6 +42,15 @@ export class ViewTeamComponent implements OnInit {
       this.getPlayerInjuries();
       this.getRosterForTeam();
       this.getSalaryCapDetails();
+      this.getTeamContracts();
+    });
+  }
+
+  getTeamContracts() {
+    this.teamService.getTeamContracts(this.team.id).subscribe(result => {
+      this.teamContracts = result;
+    }, error => {
+      this.alertify.error('Error getting team contracts');
     });
   }
 

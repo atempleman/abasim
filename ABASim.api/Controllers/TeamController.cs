@@ -218,5 +218,12 @@ namespace ABASim.api.Controllers
             var cap = await _repo.GetTeamSalaryCapDetails(teamId);
             return Ok(cap);
         }
+
+        [HttpGet("getteamcontracts/{teamId}")]
+        public async Task<IActionResult> GetTeamContracts(int teamId)
+        {
+            var contracts = await _repo.GetTeamContracts(teamId);
+            return Ok(contracts);
+        }
     }
 }

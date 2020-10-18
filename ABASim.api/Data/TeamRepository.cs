@@ -599,6 +599,65 @@ namespace ABASim.api.Data
             return players;
         }
 
+        public async Task<IEnumerable<PlayerContractDetailedDto>> GetTeamContracts(int teamId)
+        {
+            List<PlayerContractDetailedDto> contracts = new List<PlayerContractDetailedDto>();
+            var playerTeams = await _context.PlayerTeams.Where(x => x.TeamId == teamId).ToListAsync();
+
+            foreach (var pt in playerTeams)
+            {
+                var pc = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == pt.PlayerId);
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == pt.PlayerId);
+
+                if (pc != null)
+                {
+                    PlayerContractDetailedDto dto = new PlayerContractDetailedDto
+                    {
+                        PlayerName = player.FirstName + " " + player.Surname,
+                        PlayerId = player.Id,
+                        TeamId = teamId,
+                        YearOne = pc.YearOne,
+                        GuranteedOne = pc.GuranteedOne,
+                        YearTwo = pc.YearTwo,
+                        GuranteedTwo = pc.GuranteedTwo,
+                        YearThree = pc.YearThree,
+                        GuranteedThree = pc.GuranteedThree,
+                        YearFour = pc.YearFour,
+                        GuranteedFour = pc.GuranteedFour,
+                        YearFive = pc.YearFive,
+                        GuranteedFive = pc.GuranteedFive,
+                        TeamOption = pc.TeamOption,
+                        PlayerOption = pc.PlayerOption
+                    };
+                    contracts.Add(dto);
+                }
+                else
+                {
+                    PlayerContractDetailedDto dto = new PlayerContractDetailedDto
+                    {
+                        PlayerName = player.FirstName + " " + player.Surname,
+                        PlayerId = player.Id,
+                        TeamId = teamId,
+                        YearOne = 1000000,
+                        GuranteedOne = 1,
+                        YearTwo = 0,
+                        GuranteedTwo = 0,
+                        YearThree = 0,
+                        GuranteedThree = 0,
+                        YearFour = 0,
+                        GuranteedFour = 0,
+                        YearFive = 0,
+                        GuranteedFive = 0,
+                        TeamOption = 0,
+                        PlayerOption = 0
+                    };
+                    contracts.Add(dto);
+                }
+
+            }
+            return contracts;
+        }
+
         public async Task<Team> GetTeamForTeamId(int teamId)
         {
             var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
@@ -618,28 +677,36 @@ namespace ABASim.api.Data
 
             string teamname = "";
             string mascot = "";
-            if (componentCount == 2) {
+            if (componentCount == 2)
+            {
                 // What if there is a 2 word last name?
                 teamname = components[0];
                 mascot = components[1];
 
                 var team = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == teamname && x.Mascot == mascot);
                 return team;
-            } else if (componentCount == 3) {
+            }
+            else if (componentCount == 3)
+            {
                 teamname = components[0];
                 var team = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == teamname);
 
-                if (team == null) {
+                if (team == null)
+                {
                     // 2 name team name
                     teamname = components[0] + " " + components[1];
                     mascot = components[2];
                     var team2 = await _context.Teams.FirstOrDefaultAsync(x => x.Teamname == teamname && x.Mascot == mascot);
                     return team2;
-                } else {
+                }
+                else
+                {
                     // 2 name team name
                     return team;
                 }
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }

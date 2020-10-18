@@ -279,7 +279,7 @@ namespace ABASim.api.Controllers
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                     pi.CurrentlyInjured = 0;
                 }
@@ -452,57 +452,57 @@ namespace ABASim.api.Controllers
                 else if (injury.Severity == 2)
                 {
                     int tm = _random.Next(1, 1000);
-                    int daysMissed = 0;
-                    if (tm >= 900 && tm < 950)
-                    {
-                        daysMissed = 1;
-                    }
-                    else if (tm >= 950)
-                    {
-                        daysMissed = 2;
-                    }
+                    // int daysMissed = 0;
+                    // if (tm >= 900 && tm < 950)
+                    // {
+                    //     daysMissed = 1;
+                    // }
+                    // else if (tm >= 950)
+                    // {
+                    //     daysMissed = 2;
+                    // }
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 else if (injury.Severity == 3)
                 {
-                    int tm = _random.Next(3, 21);
-                    int daysMissed = tm;
+                    // int tm = _random.Next(3, 21);
+                    // int daysMissed = tm;
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 else if (injury.Severity == 4)
                 {
-                    int tm = _random.Next(21, 50);
-                    int daysMissed = tm;
+                    // int tm = _random.Next(21, 50);
+                    // int daysMissed = tm;
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 else if (injury.Severity == 5)
                 {
-                    int tm = _random.Next(51, 180);
-                    int daysMissed = tm;
+                    // int tm = _random.Next(51, 180);
+                    // int daysMissed = tm;
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 playerInjuries.Add(pi);
@@ -522,58 +522,58 @@ namespace ABASim.api.Controllers
                 }
                 else if (injury.Severity == 2)
                 {
-                    int tm = _random.Next(1, 1000);
-                    int daysMissed = 0;
-                    if (tm >= 900 && tm < 950)
-                    {
-                        daysMissed = 1;
-                    }
-                    else if (tm >= 950)
-                    {
-                        daysMissed = 2;
-                    }
+                    // int tm = _random.Next(1, 1000);
+                    // int daysMissed = 0;
+                    // if (tm >= 900 && tm < 950)
+                    // {
+                    //     daysMissed = 1;
+                    // }
+                    // else if (tm >= 950)
+                    // {
+                    //     daysMissed = 2;
+                    // }
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 else if (injury.Severity == 3)
                 {
-                    int tm = _random.Next(3, 21);
-                    int daysMissed = tm;
+                    // int tm = _random.Next(3, 21);
+                    // int daysMissed = tm;
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 else if (injury.Severity == 4)
                 {
-                    int tm = _random.Next(21, 50);
-                    int daysMissed = tm;
+                    // int tm = _random.Next(21, 50);
+                    // int daysMissed = tm;
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 else if (injury.Severity == 5)
                 {
-                    int tm = _random.Next(51, 180);
-                    int daysMissed = tm;
+                    // int tm = _random.Next(51, 180);
+                    // int daysMissed = tm;
 
                     pi.PlayerId = injury.PlayerId;
                     pi.Severity = injury.Severity;
                     pi.StartDay = 0;
                     pi.EndDay = 0;
-                    pi.TimeMissed = daysMissed;
+                    pi.TimeMissed = 0;
                     pi.Type = injury.InjuryTypeName;
                 }
                 playerInjuries.Add(pi);

@@ -15,6 +15,7 @@ import { TeamDraftPick } from '../_models/teamDraftPick';
 import { PlayerInjury } from '../_models/playerInjury';
 import { CompletePlayer } from '../_models/completePlayer';
 import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
+import { PlayerContractDetailed } from '../_models/playerContractDetailed';
 
 @Injectable({
   providedIn: 'root'
@@ -137,6 +138,10 @@ export class TeamService {
 
   getTeamSalaryCapDetails(teamId: number): Observable<TeamSalaryCapInfo> {
     return this.http.get<TeamSalaryCapInfo>(this.baseUrl + 'getteamsalarycapdetails/' + teamId);
+  }
+
+  getTeamContracts(teamId: number): Observable<PlayerContractDetailed[]> {
+    return this.http.get<PlayerContractDetailed[]>(this.baseUrl + 'getteamcontracts/' + teamId);
   }
 
 }

@@ -157,102 +157,146 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="tab-content ml-1" id="myTabContent">
-				<table class="table table-hover roster-table" *ngIf="this.playerCount != 0 && this.statusStats">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>G</th>
-							<th>MP</th>
-							<th>FG</th>
-							<th>FGA</th>
-							<th>FG%</th>
-							<th>3P</th>
-							<th>3PA</th>
-							<th>3P%</th>
-							<th>FT</th>
-							<th>FTA</th>
-							<th>FT%</th>
-							<th>ORB</th>
-							<th>DRB</th>
-							<th>TRB</th>
-							<th>AST</th>
-							<th>STL</th>
-							<th>BLK</th>
-							<th>TOV</th>
-							<th>PF</th>
-							<th>PTS</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="table-secondary" *ngFor="let player of this.playingRoster">
-							<td>
-								{{ this.player?.firstName }} {{ this.player?.surname }}
-							</td>
-							<td>
-								{{ this.player?.gamesStats }}
-							</td>
-							<td>
-								{{ getMinutesAverage(player) }}
-							</td>
-							<td>
-								{{ getFGAverage(player) }}
-							</td>
-							<td>
-								{{ getFGAAverage(player) }}
-							</td>
-							<td>
-								{{ getFgPercentage(player) }}
-							</td>
-							<td>
-								{{ getThreeFGAverage(player) }}
-							</td>
-							<td>
-								{{ getThreeFGAAverage(player) }}
-							</td>
-							<td>
-								{{ getThreeFgPercentage(player) }}
-							</td>
-							<td>
-								{{ getFTAverage(player) }}
-							</td>
-							<td>
-								{{ getFTAAverage(player) }}
-							</td>
-							<td>
-								{{ getFTPercentage(player) }}
-							</td>
-							<td>
-								{{ getOrebAverage(player) }}
-							</td>
-							<td>
-								{{ getDrebverage(player) }}
-							</td>
-							<td>
-								{{ getTotalRebAverage(player) }}
-							</td>
-							<td>
-								{{ getTotalAstAverage(player) }}
-							</td>
-							<td>
-								{{ getTotalStlAverage(player) }}
-							</td>
-							<td>
-								{{ getTotalBlkAverage(player) }}
-							</td>
-							<td>
-								{{ getTotalTovAverage(player) }}
-							</td>
-							<td>
-								{{ getTotalFoulsAverage(player) }}
-							</td>
-							<td>
-								{{ getTotalPointsAverage(player) }}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+			<table class="table table-hover roster-table" *ngIf="this.playerCount != 0 && this.statusStats">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>G</th>
+						<th>MP</th>
+						<th>FG</th>
+						<th>FGA</th>
+						<th>FG%</th>
+						<th>3P</th>
+						<th>3PA</th>
+						<th>3P%</th>
+						<th>FT</th>
+						<th>FTA</th>
+						<th>FT%</th>
+						<th>ORB</th>
+						<th>DRB</th>
+						<th>TRB</th>
+						<th>AST</th>
+						<th>STL</th>
+						<th>BLK</th>
+						<th>TOV</th>
+						<th>PF</th>
+						<th>PTS</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="table-secondary" *ngFor="let player of this.playingRoster">
+						<td>
+							{{ this.player?.firstName }} {{ this.player?.surname }}
+						</td>
+						<td>
+							{{ this.player?.gamesStats }}
+						</td>
+						<td>
+							{{ getMinutesAverage(player) }}
+						</td>
+						<td>
+							{{ getFGAverage(player) }}
+						</td>
+						<td>
+							{{ getFGAAverage(player) }}
+						</td>
+						<td>
+							{{ getFgPercentage(player) }}
+						</td>
+						<td>
+							{{ getThreeFGAverage(player) }}
+						</td>
+						<td>
+							{{ getThreeFGAAverage(player) }}
+						</td>
+						<td>
+							{{ getThreeFgPercentage(player) }}
+						</td>
+						<td>
+							{{ getFTAverage(player) }}
+						</td>
+						<td>
+							{{ getFTAAverage(player) }}
+						</td>
+						<td>
+							{{ getFTPercentage(player) }}
+						</td>
+						<td>
+							{{ getOrebAverage(player) }}
+						</td>
+						<td>
+							{{ getDrebverage(player) }}
+						</td>
+						<td>
+							{{ getTotalRebAverage(player) }}
+						</td>
+						<td>
+							{{ getTotalAstAverage(player) }}
+						</td>
+						<td>
+							{{ getTotalStlAverage(player) }}
+						</td>
+						<td>
+							{{ getTotalBlkAverage(player) }}
+						</td>
+						<td>
+							{{ getTotalTovAverage(player) }}
+						</td>
+						<td>
+							{{ getTotalFoulsAverage(player) }}
+						</td>
+						<td>
+							{{ getTotalPointsAverage(player) }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table table-hover roster-table" *ngIf="this.statusContracts">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Current Year</th>
+						<th>2nd Year</th>
+						<th>3rd Year</th>
+						<th>4th Year</th>
+						<th>5th Year</th>
+						<th>Option</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="table-secondary" *ngFor="let player of this.teamContracts">
+						<td>
+							{{ player?.playerName }}
+						</td>
+						<td>
+							${{ player?.yearOne | number }}
+							<p *ngIf="player?.guranteedOne == 1"> - Guarenteed</p>
+						</td>
+						<td>
+							${{ player?.yearTwo | number }}
+							<p *ngIf="player?.guranteedTwo == 1"> - Guarenteed</p>
+						</td>
+						<td>
+							${{ player?.yearThree | number }}
+							<p *ngIf="player?.guranteedThree == 1"> - Guarenteed</p>
+						</td>
+						<td>
+							${{ player?.yearFour | number }}
+							<p *ngIf="player?.guranteedFour == 1"> - Guarenteed</p>
+						</td>
+						<td>
+							${{ player?.yearFive | number }}
+							<p *ngIf="player?.guranteedFive == 1"> - Guarenteed</p>
+						</td>
+						<td>
+							<p *ngIf="player?.teamOption == 1">Team</p>
+                            <p *ngIf="player?.playerOption == 1">Player</p>
+						</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
