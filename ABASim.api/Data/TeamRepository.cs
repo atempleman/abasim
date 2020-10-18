@@ -18,6 +18,13 @@ namespace ABASim.api.Data
 
         public async Task<bool> AcceptTradeProposal(int tradeId)
         {
+            int receivingTeam = 0;
+            string receivingTeamName = "";
+            int tradingTeam = 0;
+            string tradingTeamName = "";
+            int tradeTeamSet = 0;
+            int receivingTeamSet = 0;
+
             var tradePieces = await _context.Trades.Where(x => x.TradeId == tradeId).ToListAsync();
 
             foreach (var tp in tradePieces)
@@ -25,6 +32,20 @@ namespace ABASim.api.Data
                 var playerId = tp.PlayerId;
                 var newTeamId = tp.ReceivingTeam;
                 var oldTeamId = tp.TradingTeam;
+
+                if (tradeTeamSet == 0) {
+                    tradingTeam = tp.TradingTeam;
+                    var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == tradingTeam);
+                    tradingTeamName = team.Mascot;
+                    tradeTeamSet = 1;
+                }
+
+                if (receivingTeamSet == 0) {
+                    receivingTeam = tp.ReceivingTeam;
+                    var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == receivingTeam);
+                    receivingTeamName = team.Mascot;
+                    receivingTeamSet = 1;
+                }
 
                 if (playerId != 0)
                 {
@@ -124,6 +145,42 @@ namespace ABASim.api.Data
                 tp.Status = 1;
                 _context.Update(tp);
             }
+
+            // Now need to send an inbox message
+            DateTime date = new DateTime();
+            var dd = date.Day.ToString();   //.getDate(); 
+            var mm = date.Month.ToString();
+            var yyyy = date.Year.ToString();
+
+            InboxMessage im = new InboxMessage
+            {
+                SenderId = 0,
+                SenderName = "Admin",
+                SenderTeam = "System",
+                ReceiverId = receivingTeam,
+                ReceiverName = receivingTeamName,
+                ReceiverTeam = receivingTeamName,
+                Subject = "A Trade has been accepted and processed",
+                Body = "A Trade has been accepted and processed.",
+                MessageDate = dd + "/" + mm + "/" + yyyy,
+                IsNew = 1
+            };
+            await _context.AddAsync(im);
+
+            InboxMessage im2 = new InboxMessage
+            {
+                SenderId = 0,
+                SenderName = "Admin",
+                SenderTeam = "System",
+                ReceiverId = tradingTeam,
+                ReceiverName = tradingTeamName,
+                ReceiverTeam = tradingTeamName,
+                Subject = "A Trade has been accepted and processed",
+                Body = "A Trade has been accepted and processed.",
+                MessageDate = dd + "/" + mm + "/" + yyyy,
+                IsNew = 1
+            };
+            await _context.AddAsync(im2);
 
             return await _context.SaveChangesAsync() > 0;
         }
@@ -845,22 +902,59 @@ namespace ABASim.api.Data
 
         public async Task<bool> PullTradeProposal(int tradeId)
         {
+            int receivingTeam = 0;
+            string receivingTeamName = "";
+
             var tradeRecords = await _context.Trades.Where(x => x.TradeId == tradeId).ToListAsync();
             foreach (var trade in tradeRecords)
             {
+                receivingTeam = trade.ReceivingTeam;
                 _context.Remove(trade);
             }
+
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == receivingTeam);
+            receivingTeamName = team.Mascot;
+
+            // Now need to send an inbox message
+            DateTime date = new DateTime();
+            var dd = date.Day.ToString();   //.getDate(); 
+            var mm = date.Month.ToString();
+            var yyyy = date.Year.ToString();
+
+            InboxMessage im = new InboxMessage
+            {
+                SenderId = 0,
+                SenderName = "Admin",
+                SenderTeam = "System",
+                ReceiverId = receivingTeam,
+                ReceiverName = receivingTeamName,
+                ReceiverTeam = receivingTeamName,
+                Subject = "Trade Proposal has been removed",
+                Body = "A new trade proposal has been removed by the sender.",
+                MessageDate = dd + "/" + mm + "/" + yyyy,
+                IsNew = 1
+            };
+            await _context.AddAsync(im);
+
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> RejectTradeProposal(TradeMessageDto message)
         {
+            int receivingTeam = 0;
+            string receivingTeamName = "";
+
             var tradeRecords = await _context.Trades.Where(x => x.TradeId == message.TradeId).ToListAsync();
             foreach (var tr in tradeRecords)
             {
                 tr.Status = 2;
                 _context.Update(tr);
+
+                receivingTeam = tr.ReceivingTeam;
             }
+
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == receivingTeam);
+            receivingTeamName = team.Mascot;
 
             var messageString = "";
             if (message.IsMessage == 1)
@@ -875,8 +969,28 @@ namespace ABASim.api.Data
                 IsMessage = message.IsMessage,
                 Message = messageString
             };
-
             await _context.AddAsync(tm);
+
+            // Now need to send an inbox message
+            DateTime date = new DateTime();
+            var dd = date.Day.ToString();   //.getDate(); 
+            var mm = date.Month.ToString();
+            var yyyy = date.Year.ToString();
+
+            InboxMessage im = new InboxMessage
+            {
+                SenderId = 0,
+                SenderName = "Admin",
+                SenderTeam = "System",
+                ReceiverId = receivingTeam,
+                ReceiverName = receivingTeamName,
+                ReceiverTeam = receivingTeamName,
+                Subject = "Trade Proposal Rejected",
+                Body = "A new trade proposal has been rejected.",
+                MessageDate = dd + "/" + mm + "/" + yyyy,
+                IsNew = 1
+            };
+            await _context.AddAsync(im);
 
             return await _context.SaveChangesAsync() > 0;
         }
