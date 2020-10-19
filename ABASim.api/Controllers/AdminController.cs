@@ -112,5 +112,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.GenerateInitialContracts();
             return result;
         }
+
+        [HttpGet("testautopickordering")]
+        public async Task<bool> TestAutoPickOrder()
+        {
+            var result = await _repo.GenerateAutoPickOrder();
+            return result;
+        }
     }
 }

@@ -64,4 +64,8 @@ export class AdminService {
   generateInitalContracts() {
     return this.http.get<boolean>(this.baseUrl + 'generateinitialcontracts');
   }
+
+  generateAutoPicks() {
+    return this.http.get<boolean>(this.baseUrl + 'testautopickordering');
+  }
 }

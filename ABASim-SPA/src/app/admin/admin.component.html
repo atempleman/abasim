@@ -164,6 +164,17 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-cog"></i><span
+						class="header-card ml-3"><strong>Test Auto Pick Ordering</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Temporary tool to test auto picker order.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(autopicktest, 10)">Generate</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -384,6 +395,22 @@
 		<form #draftlotteryForm (ngSubmit)="generateControcts()">
 			<div class="modal-body">
 		  <p>Generate Initial Draft Contracts</p>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary">Generate</button>
+				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			  </div>
+		</form>
+	</ng-template> 
+
+	<ng-template #autopicktest>
+		<div class="modal-header">
+		  <h4 class="modal-title">Generate Auto Pick Order</h4>
+		  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+		</div>
+		<form #draftlotteryForm (ngSubmit)="generateAutoPick()">
+			<div class="modal-body">
+		  <p>Generate Auto Pick Order</p>
 			</div>
 			<div class="modal-footer form-group text-center">
 				<button type="submit" class="btn btn-primary">Generate</button>

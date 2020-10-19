@@ -278,4 +278,15 @@ export class AdminComponent implements OnInit {
       this.modalRef.hide();
     });
   }
+
+  generateAutoPick() {
+    this.adminService.generateAutoPicks().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error generating auto picks');
+    }, () => {
+      this.alertify.success('Autopicks generated');
+      this.modalRef.hide();
+    })
+  }
 }

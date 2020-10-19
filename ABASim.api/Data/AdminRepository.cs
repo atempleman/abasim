@@ -1247,18 +1247,21 @@ namespace ABASim.api.Data
                 var playerRatings = await _context.PlayerRatings.ToListAsync();
                 foreach (var player in playerRatings)
                 {
-                    int twoRating = player.TwoRating;
-                    int threeRating = player.ThreeRating;
-                    int ftRating = player.FTRating;
+                    int twoRating = (int) player.TwoRating / 3;
+                    int threeRating = (int) player.ThreeRating / 2;
                     int orebRating = player.ORebRating;
                     int drebRating = player.DRebRating;
                     int astRating = player.AssitRating;
                     int stealRating = player.StealRating;
                     int blockRating = player.BlockRating;
-                    int orpm = player.ORPMRating;
-                    int drpm = player.DRPMRating;
+                    int orpm = (int) player.ORPMRating;
+                    int drpm = (int) player.DRPMRating;
 
-                    int totalScore = twoRating + threeRating + ftRating + orebRating + drebRating + astRating + stealRating + blockRating + orpm + drpm;
+                    decimal staminaMultiplier = player.StaminaRating / 100;
+                    int ts = twoRating + threeRating + orebRating + drebRating + astRating + stealRating + blockRating + orpm + drpm;
+
+                    int score = (int)(ts * staminaMultiplier);
+                    int totalScore = ts - score;
 
                     AutoPickOrder apo = new AutoPickOrder
                     {
