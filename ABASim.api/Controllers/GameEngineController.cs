@@ -4708,38 +4708,41 @@ namespace ABASim.api.Controllers
             for (int i = 0; i < filterDepth.Count; i++)
             {
                 DepthChart dc = filterDepth[i];
-                checkingPlayer = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                // Check if the player is on the court
-                int onCourt = CheckIfPlayerIsOnCourt(team, checkingPlayer.Id);
-                if (onCourt != 1)
+                if (dc.PlayerId != 0)
                 {
-                    int result = CheckSubEligility(checkingPlayer, team);
-                    if (result == 0)
+                    checkingPlayer = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    int onCourt = CheckIfPlayerIsOnCourt(team, checkingPlayer.Id);
+                    if (onCourt != 1)
                     {
-                        // Passed the first check, now for fatigue
-                        result = CheckPlayerFatigue(team, position, checkingPlayer.Id);
-
-                        if (result == 1)
+                        int result = CheckSubEligility(checkingPlayer, team);
+                        if (result == 0)
                         {
-                            // The player is to be subbed on
-                            SubPlayer(team, position, checkingPlayer);
+                            // Passed the first check, now for fatigue
+                            result = CheckPlayerFatigue(team, position, checkingPlayer.Id);
 
-                            playerSet = 1;
-
-                            // Add the commentary here
-                            string outPlayer = current.FirstName + " " + current.Surname;
-                            string inPlayer = checkingPlayer.FirstName + " " + checkingPlayer.Surname;
-
-                            if (team == 0)
+                            if (result == 1)
                             {
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                            }
-                            else
-                            {
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                                // The player is to be subbed on
+                                SubPlayer(team, position, checkingPlayer);
+
+                                playerSet = 1;
+
+                                // Add the commentary here
+                                string outPlayer = current.FirstName + " " + current.Surname;
+                                string inPlayer = checkingPlayer.FirstName + " " + checkingPlayer.Surname;
+
+                                if (team == 0)
+                                {
+                                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                                }
+                                else
+                                {
+                                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                                }
                             }
                         }
                     }

@@ -73,7 +73,7 @@
 <ng-template #viewmessage>
   <div class="modal-header">
     <h4 class="modal-title" *ngIf="this.messageState == 1">View Message</h4>
-    <h4 class="modal-title" *ngIf="this.messageState == 2">Reply</h4>
+    <h4 class="modal-title" *ngIf="this.messageState == 2 && this.viewedMessage.senderId != 0">Reply</h4>
     <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
   </div>
   <div class="modal-body" *ngIf="this.messageState == 1">

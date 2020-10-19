@@ -493,7 +493,6 @@ export class TradesComponent implements OnInit {
     // console.log(this.tradeDisplay);
     if (this.tradeDisplay[0].status === 2) {
       this.teamService.getTradeMessageForTradeId(this.tradeDisplay[0].tradeId).subscribe(result => {
-        console.log(result);
         this.tradeMessage = result;
       }, error => {
         this.alertify.error('Error getting trade message');
