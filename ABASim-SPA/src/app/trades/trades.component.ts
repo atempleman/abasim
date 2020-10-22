@@ -73,6 +73,7 @@ export class TradesComponent implements OnInit {
     const teamId = +localStorage.getItem('teamId');
     this.teamService.getAllTeamsExceptUsers(teamId).subscribe(result => {
       this.allOtherTeams = result;
+      this.teamSelected = this.allOtherTeams[0].id;
     }, error => {
       this.alertify.error('Error gettings teams to trade with');
     });
