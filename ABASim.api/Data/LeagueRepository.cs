@@ -1236,10 +1236,15 @@ namespace ABASim.api.Data
                     type = "Traded";
                 }
 
+                string playerName = "";
+                if (player != null) {
+                    playerName = player.FirstName + " " + player.Surname;
+                }
+
                 TransactionDto t = new TransactionDto
                 {
                     TeamMascot = team.Mascot,
-                    PlayerName = player.FirstName + " " + player.Surname,
+                    PlayerName = playerName,
                     PlayerId = tran.PlayerId,
                     TransactionType = type,
                     Day = tran.Day,

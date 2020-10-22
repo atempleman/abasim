@@ -9,8 +9,10 @@
 	<span class="badge badge-primary" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
 	<span class="badge badge-warning"
 		*ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
-  <span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
-  <span *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14"> - Day #{{ this.league?.day }}</span>
+	<span class="badge badge-secondary" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+	<span
+		*ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+		- Day #{{ this.league?.day }}</span>
 </div>
 
 
@@ -23,7 +25,8 @@
 				<div class="card-body">
 					<p class="card-text">View the league standings for league, conference or division.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToStandings()">Standings</button>
+						<button type="button" class="btn btn-link text-left"
+							(click)="goToStandings()">Standings</button>
 					</div>
 				</div>
 			</div>
@@ -34,7 +37,8 @@
 				<div class="card-body">
 					<p class="card-text">View the statistics of players and teams.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToStats()">Go to Statistics</button>
+						<button type="button" class="btn btn-link text-left" (click)="goToStats()">Go to
+							Statistics</button>
 					</div>
 				</div>
 			</div>
@@ -49,14 +53,27 @@
 					</div>
 				</div>
 			</div>
-      
-      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
 				<div class="card-header"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>TRANSACTIONS</strong></span></div>
 				<div class="card-body">
 					<p class="card-text">View all of the league's transactions - signings, trades and delistings.</p>
 					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToTransactions()">Go to Transactions</button>
+						<button type="button" class="btn btn-link text-left" (click)="goToTransactions()">Go to
+							Transactions</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-medkit fa-2x" aria-hidden="true"></i><span
+						class="header-card ml-3"><strong>INJURIES</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">View all of the league's current injuries.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="goToInjuries()">Go to
+							Injuries</button>
 					</div>
 				</div>
 			</div>
@@ -85,12 +102,18 @@
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
 						<td>
-							{{ game.awayTeamName }} @ {{ game.homeTeamName }} 
-							<button *ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 7 && this.noRun == 0" type="button" class="btn btn-link" (click)="runGameSeason(game)">Run Game</button>
-							<button *ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0" type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
-							<button *ngIf="game.completed == 1" type="button" class="btn btn-link" (click)="watchGame(game.id)">Watch</button>
+							{{ game.awayTeamName }} @ {{ game.homeTeamName }}
+							<button
+								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 7 && this.noRun == 0"
+								type="button" class="btn btn-link" (click)="runGameSeason(game)">Run Game</button>
+							<button
+								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0"
+								type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
+							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
+								(click)="watchGame(game.id)">Watch</button>
 							&nbsp;
-							<button *ngIf="game.completed == 1" type="button" class="btn btn-link" (click)="viewBoxScore(game.id)">Box Scores</button>
+							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
+								(click)="viewBoxScore(game.id)">Box Scores</button>
 						</td>
 					</tr>
 				</tbody>
@@ -110,7 +133,7 @@
 			</p>
 			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day + 1 }}</p>
 
-			
+
 
 			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
 				<tbody>

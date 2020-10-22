@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { League } from '../_models/league';
 import { LeaguePlayerInjury } from '../_models/leaguePlayerInjury';
 import { Player } from '../_models/player';
@@ -17,9 +18,10 @@ export class InjuriesComponent implements OnInit {
   league: League;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private transferService: TransferService) { }
+              private transferService: TransferService, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
+    this.spinner.show();
     this.leagueService.getLeague().subscribe(result => {
       this.league = result;
     }, error => {
@@ -30,6 +32,9 @@ export class InjuriesComponent implements OnInit {
       this.leagueInjuries = result;
     }, error => {
       this.alertify.error('Error getting league injuries');
+      this.spinner.hide();
+    }, () => {
+      this.spinner.hide();
     });
   }
 
