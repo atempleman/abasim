@@ -1,0 +1,52 @@
+<section class="dashboard-area">
+	<h3 class="display">Injuries around the league</h3>
+  </section>
+
+<div class="box">
+	<ngx-spinner [fullScreen]="true" type="ball-spin-fade" size="medium">
+		<p class="loading">Loading Injuries...</p>
+	</ngx-spinner>
+	<div class="row">
+		<div class="col">
+			<table class="table table-hover roster-table" *ngIf="this.leagueInjuries.length > 0">
+				<thead>
+					<tr>
+					  <th>Team</th>
+					  <th>Player</th>
+					  <th>Injury</th>
+            <th>Time Out</th>
+            <th>Start Day</th>
+            <th>End Day</th>
+					  <th></th>
+					</tr>
+				  </thead>
+				<tbody>
+					<tr class="table-secondary" *ngFor="let injury of this.leagueInjuries">
+						<td>
+              {{ injury.teamName }}
+						</td>
+						<td>
+							{{ injury.playerName }}
+						</td>
+						<td>
+							{{ injury.type }}
+						</td>
+						<td>
+							{{ injury.timeMissed }}
+						</td>
+						<td>
+							{{ injury.startDay }}
+            </td>
+            <td>
+							{{ injury.endDay }}
+						</td>
+						<td class="text-center">
+							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(injury)">View</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<span class="notrans" *ngIf="this.leagueInjuries.length == 0"><h4>There are no current injuries</h4></span>
+		</div>
+	</div>
+</div>

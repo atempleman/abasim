@@ -27,6 +27,7 @@ import { PlayoffSummary } from '../_models/playoffSummary';
 import { PlayoffResultsComponent } from '../playoff-results/playoff-results.component';
 import { PlayoffResult } from '../_models/playoffResult';
 import { Team } from '../_models/team';
+import { LeaguePlayerInjury } from '../_models/leaguePlayerInjury';
 
 @Injectable({
   providedIn: 'root'
@@ -212,5 +213,13 @@ export class LeagueService {
 
   getPlayoffsMinutesLeagueLeadersForPage(page: number): Observable<LeagueLeadersMinutes[]> {
     return this.http.get<LeagueLeadersMinutes[]>(this.baseUrl + 'leagueleadersminutesplayoffs/' + page);
+  }
+
+  getYesterdaysTransactins(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(this.baseUrl + 'getyesterdaystransactions');
+  }
+
+  getLeagueInjuries(): Observable<LeaguePlayerInjury[]> {
+    return this.http.get<LeaguePlayerInjury[]>(this.baseUrl + 'getleagueplayerinjuries');
   }
 }

@@ -365,5 +365,19 @@ namespace ABASim.api.Controllers
             var team = await _repo.GetChampion();
             return Ok(team);
         }
+
+        [HttpGet("getyesterdaystransactions")]
+        public async Task<IActionResult> GetYesterdaysTransactions()
+        {
+            var team = await _repo.GetYesterdaysTransactions();
+            return Ok(team);
+        }
+
+        [HttpGet("getleagueplayerinjuries")]
+        public async Task<IActionResult> GetLeaguePlayerInjuries()
+        {
+            var team = await _repo.GetLeaguePlayerInjuries();
+            return Ok(team);
+        }
     }
 }

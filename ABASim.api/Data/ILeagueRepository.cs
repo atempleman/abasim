@@ -102,5 +102,9 @@ namespace ABASim.api.Data
          Task<IEnumerable<PlayoffSummaryDto>> GetPlayoffSummariesForRound(int round);
 
          Task<Team> GetChampion();
+
+         Task<IEnumerable<TransactionDto>> GetYesterdaysTransactions();
+
+         Task<IEnumerable<LeaguePlayerInjuryDto>> GetLeaguePlayerInjuries();
     }
 }

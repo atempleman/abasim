@@ -298,6 +298,26 @@
 			</form>
 		</div>
 	</div>
+
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 6 || this.league?.stateId == 7 || this.league?.stateId == 15">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i>Yesterday's Transactions</h4>
+		<table *ngIf="this.yesterdaysTransactions?.length > 0">
+			<thead>
+				<tr>
+					<th>Team</th>
+					<th>Player</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tr *ngFor="let trans of this.yesterdaysTransactions">
+				<td>{{ trans.teamMascot }}</td>
+				<td *ngIf="trans.playerName.length > 0">{{ trans.playerName }}</td>
+				<td *ngIf="trans.playerName.length == 0">{{ trans.pickText }}</td>
+				<td></td>
+			</tr>
+		</table>
+		<p *ngIf="this.yesterdaysTransactions?.length == 0">No transactions were made.</p>
+	</div>
 </div>
 
 <!-- <carousel *ngIf="this.league.day != 0 && this.league.stateId == 7">

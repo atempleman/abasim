@@ -29,6 +29,7 @@ import { ContactService } from '../_services/contact.service';
 import { DraftTracker } from '../_models/draftTracker';
 import { DraftService } from '../_services/draft.service';
 import { DashboardDraftPick } from '../_models/dashboardDraftPick';
+import { Transaction } from '../_models/transaction';
 
 @Component({
   selector: 'app-dashboard',
@@ -61,6 +62,8 @@ export class DashboardComponent implements OnInit {
   currentPick: DashboardDraftPick;
   previousPick: DashboardDraftPick;
   nextPick: DashboardDraftPick;
+
+  yesterdaysTransactions: Transaction[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
     private authService: AuthService, private teamService: TeamService, private adminService: AdminService,
@@ -109,6 +112,7 @@ export class DashboardComponent implements OnInit {
       }
 
       this.getTodaysEvents();
+      this.getYesterdaysTransactions();
 
       if (this.league.stateId === 11 && this.league.day > 28) {
         this.leagueService.getChampion().subscribe(result => {
@@ -469,6 +473,14 @@ export class DashboardComponent implements OnInit {
     }, () => {
       this.transferService.setData(team.id);
       this.router.navigate(['/view-team']);
+    });
+  }
+
+  getYesterdaysTransactions() {
+    this.leagueService.getYesterdaysTransactins().subscribe(result => {
+      this.yesterdaysTransactions = result;
+    }, error => {
+      this.alertify.error('Error getting transactions');
     });
   }
 

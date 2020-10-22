@@ -7,6 +7,7 @@ import { League } from '../_models/league';
 import { Transaction } from '../_models/transaction';
 import { Player } from '@angular/core/src/render3/interfaces/player';
 import { TransferService } from '../_services/transfer.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-transactions',
@@ -18,14 +19,17 @@ export class TransactionsComponent implements OnInit {
   transCount = 0;
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
-              private authService: AuthService, private transferService: TransferService) { }
+              private authService: AuthService, private transferService: TransferService, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
+    this.spinner.show();
     this.leagueService.getTransactions().subscribe(result => {
       this.transactions = result;
       this.transCount = this.transactions.length;
     }, error => {
       this.alertify.error('Error getting league transactions');
+    }, () => {
+      this.spinner.hide();
     });
   }
 

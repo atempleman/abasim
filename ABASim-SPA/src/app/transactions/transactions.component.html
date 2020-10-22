@@ -1,6 +1,6 @@
-<div class="jumbotron">
-	<h3 class="display">LEAGUE TRANSACTIONS</h3>
-</div>
+<section class="dashboard-area">
+	<h3 class="display">League Transactions</h3>
+  </section>
 
 <!-- <div class="box">
 	<div class="container">
@@ -55,6 +55,9 @@
 <br/> -->
 
 <div class="box">
+	<ngx-spinner [fullScreen]="true" type="ball-spin-fade" size="medium">
+		<p class="loading">Loading Transactions...</p>
+	</ngx-spinner>
 	<div class="row">
 		<div class="col">
 			<table class="table table-hover roster-table" *ngIf="this.transCount > 0">

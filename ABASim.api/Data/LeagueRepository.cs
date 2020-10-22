@@ -1210,5 +1210,70 @@ namespace ABASim.api.Data
             var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
             return team;
         }
+
+        public async Task<IEnumerable<TransactionDto>> GetYesterdaysTransactions()
+        {
+            List<TransactionDto> transactions = new List<TransactionDto>();
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            int leagueDay = league.Day - 1;
+            var trans = await _context.Transactions.Where(x => x.Day == leagueDay).ToListAsync();
+
+            foreach (var tran in trans)
+            {
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == tran.TeamId);
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == tran.PlayerId);
+                var type = "";
+                if (tran.TransactionType == 1) {
+                    type = "Signed";
+                } else if (tran.TransactionType == 2) {
+                    type = "Waived";
+                } else if (tran.TransactionType == 3) {
+                    type = "Traded";
+                }
+
+                TransactionDto t = new TransactionDto
+                {
+                    TeamMascot = team.Mascot,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    PlayerId = tran.PlayerId,
+                    TransactionType = type,
+                    Day = tran.Day,
+                    Pick = tran.Pick,
+                    PickText = tran.PickText
+                };
+                transactions.Add(t);
+            }
+            return transactions;
+        }
+
+        public async Task<IEnumerable<LeaguePlayerInjuryDto>> GetLeaguePlayerInjuries()
+        {
+            List<LeaguePlayerInjuryDto> injuries = new List<LeaguePlayerInjuryDto>();
+            // var league = await _context.Leagues.FirstOrDefaultAsync();
+
+            var playerInjuries = await _context.PlayerInjuries.Where(x => x.CurrentlyInjured == 1).OrderBy(x => x.StartDay).ToListAsync();
+
+            foreach (var injury in playerInjuries)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == injury.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == injury.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                LeaguePlayerInjuryDto dto = new LeaguePlayerInjuryDto
+                {
+                    PlayerId = injury.PlayerId,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamName = team.Teamname + " " + team.Mascot,
+                    Severity = injury.Severity,
+                    Type = injury.Type,
+                    TimeMissed = injury.TimeMissed,
+                    StartDay = injury.StartDay,
+                    EndDay = injury.EndDay
+                };
+                injuries.Add(dto);
+            }
+
+            return injuries;
+        }
     }
 }
