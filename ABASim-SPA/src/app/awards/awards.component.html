@@ -1,0 +1,81 @@
+<section class="dashboard-area">
+  <h3 class="display">Injuries around the league</h3>
+  <span class="badge badge-danger mb-3"
+    *ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+  <span class="badge badge-info mb-3"
+    *ngIf="this.league?.stateId == 2 || this.league?.stateId == 6">{{ this.league?.state }}</span>
+  <span class="badge badge-success mb-3"
+    *ngIf="this.league?.stateId == 3 || this.league?.stateId == 4 || this.league?.stateId == 5 || this.league?.stateId == 11 || this.league?.stateId == 13 || this.league?.stateId == 14">{{ this.league?.state }}</span>
+  <span class="badge badge-primary mb-3" *ngIf="this.league?.stateId == 7">{{ this.league?.state }}</span>
+  <span class="badge badge-warning mb-3"
+    *ngIf="this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 15">{{ this.league?.state }}</span>
+  <span class="badge badge-secondary mb-3" *ngIf="this.league?.stateId == 10">{{ this.league?.state }}</span>
+  <span
+    *ngIf="this.league?.stateId >= 6 && this.league?.stateId != 12 && this.league?.stateId != 13 && this.league?.stateId != 14">
+    - Day #{{ this.league?.day }}</span>
+</section>
+
+<div class="box">
+  <ngx-spinner [fullScreen]="true" type="ball-spin-fade" size="medium">
+    <p class="loading">Loading Awards...</p>
+  </ngx-spinner>
+  <div class="row">
+    <div class="card" style="background-color:rgb(22, 24, 100);" *ngIf="this.league?.stateId >= 7">
+      <h4><i class="fa fa-trophy" aria-hidden="true"></i> MVP Ranking</h4>
+      <table>
+				<thead>
+					<tr>
+						<th>Rank</th>
+						<th>Player</th>
+						<th>Team</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tr *ngFor="let player of this.mvpList; let i = index">
+					<td>{{ i + 1 }}</td>
+					<td>{{ player.playerName }}</td>
+					<td>{{ player.teamName }}</td>
+					<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
+				</tr>
+			</table>
+    </div>
+    <div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId >= 7">
+      <h4><i class="fa fa-trophy" aria-hidden="true"></i> 6th Man Rankings</h4>
+      <table>
+				<thead>
+					<tr>
+						<th>Rank</th>
+						<th>Player</th>
+						<th>Team</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tr *ngFor="let player of this.sixthList; let i = index">
+					<td>{{ i + 1 }}</td>
+					<td>{{ player.playerName }}</td>
+					<td>{{ player.teamName }}</td>
+					<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
+				</tr>
+			</table>
+    </div>
+    <div class="card" style="background-color:rgb(22, 24, 100);" *ngIf="this.league?.stateId >= 7">
+      <h4><i class="fa fa-trophy" aria-hidden="true"></i> DPOY Rankings</h4>
+      <table>
+				<thead>
+					<tr>
+						<th>Rank</th>
+						<th>Player</th>
+						<th>Team</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tr *ngFor="let player of this.dpoyList; let i = index">
+					<td>{{ i + 1 }}</td>
+					<td>{{ player.playerName }}</td>
+					<td>{{ player.teamName }}</td>
+					<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
+				</tr>
+			</table>
+    </div>
+  </div>
+</div>

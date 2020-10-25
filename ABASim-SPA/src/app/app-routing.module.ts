@@ -34,6 +34,7 @@ import { FullgamepbpComponent } from './fullgamepbp/fullgamepbp.component';
 import { InboxComponent } from './inbox/inbox.component';
 import { ViewTeamComponent } from './view-team/view-team.component';
 import { InjuriesComponent } from './injuries/injuries.component';
+import { AwardsComponent } from './awards/awards.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -66,6 +67,7 @@ const routes: Routes = [
   { path: 'initiallottery', component: InitiallotteryComponent, canActivate: [AuthGuard] },
   { path: 'view-team', component: ViewTeamComponent, canActivate: [AuthGuard] },
   { path: 'injuries', component: InjuriesComponent, canActivate: [AuthGuard] },
+  { path: 'awards', component: AwardsComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

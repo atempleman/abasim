@@ -48,13 +48,14 @@ import { InboxComponent } from './inbox/inbox.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { ViewTeamComponent } from './view-team/view-team.component';
 import { InjuriesComponent } from './injuries/injuries.component';
+import { AwardsComponent } from './awards/awards.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
 }
 
 @NgModule({
-   declarations: [	
+   declarations: [
       AppComponent,
       NavbarComponent,
       FooterComponent,
@@ -91,7 +92,8 @@ export function tokenGetter() {
       FullgamepbpComponent,
       InboxComponent,
       ViewTeamComponent,
-      InjuriesComponent
+      InjuriesComponent,
+      AwardsComponent
    ],
    imports: [
       BrowserModule,

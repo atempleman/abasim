@@ -1,0 +1,66 @@
+.dashboard-area {
+    position: relative;
+    text-align: center;
+    background: #202120;
+    overflow: hidden;
+}
+.dashboard-area h3, span {
+    padding: 10px;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+    color: #ffffff;
+}
+
+table { 
+    border-spacing: 10px;
+    /* border-collapse: separate; */
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.tablebutton {
+    margin-left:5px;
+}
+
+.notrans {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
+}
+
+.card {
+    color: white;
+    float: left;
+    width: calc(33% - 20px);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    height: auto; /*550px; /* make this dynamic */
+    text-align: center;
+ }
+ .small-card {
+    color: white;
+    float: center;
+    padding: 5x;
+    border-radius: 5px;
+    height: auto; /*550px; /* make this dynamic */
+    text-align: center;
+ }
+ .row {
+     text-align: center;
+     position: relative;
+ }
+ .card p {
+    font-size: 18px;
+ }
+ .cardContainer:after {
+    content: "";
+    display: table;
+    clear: both;
+ }
+ @media screen and (max-width: 600px) {
+    .card {
+       width: 100%;
+    }
+ }

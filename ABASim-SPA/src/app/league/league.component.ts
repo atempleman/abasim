@@ -152,4 +152,8 @@ export class LeagueComponent implements OnInit {
     this.router.navigate(['/injuries']);
   }
 
+  goToAwards() {
+    this.router.navigate(['/awards']);
+  }
+
 }

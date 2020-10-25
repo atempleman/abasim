@@ -379,5 +379,26 @@ namespace ABASim.api.Controllers
             var team = await _repo.GetLeaguePlayerInjuries();
             return Ok(team);
         }
+
+        [HttpGet("getmvptopfive")]
+        public async Task<IActionResult> GetMvpTopFive()
+        {
+            var votes = await _repo.GetMvpTopFive();
+            return Ok(votes);
+        }
+
+        [HttpGet("getsixthmantopfive")]
+        public async Task<IActionResult> GetSixthManTopFive()
+        {
+            var votes = await _repo.GetSixthManTopFive();
+            return Ok(votes);
+        }
+
+        [HttpGet("getdpoytopfive")]
+        public async Task<IActionResult> GetDpoyTopFive()
+        {
+            var votes = await _repo.GetDpoyTopFive();
+            return Ok(votes);
+        }
     }
 }

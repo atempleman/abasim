@@ -50,7 +50,7 @@ namespace ABASim.api.Data
                     Turnovers = gbs.Turnovers,
                     Fouls = gbs.Fouls,
                     PlusMinus = gbs.PlusMinus
-                }; 
+                };
                 boxScores.Add(bs);
             }
 
@@ -92,7 +92,7 @@ namespace ABASim.api.Data
                     Turnovers = gbs.Turnovers,
                     Fouls = gbs.Fouls,
                     PlusMinus = gbs.PlusMinus
-                }; 
+                };
                 boxScores.Add(bs);
             }
 
@@ -109,7 +109,8 @@ namespace ABASim.api.Data
         {
             var checkRecordsExists = await _context.GameBoxScores.FirstOrDefaultAsync();
 
-            if (checkRecordsExists != null) {
+            if (checkRecordsExists != null)
+            {
                 var gameId = await _context.GameBoxScores.MaxAsync(x => x.GameId);
                 return gameId;
             }
@@ -237,9 +238,12 @@ namespace ABASim.api.Data
             var scheduleGame = await _context.SchedulesPlayoffs.FirstOrDefaultAsync(x => x.Id == gameId);
             var series = await _context.PlayoffSerieses.FirstOrDefaultAsync(x => x.Id == scheduleGame.SeriesId);
 
-            if (series.HomeTeamId == winningTeamId) {
+            if (series.HomeTeamId == winningTeamId)
+            {
                 series.HomeWins = series.HomeWins + 1;
-            } else {
+            }
+            else
+            {
                 series.AwayWins = series.AwayWins + 1;
             }
             _context.Update(series);
@@ -248,7 +252,8 @@ namespace ABASim.api.Data
 
         public async Task<bool> SaveTeamsBoxScore(int gameId, List<BoxScore> boxScores)
         {
-            for (int i = 0; i < boxScores.Count; i++) {
+            for (int i = 0; i < boxScores.Count; i++)
+            {
                 BoxScore bs = boxScores[i];
 
                 GameBoxScore gbs = new GameBoxScore
@@ -275,7 +280,7 @@ namespace ABASim.api.Data
                     Fouls = bs.Fouls,
                     PlusMinus = bs.PlusMinus
                 };
-                
+
                 await _context.AddAsync(gbs);
             }
             return await _context.SaveChangesAsync() > 0;
@@ -283,7 +288,8 @@ namespace ABASim.api.Data
 
         public async Task<bool> SaveTeamsBoxScorePlayoffs(int gameId, List<BoxScore> boxScores)
         {
-            for (int i = 0; i < boxScores.Count; i++) {
+            for (int i = 0; i < boxScores.Count; i++)
+            {
                 BoxScore bs = boxScores[i];
 
                 PlayoffBoxScore gbs = new PlayoffBoxScore
@@ -310,7 +316,7 @@ namespace ABASim.api.Data
                     Fouls = bs.Fouls,
                     PlusMinus = bs.PlusMinus
                 };
-                
+
                 await _context.AddAsync(gbs);
             }
             return await _context.SaveChangesAsync() > 0;
@@ -348,6 +354,278 @@ namespace ABASim.api.Data
         {
             var coachSettings = await _context.CoachSettings.Where(x => x.TeamId == teamId).ToListAsync();
             return coachSettings;
+        }
+
+        public async Task<bool> MvpVotes(List<BoxScore> boxScores)
+        {
+            List<GameVotes> votes = new List<GameVotes>();
+            List<GameVotes> plusMinus = new List<GameVotes>();
+
+            foreach (var bs in boxScores)
+            {
+                int points = bs.Points * 100;
+                int rebs = bs.Rebounds * 75;
+                int asts = bs.Assists * 150;
+                int stls = bs.Steals * 200;
+                int blks = bs.Blocks * 200;
+                int to = bs.Turnovers * 100;
+
+                int score = points + rebs + asts + stls + blks - to;
+
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.FirstName == bs.FirstName && x.Surname == bs.LastName);
+                GameVotes gv = new GameVotes
+                {
+                    PlayerId = player.Id,
+                    Score = score
+                };
+                votes.Add(gv);
+
+                GameVotes gvPM = new GameVotes
+                {
+                    PlayerId = player.Id,
+                    Score = bs.PlusMinus
+                };
+                plusMinus.Add(gvPM);
+            }
+
+            // Now need to order
+            var orderedVotes = votes.OrderByDescending(x => x.Score);
+            var orderedVotesPM = plusMinus.OrderByDescending(x => x.Score);
+
+            // Now need to go through and save the records
+            int votesAwarded = 3;
+            foreach (var vote in orderedVotes)
+            {
+                if (votesAwarded > 0)
+                {
+                    var existing = await _context.MvpVoting.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+
+                    if (existing == null)
+                    {
+                        MvpVote mvp = new MvpVote
+                        {
+                            PlayerId = vote.PlayerId,
+                            Votes = votesAwarded
+                        };
+                        await _context.AddAsync(mvp);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        int totalVotes = existing.Votes + votesAwarded;
+                        existing.Votes = totalVotes;
+                        _context.Update(existing);
+                        await _context.SaveChangesAsync();
+                    }
+                    votesAwarded--;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            votesAwarded = 3;
+            foreach (var vote in orderedVotesPM)
+            {
+                if (votesAwarded > 0)
+                {
+                    var existing = await _context.MvpVoting.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+
+                    if (existing == null)
+                    {
+                        MvpVote mvp = new MvpVote
+                        {
+                            PlayerId = vote.PlayerId,
+                            Votes = votesAwarded
+                        };
+                        await _context.AddAsync(mvp);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        int totalVotes = existing.Votes + votesAwarded;
+                        existing.Votes = totalVotes;
+                        _context.Update(existing);
+                        await _context.SaveChangesAsync();
+                    }
+                    votesAwarded--;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> DpoyVotes(List<BoxScore> boxScores)
+        {
+            List<GameVotes> votes = new List<GameVotes>();
+
+            foreach (var bs in boxScores)
+            {
+                int rebs = bs.Rebounds * 25;
+                int stls = bs.Steals * 200;
+                int blks = bs.Blocks * 200;
+                int pm = (bs.PlusMinus * 50) / 2;
+
+                int score = pm + rebs + stls + blks;
+
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.FirstName == bs.FirstName && x.Surname == bs.LastName);
+                GameVotes gv = new GameVotes
+                {
+                    PlayerId = player.Id,
+                    Score = score
+                };
+                votes.Add(gv);
+            }
+
+            // Now need to order
+            var orderedVotes = votes.OrderByDescending(x => x.Score);
+
+            // Now need to go through and save the recxords
+            int votesAwarded = 3;
+            foreach (var vote in orderedVotes)
+            {
+                if (votesAwarded > 0)
+                {
+                    var existing = await _context.DpoyVoting.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+
+                    if (existing == null)
+                    {
+                        DpoyVote dpoy = new DpoyVote
+                        {
+                            PlayerId = vote.PlayerId,
+                            Votes = votesAwarded
+                        };
+                        await _context.AddAsync(dpoy);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        int totalVotes = existing.Votes + votesAwarded;
+                        existing.Votes = totalVotes;
+                        _context.Update(existing);
+                        await _context.SaveChangesAsync();
+                    }
+                    votesAwarded--;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> SixthManVotes(List<BoxScore> boxScores, List<int> homeStarters, List<int> awayStarters)
+        {
+            // NEED WAY TO KNOW WHERE WERE NOT STARTERS
+            List<GameVotes> votes = new List<GameVotes>();
+            List<GameVotes> plusMinus = new List<GameVotes>();
+
+            foreach (var bs in boxScores)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.FirstName == bs.FirstName && x.Surname == bs.LastName);
+
+                if (!homeStarters.Contains(player.Id) && !awayStarters.Contains(player.Id))
+                {
+                    int points = bs.Points * 100;
+                    int rebs = bs.Rebounds * 75;
+                    int asts = bs.Assists * 150;
+                    int stls = bs.Steals * 200;
+                    int blks = bs.Blocks * 200;
+                    int to = bs.Turnovers * 100;
+
+                    int score = points + rebs + asts + stls + blks - to;
+
+                    GameVotes gv = new GameVotes
+                    {
+                        PlayerId = player.Id,
+                        Score = score
+                    };
+                    votes.Add(gv);
+
+                    GameVotes gvPM = new GameVotes
+                    {
+                        PlayerId = player.Id,
+                        Score = bs.PlusMinus
+                    };
+                    plusMinus.Add(gvPM);
+                }
+            }
+
+            // Now need to order
+            var orderedVotes = votes.OrderByDescending(x => x.Score);
+            var orderedVotesPM = plusMinus.OrderByDescending(x => x.Score);
+
+            // Now need to go through and save the records
+            int votesAwarded = 3;
+            foreach (var vote in orderedVotes)
+            {
+                if (votesAwarded > 0)
+                {
+                    var existing = await _context.SixthManVoting.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+
+                    if (existing == null)
+                    {
+                        SixthManVote sixth = new SixthManVote
+                        {
+                            PlayerId = vote.PlayerId,
+                            Votes = votesAwarded
+                        };
+                        await _context.AddAsync(sixth);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        int totalVotes = existing.Votes + votesAwarded;
+                        existing.Votes = totalVotes;
+                        _context.Update(existing);
+                        await _context.SaveChangesAsync();
+                    }
+                    votesAwarded--;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            votesAwarded = 3;
+            foreach (var vote in orderedVotesPM)
+            {
+                if (votesAwarded > 0)
+                {
+                    var existing = await _context.SixthManVoting.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+
+                    if (existing == null)
+                    {
+                        SixthManVote sixth = new SixthManVote
+                        {
+                            PlayerId = vote.PlayerId,
+                            Votes = votesAwarded
+                        };
+                        await _context.AddAsync(sixth);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        int totalVotes = existing.Votes + votesAwarded;
+                        existing.Votes = totalVotes;
+                        _context.Update(existing);
+                        await _context.SaveChangesAsync();
+                    }
+                    votesAwarded--;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return true;
         }
     }
 }

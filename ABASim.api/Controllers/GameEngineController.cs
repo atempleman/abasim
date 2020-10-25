@@ -108,6 +108,9 @@ namespace ABASim.api.Controllers
         int homeGoToTwo;
         int homeGoToThree;
 
+        List<int> homeStarterIds = new List<int>();
+        List<int> awayStarterIds = new List<int>();
+
         public GameEngineController(IGameEngineRepository repo)
         {
             _repo = repo;
@@ -132,6 +135,16 @@ namespace ABASim.api.Controllers
             // Get player injuries
 
             SetStartingLineups();
+            awayStarterIds.Add(awayPG.Id);
+            awayStarterIds.Add(awaySG.Id);
+            awayStarterIds.Add(awaySF.Id);
+            awayStarterIds.Add(awayPF.Id);
+            awayStarterIds.Add(awayC.Id);
+            homeStarterIds.Add(homePG.Id);
+            homeStarterIds.Add(homeSG.Id);
+            homeStarterIds.Add(homeSF.Id);
+            homeStarterIds.Add(homePF.Id);
+            homeStarterIds.Add(homeC.Id);
 
             commentaryData.Add(comm.GetGameIntroCommentry(_awayTeam, _homeTeam)); // Need a way to block this out when run games for real
             commentaryData.Add(comm.GetStartingLineupsCommentary(awayPG, awaySG, awaySF, awayPF, awayC));
@@ -252,77 +265,62 @@ namespace ABASim.api.Controllers
             foreach (var injury in _homeInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.Severity == 1)
-                {
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                    pi.CurrentlyInjured = 0;
+                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0) {
+                    // Player is pre-existing injured
+                } else {
+                    if (injury.Severity == 1)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                        pi.CurrentlyInjured = 0;
+                    }
+                    else if (injury.Severity == 2)
+                    {
+                        int tm = _random.Next(1, 1000);
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                        pi.CurrentlyInjured = 0;
+                    }
+                    else if (injury.Severity == 3)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                        pi.CurrentlyInjured = 0;
+                    }
+                    else if (injury.Severity == 4)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                        pi.CurrentlyInjured = 0;
+                    }
+                    else if (injury.Severity == 5)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                        pi.CurrentlyInjured = 0;
+                    }
+                    playerInjuries.Add(pi);
                 }
-                else if (injury.Severity == 2)
-                {
-                    int tm = _random.Next(1, 1000);
-                    int daysMissed = 0;
-                    // if (tm >= 900 && tm < 950)
-                    // {
-                    //     daysMissed = 1;
-                    // }
-                    // else if (tm >= 950)
-                    // {
-                    //     daysMissed = 2;
-                    // }
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                    pi.CurrentlyInjured = 0;
-                }
-                else if (injury.Severity == 3)
-                {
-                    // int tm = _random.Next(3, 21);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                    pi.CurrentlyInjured = 0;
-                }
-                else if (injury.Severity == 4)
-                {
-                    // int tm = _random.Next(21, 50);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                    pi.CurrentlyInjured = 0;
-                }
-                else if (injury.Severity == 5)
-                {
-                    // int tm = _random.Next(51, 180);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                    pi.CurrentlyInjured = 0;
-                }
-                playerInjuries.Add(pi);
             }
 
             foreach (var injury in _awayInjuries)
@@ -440,146 +438,123 @@ namespace ABASim.api.Controllers
             foreach (var injury in _homeInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.Severity == 1)
-                {
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
+                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0) {
+                    // Player is pre-existing injured
+                } else {
+                    if (injury.Severity == 1)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 2)
+                    {
+                        int tm = _random.Next(1, 1000);
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 3)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 4)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 5)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    playerInjuries.Add(pi);
                 }
-                else if (injury.Severity == 2)
-                {
-                    int tm = _random.Next(1, 1000);
-                    // int daysMissed = 0;
-                    // if (tm >= 900 && tm < 950)
-                    // {
-                    //     daysMissed = 1;
-                    // }
-                    // else if (tm >= 950)
-                    // {
-                    //     daysMissed = 2;
-                    // }
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                else if (injury.Severity == 3)
-                {
-                    // int tm = _random.Next(3, 21);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                else if (injury.Severity == 4)
-                {
-                    // int tm = _random.Next(21, 50);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                else if (injury.Severity == 5)
-                {
-                    // int tm = _random.Next(51, 180);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                playerInjuries.Add(pi);
             }
 
             foreach (var injury in _awayInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.Severity == 1)
-                {
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
+                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0) {
+                    // Player is pre-existing injured
+                } else {
+                    if (injury.Severity == 1)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 2)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 3)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 4)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    else if (injury.Severity == 5)
+                    {
+                        pi.PlayerId = injury.PlayerId;
+                        pi.Severity = injury.Severity;
+                        pi.StartDay = 0;
+                        pi.EndDay = 0;
+                        pi.TimeMissed = 0;
+                        pi.Type = injury.InjuryTypeName;
+                    }
+                    playerInjuries.Add(pi);
                 }
-                else if (injury.Severity == 2)
-                {
-                    // int tm = _random.Next(1, 1000);
-                    // int daysMissed = 0;
-                    // if (tm >= 900 && tm < 950)
-                    // {
-                    //     daysMissed = 1;
-                    // }
-                    // else if (tm >= 950)
-                    // {
-                    //     daysMissed = 2;
-                    // }
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                else if (injury.Severity == 3)
-                {
-                    // int tm = _random.Next(3, 21);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                else if (injury.Severity == 4)
-                {
-                    // int tm = _random.Next(21, 50);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                else if (injury.Severity == 5)
-                {
-                    // int tm = _random.Next(51, 180);
-                    // int daysMissed = tm;
-
-                    pi.PlayerId = injury.PlayerId;
-                    pi.Severity = injury.Severity;
-                    pi.StartDay = 0;
-                    pi.EndDay = 0;
-                    pi.TimeMissed = 0;
-                    pi.Type = injury.InjuryTypeName;
-                }
-                playerInjuries.Add(pi);
             }
             // Need to save all records now
             await _repo.SaveInjury(playerInjuries);
+
+            // Now need to update the awards
+            List<BoxScore> fullBS = new List<BoxScore>();
+            fullBS.AddRange(_homeBoxScores);
+            fullBS.AddRange(_awayBoxScores);
+            await _repo.MvpVotes(fullBS);
+            await _repo.SixthManVotes(fullBS, homeStarterIds, awayStarterIds);
+            await _repo.DpoyVotes(fullBS);
 
             return Ok(true);
         }
@@ -663,44 +638,6 @@ namespace ABASim.api.Controllers
                 awayGoToOne = _awaySettings[0].GoToPlayerOne;
                 awayGoToTwo = _awaySettings[0].GoToPlayerTwo;
                 awayGoToThree = _awaySettings[0].GoToPlayerThree;
-            }
-
-            for (int i = 0; i < _homeRatings.Count; i++)
-            {
-                if (_homeRatings[i].PlayerId == homeGoToOne)
-                {
-                    var usageRating = _homeRatings[i].UsageRating;
-                    _homeRatings[i].UsageRating = usageRating + 30;
-                }
-                else if (_homeRatings[i].PlayerId == homeGoToTwo)
-                {
-                    var usageRating = _homeRatings[i].UsageRating;
-                    _homeRatings[i].UsageRating = usageRating + 20;
-                }
-                else if (_homeRatings[i].PlayerId == homeGoToThree)
-                {
-                    var usageRating = _homeRatings[i].UsageRating;
-                    _homeRatings[i].UsageRating = usageRating + 10;
-                }
-            }
-
-            for (int i = 0; i < _awayRatings.Count; i++)
-            {
-                if (_awayRatings[i].PlayerId == awayGoToOne)
-                {
-                    var usageRating = _awayRatings[i].UsageRating;
-                    _awayRatings[i].UsageRating = usageRating + 30;
-                }
-                else if (_awayRatings[i].PlayerId == awayGoToTwo)
-                {
-                    var usageRating = _awayRatings[i].UsageRating;
-                    _awayRatings[i].UsageRating = usageRating + 20;
-                }
-                else if (_awayRatings[i].PlayerId == awayGoToThree)
-                {
-                    var usageRating = _awayRatings[i].UsageRating;
-                    _awayRatings[i].UsageRating = usageRating + 10;
-                }
             }
             return Ok(true);
         }
@@ -1465,25 +1402,89 @@ namespace ABASim.api.Controllers
             string receiver = "";
             string passer = "";
 
+            int homePGUsageRating = 0;
+            int homeSGUsageRating = 0;
+            int homeSFUsageRating = 0;
+            int homePFUsageRating = 0;
+            int homeCUsageRating = 0;
+            int awayPGUsageRating = 0;
+            int awaySGUsageRating = 0;
+            int awaySFUsageRating = 0;
+            int awayPFUsageRating = 0;
+            int awayCUsageRating = 0;
+
+            int pgBonus = 0;
+            int sgBonus = 0;
+            int sfBonus = 0;
+            int pfBonus = 0;
+            int cBonus = 0;
+
             // Check 
             if (_teamPossession == 0)
             {
+                // Need to check the go to player bonus
+                if (homePG.Id == _homeSettings[0].GoToPlayerOne) {
+                    pgBonus = 30;
+                } else if (homePG.Id == _homeSettings[0].GoToPlayerTwo) {
+                    pgBonus = 20;
+                } else if (homePG.Id == _homeSettings[0].GoToPlayerThree) {
+                    pgBonus = 10;
+                }
+
+                if (homeSG.Id == _homeSettings[0].GoToPlayerOne) {
+                    sgBonus = 30;
+                } else if (homeSG.Id == _homeSettings[0].GoToPlayerTwo) {
+                    sgBonus = 20;
+                } else if (homeSG.Id == _homeSettings[0].GoToPlayerThree) {
+                    sgBonus = 10;
+                }
+
+                if (homeSF.Id == _homeSettings[0].GoToPlayerOne) {
+                    sfBonus = 30;
+                } else if (homeSF.Id == _homeSettings[0].GoToPlayerTwo) {
+                    sfBonus = 20;
+                } else if (homeSF.Id == _homeSettings[0].GoToPlayerThree) {
+                    sfBonus = 10;
+                }
+
+                if (homePF.Id == _homeSettings[0].GoToPlayerOne) {
+                    pfBonus = 30;
+                } else if (homePF.Id == _homeSettings[0].GoToPlayerTwo) {
+                    pfBonus = 20;
+                } else if (homePF.Id == _homeSettings[0].GoToPlayerThree) {
+                    pfBonus = 10;
+                }
+
+                if (homeC.Id == _homeSettings[0].GoToPlayerOne) {
+                    cBonus = 30;
+                } else if (homeC.Id == _homeSettings[0].GoToPlayerTwo) {
+                    cBonus = 20;
+                } else if (homeC.Id == _homeSettings[0].GoToPlayerThree) {
+                    cBonus = 10;
+                }
+
+                homePGUsageRating = homePGRatings.UsageRating + pgBonus;
+                homeSGUsageRating = homeSGRatings.UsageRating + sgBonus;
+                homeSFUsageRating = homeSFRatings.UsageRating + sfBonus;
+                homePFUsageRating = homePFRatings.UsageRating + pfBonus;
+                homeCUsageRating = homeCRatings.UsageRating + cBonus;
+
                 switch (_playerPossession)
                 {
                     case 1:
-                        totalUsage = homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating;
+                        totalUsage = homeSGUsageRating + homeSFUsageRating + homePFUsageRating + homeCUsageRating;
                         break;
                     case 2:
-                        totalUsage = homePGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating;
+                        totalUsage = homePGUsageRating + homeSFUsageRating + homePFUsageRating + homeCUsageRating;
                         break;
                     case 3:
-                        totalUsage = homeSGRatings.UsageRating + homePGRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating;
+                        totalUsage = homePGUsageRating + homeSGUsageRating + homePFUsageRating + homeCUsageRating;
                         break;
                     case 4:
-                        totalUsage = homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePGRatings.UsageRating + homeCRatings.UsageRating;
+                        totalUsage = homePGUsageRating + homeSGUsageRating + homeSFUsageRating + homeCUsageRating;
                         break;
                     case 5:
-                        totalUsage = homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating + homePGRatings.UsageRating;
+                        totalUsage = homePGUsageRating+ homeSFUsageRating + homePFUsageRating + homeSGUsageRating;
                         break;
                     default:
                         break;
@@ -1517,22 +1518,69 @@ namespace ABASim.api.Controllers
             }
             else
             {
+                // Need to check the go to player bonus
+                if (awayPG.Id == _awaySettings[0].GoToPlayerOne) {
+                    pgBonus = 30;
+                } else if (awayPG.Id == _awaySettings[0].GoToPlayerTwo) {
+                    pgBonus = 20;
+                } else if (awayPG.Id == _awaySettings[0].GoToPlayerThree) {
+                    pgBonus = 10;
+                }
+
+                if (awaySG.Id == _awaySettings[0].GoToPlayerOne) {
+                    sgBonus = 30;
+                } else if (awaySG.Id == _awaySettings[0].GoToPlayerTwo) {
+                    sgBonus = 20;
+                } else if (awaySG.Id == _awaySettings[0].GoToPlayerThree) {
+                    sgBonus = 10;
+                }
+
+                if (awaySF.Id == _awaySettings[0].GoToPlayerOne) {
+                    sfBonus = 30;
+                } else if (awaySF.Id == _awaySettings[0].GoToPlayerTwo) {
+                    sfBonus = 20;
+                } else if (awaySF.Id == _awaySettings[0].GoToPlayerThree) {
+                    sfBonus = 10;
+                }
+
+                if (awayPF.Id == _awaySettings[0].GoToPlayerOne) {
+                    pfBonus = 30;
+                } else if (awayPF.Id == _awaySettings[0].GoToPlayerTwo) {
+                    pfBonus = 20;
+                } else if (awayPF.Id == _awaySettings[0].GoToPlayerThree) {
+                    pfBonus = 10;
+                }
+
+                if (awayC.Id == _awaySettings[0].GoToPlayerOne) {
+                    cBonus = 30;
+                } else if (awayC.Id == _awaySettings[0].GoToPlayerTwo) {
+                    cBonus = 20;
+                } else if (awayC.Id == _awaySettings[0].GoToPlayerThree) {
+                    cBonus = 10;
+                }
+
+                awayPGUsageRating = awayPGRatings.UsageRating + pgBonus;
+                awaySGUsageRating = awaySGRatings.UsageRating + sgBonus;
+                awaySFUsageRating = awaySFRatings.UsageRating + sfBonus;
+                awayPFUsageRating = awayPFRatings.UsageRating + pfBonus;
+                awayCUsageRating = awayCRatings.UsageRating + cBonus;
+
                 switch (_playerPossession)
                 {
                     case 1:
-                        totalUsage = awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating;
+                        totalUsage = awaySGUsageRating + awaySFUsageRating + awayPFUsageRating + awayCUsageRating;
                         break;
                     case 2:
-                        totalUsage = awayPGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating;
+                        totalUsage = awayPGUsageRating + awaySFUsageRating + awayPFUsageRating + awayCUsageRating;
                         break;
                     case 3:
-                        totalUsage = awaySGRatings.UsageRating + awayPGRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating;
+                        totalUsage = awayPGUsageRating + awaySGUsageRating + awayPFUsageRating + awayCUsageRating;
                         break;
                     case 4:
-                        totalUsage = awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPGRatings.UsageRating + awayCRatings.UsageRating;
+                        totalUsage = awayPGUsageRating + awaySGUsageRating + awaySFUsageRating + awayCUsageRating;
                         break;
                     case 5:
-                        totalUsage = awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating + awayPGRatings.UsageRating;
+                        totalUsage = awayPGUsageRating + awaySGUsageRating + awaySFUsageRating + awayPFUsageRating;
                         break;
                     default:
                         break;
@@ -1573,26 +1621,26 @@ namespace ABASim.api.Controllers
                 switch (_playerPossession)
                 {
                     case 1:
-                        if (result < homeSGRatings.UsageRating)
+                        if (result < homeSGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             // Home SG receives the ball
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= homeSGRatings.UsageRating && result < (homeSGRatings.UsageRating + homeSFRatings.UsageRating))
+                        else if (result >= homeSGUsageRating && result < (homeSGUsageRating + homeSFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homeSGRatings.UsageRating + homeSFRatings.UsageRating) && result < (homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating))
+                        else if (result >= (homeSGUsageRating + homeSFUsageRating) && result < (homeSGUsageRating + homeSFUsageRating + homePFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating) && result < (homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating))
+                        else if (result >= (homeSGUsageRating + homeSFUsageRating + homePFUsageRating) && result < (homeSGUsageRating + homeSFUsageRating + homePFUsageRating + homeCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1600,26 +1648,26 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 2:
-                        if (result < homePGRatings.UsageRating)
+                        if (result < homePGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             // Home PG receives the ball
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= homePGRatings.UsageRating && result < (homePGRatings.UsageRating + homeSFRatings.UsageRating))
+                        else if (result >= homePGUsageRating && result < (homePGUsageRating + homeSFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSFRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSFUsageRating) && result < (homePGUsageRating + homeSFUsageRating + homePFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSFUsageRating + homePFUsageRating) && result < (homePGUsageRating + homeSFUsageRating + homePFUsageRating + homeCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1627,26 +1675,26 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 3:
-                        if (result < homePGRatings.UsageRating)
+                        if (result < homePGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             // Home PG receives the ball
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= homePGRatings.UsageRating && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating))
+                        else if (result >= homePGUsageRating && result < (homePGUsageRating + homeSGUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSGRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating + homePFRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSGUsageRating) && result < (homePGUsageRating + homeSGUsageRating + homePFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSGRatings.UsageRating + homePFRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSGUsageRating + homePFUsageRating) && result < (homePGUsageRating + homeSGUsageRating + homePFUsageRating + homeCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1654,26 +1702,26 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 4:
-                        if (result < homePGRatings.UsageRating)
+                        if (result < homePGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             // Home SG receives the ball
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= homePGRatings.UsageRating && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating))
+                        else if (result >= homePGUsageRating && result < (homePGUsageRating + homeSGUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSGRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSGUsageRating) && result < (homePGUsageRating + homeSGUsageRating + homeSFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating + homeCRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSGUsageRating + homeSFUsageRating) && result < (homePGUsageRating + homeSGUsageRating + homeSFUsageRating + homeCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1681,25 +1729,25 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 5:
-                        if (result < homePGRatings.UsageRating)
+                        if (result < homePGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= homePGRatings.UsageRating && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating))
+                        else if (result >= homePGUsageRating && result < (homePGUsageRating + homeSGUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSGRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSGUsageRating) && result < (homePGUsageRating + homeSGUsageRating + homeSFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating) && result < (homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating))
+                        else if (result >= (homePGUsageRating + homeSGUsageRating + homeSFUsageRating) && result < (homePGUsageRating + homeSGUsageRating + homeSFUsageRating + homePFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
@@ -1715,25 +1763,25 @@ namespace ABASim.api.Controllers
                 switch (_playerPossession)
                 {
                     case 1:
-                        if (result < awaySGRatings.UsageRating)
+                        if (result < awayPGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= awaySGRatings.UsageRating && result < (awaySGRatings.UsageRating + awaySFRatings.UsageRating))
+                        else if (result >= awaySGUsageRating && result < (awaySGUsageRating + awaySFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awaySGRatings.UsageRating + awaySFRatings.UsageRating) && result < (awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating))
+                        else if (result >= (awaySGUsageRating + awaySFUsageRating) && result < (awaySGUsageRating + awaySFUsageRating + awayPFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating) && result < (awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating))
+                        else if (result >= (awaySGUsageRating + awaySFUsageRating + awayPFUsageRating) && result < (awaySGUsageRating + awaySFUsageRating + awayPFUsageRating + awayCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1741,25 +1789,25 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 2:
-                        if (result < awayPGRatings.UsageRating)
+                        if (result < awayPGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= awayPGRatings.UsageRating && result < (awayPGRatings.UsageRating + awaySFRatings.UsageRating))
+                        else if (result >= awayPGUsageRating && result < (awayPGUsageRating + awaySFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySFRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySFUsageRating) & result < (awayPGUsageRating + awaySFUsageRating + awayPFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySFUsageRating + awayPFUsageRating) & result < (awayPGUsageRating + awaySFUsageRating + awayPFUsageRating + awayCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1767,25 +1815,25 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 3:
-                        if (result < awayPGRatings.UsageRating)
+                        if (result < awayPGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= awayPGRatings.UsageRating && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating))
+                        else if (result >= awayPGUsageRating && result < (awayPGUsageRating + awaySGUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySGRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awayPFRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySGUsageRating) & result < (awayPGUsageRating + awaySGUsageRating + awayPFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awayPFRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySGUsageRating + awayPFUsageRating) && result < (awayPGUsageRating + awaySGUsageRating + awayPFUsageRating + awayCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1793,25 +1841,25 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 4:
-                        if (result < awayPGRatings.UsageRating)
+                        if (result < awayPGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= awayPGRatings.UsageRating && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating))
+                        else if (result >= awayPGUsageRating && result < (awayPGUsageRating + awaySGUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySGRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySGUsageRating) && result < (awayPGUsageRating + awaySGUsageRating + awaySFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayCRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySGUsageRating + awaySFUsageRating) && result < (awayPGUsageRating + awaySGUsageRating + awaySFUsageRating + awayCUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 5;
@@ -1819,25 +1867,25 @@ namespace ABASim.api.Controllers
                         }
                         break;
                     case 5:
-                        if (result < awayPGRatings.UsageRating)
+                        if (result < awayPGUsageRating)
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 1;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= awayPGRatings.UsageRating && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating))
+                        else if (result >= awayPGUsageRating && result < (awayPGUsageRating + awaySGUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 2;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySGRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySGUsageRating) && result < (awayPGUsageRating + awaySGUsageRating + awaySFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 3;
                             receiver = GetCurrentPlayerFullName();
                         }
-                        else if (result >= (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating) && result < (awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating))
+                        else if (result >= (awayPGUsageRating + awaySGUsageRating + awaySFUsageRating) && result < (awayPGUsageRating + awaySGUsageRating + awaySFUsageRating + awayPFUsageRating))
                         {
                             passer = GetCurrentPlayerFullName();
                             _playerPossession = 4;
@@ -4556,11 +4604,6 @@ namespace ABASim.api.Controllers
                 }
             }
 
-            if (bs == null)
-            {
-                string s = "";
-            }
-
             if (bs.Fouls >= 6)
             {
                 currentFouledOut = 1;
@@ -6473,9 +6516,9 @@ namespace ABASim.api.Controllers
 
             foreach (var player in currentAwayPlayers)
             {
-                int result = _random.Next(1, 5001);
+                int result = _random.Next(1, 6001);
 
-                if (result > 4990)
+                if (result > 5990)
                 {
                     // Player has been injured and needs to be actioned accordingly
                     // Injury severity
@@ -6544,10 +6587,10 @@ namespace ABASim.api.Controllers
 
             foreach (var player in currentHomePlayers)
             {
-                int result = _random.Next(1, 5001);
+                int result = _random.Next(1, 6001);
 
 
-                if (result > 4990)
+                if (result > 5990)
                 {
                     // Player has been injured and needs to be actioned accordingly
                     // Injury severity

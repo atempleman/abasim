@@ -47,5 +47,11 @@ namespace ABASim.api.Data
          Task<PlayerInjury> GetPlayerInjury(int playerId);
 
          Task<IEnumerable<CoachSetting>> GetCoachSettings(int teamId);
+
+         Task<bool> MvpVotes(List<BoxScore> boxScores);
+
+         Task<bool> DpoyVotes(List<BoxScore> boxScores);
+
+         Task<bool> SixthManVotes(List<BoxScore> boxScores, List<int> homeStarters, List<int> awayStarters);
     }
 }

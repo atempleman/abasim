@@ -28,6 +28,7 @@ import { PlayoffResultsComponent } from '../playoff-results/playoff-results.comp
 import { PlayoffResult } from '../_models/playoffResult';
 import { Team } from '../_models/team';
 import { LeaguePlayerInjury } from '../_models/leaguePlayerInjury';
+import { Votes } from '../_models/votes';
 
 @Injectable({
   providedIn: 'root'
@@ -221,5 +222,17 @@ export class LeagueService {
 
   getLeagueInjuries(): Observable<LeaguePlayerInjury[]> {
     return this.http.get<LeaguePlayerInjury[]>(this.baseUrl + 'getleagueplayerinjuries');
+  }
+
+  getMvpTopFive(): Observable<Votes[]> {
+    return this.http.get<Votes[]>(this.baseUrl + 'getmvptopfive');
+  }
+
+  getSixthManTopFive(): Observable<Votes[]> {
+    return this.http.get<Votes[]>(this.baseUrl + 'getsixthmantopfive');
+  }
+
+  getDpoyTopFive(): Observable<Votes[]> {
+    return this.http.get<Votes[]>(this.baseUrl + 'getdpoytopfive');
   }
 }

@@ -503,13 +503,14 @@ namespace ABASim.api.Data
                 {
                     injury.CurrentlyInjured = 0;
                     injury.TimeMissed = 0;
+                    _context.Remove(injury);
                 }
                 else
                 {
                     int daysLeft = injury.TimeMissed - 1;
                     injury.TimeMissed = daysLeft;
+                    _context.Update(injury);
                 }
-                _context.Update(injury);
             }
             await _context.SaveChangesAsync();
             return true;

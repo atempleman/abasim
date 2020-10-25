@@ -1285,5 +1285,83 @@ namespace ABASim.api.Data
 
             return injuries;
         }
+
+        public async Task<IEnumerable<VotesDto>> GetMvpTopFive()
+        {
+            List<VotesDto> topFive = new List<VotesDto>();
+            var votes = await _context.MvpVoting.OrderByDescending(x => x.Votes).ToListAsync();
+            int count = 5;
+            if (votes.Count < 5) {
+                count = votes.Count;
+            }
+            for (int i = 0; i < count; i++)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == votes[i].PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == votes[i].PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                VotesDto dto = new VotesDto
+                {
+                    PlayerId = votes[i].PlayerId,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamName = team.ShortCode,
+                    Votes = votes[i].Votes
+                };
+                topFive.Add(dto);
+            }
+            return topFive;
+        }
+
+        public async Task<IEnumerable<VotesDto>> GetSixthManTopFive()
+        {
+            List<VotesDto> topFive = new List<VotesDto>();
+            var votes = await _context.SixthManVoting.OrderByDescending(x => x.Votes).ToListAsync();
+            int count = 5;
+            if (votes.Count < 5) {
+                count = votes.Count;
+            }
+            for (int i = 0; i < count; i++)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == votes[i].PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == votes[i].PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                VotesDto dto = new VotesDto
+                {
+                    PlayerId = votes[i].PlayerId,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamName = team.ShortCode,
+                    Votes = votes[i].Votes
+                };
+                topFive.Add(dto);
+            }
+            return topFive;
+        }
+
+        public async Task<IEnumerable<VotesDto>> GetDpoyTopFive()
+        {
+            List<VotesDto> topFive = new List<VotesDto>();
+            var votes = await _context.DpoyVoting.OrderByDescending(x => x.Votes).ToListAsync();
+            int count = 5;
+            if (votes.Count < 5) {
+                count = votes.Count;
+            }
+            for (int i = 0; i < count; i++)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == votes[i].PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == votes[i].PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                VotesDto dto = new VotesDto
+                {
+                    PlayerId = votes[i].PlayerId,
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    TeamName = team.ShortCode,
+                    Votes = votes[i].Votes
+                };
+                topFive.Add(dto);
+            }
+            return topFive;
+        }
     }
 }

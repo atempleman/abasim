@@ -106,5 +106,11 @@ namespace ABASim.api.Data
          Task<IEnumerable<TransactionDto>> GetYesterdaysTransactions();
 
          Task<IEnumerable<LeaguePlayerInjuryDto>> GetLeaguePlayerInjuries();
+
+         Task<IEnumerable<VotesDto>> GetMvpTopFive();
+
+         Task<IEnumerable<VotesDto>> GetSixthManTopFive();
+
+         Task<IEnumerable<VotesDto>> GetDpoyTopFive();
     }
 }

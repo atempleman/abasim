@@ -101,5 +101,11 @@ namespace ABASim.api.Data
         public DbSet<TeamSalaryCap> TeamSalaryCaps { get; set; }
 
         public DbSet<InitialDraftContract> InitialDraftContracts { get; set; }
+
+        public DbSet<MvpVote> MvpVoting { get; set; }
+
+        public DbSet<SixthManVote> SixthManVoting { get; set; }
+
+        public DbSet<DpoyVote> DpoyVoting { get; set; }
     }
 }
