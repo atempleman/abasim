@@ -110,22 +110,45 @@
 			</p>
 			<p class="text-success" *ngIf="this.league?.stateId == 15">Free Agency #{{ this.league?.day }}</p>
 
-			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
+			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 7">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.todaysGames">
 						<td>
 							{{ game.awayTeamName }} @ {{ game.homeTeamName }}
 							<button
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 7 && this.noRun == 0"
-								type="button" class="btn btn-link" (click)="runGameSeason(game)">Run Game</button>
+								type="button" class="btn btn-link" (click)="runGameSeason(game)"><i
+									class="fa fa-play-circle" aria-hidden="true"></i></button>
 							<button
 								*ngIf="this.isAdmin == 1 && game.completed == 0 && this.league?.stateId == 6 && this.noRun == 0"
-								type="button" class="btn btn-link" (click)="runGame(game)">Run Game</button>
-							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
-								(click)="watchGame(game.id)">Watch</button>
+								type="button" class="btn btn-link" (click)="runGame(game)"><i class="fa fa-play-circle"
+									aria-hidden="true"></i></button>
+							<button
+								*ngIf="this.isAdmin == 1 && game.completed == 0 && (this.league?.stateId == 8 || this.league?.stateId == 9 || this.league?.stateId == 10 || this.league?.stateId == 11) && this.noRun == 0"
+								type="button" class="btn btn-link" (click)="runGamePlayoffs(game)"><i
+									class="fa fa-play-circle" aria-hidden="true"></i></button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button"
+								class="btn btn-link" (click)="watchGame(game.id, 1)"><i class="fa fa-eye"
+									aria-hidden="true"></i></button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11"
+								type="button" class="btn btn-link" (click)="watchGame(game.id, 2)"><i class="fa fa-eye"
+									aria-hidden="true"></i></button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button"
+								class="btn btn-link" (click)="watchGame(game.id, 0)"><i class="fa fa-eye"
+									aria-hidden="true"></i></button>
+							&nbsp;
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 7" type="button"
+								class="btn btn-link" (click)="fullGame(game.id, 1)"><i class="fa fa-list-ul"
+									aria-hidden="true"></i></button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId >= 8 && this.league?.stateId <= 11"
+								type="button" class="btn btn-link" (click)="fullGame(game.id, 2)"><i class="fa fa-list-ul"
+									aria-hidden="true"></i></button>
+							<button *ngIf="game.completed == 1 && this.league?.stateId == 6" type="button"
+								class="btn btn-link" (click)="fullGame(game.id, 0)"><i class="fa fa-list-ul"
+									aria-hidden="true"></i></button>
 							&nbsp;
 							<button *ngIf="game.completed == 1" type="button" class="btn btn-link"
-								(click)="viewBoxScore(game.id)">Box Scores</button>
+								(click)="viewBoxScore(game.id)"><i class="fa fa-list-alt" aria-hidden="true"></i></button>
 						</td>
 					</tr>
 				</tbody>
@@ -147,7 +170,7 @@
 
 
 
-			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 6">
+			<table class="table table-hover events-table" *ngIf="this.league?.stateId == 7">
 				<tbody>
 					<tr class="table-secondary" *ngFor="let game of this.upcomingGames">
 						<td>{{ game.awayTeamName }} @ {{ game.homeTeamName }}</td>

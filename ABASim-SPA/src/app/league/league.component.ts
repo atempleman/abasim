@@ -156,4 +156,33 @@ export class LeagueComponent implements OnInit {
     this.router.navigate(['/awards']);
   }
 
+  fullGame(gameId: number, stateId: number) {
+    this.transferService.setData(gameId);
+    this.transferService.setState(stateId);
+    this.router.navigate(['/full-game-comm']);
+  }
+
+  runGamePlayoffs(game: GameDisplayCurrent) {
+    console.log('ashley testing here');
+    this.noRun = 1;
+    const simGame: SimGame = {
+      awayId: game.awayTeamId,
+      homeId: game.homeTeamId,
+      gameId: game.id,
+    };
+
+    console.log(simGame);
+
+    this.gameEngine.startPlayoffGame(simGame).subscribe(result => {
+    }, error => {
+      this.alertify.error(error);
+      this.noRun = 0;
+    }, () => {
+      // Need to pass feedback and re-get the days games
+      this.alertify.success('Game run successfully');
+      this.noRun = 0;
+      this.getTodaysEvents();
+    });
+  }
+
 }
