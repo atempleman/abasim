@@ -478,13 +478,13 @@ namespace ABASim.api.Data
                 }
                 else if (injury.Severity == 4)
                 {
-                    int tm = rng.Next(21, 50);
+                    int tm = rng.Next(10, 50);
                     timeMissed = tm;
                     currentlyInjured = 1;
                 }
                 else if (injury.Severity == 5)
                 {
-                    int tm = rng.Next(51, 180);
+                    int tm = rng.Next(21, 180);
                     timeMissed = tm;
                     currentlyInjured = 1;
                 }

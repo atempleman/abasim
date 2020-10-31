@@ -122,26 +122,12 @@ namespace ABASim.api.Controllers
             return Ok(coachSetting);
         }
 
-        [HttpPost("savecoachsetting")]
-        public async Task<IActionResult> SaveCoachSetting(CoachSetting setting)
-        {
-            var result = await _repo.SaveCoachingSetting(setting);
-            return Ok(result);
-        }
-
         [HttpGet("getallteamsexceptusers/{teamId}")]
         public async Task<IActionResult> GetAllTeamsExceptUsers(int teamId)
         {
             var result = await _repo.GetAllTeamsExceptUsers(teamId);
             return Ok(result);
         }
-
-        // [HttpGet("gettradesreceived/{teamId}")]
-        // public async Task<IActionResult> GetTradesReceived(int teamId)
-        // {
-        //     var trades = await _repo.GetAllReceivedTradeOffers(teamId);
-        //     return Ok(trades);
-        // }
 
         [HttpGet("gettradeoffers/{teamId}")]
         public async Task<IActionResult> GetTradeOffers(int teamId)
@@ -224,6 +210,51 @@ namespace ABASim.api.Controllers
         {
             var contracts = await _repo.GetTeamContracts(teamId);
             return Ok(contracts);
+        }
+
+        [HttpGet("getoffensivestrategies")]
+        public async Task<IActionResult> GetOffensiveStrategies()
+        {
+            var strategies = await _repo.GetOffensiveStrategies();
+            return Ok(strategies);
+        }
+
+        [HttpGet("getdefensivestrategies")]
+        public async Task<IActionResult> GetDefensiveStrategies()
+        {
+            var strategies = await _repo.GetDefensiveStrategies();
+            return Ok(strategies);
+        }
+
+        [HttpGet("getstrategyforteam/{teamId}")]
+        public async Task<IActionResult> GetStrategyForTeam(int teamId)
+        {
+            var strategy = await _repo.GetStrategyForTeam(teamId);
+            return Ok(strategy);
+        }
+
+        [HttpPost("savestrategy")]
+        public async Task<IActionResult> SaveStrategy(TeamStrategyDto strategy)
+        {
+            // int t = value;
+            var result = await _repo.SaveStrategy(strategy);
+            return Ok(result);
+            // return Ok(true);
+        }
+
+        
+        [HttpPost("savecoachsetting")]
+        public async Task<IActionResult> SaveCoachSetting(CoachSetting setting)
+        {
+            var result = await _repo.SaveCoachingSetting(setting);
+            return Ok(result);
+        }
+
+        [HttpPost("savestrategyrecord")]
+        public async Task<IActionResult> SaveStrategyRecord(StrategySaveDto setting)
+        {
+            // var result = await _repo.SaveCoachingSetting(setting);
+            return Ok(true);
         }
     }
 }

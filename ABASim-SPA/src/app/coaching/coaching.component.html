@@ -2,78 +2,45 @@
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 
 
-<div class="jumbotron">
-	<h3 class="display">COACHING SETTINGS</h3>
-</div>
-
-<!-- <div class="box">
-	<div class="container">
-		<div class="row cards-row">
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-users fa-2x"></i><span
-						class="header-card ml-3"><strong>TEAM</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the players on your team, stats, ratings, tendancies.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToTeam()">Go to Team</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-address-book fa-2x"></i><span
-						class="header-card ml-3"><strong>DEPTH CHART</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Manage your team's depth chart. Decide who plays at every position,</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToDepthCharts()">Set Depth Chart</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>TRADES</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Improve your team. Offer other teams trades.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToTrades()">Make Trades</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>FREE AGENTS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the available free agents and sign players.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToFreeAgents()">Go to Free Agents</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> -->
-
+<section class="dashboard-area">
+	<h3 class="display">Team Coaching</h3>
+</section>
 
 <div class="box content-class">
+	<div class="row ml-3 mr-2">
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="" [ngClass]="this.goToTab ? 'active' : ''" (click)="goToTabClick()">Go
+					To Players</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="" [ngClass]="this.offensiveStrategyTab ? 'active' : ''"
+					(click)="offensiveStrategyTabClick()">Offensive Strategy</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="" [ngClass]="this.defensiveStrategyTab ? 'active' : ''"
+					(click)="defensiveStrategyTabClick()">Defensive Strategy</a>
+			</li>
+		</ul>
+	</div>
+
 	<div class="row">
 		<div class="col">
-			<table class="table table-hover roster-table">
+			<table class="table table-hover roster-table" *ngIf="this.goToTab == 1">
 				<thead>
 					<tr>
-					  <th>Go To Player #1</th>
-					  <th>Go To Player #2</th>
-					  <th>Go To Player #3</th>
+						<th>Go To Player #1</th>
+						<th>Go To Player #2</th>
+						<th>Go To Player #3</th>
 					</tr>
-				  </thead>
+				</thead>
 				<tbody>
 					<tr class="table-secondary">
 						<td *ngIf="this.coachSetting?.goToPlayerOne == 0 && this.isEdit == 0">
 							No player set
 						</td>
-						<td *ngIf="this.coachSetting?.goToPlayerOne != 0 && this.isEdit == 0" [style.color]="this.injuredOne == 1 ? 'red' : ''">
+						<td *ngIf="this.coachSetting?.goToPlayerOne != 0 && this.isEdit == 0"
+							[style.color]="this.injuredOne == 1 ? 'red' : ''">
 							{{ this.getPlayerNameWithInjuredCheck(this.coachSetting?.goToPlayerOne, 1) }}
 						</td>
 						<td *ngIf="this.isEdit == 1">
@@ -87,7 +54,8 @@
 						<td *ngIf="this.coachSetting?.goToPlayerTwo == 0 && this.isEdit == 0">
 							No player set
 						</td>
-						<td *ngIf="this.coachSetting?.goToPlayerTwo != 0 && this.isEdit == 0" [style.color]="this.injuredTwo == 1 ? 'red' : ''">
+						<td *ngIf="this.coachSetting?.goToPlayerTwo != 0 && this.isEdit == 0"
+							[style.color]="this.injuredTwo == 1 ? 'red' : ''">
 							{{ this.getPlayerNameWithInjuredCheck(this.coachSetting?.goToPlayerTwo, 2) }}
 						</td>
 						<td *ngIf="this.isEdit == 1">
@@ -101,7 +69,8 @@
 						<td *ngIf="this.coachSetting?.goToPlayerThree == 0 && this.isEdit == 0">
 							No player set
 						</td>
-						<td *ngIf="this.coachSetting?.goToPlayerThree != 0 && this.isEdit == 0" [style.color]="this.injuredThree == 1 ? 'red' : ''">
+						<td *ngIf="this.coachSetting?.goToPlayerThree != 0 && this.isEdit == 0"
+							[style.color]="this.injuredThree == 1 ? 'red' : ''">
 							{{ this.getPlayerNameWithInjuredCheck(this.coachSetting?.goToPlayerThree, 3) }}
 						</td>
 						<td *ngIf="this.isEdit == 1">
@@ -115,13 +84,68 @@
 					</tr>
 				</tbody>
 			</table>
-    </div>
-  </div>
-  <div class="row edit-button" *ngIf="this.isEdit == 0">
-    <button type="button" class="btn btn-primary" (click)="editCoaching()">Edit</button>
-  </div>
-  <div class="row editing-buttons" *ngIf="this.isEdit == 1">
-	<button type="button" class="btn btn-primary" (click)="saveCoaching()">Save</button>
-	<button type="button" class="btn btn-danger ml-3" (click)="cancelCoaching()">Cancel</button>
-  </div>
+			<div class="row edit-button" *ngIf="this.isEdit == 0 && this.goToTab == 1">
+				<button type="button" class="btn btn-primary" (click)="editCoaching()">Edit</button>
+			</div>
+			<div class="row editing-buttons" *ngIf="this.isEdit == 1 && this.goToTab == 1">
+				<button type="button" class="btn btn-primary" (click)="saveCoaching()">Save</button>
+				<button type="button" class="btn btn-danger ml-3" (click)="cancelCoaching()">Cancel</button>
+			</div>
+
+			<div class="row ml-3 mr-2 mt-3" *ngIf="this.offensiveStrategyTab == 1">
+				<p *ngIf="this.isEdit == 0" class="ml-6 mr-2">Your offensive strategy - {{ this.teamStrategy?.offensiveStrategyName }}
+					<ng-container *ngIf="this.teamStrategy == null"> No Strategy Set</ng-container>
+				</p>
+				<p class="ml-10 mt-3" *ngIf="this.isEdit == 1">
+					<select [(ngModel)]="offStrategySelection">
+						<option [value]="0"></option>
+						<option *ngFor="let strategy of this.offStrategies" [value]="strategy.id">
+							{{ strategy.name }}
+						</option>
+					</select>
+				</p>
+				<div class="row edit-button" *ngIf="this.isEdit == 0">
+					<button type="button" class="btn btn-primary" (click)="editOffensiveStrategy()">Edit</button>
+				</div>
+				<div class="row editing-buttons" *ngIf="this.isEdit == 1">
+					<button type="button" class="btn btn-primary" (click)="saveStrategy()">Save</button>
+					<button type="button" class="btn btn-danger ml-3"
+						(click)="cancelOffensiveStrategy()">Cancel</button>
+				</div>
+			</div>
+			<div class="row ml-3 mr-2 mt-4" *ngIf="this.offensiveStrategyTab == 1">
+				<ul *ngFor="let strat of this.offStrategies">
+					<p class="details"><b class="text-success">{{ strat.name }}</b> - {{ strat.description }}</p>
+				</ul>
+			</div>
+
+			<div class="row ml-3 mr-2 mt-3" *ngIf="this.defensiveStrategyTab == 1">
+				<p *ngIf="this.isEdit == 0" class="ml-6 m-2">Your defensive strategy - {{ this.teamStrategy?.defensiveStrategyName }}
+					<ng-container *ngIf="this.teamStrategy == null"> No Strategy Set</ng-container>
+				</p>
+				<p class="ml-10 mt-3" *ngIf="this.isEdit == 1">
+					<select [(ngModel)]="defStrategySelection">
+						<option [value]="0"></option>
+						<option *ngFor="let strategy of this.defStrategies" [value]="strategy.id">
+							{{ strategy.name }}
+						</option>
+					</select>
+				</p>
+				<div class="row edit-button" *ngIf="this.isEdit == 0">
+					<button type="button" class="btn btn-primary" (click)="editDefensiveStrategy()">Edit</button>
+				</div>
+				<div class="row editing-buttons" *ngIf="this.isEdit == 1">
+					<button type="button" class="btn btn-primary" (click)="saveStrategy()">Save</button>
+					<button type="button" class="btn btn-danger ml-3"
+						(click)="cancelDefensiveStrategy()">Cancel</button>
+				</div>
+			</div>
+			<div class="row ml-3 mr-2 mt-4" *ngIf="this.defensiveStrategyTab == 1">
+				<ul *ngFor="let strat of this.defStrategies">
+					<p class="details"><b class="text-success">{{ strat.name }}</b> - {{ strat.description }}</p>
+				</ul>
+			</div>
+		</div>
+	</div>
+
 </div>

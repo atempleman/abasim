@@ -107,5 +107,11 @@ namespace ABASim.api.Data
         public DbSet<SixthManVote> SixthManVoting { get; set; }
 
         public DbSet<DpoyVote> DpoyVoting { get; set; }
+
+        public DbSet<TeamStrategy> TeamStrategies { get; set; }
+
+        public DbSet<OffensiveStrategy> OffensiveStrategies { get; set; }
+
+        public DbSet<DefensiveStrategy> DefensiveStrategies { get; set; }
     }
 }

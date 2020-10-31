@@ -68,5 +68,13 @@ namespace ABASim.api.Data
         Task<TeamSalaryCapInfo> GetTeamSalaryCapDetails(int teamId);
 
         Task<IEnumerable<PlayerContractDetailedDto>> GetTeamContracts(int teamId);
+
+        Task<IEnumerable<OffensiveStrategy>> GetOffensiveStrategies();
+
+        Task<IEnumerable<DefensiveStrategy>> GetDefensiveStrategies();
+
+        Task<TeamStrategyDto> GetStrategyForTeam(int teamId);
+
+        Task<bool> SaveStrategy(TeamStrategyDto strategy);
     }
 }

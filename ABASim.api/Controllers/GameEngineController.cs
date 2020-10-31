@@ -2002,7 +2002,7 @@ namespace ABASim.api.Controllers
                         assistCounterChance++;
                         possibleAssist = 1;
                         // update the result
-                        result = result - 50;
+                        result = result - 30;
                     }
                     else
                     {
@@ -2216,7 +2216,7 @@ namespace ABASim.api.Controllers
                         assistCounterChance++;
                         possibleAssist = 1;
                         // update the result
-                        result = result - 40;
+                        result = result - 20;
                     }
                     else
                     {
@@ -2412,7 +2412,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = awayRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 1, checking.BlockRating);
-                    int result = _random.Next(1, 1901);
+                    int result = _random.Next(1, 1501);
 
                     if (result <= rating)
                     {
@@ -2480,7 +2480,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = homeRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 0, checking.BlockRating);
-                    int result = _random.Next(1, 1901);
+                    int result = _random.Next(1, 1501);
 
                     if (result <= rating)
                     {
@@ -2920,7 +2920,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = awayRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 1, checking.StealRating);
-                    int result = _random.Next(1, (4001 - stealBonus)); // This is times 5 to account for all 5 players pn the court
+                    int result = _random.Next(1, (3501 - stealBonus)); // This is times 5 to account for all 5 players pn the court
 
                     if (result <= rating)
                     {
@@ -2993,7 +2993,7 @@ namespace ABASim.api.Controllers
                 {
                     PlayerRating checking = homeRatingsSorted[i];
                     int rating = StaminaEffect(checking.PlayerId, 0, checking.StealRating);
-                    int result = _random.Next(1, (4001 - stealBonus));
+                    int result = _random.Next(1, (3501 - stealBonus));
 
                     if (result <= rating)
                     {

@@ -33,14 +33,16 @@ namespace ABASim.api.Data
                 var newTeamId = tp.ReceivingTeam;
                 var oldTeamId = tp.TradingTeam;
 
-                if (tradeTeamSet == 0) {
+                if (tradeTeamSet == 0)
+                {
                     tradingTeam = tp.TradingTeam;
                     var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == tradingTeam);
                     tradingTeamName = team.Mascot;
                     tradeTeamSet = 1;
                 }
 
-                if (receivingTeamSet == 0) {
+                if (receivingTeamSet == 0)
+                {
                     receivingTeam = tp.ReceivingTeam;
                     var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == receivingTeam);
                     receivingTeamName = team.Mascot;
@@ -296,6 +298,12 @@ namespace ABASim.api.Data
             }
 
             return coachingSetting;
+        }
+
+        public async Task<IEnumerable<DefensiveStrategy>> GetDefensiveStrategies()
+        {
+            var strategies = await _context.DefensiveStrategies.ToListAsync();
+            return strategies;
         }
 
         public async Task<IEnumerable<DepthChart>> GetDepthChartForTeam(int teamId)
@@ -628,6 +636,13 @@ namespace ABASim.api.Data
             return injury;
         }
 
+        public async Task<IEnumerable<OffensiveStrategy>> GetOffensiveStrategies()
+        {
+            var strategies = await _context.OffensiveStrategies.ToListAsync();
+            return strategies;
+
+        }
+
         public async Task<IEnumerable<PlayerInjury>> GetPlayerInjuriesForTeam(int teamId)
         {
             List<PlayerInjury> playerInjuries = new List<PlayerInjury>();
@@ -655,6 +670,50 @@ namespace ABASim.api.Data
                 players.Add(player);
             }
             return players;
+        }
+
+        public async Task<TeamStrategyDto> GetStrategyForTeam(int teamId)
+        {
+            var teamStrategy = await _context.TeamStrategies.FirstOrDefaultAsync(x => x.TeamId == teamId);
+            if (teamStrategy != null)
+            {
+                var os = await _context.OffensiveStrategies.FirstOrDefaultAsync(x => x.Id == teamStrategy.OffensiveStrategyId);
+                var ds = await _context.DefensiveStrategies.FirstOrDefaultAsync(x => x.Id == teamStrategy.DefensiveStrategyId);
+
+                if (os == null) {
+                    os = new OffensiveStrategy
+                    {
+                        Id = 0,
+                        Name = "",
+                        Description = ""
+                    };
+                }
+
+                if (ds == null) {
+                    ds = new DefensiveStrategy
+                    {
+                        Id = 0,
+                        Name = "",
+                        Description = ""
+                    };
+                }
+
+                TeamStrategyDto dto = new TeamStrategyDto
+                {
+                    TeamId = teamStrategy.TeamId,
+                    OffensiveStrategyId = teamStrategy.OffensiveStrategyId,
+                    OffensiveStrategyName = os.Name,
+                    OffensiveStrategyDesc = os.Description,
+                    DefensiveStrategyId = teamStrategy.DefensiveStrategyId,
+                    DefensiveStrategyName = ds.Name,
+                    DefensiveStrategyDesc = ds.Description
+                };
+                return dto;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<IEnumerable<PlayerContractDetailedDto>> GetTeamContracts(int teamId)
@@ -1043,6 +1102,28 @@ namespace ABASim.api.Data
                     dc.PlayerId = depth.PlayerId;
                     _context.Update(dc);
                 }
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> SaveStrategy(TeamStrategyDto strategy)
+        {
+            var ts = await _context.TeamStrategies.FirstOrDefaultAsync(x => x.TeamId == strategy.TeamId);
+            if (ts == null)
+            {
+                TeamStrategy newTS = new TeamStrategy
+                {
+                    TeamId = strategy.TeamId,
+                    OffensiveStrategyId = strategy.OffensiveStrategyId,
+                    DefensiveStrategyId = strategy.DefensiveStrategyId
+                };
+                await _context.AddAsync(newTS);
+            }
+            else
+            {
+                ts.OffensiveStrategyId = strategy.OffensiveStrategyId;
+                ts.DefensiveStrategyId = strategy.DefensiveStrategyId;
+                _context.Update(ts);
             }
             return await _context.SaveChangesAsync() > 0;
         }

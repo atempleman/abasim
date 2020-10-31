@@ -16,6 +16,10 @@ import { PlayerInjury } from '../_models/playerInjury';
 import { CompletePlayer } from '../_models/completePlayer';
 import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
 import { PlayerContractDetailed } from '../_models/playerContractDetailed';
+import { OffensiveStrategy } from '../_models/offensiveStrategy';
+import { DefensiveStrategy } from '../_models/defensiveStrategyId';
+import { Strategy } from '../_models/strategy';
+import { SaveStrategy } from '../_models/saveStrategy';
 
 @Injectable({
   providedIn: 'root'
@@ -86,8 +90,6 @@ export class TeamService {
   }
 
   saveCoachingSettings(setting: CoachSetting) {
-    console.log('test');
-    console.log(setting);
     return this.http.post(this.baseUrl + 'savecoachsetting', setting);
   }
 
@@ -144,4 +146,19 @@ export class TeamService {
     return this.http.get<PlayerContractDetailed[]>(this.baseUrl + 'getteamcontracts/' + teamId);
   }
 
+  getOffensiveStrategies(): Observable<OffensiveStrategy[]> {
+    return this.http.get<OffensiveStrategy[]>(this.baseUrl + 'getoffensivestrategies');
+  }
+
+  getDefensiveStrategies(): Observable<DefensiveStrategy[]> {
+    return this.http.get<DefensiveStrategy[]>(this.baseUrl + 'getdefensivestrategies');
+  }
+
+  getStrategyForTeam(teamId: number): Observable<Strategy> {
+    return this.http.get<Strategy>(this.baseUrl + 'getstrategyforteam/' + teamId);
+  }
+
+  saveStrategy(strategy: Strategy) {
+    return this.http.post(this.baseUrl + 'savestrategy', strategy);
+  }
 }
