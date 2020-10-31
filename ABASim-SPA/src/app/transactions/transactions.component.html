@@ -88,7 +88,7 @@
 							{{ tran.transactionType }}
 						</td>
 						<td class="text-center">
-							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(tran)"><span class="glyphicon glyphicon-edit"></span> View</button>
+							<button class="btn btn-info btn-xs tablebutton" *ngIf="tran.playerId != 0" (click)="viewPlayer(tran)">View</button>
 						</td>
 					</tr>
 				</tbody>
