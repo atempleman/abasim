@@ -48,6 +48,8 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<CoachSetting>> GetCoachSettings(int teamId);
 
+         Task<TeamStrategy> GetTeamStrategies(int teamId);
+
          Task<bool> MvpVotes(List<BoxScore> boxScores);
 
          Task<bool> DpoyVotes(List<BoxScore> boxScores);

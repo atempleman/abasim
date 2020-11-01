@@ -111,6 +111,42 @@ namespace ABASim.api.Controllers
         List<int> homeStarterIds = new List<int>();
         List<int> awayStarterIds = new List<int>();
 
+        TeamStrategy _homeStrategy = new TeamStrategy();
+        TeamStrategy _awayStrategy = new TeamStrategy();
+
+        // Strategy variables
+        int _homeFoulsDrawnStrategy = 0;
+        int _awayFoulsDrawnStrategy = 0;
+        int _homeTwoTendancyStrategy = 0;
+        int _awayTwoTendancyStrategy = 0;
+        int _homeThreeTendancyStrategy = 0;
+        int _awayThreeTendancyStrategy = 0;
+        int _homeTwoPercentageStrategy = 0;
+        int _awayTwoPercentageStrategy = 0;
+        int _homeThreePercentageStrategy = 0;
+        int _awayThreePercentageStrategy = 0;
+        int _homeTurnoversStrategy = 0;
+        int _awayTurnoversStrategy = 0;
+        int _homeStealStrategy = 0;
+        int _awayStealStrategy = 0;
+        int _homeORebStrategy = 0;
+        int _awayORebStrategy = 0;
+        int _homeDRebStrategy = 0;
+        int _awayDRebStrategy = 0;
+        int _homeDRPMStrategy = 0;
+        int _awayDRPMStrategy = 0;
+        int _homeSpeedStrategy = 0;
+        int _awaySpeedStrategy = 0;
+        int _homeORPMStrategy = 0;
+        int _awayORPMStrategy = 0;
+        int _homeAssistStrategy = 0;
+        int _awayAssistStrategy = 0;
+        int _homeStaminaStrategy = 0;
+        int _awayStaminaStrategy = 0;
+        int _homeBlockStrategy = 0;
+        int _awayBlockStrategy = 0;
+
+
         public GameEngineController(IGameEngineRepository repo)
         {
             _repo = repo;
@@ -132,7 +168,7 @@ namespace ABASim.api.Controllers
             var result3 = await GetPlayerDetails();
             var result4 = await GetPlayerInjuries();
             var result5 = await GetCoachSettings();
-            // Get player injuries
+            var result6 = await GetTeamStrategies();
 
             SetStartingLineups();
             awayStarterIds.Add(awayPG.Id);
@@ -613,6 +649,151 @@ namespace ABASim.api.Controllers
             var hdc = await _repo.GetDepthChart(_homeTeam.Id);
             _awayDepth = (List<DepthChart>)adc;
             _homeDepth = (List<DepthChart>)hdc;
+
+            return Ok(true);
+        }
+
+        public async Task<IActionResult> GetTeamStrategies()
+        {
+            _homeStrategy = await _repo.GetTeamStrategies(_homeTeam.Id);
+            _awayStrategy = await _repo.GetTeamStrategies(_awayTeam.Id);
+
+            if (_homeStrategy != null) {
+                // Set offensive settings
+                switch (_homeStrategy.OffensiveStrategyId)
+                {
+                    case 2:
+                        _homeFoulsDrawnStrategy = _homeFoulsDrawnStrategy + 10;
+                        _homeTwoTendancyStrategy = _homeTwoTendancyStrategy + 30;
+                        _homeThreeTendancyStrategy = _homeThreeTendancyStrategy + -30;
+                        _homeTurnoversStrategy = _homeTurnoversStrategy + 15;
+                        _awayStealStrategy = _awayStealStrategy + 25;
+                        break;
+                    case 4:
+                        _homeORebStrategy = _homeORebStrategy + 10;
+                        _homeDRPMStrategy = _homeDRPMStrategy + -50;
+                        break;
+                    case 7:
+                        _homeSpeedStrategy = _homeSpeedStrategy + 50;
+                        _homeORPMStrategy = _homeORPMStrategy + 50;
+                        _homeTurnoversStrategy = _homeTurnoversStrategy + 25;
+                        _awayStealStrategy = _awayStealStrategy + 25;
+                        break;
+                    case 5:
+                        _homeTwoPercentageStrategy = _homeTwoPercentageStrategy + 20;
+                        _homeSpeedStrategy = _homeSpeedStrategy + -20;
+                        _homeThreePercentageStrategy = _homeThreePercentageStrategy + 10;
+                        _homeAssistStrategy = _homeAssistStrategy + 10;
+                        break;
+                    case 6:
+                        _homeAssistStrategy = _homeAssistStrategy + -10;
+                        _homeTwoTendancyStrategy = _homeTwoTendancyStrategy + -15;
+                        _homeThreeTendancyStrategy = _homeThreeTendancyStrategy + -15;
+                        break;
+                    default:
+                        break;
+                }
+
+                switch (_homeStrategy.DefensiveStrategyId)
+                {
+                    case 2:
+                        _homeDRebStrategy = _homeDRebStrategy + -10;
+                        _awayTwoPercentageStrategy = _awayTwoPercentageStrategy + -30;
+                        _awayThreePercentageStrategy = _awayThreePercentageStrategy + 10;
+                        _awayORebStrategy = _awayORebStrategy + 10;
+                        break;
+                    case 3:
+                        _homeStealStrategy = _homeStealStrategy + 20;
+                        _awayFoulsDrawnStrategy = _awayFoulsDrawnStrategy + 15;
+                        break;
+                    case 4:
+                        _homeDRebStrategy = _homeDRebStrategy + 50;
+                        _awaySpeedStrategy = _awaySpeedStrategy + -50;
+                        break;
+                    case 5:
+                        _homeSpeedStrategy = _homeSpeedStrategy + -50;
+                        _homeDRebStrategy = _homeDRebStrategy + 30;
+                        _homeStaminaStrategy = _homeStaminaStrategy + 20;
+                        _awayStaminaStrategy = _awayStaminaStrategy + 20;
+                        break;
+                    case 6:
+                        _awayTwoPercentageStrategy = _awayTwoPercentageStrategy + -25;
+                        _awayThreePercentageStrategy = _awayThreePercentageStrategy + -25;
+                        _homeBlockStrategy = _homeBlockStrategy + 10;
+                        _awayFoulsDrawnStrategy = _awayFoulsDrawnStrategy + 15;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (_awayStrategy != null) {
+                switch (_awayStrategy.OffensiveStrategyId)
+                {
+                    case 2:
+                        _awayFoulsDrawnStrategy = _awayFoulsDrawnStrategy + 10;
+                        _awayTwoTendancyStrategy = _awayTwoTendancyStrategy + 30;
+                        _awayThreeTendancyStrategy = _awayThreeTendancyStrategy + -30;
+                        _awayTurnoversStrategy = _awayTurnoversStrategy + 15;
+                        _homeStealStrategy = _homeStealStrategy + 25;
+                        break;
+                    case 4:
+                        _awayORebStrategy = _awayORebStrategy + 10;
+                        _awayDRPMStrategy = _awayDRPMStrategy + -50;
+                        break;
+                    case 7:
+                        _awaySpeedStrategy = _awaySpeedStrategy + 50;
+                        _awayORPMStrategy = _awayORPMStrategy + 50;
+                        _awayTurnoversStrategy = _awayTurnoversStrategy + 25;
+                        _homeStealStrategy = _homeStealStrategy + 25;
+                        break;
+                    case 5:
+                        _awayTwoPercentageStrategy = _awayTwoPercentageStrategy + 20;
+                        _awaySpeedStrategy = _awaySpeedStrategy + -20;
+                        _awayThreePercentageStrategy = _awayThreePercentageStrategy + 10;
+                        _awayAssistStrategy = _awayAssistStrategy + 10;
+                        break;
+                    case 6:
+                        _awayAssistStrategy = _awayAssistStrategy + -10;
+                        _awayTwoTendancyStrategy = _awayTwoTendancyStrategy + -15;
+                        _awayThreeTendancyStrategy = _awayThreeTendancyStrategy + -15;
+                        break;
+                    default:
+                        break;
+                }
+
+                switch (_awayStrategy.DefensiveStrategyId)
+                {
+                    case 2:
+                        _awayDRebStrategy = _awayDRebStrategy + -10;
+                        _homeTwoPercentageStrategy = _homeTwoPercentageStrategy + -30;
+                        _homeThreePercentageStrategy = _homeThreePercentageStrategy + 10;
+                        _homeORebStrategy = _homeORebStrategy + 10;
+                        break;
+                    case 3:
+                        _awayStealStrategy = _awayStealStrategy + 20;
+                        _homeFoulsDrawnStrategy = _homeFoulsDrawnStrategy + 15;
+                        break;
+                    case 4:
+                        _awayDRebStrategy = _awayDRebStrategy + 50;
+                        _homeSpeedStrategy = _homeSpeedStrategy + -50;
+                        break;
+                    case 5:
+                        _homeSpeedStrategy = _homeSpeedStrategy + -50;
+                        _homeDRebStrategy = _homeDRebStrategy + 30;
+                        _homeStaminaStrategy = _homeStaminaStrategy + 20;
+                        _awayStaminaStrategy = _awayStaminaStrategy + 20;
+                        break;
+                    case 6:
+                        _homeTwoPercentageStrategy = _homeTwoPercentageStrategy + -25;
+                        _homeThreePercentageStrategy = _homeThreePercentageStrategy + -25;
+                        _awayBlockStrategy = _awayBlockStrategy + 10;
+                        _homeFoulsDrawnStrategy = _homeFoulsDrawnStrategy + 15;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             return Ok(true);
         }
@@ -1203,8 +1384,24 @@ namespace ABASim.api.Controllers
         public int GetPlayerDecision()
         {
             int decision = 0;
-
             int shotClockBonus = 0;
+
+            int foulsDrawnStrategy = 0;
+            int twoTendancyStrategy = 0;
+            int threeTendancyStrategy = 0;
+            int turnoverStrategy = 0;
+
+            if (_teamPossession == 0) {
+                foulsDrawnStrategy = _homeFoulsDrawnStrategy;
+                twoTendancyStrategy = _homeTwoTendancyStrategy;
+                threeTendancyStrategy = _homeThreeTendancyStrategy;
+                turnoverStrategy = _homeTurnoversStrategy;
+            } else {
+                foulsDrawnStrategy = _awayFoulsDrawnStrategy;
+                twoTendancyStrategy = _awayTwoTendancyStrategy;
+                threeTendancyStrategy = _awayThreeTendancyStrategy;
+                turnoverStrategy = _awayTurnoversStrategy;
+            }
 
             if (_quarter > 3 && _time <= 48)
             {
@@ -1247,34 +1444,34 @@ namespace ABASim.api.Controllers
                     foulBonusValue = (int)(tendancy.FouledTendancy * 0.1);
                 }
 
-                int threeTendancy = tendancy.ThreePointTendancy;
-                int twoTendancy = tendancy.TwoPointTendancy;
+                int threeTendancy = tendancy.ThreePointTendancy + threeTendancyStrategy;
+                int twoTendancy = tendancy.TwoPointTendancy + twoTendancyStrategy;
                 int passTendancy = tendancy.PassTendancy;
                 if (_quarter > 3 && _time <= 48 && _endGameThreePointAddition != 0)
                 {
-                    threeTendancy = tendancy.ThreePointTendancy + _endGameThreePointAddition;
+                    threeTendancy = threeTendancy + _endGameThreePointAddition;
 
-                    if (tendancy.TwoPointTendancy < _endGameThreePointAddition)
+                    if (twoTendancy < _endGameThreePointAddition)
                     {
                         twoTendancy = 0;
-                        int remainder = _endGameThreePointAddition - tendancy.ThreePointTendancy;
+                        int remainder = _endGameThreePointAddition - threeTendancy;
                         passTendancy = tendancy.PassTendancy - remainder;
                     }
                     else
                     {
-                        twoTendancy = tendancy.TwoPointTendancy - _endGameThreePointAddition;
+                        twoTendancy = twoTendancy - _endGameThreePointAddition;
                     }
                 }
 
                 if (_quarter > 3 && _time <= 48 && _endGameTwoPointAddition != 0)
                 {
-                    twoTendancy = tendancy.TwoPointTendancy + _endGameTwoPointAddition;
+                    twoTendancy = twoTendancy + _endGameTwoPointAddition;
 
                     if (tendancy.PassTendancy < _endGameTwoPointAddition)
                     {
                         passTendancy = 0;
                         int remainder = _endGameTwoPointAddition - tendancy.PassTendancy;
-                        twoTendancy = tendancy.TwoPointTendancy - remainder;
+                        twoTendancy = twoTendancy - remainder;
                     }
                     else
                     {
@@ -1282,10 +1479,13 @@ namespace ABASim.api.Controllers
                     }
                 }
 
+                int fouledTendancy = tendancy.FouledTendancy + foulsDrawnStrategy;
+                int turnoverTendancy = tendancy.TurnoverTendancy + turnoverStrategy;
+
                 int twoSection = twoTendancy;
                 int threeSection = (twoTendancy + threeTendancy);
-                int foulSection = (twoTendancy + threeTendancy + tendancy.FouledTendancy + foulBonusValue);
-                int turnoverSection = (twoTendancy + threeTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy);
+                int foulSection = (twoTendancy + threeTendancy + fouledTendancy + foulBonusValue);
+                int turnoverSection = (twoTendancy + threeTendancy + fouledTendancy + foulBonusValue + turnoverTendancy);
 
                 if (shotClockBonus > 0 || _endGameShotClockBonus > 0)
                 {
@@ -1294,12 +1494,12 @@ namespace ABASim.api.Controllers
                         shotClockBonus = _endGameShotClockBonus;
                     }
                     // Then we have some bonus to work out
-                    int total = twoTendancy + threeTendancy + tendancy.FouledTendancy + foulBonusValue + tendancy.TurnoverTendancy;
+                    int total = twoTendancy + threeTendancy + fouledTendancy + foulBonusValue + turnoverTendancy;
 
-                    double twoUpgrade = (double)tendancy.TwoPointTendancy / total;
-                    double threeUpgrade = (double)tendancy.ThreePointTendancy / total;
-                    double foulUpgrade = (double)(tendancy.FouledTendancy + foulBonusValue) / total;
-                    double turnoverUpgrade = (double)tendancy.TurnoverTendancy / total;
+                    double twoUpgrade = (double)twoTendancy / total;
+                    double threeUpgrade = (double)threeTendancy / total;
+                    double foulUpgrade = (double)(fouledTendancy + foulBonusValue) / total;
+                    double turnoverUpgrade = (double)turnoverTendancy / total;
 
                     int twoPointBonus = (int)(shotClockBonus * twoUpgrade);
                     int threePointBonus = (int)(shotClockBonus * threeUpgrade);
@@ -1308,8 +1508,8 @@ namespace ABASim.api.Controllers
 
                     twoSection = twoTendancy + twoPointBonus;
                     threeSection = threeTendancy + threePointBonus + twoSection;
-                    foulSection = tendancy.FouledTendancy + foulBonusValue + foulBonus + threeSection;
-                    turnoverSection = tendancy.TurnoverTendancy + turnoverBonus + foulSection;
+                    foulSection = fouledTendancy + foulBonusValue + foulBonus + threeSection;
+                    turnoverSection = turnoverTendancy + turnoverBonus + foulSection;
                 }
                 else
                 {
@@ -1322,16 +1522,16 @@ namespace ABASim.api.Controllers
 
                         int total = twoTendancy + threeTendancy;
 
-                        double twoUpgrade = (double)tendancy.TwoPointTendancy / total;
-                        double threeUpgrade = (double)tendancy.ThreePointTendancy / total;
+                        double twoUpgrade = (double)twoTendancy / total;
+                        double threeUpgrade = (double)threeTendancy / total;
 
                         int twoPointBonus = (int)(shotClockBonus * twoUpgrade);
                         int threePointBonus = (int)(shotClockBonus * threeUpgrade);
 
                         twoSection = twoTendancy + twoPointBonus;
                         threeSection = threeTendancy + threePointBonus + twoSection;
-                        foulSection = tendancy.FouledTendancy + foulBonusValue + threeSection;
-                        turnoverSection = tendancy.TurnoverTendancy + foulSection;
+                        foulSection = fouledTendancy + foulBonusValue + threeSection;
+                        turnoverSection = turnoverTendancy + foulSection;
                     }
                 }
 
@@ -1417,7 +1617,7 @@ namespace ABASim.api.Controllers
             int sgBonus = 0;
             int sfBonus = 0;
             int pfBonus = 0;
-            int cBonus = 0;
+            int cBonus = 0;           
 
             // Check 
             if (_teamPossession == 0)
@@ -1971,7 +2171,19 @@ namespace ABASim.api.Controllers
                 PlayerRating currentRating = GetCurrentPlayersRatings();
                 int result = _random.Next(1, 1001);
 
+                int twoPercStrategy = 0;
+                if (_teamPossession == 0) {
+                    if (_homeTwoPercentageStrategy != 0) {
+                        twoPercStrategy = _homeTwoPercentageStrategy * -1;
+                    }
+                } else {
+                    if (_awayTwoPercentageStrategy != 0) {
+                        twoPercStrategy = _awayTwoPercentageStrategy * -1;
+                    }
+                }
+
                 int twoRating = StaminaEffect(currentRating.PlayerId, _teamPossession, currentRating.TwoRating);
+                twoRating = twoRating + twoPercStrategy;
 
                 // Need to Apply ORPM to result - effecting quality of the shot
                 int orpmValue = GetOrpmValue(_teamPossession);
@@ -1995,6 +2207,15 @@ namespace ABASim.api.Controllers
                 if (_playerRatingPassed != null)
                 {
                     int assistRating = (_playerRatingPassed.AssitRating * 5);
+
+                    int assistStrategy = 0;
+                    if (_teamPossession == 0) {
+                        assistStrategy = _homeAssistStrategy;
+                    } else {
+                        assistStrategy = _awayAssistStrategy;
+                    }
+                    assistRating = assistRating + assistStrategy;
+
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -2162,8 +2383,6 @@ namespace ABASim.api.Controllers
                 // TODO - need to handle the fact the shot clock would not reset on offensive rebound here
                 Rebound();
             }
-
-
         }
 
         public void ThreePointShot()
@@ -2184,7 +2403,19 @@ namespace ABASim.api.Controllers
                 PlayerRating currentRating = GetCurrentPlayersRatings();
                 int result = _random.Next(1, 1001);
 
+                int threePercStrategy = 0;
+                if (_teamPossession == 0) {
+                    if (_homeThreePercentageStrategy != 0) {
+                        threePercStrategy = _homeThreePercentageStrategy * -1;
+                    }
+                } else {
+                    if (_awayThreePercentageStrategy != 0) {
+                        threePercStrategy = _awayThreePercentageStrategy * -1;
+                    }
+                }
+
                 int threeRating = StaminaEffect(currentRating.PlayerId, _teamPossession, currentRating.ThreeRating);
+                threeRating = threeRating + threePercStrategy;
 
                 // Need to Apply ORPM to result - effecting quality of the shot
                 int orpmValue = GetOrpmValue(_teamPossession);
@@ -2207,8 +2438,16 @@ namespace ABASim.api.Controllers
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
                 {
-
                     int assistRating = (_playerRatingPassed.AssitRating * 5); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
+                    
+                    int assistStrategy = 0;
+                    if (_teamPossession == 0) {
+                        assistStrategy = _homeAssistStrategy;
+                    } else {
+                        assistStrategy = _awayAssistStrategy;
+                    }
+                    assistRating = assistRating + assistStrategy;
+                    
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -2394,9 +2633,12 @@ namespace ABASim.api.Controllers
         public int BlockCheck()
         {
             PlayerRating currentRating = GetCurrentPlayersRatings();
+            int blockStrategy = 0;
 
             if (_teamPossession == 0)
             {
+                blockStrategy = _awayBlockStrategy;
+
                 // Away team is trying to block the shot
                 List<PlayerRating> awayRatings = new List<PlayerRating>();
                 awayRatings.Add(awayPGRatings);
@@ -2411,7 +2653,8 @@ namespace ABASim.api.Controllers
                 for (int i = 0; i < awayRatingsSorted.Count; i++)
                 {
                     PlayerRating checking = awayRatingsSorted[i];
-                    int rating = StaminaEffect(checking.PlayerId, 1, checking.BlockRating);
+                    int blockRating = checking.BlockRating + blockStrategy;
+                    int rating = StaminaEffect(checking.PlayerId, 1, blockRating);
                     int result = _random.Next(1, 1501);
 
                     if (result <= rating)
@@ -2465,6 +2708,8 @@ namespace ABASim.api.Controllers
             }
             else
             {
+                blockStrategy = _homeBlockStrategy;
+
                 // Home team is trying to block the shot
                 List<PlayerRating> homeRatings = new List<PlayerRating>();
                 homeRatings.Add(homePGRatings);
@@ -2479,7 +2724,8 @@ namespace ABASim.api.Controllers
                 for (int i = 0; i < homeRatingsSorted.Count; i++)
                 {
                     PlayerRating checking = homeRatingsSorted[i];
-                    int rating = StaminaEffect(checking.PlayerId, 0, checking.BlockRating);
+                    int blockRating = checking.BlockRating + blockStrategy;
+                    int rating = StaminaEffect(checking.PlayerId, 0, blockRating);
                     int result = _random.Next(1, 1501);
 
                     if (result <= rating)
@@ -2542,6 +2788,9 @@ namespace ABASim.api.Controllers
             int offensiveRate = 0;
             int defensiveRate = 0;
 
+            int offRebStrategy = 0;
+            int defRebStrategy = 0;
+
             // Update the timer
             int timeValue = _random.Next(2, 6);
 
@@ -2570,17 +2819,20 @@ namespace ABASim.api.Controllers
 
             if (_teamPossession == 0)
             {
-                int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.ORebRating);
-                int homeSGRebound = StaminaEffect(homeSGRatings.PlayerId, 0, homeSGRatings.ORebRating);
-                int homeSFRebound = StaminaEffect(homeSFRatings.PlayerId, 0, homeSFRatings.ORebRating);
-                int homePFRebound = StaminaEffect(homePFRatings.PlayerId, 0, homePFRatings.ORebRating);
-                int homeCRebound = StaminaEffect(homeCRatings.PlayerId, 0, homeCRatings.ORebRating);
+                offRebStrategy = _homeORebStrategy;
+                defRebStrategy = _awayDRebStrategy;
 
-                int awayPGRebound = StaminaEffect(awayPGRatings.PlayerId, 1, awayPGRatings.DRebRating);
-                int awaySGRebound = StaminaEffect(awaySGRatings.PlayerId, 1, awaySGRatings.DRebRating);
-                int awaySFRebound = StaminaEffect(awaySFRatings.PlayerId, 1, awaySFRatings.DRebRating);
-                int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.DRebRating);
-                int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.DRebRating);
+                int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.ORebRating) + offRebStrategy;
+                int homeSGRebound = StaminaEffect(homeSGRatings.PlayerId, 0, homeSGRatings.ORebRating) + offRebStrategy;
+                int homeSFRebound = StaminaEffect(homeSFRatings.PlayerId, 0, homeSFRatings.ORebRating) + offRebStrategy;
+                int homePFRebound = StaminaEffect(homePFRatings.PlayerId, 0, homePFRatings.ORebRating) + offRebStrategy;
+                int homeCRebound = StaminaEffect(homeCRatings.PlayerId, 0, homeCRatings.ORebRating) + offRebStrategy;
+
+                int awayPGRebound = StaminaEffect(awayPGRatings.PlayerId, 1, awayPGRatings.DRebRating) + defRebStrategy;
+                int awaySGRebound = StaminaEffect(awaySGRatings.PlayerId, 1, awaySGRatings.DRebRating) + defRebStrategy;
+                int awaySFRebound = StaminaEffect(awaySFRatings.PlayerId, 1, awaySFRatings.DRebRating) + defRebStrategy;
+                int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.DRebRating) + defRebStrategy;
+                int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.DRebRating) + defRebStrategy;
 
                 offensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound;
                 defensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound;
@@ -2730,17 +2982,20 @@ namespace ABASim.api.Controllers
             }
             else
             {
-                int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.DRebRating);
-                int homeSGRebound = StaminaEffect(homeSGRatings.PlayerId, 0, homeSGRatings.DRebRating);
-                int homeSFRebound = StaminaEffect(homeSFRatings.PlayerId, 0, homeSFRatings.DRebRating);
-                int homePFRebound = StaminaEffect(homePFRatings.PlayerId, 0, homePFRatings.DRebRating);
-                int homeCRebound = StaminaEffect(homeCRatings.PlayerId, 0, homeCRatings.DRebRating);
+                offRebStrategy = _awayORebStrategy;
+                defRebStrategy = _homeDRebStrategy;
 
-                int awayPGRebound = StaminaEffect(awayPGRatings.PlayerId, 1, awayPGRatings.ORebRating);
-                int awaySGRebound = StaminaEffect(awaySGRatings.PlayerId, 1, awaySGRatings.ORebRating);
-                int awaySFRebound = StaminaEffect(awaySFRatings.PlayerId, 1, awaySFRatings.ORebRating);
-                int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.ORebRating);
-                int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.ORebRating);
+                int homePGRebound = StaminaEffect(homePGRatings.PlayerId, 0, homePGRatings.DRebRating) + defRebStrategy;
+                int homeSGRebound = StaminaEffect(homeSGRatings.PlayerId, 0, homeSGRatings.DRebRating) + defRebStrategy;
+                int homeSFRebound = StaminaEffect(homeSFRatings.PlayerId, 0, homeSFRatings.DRebRating) + defRebStrategy;
+                int homePFRebound = StaminaEffect(homePFRatings.PlayerId, 0, homePFRatings.DRebRating) + defRebStrategy;
+                int homeCRebound = StaminaEffect(homeCRatings.PlayerId, 0, homeCRatings.DRebRating) + defRebStrategy;
+
+                int awayPGRebound = StaminaEffect(awayPGRatings.PlayerId, 1, awayPGRatings.ORebRating) + offRebStrategy;
+                int awaySGRebound = StaminaEffect(awaySGRatings.PlayerId, 1, awaySGRatings.ORebRating) + offRebStrategy;
+                int awaySFRebound = StaminaEffect(awaySFRatings.PlayerId, 1, awaySFRatings.ORebRating) + offRebStrategy;
+                int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.ORebRating) + offRebStrategy;
+                int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.ORebRating) + offRebStrategy;
 
                 defensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound;
                 offensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound;
@@ -2895,6 +3150,7 @@ namespace ABASim.api.Controllers
         {
             PlayerRating currentRating = GetCurrentPlayersRatings();
             int stealBonus = 0;
+            int stealStrategy = 0;
 
             if (_endGameStealAddition > 0)
             {
@@ -2904,6 +3160,7 @@ namespace ABASim.api.Controllers
             if (_teamPossession == 0)
             {
                 // int stealingTeam = 1;
+                stealStrategy = _awayStealStrategy;
 
                 // Away team is trying to steal the ball
                 List<PlayerRating> awayRatings = new List<PlayerRating>();
@@ -2919,7 +3176,8 @@ namespace ABASim.api.Controllers
                 for (int i = 0; i < awayRatingsSorted.Count; i++)
                 {
                     PlayerRating checking = awayRatingsSorted[i];
-                    int rating = StaminaEffect(checking.PlayerId, 1, checking.StealRating);
+                    int stealRating = checking.StealRating + stealStrategy;
+                    int rating = StaminaEffect(checking.PlayerId, 1, stealRating);
                     int result = _random.Next(1, (3501 - stealBonus)); // This is times 5 to account for all 5 players pn the court
 
                     if (result <= rating)
@@ -2978,6 +3236,8 @@ namespace ABASim.api.Controllers
             }
             else
             {
+                stealStrategy = _homeStealStrategy;
+
                 // Home team is trying to steal the shot
                 List<PlayerRating> homeRatings = new List<PlayerRating>();
                 homeRatings.Add(homePGRatings);
@@ -2992,7 +3252,8 @@ namespace ABASim.api.Controllers
                 for (int i = 0; i < homeRatingsSorted.Count; i++)
                 {
                     PlayerRating checking = homeRatingsSorted[i];
-                    int rating = StaminaEffect(checking.PlayerId, 0, checking.StealRating);
+                    int stealRating = checking.StealRating + stealStrategy;
+                    int rating = StaminaEffect(checking.PlayerId, 0, stealRating);
                     int result = _random.Next(1, (3501 - stealBonus));
 
                     if (result <= rating)
@@ -4044,45 +4305,53 @@ namespace ABASim.api.Controllers
 
         public int ShotClockShootBonus()
         {
+            int speedStrategy = 0;
+
+            if (_teamPossession == 0) {
+                speedStrategy = _homeSpeedStrategy * -1;
+            } else {
+                speedStrategy = _awaySpeedStrategy * -1;
+            }
+
             if (_shotClock > 22)
             {
-                return -200;
+                return -200 + speedStrategy;
             }
             else if (_shotClock > 20)
             {
-                return -100;
+                return -100 + speedStrategy;
             }
             else if (_shotClock > 18)
             {
-                return -25;
+                return -25 + speedStrategy;
             }
             else if (_shotClock > 14)
             {
-                return 35;
+                return 35 + speedStrategy;
             }
             else if (_shotClock > 12)
             {
-                return 80;
+                return 80 + speedStrategy;
             }
             else if (_shotClock > 10)
             {
-                return 140;
+                return 140 + speedStrategy;
             }
             else if (_shotClock > 8)
             {
-                return 250;
+                return 250 + speedStrategy;
             }
             else if (_shotClock > 6)
             {
-                return 300;
+                return 300 + speedStrategy;
             }
             else if (_shotClock > 4)
             {
-                return 400;
+                return 400 + speedStrategy;
             }
             else
             {
-                return 500;
+                return 500 + speedStrategy;
             }
         }
 
@@ -4246,13 +4515,17 @@ namespace ABASim.api.Controllers
         /* REFACTORED */
         public int GetOrpmValue(int team)
         {
+            int orpmStrategy = 0;
+
             if (team == 0)
             {
-                int pgVal = homePGRatings.ORPMRating / 10;
-                int sgVal = homeSGRatings.ORPMRating / 10;
-                int sfVal = homeSFRatings.ORPMRating / 10;
-                int pfVal = homePFRatings.ORPMRating / 10;
-                int cVal = homeCRatings.ORPMRating / 10;
+                orpmStrategy = _homeORPMStrategy;
+
+                int pgVal = (homePGRatings.ORPMRating / 10) + orpmStrategy;
+                int sgVal = (homeSGRatings.ORPMRating / 10) + orpmStrategy;
+                int sfVal = (homeSFRatings.ORPMRating / 10) + orpmStrategy;
+                int pfVal = (homePFRatings.ORPMRating / 10) + orpmStrategy;
+                int cVal = (homeCRatings.ORPMRating / 10) + orpmStrategy;
 
                 int total = pgVal + sgVal + sfVal + pfVal + cVal;
                 int valueToReturn = total / 5;
@@ -4260,11 +4533,13 @@ namespace ABASim.api.Controllers
             }
             else
             {
-                int pgVal = awayPGRatings.ORPMRating / 10;
-                int sgVal = awaySGRatings.ORPMRating / 10;
-                int sfVal = awaySFRatings.ORPMRating / 10;
-                int pfVal = awayPFRatings.ORPMRating / 10;
-                int cVal = awayCRatings.ORPMRating / 10;
+                orpmStrategy = _awayDRPMStrategy;
+
+                int pgVal = (awayPGRatings.ORPMRating / 10) + orpmStrategy;
+                int sgVal = (awaySGRatings.ORPMRating / 10) + orpmStrategy;
+                int sfVal = (awaySFRatings.ORPMRating / 10) + orpmStrategy;
+                int pfVal = (awayPFRatings.ORPMRating / 10) + orpmStrategy;
+                int cVal = (awayCRatings.ORPMRating / 10) + orpmStrategy;
 
                 int total = pgVal + sgVal + sfVal + pfVal + cVal;
                 int valueToReturn = total / 5;
@@ -4275,13 +4550,17 @@ namespace ABASim.api.Controllers
         /* REFACTORED */
         public int GetDrpmValue(int team)
         {
+            int drpmStrategy = 0;
+
             if (team == 0)
             {
-                int pgVal = homePGRatings.DRPMRating / 10;
-                int sgVal = homeSGRatings.DRPMRating / 10;
-                int sfVal = homeSFRatings.DRPMRating / 10;
-                int pfVal = homePFRatings.DRPMRating / 10;
-                int cVal = homeCRatings.DRPMRating / 10;
+                drpmStrategy = _homeDRPMStrategy;
+
+                int pgVal = (homePGRatings.DRPMRating / 10) + drpmStrategy;
+                int sgVal = (homeSGRatings.DRPMRating / 10) + drpmStrategy;
+                int sfVal = (homeSFRatings.DRPMRating / 10) + drpmStrategy;
+                int pfVal = (homePFRatings.DRPMRating / 10) + drpmStrategy;
+                int cVal = (homeCRatings.DRPMRating / 10) + drpmStrategy;
 
                 int total = pgVal + sgVal + sfVal + pfVal + cVal;
                 int valueToReturn = total / 5;
@@ -4289,11 +4568,13 @@ namespace ABASim.api.Controllers
             }
             else
             {
-                int pgVal = awayPGRatings.DRPMRating / 10;
-                int sgVal = awaySGRatings.DRPMRating / 10;
-                int sfVal = awaySFRatings.DRPMRating / 10;
-                int pfVal = awayPFRatings.DRPMRating / 10;
-                int cVal = awayCRatings.DRPMRating / 10;
+                drpmStrategy = _awayDRPMStrategy;
+
+                int pgVal = (awayPGRatings.DRPMRating / 10) + drpmStrategy;
+                int sgVal = (awaySGRatings.DRPMRating / 10) + drpmStrategy;
+                int sfVal = (awaySFRatings.DRPMRating / 10) + drpmStrategy;
+                int pfVal = (awayPFRatings.DRPMRating / 10) + drpmStrategy;
+                int cVal = (awayCRatings.DRPMRating / 10) + drpmStrategy;
 
                 int total = pgVal + sgVal + sfVal + pfVal + cVal;
                 int valueToReturn = total / 5;
@@ -6305,6 +6586,9 @@ namespace ABASim.api.Controllers
         /* REFACTORED */
         public void StaminaUpdates(int time)
         {
+            int awayStaminaStrategy = 120 - (60 - _awayStaminaStrategy);
+            int homeStaminaStrategy = 120 - (60 - _homeStaminaStrategy);
+
             // Away Team
             for (int a = 0; a < _awayStaminas.Count; a++)
             {
@@ -6337,7 +6621,7 @@ namespace ABASim.api.Controllers
                         PlayerRating current = _awayRatings.Find(x => x.PlayerId == st.PlayerId);
 
                         // Determine how much of the rating gets applied for the time passed
-                        decimal percantageToApply = (decimal)time / 120; // making this have half the effect of playing
+                        decimal percantageToApply = (decimal)time / awayStaminaStrategy; // making this have half the effect of playing
                         decimal staminaUpdateAmount = current.StaminaRating * percantageToApply;
 
                         // Update the players stamina rating
@@ -6384,7 +6668,7 @@ namespace ABASim.api.Controllers
                         PlayerRating current = _homeRatings.Find(x => x.PlayerId == st.PlayerId);
 
                         // Determine how much of the rating gets applied for the time passed
-                        decimal percantageToApply = (decimal)time / 120; // making this have half the effect of playing
+                        decimal percantageToApply = (decimal)time / homeStaminaStrategy; // making this have half the effect of playing
                         decimal staminaUpdateAmount = current.StaminaRating * percantageToApply;
 
                         // Update the players stamina rating

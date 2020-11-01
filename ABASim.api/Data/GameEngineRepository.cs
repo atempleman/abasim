@@ -627,5 +627,11 @@ namespace ABASim.api.Data
 
             return true;
         }
+
+        public async Task<TeamStrategy> GetTeamStrategies(int teamId)
+        {
+            var strategy = await _context.TeamStrategies.FirstOrDefaultAsync(x => x.TeamId == teamId);
+            return strategy;
+        }
     }
 }
