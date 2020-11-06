@@ -666,8 +666,8 @@ namespace ABASim.api.Controllers
                         _homeFoulsDrawnStrategy = _homeFoulsDrawnStrategy + 10;
                         _homeTwoTendancyStrategy = _homeTwoTendancyStrategy + 30;
                         _homeThreeTendancyStrategy = _homeThreeTendancyStrategy + -30;
-                        _homeTurnoversStrategy = _homeTurnoversStrategy + 15;
-                        _awayStealStrategy = _awayStealStrategy + 25;
+                        _homeTurnoversStrategy = _homeTurnoversStrategy + 3;
+                        _awayStealStrategy = _awayStealStrategy + 5;
                         break;
                     case 4:
                         _homeORebStrategy = _homeORebStrategy + 10;
@@ -676,8 +676,8 @@ namespace ABASim.api.Controllers
                     case 7:
                         _homeSpeedStrategy = _homeSpeedStrategy + 50;
                         _homeORPMStrategy = _homeORPMStrategy + 50;
-                        _homeTurnoversStrategy = _homeTurnoversStrategy + 25;
-                        _awayStealStrategy = _awayStealStrategy + 25;
+                        _homeTurnoversStrategy = _homeTurnoversStrategy + 3;
+                        _awayStealStrategy = _awayStealStrategy + 5;
                         break;
                     case 5:
                         _homeTwoPercentageStrategy = _homeTwoPercentageStrategy + 20;
@@ -703,7 +703,7 @@ namespace ABASim.api.Controllers
                         _awayORebStrategy = _awayORebStrategy + 10;
                         break;
                     case 3:
-                        _homeStealStrategy = _homeStealStrategy + 20;
+                        _homeStealStrategy = _homeStealStrategy + 5;
                         _awayFoulsDrawnStrategy = _awayFoulsDrawnStrategy + 15;
                         break;
                     case 4:
@@ -734,8 +734,8 @@ namespace ABASim.api.Controllers
                         _awayFoulsDrawnStrategy = _awayFoulsDrawnStrategy + 10;
                         _awayTwoTendancyStrategy = _awayTwoTendancyStrategy + 30;
                         _awayThreeTendancyStrategy = _awayThreeTendancyStrategy + -30;
-                        _awayTurnoversStrategy = _awayTurnoversStrategy + 15;
-                        _homeStealStrategy = _homeStealStrategy + 25;
+                        _awayTurnoversStrategy = _awayTurnoversStrategy + 3;
+                        _homeStealStrategy = _homeStealStrategy + 5;
                         break;
                     case 4:
                         _awayORebStrategy = _awayORebStrategy + 10;
@@ -744,8 +744,8 @@ namespace ABASim.api.Controllers
                     case 7:
                         _awaySpeedStrategy = _awaySpeedStrategy + 50;
                         _awayORPMStrategy = _awayORPMStrategy + 50;
-                        _awayTurnoversStrategy = _awayTurnoversStrategy + 25;
-                        _homeStealStrategy = _homeStealStrategy + 25;
+                        _awayTurnoversStrategy = _awayTurnoversStrategy + 3;
+                        _homeStealStrategy = _homeStealStrategy + 5;
                         break;
                     case 5:
                         _awayTwoPercentageStrategy = _awayTwoPercentageStrategy + 20;
@@ -771,7 +771,7 @@ namespace ABASim.api.Controllers
                         _homeORebStrategy = _homeORebStrategy + 10;
                         break;
                     case 3:
-                        _awayStealStrategy = _awayStealStrategy + 20;
+                        _awayStealStrategy = _awayStealStrategy + 5;
                         _homeFoulsDrawnStrategy = _homeFoulsDrawnStrategy + 15;
                         break;
                     case 4:
@@ -2264,6 +2264,9 @@ namespace ABASim.api.Controllers
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
 
+                    int commPoints = 0;
+                    int commAsts = 0;
+
                     // Update Score
                     if (_teamPossession == 0)
                     {
@@ -2278,6 +2281,8 @@ namespace ABASim.api.Controllers
                         int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
                         _homeBoxScores[index] = temp;
 
+                        commPoints = temp.Points;
+
                         if (possibleAssist == 1)
                         {
                             // Update the Box Score
@@ -2285,6 +2290,7 @@ namespace ABASim.api.Controllers
                             tempAst.Assists++;
                             int indexAst = _homeBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
                             _homeBoxScores[indexAst] = tempAst;
+                            commAsts = tempAst.Assists;
                         }
                     }
                     else
@@ -2300,6 +2306,8 @@ namespace ABASim.api.Controllers
                         int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
                         _awayBoxScores[index] = temp;
 
+                        commPoints = temp.Points;
+
                         if (possibleAssist == 1)
                         {
                             // Update the Box Score
@@ -2307,13 +2315,14 @@ namespace ABASim.api.Controllers
                             tempAst.Assists++;
                             int indexAst = _awayBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
                             _awayBoxScores[indexAst] = tempAst;
+                            commAsts = tempAst.Assists;
                         }
                     }
 
                     // Comm
-                    commentaryData.Add(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    commentaryData.Add(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName, commPoints, commAsts));
                     // Console.WriteLine(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
-                    PlayByPlayTracker(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName), 0);
+                    PlayByPlayTracker(comm.GetTwoPointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName, commPoints, commAsts), 0);
 
                     if (_teamPossession == 0)
                     {
@@ -2497,6 +2506,9 @@ namespace ABASim.api.Controllers
                     StaminaUpdates(timeValue);
                     UpdateTimeInBoxScore(timeValue);
 
+                    int commPoints = 0;
+                    int commAsts = 0;
+
                     // Update Score
                     if (_teamPossession == 0)
                     {
@@ -2512,6 +2524,7 @@ namespace ABASim.api.Controllers
                         temp.Points = temp.Points + 3;
                         int index = _homeBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
                         _homeBoxScores[index] = temp;
+                        commPoints = temp.Points;
 
                         if (possibleAssist == 1)
                         {
@@ -2522,6 +2535,7 @@ namespace ABASim.api.Controllers
                             temp2.Assists++;
                             int index2 = _homeBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
                             _homeBoxScores[index2] = temp2;
+                            commAsts = temp.Assists;
                         }
 
                     }
@@ -2539,6 +2553,7 @@ namespace ABASim.api.Controllers
                         temp.Points = temp.Points + 3;
                         int index = _awayBoxScores.FindIndex(x => x.Id == currentRating.PlayerId);
                         _awayBoxScores[index] = temp;
+                        commPoints = temp.Points;
 
                         if (possibleAssist == 1)
                         {
@@ -2549,13 +2564,14 @@ namespace ABASim.api.Controllers
                             temp2.Assists++;
                             int index2 = _awayBoxScores.FindIndex(x => x.Id == _playerPassed.Id);
                             _awayBoxScores[index2] = temp2;
+                            commAsts = temp.Assists;
                         }
                     }
 
                     // Comm
-                    commentaryData.Add(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
+                    commentaryData.Add(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName, commPoints, commAsts));
                     // Console.WriteLine(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName));
-                    PlayByPlayTracker(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName), 0);
+                    PlayByPlayTracker(comm.GetThreePointMakeCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, possibleAssist, assistingPlayingName, commPoints, commAsts), 0);
 
                     if (_teamPossession == 0)
                     {
@@ -2634,6 +2650,7 @@ namespace ABASim.api.Controllers
         {
             PlayerRating currentRating = GetCurrentPlayersRatings();
             int blockStrategy = 0;
+            int blockComm = 0;
 
             if (_teamPossession == 0)
             {
@@ -2696,11 +2713,12 @@ namespace ABASim.api.Controllers
                         temp2.Blocks++;
                         int index2 = _awayBoxScores.FindIndex(x => x.Id == checking.PlayerId);
                         _awayBoxScores[index2] = temp2;
+                        blockComm = temp2.Blocks;
 
                         // Commentary
-                        commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, blockComm));
                         // Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                        PlayByPlayTracker(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, blockComm), 0);
 
                         return 1;
                     }
@@ -2767,11 +2785,12 @@ namespace ABASim.api.Controllers
                         temp2.Blocks++;
                         int index2 = _homeBoxScores.FindIndex(x => x.Id == checking.PlayerId);
                         _homeBoxScores[index2] = temp2;
+                        blockComm = temp2.Blocks;
 
                         // Commentary
-                        commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        commentaryData.Add(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, blockComm));
                         // Console.WriteLine(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                        PlayByPlayTracker(comm.BlockCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, blockComm), 0);
 
                         return 1;
                     }
@@ -2847,6 +2866,9 @@ namespace ABASim.api.Controllers
                     // Offensive Rebound
                     _shotClock = 14;
 
+                    int commOReb = 0;
+                    int commDReb = 0;
+
                     if (result < homePGRebound)
                     {
                         _playerPossession = 1;
@@ -2857,6 +2879,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homePG.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= homePGRebound && result < (homePGRebound + homeSGRebound))
                     {
@@ -2868,6 +2892,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homeSG.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (homePGRebound + homeSGRebound) && result < (homePGRebound + homeSGRebound + homeSFRebound))
                     {
@@ -2879,6 +2905,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homeSF.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (homePGRebound + homeSGRebound + homeSFRebound) && result < (homePGRebound + homeSGRebound + homeSFRebound + homePFRebound))
                     {
@@ -2890,6 +2918,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homePF.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (homePGRebound + homeSGRebound + homeSFRebound + homePFRebound) && result < (homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound))
                     {
@@ -2901,17 +2931,21 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homeC.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
 
                     // Commentary for Offensive Rebound
-                    commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
                     // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
                 }
                 else
                 {
                     // Defensive Rebound
                     _shotClock = 24;
+                    int commOReb = 0;
+                    int commDReb = 0;
 
                     if (result < (offensiveRate + awayPGRebound))
                     {
@@ -2924,6 +2958,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awayPG.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + awayPGRebound) && result < (offensiveRate + awayPGRebound + awaySGRebound))
                     {
@@ -2936,6 +2972,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awaySG.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + awayPGRebound + awaySGRebound) && result < (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound))
                     {
@@ -2948,6 +2986,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awaySF.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound) && result < (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound))
                     {
@@ -2960,6 +3000,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awayPF.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound) && result < (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound))
                     {
@@ -2972,12 +3014,14 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awayC.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
 
                     // Display Defensive Rebound Commentary
-                    commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
                     // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
                 }
             }
             else
@@ -3004,6 +3048,9 @@ namespace ABASim.api.Controllers
                 int randValue = offensiveRate + defensiveRate;
                 int result = _random.Next(1, randValue + 1);
 
+                int commOReb = 0;
+                int commDReb = 0;
+
                 // Firstly determine if it is offensive or defensive
                 if (result < offensiveRate)
                 {
@@ -3021,6 +3068,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awayPG.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= awayPGRebound && result < (awayPGRebound + awaySGRebound))
                     {
@@ -3032,6 +3081,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awaySG.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (awayPGRebound + awaySGRebound) && result < (awayPGRebound + awaySGRebound + awaySFRebound))
                     {
@@ -3043,6 +3094,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awaySF.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (awayPGRebound + awaySGRebound + awaySFRebound) && result < (awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound))
                     {
@@ -3054,6 +3107,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awayPF.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound) && result < (awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound))
                     {
@@ -3065,12 +3120,14 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _awayBoxScores.FindIndex(x => x.Id == awayC.Id);
                         _awayBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
 
                     // Commentary for Offensive Rebound
-                    commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
                     // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
                 }
                 else
                 {
@@ -3088,6 +3145,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homePG.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + homePGRebound) && result < (offensiveRate + homePGRebound + homeSGRebound))
                     {
@@ -3100,6 +3159,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homeSG.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + homePGRebound + homeSGRebound) && result < (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound))
                     {
@@ -3112,6 +3173,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homeSF.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound) && result < (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound + homePFRebound))
                     {
@@ -3124,6 +3187,8 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homePF.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
                     else if (result >= (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound + homePFRebound) && result < (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound))
                     {
@@ -3136,12 +3201,14 @@ namespace ABASim.api.Controllers
                         temp.Rebounds++;
                         int index = _homeBoxScores.FindIndex(x => x.Id == homeC.Id);
                         _homeBoxScores[index] = temp;
+                        commOReb = temp.ORebs;
+                        commDReb = temp.DRebs;
                     }
 
                     // Display Defensive Rebound Commentary
-                    commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
                     // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot,commOReb, commDReb), 0);
                 }
             }
         }
@@ -3151,6 +3218,7 @@ namespace ABASim.api.Controllers
             PlayerRating currentRating = GetCurrentPlayersRatings();
             int stealBonus = 0;
             int stealStrategy = 0;
+            int stealComm = 0;
 
             if (_endGameStealAddition > 0)
             {
@@ -3218,11 +3286,12 @@ namespace ABASim.api.Controllers
                         temp2.Steals++;
                         int index2 = _awayBoxScores.FindIndex(x => x.Id == checking.PlayerId);
                         _awayBoxScores[index2] = temp2;
+                        stealComm = temp2.Steals;
 
                         // Commentary
-                        commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, stealComm));
                         // Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                        PlayByPlayTracker(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, stealComm), 0);
 
                         _teamPossession = 1;
                         _playerPossession = _random.Next(1, 6); // not sure how to make this correct
@@ -3294,11 +3363,12 @@ namespace ABASim.api.Controllers
                         temp2.Steals++;
                         int index2 = _homeBoxScores.FindIndex(x => x.Id == checking.PlayerId);
                         _homeBoxScores[index2] = temp2;
+                        stealComm = temp2.Steals;
 
                         // Commentary
-                        commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        commentaryData.Add(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, stealComm));
                         // Console.WriteLine(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                        PlayByPlayTracker(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                        PlayByPlayTracker(comm.StealCommentary(GetPlayerFullNameForPosition(_teamPossession, checking.PlayerId), GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, stealComm), 0);
 
                         _teamPossession = 0;
                         _playerPossession = _random.Next(1, 6);
@@ -3324,6 +3394,8 @@ namespace ABASim.api.Controllers
             int isFreeThrows = 0;
             int teamWhichFouled = 2;
             int numberOfShots = 0;
+
+            int foulComm = 0;
 
             // Set the time
             int timeValue = _random.Next(1, 4);
@@ -3359,6 +3431,14 @@ namespace ABASim.api.Controllers
             int fouler = PlayerWhoFouled();
             playerFouling = UpdateFouler(fouler);
             string fouling = playerFouling.FirstName + " " + playerFouling.Surname;
+            BoxScore bs = new BoxScore();
+            if (_teamPossession == 0) {
+                bs = _awayBoxScores.Find(x => x.FirstName == playerFouling.FirstName && x.LastName == playerFouling.Surname);
+                foulComm = bs.Fouls;
+            } else {
+                bs = _homeBoxScores.Find(x => x.FirstName == playerFouling.FirstName && x.LastName == playerFouling.Surname);
+                foulComm = bs.Fouls;
+            }
 
             int result = _random.Next(1, 20);
 
@@ -3369,8 +3449,8 @@ namespace ABASim.api.Controllers
                 {
                     // Home team has been fouled
                     // Commentary
-                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm), 1);
 
                     if (_time <= 120)
                     {
@@ -3392,8 +3472,8 @@ namespace ABASim.api.Controllers
                 {
                     // Away Team has been fouled
                     // Commentary
-                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 1, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm), 1);
 
                     if (_time <= 120)
                     {
@@ -3437,8 +3517,8 @@ namespace ABASim.api.Controllers
                 if (shots <= 8)
                 {
                     // Commentary
-                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm), 0);
 
                     // Todo Injury Check
                     InjuryCheck();
@@ -3453,8 +3533,8 @@ namespace ABASim.api.Controllers
                 }
                 else
                 {
-                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                    commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm));
+                    PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm), 1);
 
                     InjuryCheck();
                     // Need to check if there are any subs to be made
@@ -3619,6 +3699,7 @@ namespace ABASim.api.Controllers
                 if (result <= ftRating)
                 {
                     // Free throw is made
+                    int commPoints = 0;
                     // box score
                     if (_teamPossession == 0)
                     {
@@ -3629,6 +3710,7 @@ namespace ABASim.api.Controllers
                         int index = _homeBoxScores.FindIndex(x => x.Id == currentPlayerRating.PlayerId);
                         _homeBoxScores[index] = temp;
                         _homeScore++;
+                        commPoints = temp.Points;
                     }
                     else
                     {
@@ -3639,13 +3721,14 @@ namespace ABASim.api.Controllers
                         int index = _awayBoxScores.FindIndex(x => x.Id == currentPlayerRating.PlayerId);
                         _awayBoxScores[index] = temp;
                         _awayScore++;
+                        commPoints = temp.Points;
                     }
                     UpdatePlusMinusBoxScore(1);
 
                     // commentary
-                    commentaryData.Add(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                    commentaryData.Add(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commPoints));
                     // Console.WriteLine(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                    PlayByPlayTracker(comm.GetMadeFreeThrowCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commPoints), 1);
                 }
                 else
                 {
@@ -3686,6 +3769,8 @@ namespace ABASim.api.Controllers
             turnoverCounter++;
             _playerRatingPassed = null;
             _playerPassed = null;
+
+            int toComm = 0;
 
             // Update the timer
             int timeValue = _random.Next(1, 6);
@@ -3775,11 +3860,12 @@ namespace ABASim.api.Controllers
                 temp.Turnovers++;
                 int index = _homeBoxScores.FindIndex(x => x.Id == current.PlayerId);
                 _homeBoxScores[index] = temp;
+                toComm = temp.Turnovers;
 
                 // commentary
-                commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, toComm));
                 // Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                PlayByPlayTracker(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                PlayByPlayTracker(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, toComm), 1);
 
                 // change possession
                 _teamPossession = 1;
@@ -3829,11 +3915,12 @@ namespace ABASim.api.Controllers
                 temp.Turnovers++;
                 int index = _awayBoxScores.FindIndex(x => x.Id == current.PlayerId);
                 _awayBoxScores[index] = temp;
+                toComm = temp.Turnovers;
 
                 // commentary
-                commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                commentaryData.Add(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, toComm));
                 // Console.WriteLine(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                PlayByPlayTracker(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                PlayByPlayTracker(comm.TurnoverCommentary(turnoverType, GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, toComm), 1);
 
                 // change possession
                 _teamPossession = 0;
@@ -3884,29 +3971,29 @@ namespace ABASim.api.Controllers
                 // Away team is on defence
                 diff = _homeScore - _awayScore;
 
-                if (diff <= -7 && diff >= 0)
+                if (diff <= 7 && diff >= 0)
                 {
                     // Filtering out blowouts and if the team is winning
-                    if (_time < (_shotClock + 4) && (diff >= 4 && diff <= 6))
+                    if (_time < (_shotClock + 4) && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
                         _endGameStealAddition = 500;
                         // much increased in fouls
-                        _endGameFoulAddition = 1000;
+                        _endGameFoulAddition = 1250;
                     }
-                    else if (_time < _shotClock && (diff >= 1 && diff <= 6))
+                    else if (_time < _shotClock && (diff >= 1 && diff <= 7))
                     {
                         // increased steal chance
                         _endGameStealAddition = 500;
                         // much increased in fouls
-                        _endGameFoulAddition = 1000;
+                        _endGameFoulAddition = 1250;
                     }
-                    else if (_time > _shotClock && _time <= 40 && (diff >= 4 && diff <= 6))
+                    else if (_time > _shotClock && _time <= 40 && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
                         _endGameStealAddition = 500;
                         // much increased in fouls
-                        _endGameFoulAddition = 1000;
+                        _endGameFoulAddition = 1250;
                     }
                 }
             }
@@ -3914,24 +4001,24 @@ namespace ABASim.api.Controllers
             {
                 diff = _awayScore - _homeScore;
 
-                if (diff <= -7 && diff >= 0)
+                if (diff <= 7 && diff >= 0)
                 {
                     // Filtering out blowouts and if the team is winning
-                    if (_time < (_shotClock + 4) && (diff >= 4 && diff <= 6))
+                    if (_time < (_shotClock + 4) && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
                         _endGameStealAddition = 500;
                         // much increased in fouls
                         _endGameFoulAddition = 1000;
                     }
-                    else if (_time < _shotClock && (diff >= 1 && diff <= 6))
+                    else if (_time < _shotClock && (diff >= 1 && diff <= 7))
                     {
                         // increased steal chance
                         _endGameStealAddition = 500;
                         // much increased in fouls
                         _endGameFoulAddition = 1000;
                     }
-                    else if (_time > _shotClock && _time <= 40 && (diff >= 4 && diff <= 6))
+                    else if (_time > _shotClock && _time <= 40 && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
                         _endGameStealAddition = 500;
@@ -3968,18 +4055,18 @@ namespace ABASim.api.Controllers
                     }
                     else if (_time > 4 || _shotClock > 4)
                     {
-                        _endGameShotClockBonus = 400;
+                        _endGameShotClockBonus = 450;
                     }
                     else
                     {
-                        _endGameShotClockBonus = 600;
+                        _endGameShotClockBonus = 650;
                     }
                 }
                 else if (diff > 0)
                 {
                     // home team is losing
                     // losing margins
-                    if (diff == 5 || diff == 6)
+                    if (diff == 5 || diff == 6 || diff == 7)
                     {
                         // Shooting liklihood is increase significantly and 3's are increased most
                         // team will shoot quicker
@@ -4013,7 +4100,7 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            _endGameShotClockBonus = 900;
+                            _endGameShotClockBonus = 1000;
                         }
                     }
                     else if (diff == 4)
@@ -4037,19 +4124,19 @@ namespace ABASim.api.Controllers
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 300;
+                            _endGameShotClockBonus = 400;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 400;
+                            _endGameShotClockBonus = 600;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 800;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 1000;
                         }
 
                         // random between 5 and 10% added to shot result
@@ -4078,15 +4165,15 @@ namespace ABASim.api.Controllers
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 300;
+                            _endGameShotClockBonus = 600;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 800;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 1000;
                         }
                     }
                     else if (diff <= 2)
@@ -4111,15 +4198,15 @@ namespace ABASim.api.Controllers
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 250;
+                            _endGameShotClockBonus = 500;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 450;
+                            _endGameShotClockBonus = 750;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 900;
                         }
                     }
                 }
@@ -4130,7 +4217,7 @@ namespace ABASim.api.Controllers
 
                 if (diff < 0)
                 {
-                    // home team is winning
+                    // away team is losing
                     if (_time > 16 || _shotClock > 16)
                     {
                         _endGameShotClockBonus = -200;
@@ -4145,16 +4232,16 @@ namespace ABASim.api.Controllers
                     }
                     else if (_time > 4 || _shotClock > 4)
                     {
-                        _endGameShotClockBonus = 400;
+                        _endGameShotClockBonus = 450;
                     }
                     else
                     {
-                        _endGameShotClockBonus = 600;
+                        _endGameShotClockBonus = 650;
                     }
                 }
                 else if (diff > 0)
                 {
-                    // home team is losing
+                    // away team is winning
                     // losing margins
                     if (diff == 5 || diff == 6)
                     {
@@ -4190,7 +4277,7 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            _endGameShotClockBonus = 900;
+                            _endGameShotClockBonus = 1000;
                         }
                     }
                     else if (diff == 4)
@@ -4214,19 +4301,19 @@ namespace ABASim.api.Controllers
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 300;
+                            _endGameShotClockBonus = 400;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 400;
+                            _endGameShotClockBonus = 600;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 800;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 1000;
                         }
 
                         // random between 5 and 10% added to shot result
@@ -4255,15 +4342,15 @@ namespace ABASim.api.Controllers
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 300;
+                            _endGameShotClockBonus = 600;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 800;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 1000;
                         }
                     }
                     else if (diff <= 2)
@@ -4288,15 +4375,15 @@ namespace ABASim.api.Controllers
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 250;
+                            _endGameShotClockBonus = 500;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 450;
+                            _endGameShotClockBonus = 750;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 900;
                         }
                     }
                 }
@@ -4364,8 +4451,6 @@ namespace ABASim.api.Controllers
             _playerPassed = null;
             _playerRatingPassed = null;
 
-
-
             switch (_quarter)
             {
                 case 1:
@@ -4430,8 +4515,21 @@ namespace ABASim.api.Controllers
             UpdateTimeInBoxScore(timeValue);
             StaminaUpdates(timeValue);
 
-            Inbounding inbound = new Inbounding();
-            int value = inbound.GetInboundsResult(_random.Next(100));
+            int value = 0;
+            if (_teamPossession == 0) {
+                int total = homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating;
+                int result = _random.Next(total);
+
+                Inbounding inbound = new Inbounding();
+                value = inbound.GetInboundsResult(homePGRatings, homeSGRatings, homeSFRatings, homePFRatings, homeCRatings, result);
+
+            } else {
+                int total = awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating;
+                int result = _random.Next(total);
+                Inbounding inbound = new Inbounding();
+                value = inbound.GetInboundsResult(awayPGRatings, awaySGRatings, awaySFRatings, awayPFRatings, awayCRatings, result);
+            }
+
             _playerPossession = value;
             int passerSet = 0;
 
@@ -6305,7 +6403,8 @@ namespace ABASim.api.Controllers
                 var result = _homeInjuries.Find(x => x.PlayerId == dc.PlayerId);
                 var bs = _homeBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                if ((result == null || result.Severity < 3) && dc.PlayerId != current.Id && bs.Fouls != 6)
+
+                if ((result == null || result.Severity < 3) && dc.PlayerId != current.Id && bs.Fouls < 6)
                 {
                     // Get the player to pass in
                     var player = _homePlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
@@ -6332,7 +6431,7 @@ namespace ABASim.api.Controllers
                     var result2 = _homeInjuries.Find(x => x.PlayerId == dc2.PlayerId);
                     var bs2 = _homeBoxScores.FirstOrDefault(x => x.Id == dc2.PlayerId);
 
-                    if ((result2 == null || result2.Severity < 3) && dc2.PlayerId != current.Id && bs2.Fouls != 6)
+                    if ((result2 == null || result2.Severity < 3) && dc2.PlayerId != current.Id && bs2.Fouls < 6)
                     {
                         // Get the player to pass in
                         var player = _homePlayers.FirstOrDefault(x => x.Id == dc2.PlayerId);
@@ -6359,7 +6458,7 @@ namespace ABASim.api.Controllers
                         var result3 = _homeInjuries.Find(x => x.PlayerId == dc3.PlayerId);
                         var bs3 = _homeBoxScores.FirstOrDefault(x => x.Id == dc3.PlayerId);
 
-                        if ((result3 == null || result3.Severity < 3) && dc3.PlayerId != current.Id && bs3.Fouls != 6)
+                        if ((result3 == null || result3.Severity < 3) && dc3.PlayerId != current.Id && bs3.Fouls < 6)
                         {
                             // Get the player to pass in
                             var player = _homePlayers.FirstOrDefault(x => x.Id == dc3.PlayerId);
@@ -6415,7 +6514,7 @@ namespace ABASim.api.Controllers
                 var result = _awayInjuries.Find(x => x.PlayerId == dc.PlayerId);
                 var bs = _awayBoxScores.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                if ((result == null || result.Severity < 3) && dc.PlayerId != current.Id && bs.Fouls != 6)
+                if ((result == null || result.Severity < 3) && dc.PlayerId != current.Id && bs.Fouls < 6)
                 {
                     // Get the player to pass in
                     var player = _awayPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
@@ -6442,7 +6541,7 @@ namespace ABASim.api.Controllers
                     var result2 = _homeInjuries.Find(x => x.PlayerId == dc2.PlayerId);
                     var bs2 = _homeBoxScores.FirstOrDefault(x => x.Id == dc2.PlayerId);
 
-                    if ((result2 == null || result2.Severity < 3) && dc2.PlayerId != current.Id && bs2.Fouls != 6)
+                    if ((result2 == null || result2.Severity < 3) && dc2.PlayerId != current.Id && bs2.Fouls < 6)
                     {
                         // Get the player to pass in
                         var player = _homePlayers.FirstOrDefault(x => x.Id == dc2.PlayerId);
@@ -6469,7 +6568,7 @@ namespace ABASim.api.Controllers
                         var result3 = _homeInjuries.Find(x => x.PlayerId == dc3.PlayerId);
                         var bs3 = _homeBoxScores.FirstOrDefault(x => x.Id == dc3.PlayerId);
 
-                        if ((result3 == null || result3.Severity < 3) && dc3.PlayerId != current.Id && bs3.Fouls != 6)
+                        if ((result3 == null || result3.Severity < 3) && dc3.PlayerId != current.Id && bs3.Fouls < 6)
                         {
                             // Get the player to pass in
                             var player = _homePlayers.FirstOrDefault(x => x.Id == dc3.PlayerId);
@@ -6497,7 +6596,6 @@ namespace ABASim.api.Controllers
                 }
             }
         }
-
 
 
         public int ScoreDiffCheck()

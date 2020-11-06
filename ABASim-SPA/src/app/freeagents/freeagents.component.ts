@@ -13,7 +13,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { SignedPlayer } from '../_models/signedPlayer';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerInjury } from '../_models/playerInjury';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-freeagents',
@@ -31,6 +31,22 @@ export class FreeagentsComponent implements OnInit {
   searchForm: FormGroup;
   positionFilter = 0;
   displayPaging = 0;
+
+  contractYears = 1;
+  year1Amount = 1000000;
+  year2Amount = 0;
+  year3Amount = 0;
+  year4Amount = 0;
+  year5Amount = 0;
+  guarenteed1 = true;
+  guarenteed2 = 0;
+  guarenteed3 = 0;
+  guarenteed4 = 0;
+  guarenteed5 = 0;
+  option = 1;
+
+  selectControl: FormControl = new FormControl();
+  optionControl: FormControl = new FormControl();
 
   constructor(private alertify: AlertifyService, private playerService: PlayerService, private teamService: TeamService,
               private authService: AuthService, private router: Router, private transferService: TransferService,
@@ -185,5 +201,41 @@ export class FreeagentsComponent implements OnInit {
     this.searchForm = this.fb.group({
       filter: ['']
     });
+  }
+
+  yearsChanged() {
+    this.contractYears = this.selectControl.value;
+  }
+
+  offerContract() {
+    console.log('ash');
+  }
+
+  minAmount() {
+    if (this.contractYears === 1) {
+      this.year1Amount = 1000000;
+    } else if (this.contractYears === 2) {
+      this.year1Amount = 1000000;
+      this.year2Amount = 1000000;
+    } else if (this.contractYears === 3) {
+      this.year1Amount = 1000000;
+      this.year2Amount = 1000000;
+      this.year3Amount = 1000000;
+    } else if (this.contractYears === 4) {
+      this.year1Amount = 1000000;
+      this.year2Amount = 1000000;
+      this.year3Amount = 1000000;
+      this.year4Amount = 1000000;
+    } else if (this.contractYears === 5) {
+      this.year1Amount = 1000000;
+      this.year2Amount = 1000000;
+      this.year3Amount = 1000000;
+      this.year4Amount = 1000000;
+      this.year5Amount = 1000000;
+    }
+  }
+
+  maxAmount() {
+
   }
 }

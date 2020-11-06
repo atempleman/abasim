@@ -130,7 +130,7 @@ namespace ABASim.api.Controllers
             }
         }
 
-        public string GetTwoPointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int assist, string assistPlayer)
+        public string GetTwoPointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int assist, string assistPlayer, int commPoints, int commAsts)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -148,20 +148,24 @@ namespace ABASim.api.Controllers
             if(assist == 1)
             {
                 assistComm = " The shot was assisted by " + assistPlayer;
+
+                if (commAsts > 0) {
+                    assistComm = assistComm + " (" + commAsts + " asts)";
+                }
             }
 
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the mid-range jump shot." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the mid-range jump shot." + " (" + commPoints + " pts)" + assistComm;
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A strong drive to the rim results in 2 points for " + playername + "." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A strong drive to the rim results in 2 points for " + playername + "." + " (" + commPoints + " pts)" + assistComm;
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested shot in the paint by " + playername + " is good." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested shot in the paint by " + playername + " is good." + " (" + commPoints + " pts)" + assistComm;
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " An easy drive to the hoop for " + playername + " for an easy 2." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " An easy drive to the hoop for " + playername + " for an easy 2." + " (" + commPoints + " pts)" + assistComm;
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " with the stepback for 2." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " with the stepback for 2." + "(" + commPoints + " pts)" + assistComm;
                 default:
                     return "Error has occured in the GetTwoPointMakeCommentary";
             }
@@ -198,7 +202,7 @@ namespace ABASim.api.Controllers
             }
         }
 
-        public string GetThreePointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int assist, string assistPlayer)
+        public string GetThreePointMakeCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int assist, string assistPlayer, int commPoints, int commAsts)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -216,20 +220,24 @@ namespace ABASim.api.Controllers
             if(assist == 1)
             {
                 assistComm = " The shot was assisted by " + assistPlayer;
+
+                if (commAsts > 0) {
+                    assistComm = assistComm + " (" + commAsts + " asts)";
+                }
             }
             
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the corner three." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " makes the corner three." + " (" + commPoints + " pts)" + assistComm;
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A spectacular step-back 3 by " + playername + "." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A spectacular step-back 3 by " + playername + "." + " (" + commPoints + " pts)" + assistComm;
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested 3 ball by " + playername + " is good." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A contested 3 ball by " + playername + " is good." + " (" + commPoints + " pts)" + assistComm;
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A wide open 3 from the elbow for " + playername + " is good." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A wide open 3 from the elbow for " + playername + " is good." + " (" + commPoints + " pts)" + assistComm;
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " hits the 3." + assistComm;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " hits the 3." + " (" + commPoints + " pts)" + assistComm;
                 default:
                     return "Error has occured in the GetThreePointMakeCommentary";
             }
@@ -266,12 +274,14 @@ namespace ABASim.api.Controllers
             }
         }
 
-        public string GetOffensiveReboundCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string GetOffensiveReboundCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int commOReb, int commDReb)
         {
             int minutes = time / 60;
             int seconds = time % 60;
             Random random = new Random();
             int choice = random.Next(0, 5);
+
+            int commTotal = commDReb + commOReb;
 
             string scoreComm = "";
             if (possession == 0) {
@@ -283,26 +293,28 @@ namespace ABASim.api.Controllers
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A great offensive rebound is reeled in by " + playername;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A great offensive rebound is reeled in by " + playername + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A tipped out offensive rebound is controlled by " + playername;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A tipped out offensive rebound is controlled by " + playername + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A strong offensive rebound is hauled in by " + playername;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A strong offensive rebound is hauled in by " + playername + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " gets the offensive rebound";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " gets the offensive rebound" + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The offensive rebound is gathered by " + playername;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The offensive rebound is gathered by " + playername + " (off: " + commOReb + ", def: " + commDReb + ")";
                 default:
                     return "Error in offensive rebound commentary";
             }
         }
 
-        public string GetDefensiveReboundCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string GetDefensiveReboundCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int commOReb, int commDReb)
         {
             int minutes = time / 60;
             int seconds = time % 60;
             Random random = new Random();
             int choice = random.Next(0, 5);
+
+            int commTotal = commDReb + commOReb;
             
             string scoreComm = "";
             if (possession == 0) {
@@ -314,21 +326,21 @@ namespace ABASim.api.Controllers
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The defensive rebound is gathered by " + playername;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The defensive rebound is gathered by " + playername + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " controls the defensive rebound";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " " + playername + " controls the defensive rebound" + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm +" A strong defensive rebound in traffic by " + playername;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm +" A strong defensive rebound in traffic by " + playername + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm +" The defensive rebound is tipped around and controlled by " + playername;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm +" The defensive rebound is tipped around and controlled by " + playername + " (off: " + commOReb + ", def: " + commDReb + ")";
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm +" A strong box out leads to " + playername + " getting the defensive rebound";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm +" A strong box out leads to " + playername + " getting the defensive rebound" + " (off: " + commOReb + ", def: " + commDReb + ")";
                 default:
                     return "Error in defensive rebound commentary";
             }
         }
 
-        public string BlockCommentary(string player, string lostPlayer, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string BlockCommentary(string player, string lostPlayer, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int blockComm)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -345,21 +357,21 @@ namespace ABASim.api.Controllers
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + player + " has blocked " + lostPlayer + " empathically!";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + player + " has blocked " + lostPlayer + " empathically! (" + blockComm + " blks)";
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The shot by " + lostPlayer + " is blocked by " + player;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The shot by " + lostPlayer + " is blocked by " + player + "(" + blockComm + " blks)";
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The shot by " + lostPlayer + " is swatted away by " + player;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The shot by " + lostPlayer + " is swatted away by " + player + "(" + blockComm + " blks)";
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm  + player + " comes from the weakside to block " + lostPlayer + "'s shot attempt.";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm  + player + " comes from the weakside to block " + lostPlayer + "'s shot attempt. (" + blockComm + " blks)";
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm  + "A strong contest on " + lostPlayer + " sees his shot blocked by " + player;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm  + "A strong contest on " + lostPlayer + " sees his shot blocked by " + player + "(" + blockComm + " blks)";;
                 default:
                     return "Error in Block Commentary";
             }
         }
     
-        public string StealCommentary(string player, string lostPlayer, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string StealCommentary(string player, string lostPlayer, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int stealComm)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -376,21 +388,21 @@ namespace ABASim.api.Controllers
             switch (choice)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + player + " has picked " + lostPlayer + "'s clean!";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + player + " has picked " + lostPlayer + "'s clean!" + " (" + stealComm + "stls)";
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The pass is intercepted by " + player;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The pass is intercepted by " + player + " (" + stealComm + "stls)";
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The ball is fumbled and taken away by " + player;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "The ball is fumbled and taken away by " + player + " (" + stealComm + "stls)";
                 case 3:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + lostPlayer + " throws a sloppy pass which is stolen by " + player;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + lostPlayer + " throws a sloppy pass which is stolen by " + player + " (" + stealComm + "stls)";
                 case 4:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "A great steal by " + player;
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "A great steal by " + player + " (" + stealComm + "stls)";
                 default:
                     return "Error in Steal Commentary";
             }
         }
 
-        public string TurnoverCommentary(int type, string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string TurnoverCommentary(int type, string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int toComm)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -407,17 +419,17 @@ namespace ABASim.api.Controllers
             switch (type)
             {
                 case 0:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " has thrown the ball out of bounds";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " has thrown the ball out of bounds" + " (" + toComm + " tovs)";
                 case 1:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "That's called travel on " + playername + ".";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "That's called travel on " + playername + "." + " (" + toComm + " tovs)";
                 case 2:
-                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "That is an offensive foul against " + playername + ".";
+                    return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "That is an offensive foul against " + playername + "." + " (" + toComm + " tovs)";
                 default:
                     return "Error in turnover commentary";
             }
         }
 
-        public string FoulCommentary(string playername, string foulingPlayer, int type, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string FoulCommentary(string playername, string foulingPlayer, int type, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int foulComm)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -438,11 +450,11 @@ namespace ABASim.api.Controllers
                     switch (choice)
                     {
                         case 0:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + foulingPlayer + " fouls " + playername + " on the drive.";
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + foulingPlayer + " fouls " + playername + " on the drive." + " (" + foulComm + " fls)";
                         case 1:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + foulingPlayer + " is too aggressive on the steal attempt and is called for the foul on " + playername;
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + foulingPlayer + " is too aggressive on the steal attempt and is called for the foul on " + playername + " (" + foulComm + " fls)";
                         case 2:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " craftily draws the non-shooting foul on " + foulingPlayer;
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " craftily draws the non-shooting foul on " + foulingPlayer + " (" + foulComm + " fls)";
                         default:
                             return "Error in Foul Commentary - Non-shooting foul";
                     }
@@ -451,11 +463,11 @@ namespace ABASim.api.Controllers
                     switch (choice)
                     {
                         case 0:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A clever pump fake inside by " + playername + " draws the foul on " + foulingPlayer + ".";
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " A clever pump fake inside by " + playername + " draws the foul on " + foulingPlayer + "." + " (" + foulComm + " fls)";
                         case 1:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " shoots the mid-range jumpshot and is fouled by " + foulingPlayer + ". The shot is no good.";
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " shoots the mid-range jumpshot and is fouled by " + foulingPlayer + ". The shot is no good." + " (" + foulComm + " fls)";
                         case 2:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " pulls up to shoot and is fouled from behind by " + foulingPlayer + ". Two shots coming for " + playername;
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " pulls up to shoot and is fouled from behind by " + foulingPlayer + ". Two shots coming for " + playername + " (" + foulComm + " fls)";
                         default:
                             return "Error in Foul Commentary - 2 shooting foul";
                     }
@@ -464,11 +476,11 @@ namespace ABASim.api.Controllers
                     switch (choice)
                     {
                         case 0:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " shoots the the straight on 3 and is fouled by " + foulingPlayer + ". The shot is no good.";
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " shoots the the straight on 3 and is fouled by " + foulingPlayer + ". The shot is no good." + " (" + foulComm + " fls)";
                         case 1:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " pulls up to shoot the 3 and is fouled from behind by " + foulingPlayer + ". Three shots coming for " + playername;
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " pulls up to shoot the 3 and is fouled from behind by " + foulingPlayer + ". Three shots coming for " + playername + " (" + foulComm + " fls)";
                         case 2:
-                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " fires up the 3 which is way off, but a foul has been called against " + foulingPlayer + ".";
+                            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " fires up the 3 which is way off, but a foul has been called against " + foulingPlayer + "." + " (" + foulComm + " fls)";
                         default:
                             return "Error in Foul Commentary - 3 shooting foul";
                     }
@@ -492,7 +504,7 @@ namespace ABASim.api.Controllers
             return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + "This will be a shooting foul due to being in the penalty.";
         }
 
-        public string GetMadeFreeThrowCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
+        public string GetMadeFreeThrowCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int commPoints)
         {
             int minutes = time / 60;
             int seconds = time % 60;
@@ -504,7 +516,7 @@ namespace ABASim.api.Controllers
                 scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
             }
 
-            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " makes the free throw";
+            return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + playername + " makes the free throw" + " (" + commPoints + " pts)";
         }
 
         public string GetMissedFreeThrowCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName)
