@@ -301,9 +301,12 @@ namespace ABASim.api.Controllers
             foreach (var injury in _homeInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0) {
+                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0)
+                {
                     // Player is pre-existing injured
-                } else {
+                }
+                else
+                {
                     if (injury.Severity == 1)
                     {
                         pi.PlayerId = injury.PlayerId;
@@ -474,9 +477,12 @@ namespace ABASim.api.Controllers
             foreach (var injury in _homeInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0) {
+                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0)
+                {
                     // Player is pre-existing injured
-                } else {
+                }
+                else
+                {
                     if (injury.Severity == 1)
                     {
                         pi.PlayerId = injury.PlayerId;
@@ -530,9 +536,12 @@ namespace ABASim.api.Controllers
             foreach (var injury in _awayInjuries)
             {
                 PlayerInjury pi = new PlayerInjury();
-                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0) {
+                if (injury.StartQuarterImpact == 1 && injury.StartTimeImpact == 720 && injury.EndQuarterImpact == 4 && injury.EndTimeImpact == 0)
+                {
                     // Player is pre-existing injured
-                } else {
+                }
+                else
+                {
                     if (injury.Severity == 1)
                     {
                         pi.PlayerId = injury.PlayerId;
@@ -658,7 +667,8 @@ namespace ABASim.api.Controllers
             _homeStrategy = await _repo.GetTeamStrategies(_homeTeam.Id);
             _awayStrategy = await _repo.GetTeamStrategies(_awayTeam.Id);
 
-            if (_homeStrategy != null) {
+            if (_homeStrategy != null)
+            {
                 // Set offensive settings
                 switch (_homeStrategy.OffensiveStrategyId)
                 {
@@ -727,7 +737,8 @@ namespace ABASim.api.Controllers
                 }
             }
 
-            if (_awayStrategy != null) {
+            if (_awayStrategy != null)
+            {
                 switch (_awayStrategy.OffensiveStrategyId)
                 {
                     case 2:
@@ -984,16 +995,20 @@ namespace ABASim.api.Controllers
         {
             var ad = _awayDepth.FindAll(x => x.Depth == 1);
             var ad2 = _awayDepth.FindAll(x => x.Depth == 2);
+            var ad3 = _awayDepth.FindAll(x => x.Depth == 3);
             var hd = _homeDepth.FindAll(x => x.Depth == 1);
             var hd2 = _homeDepth.FindAll(x => x.Depth == 2);
+            var hd3 = _homeDepth.FindAll(x => x.Depth == 3);
 
             for (int i = 0; i < ad.Count; i++)
             {
                 int index;
+                int onCourt = 0;
                 switch (ad[i].Position)
                 {
                     case 1:
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
                         {
                             awayPG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1001,10 +1016,21 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            ad2 = _awayDepth.FindAll(x => x.Depth == 2);
-                            awayPG = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
-                            awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
-                            awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            // Now need to check the next tier
+                            // ad2 = _awayDepth.FindAll(x => x.Depth == 2);
+                            onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            {
+                                awayPG = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
+                                awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
+                                awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            }
+                            else
+                            {
+                                awayPG = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                            }
                         }
 
                         StaminaTrack awatSTPG = _awayStaminas.Find(x => x.PlayerId == awayPG.Id);
@@ -1013,7 +1039,8 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awatSTPG;
                         break;
                     case 2:
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
                         {
                             awaySG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1021,10 +1048,19 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            ad2 = _awayDepth.FindAll(x => x.Depth == 2);
-                            awaySG = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
-                            awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
-                            awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            {
+                                awaySG = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
+                                awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
+                                awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            }
+                            else
+                            {
+                                awaySG = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                            }
                         }
 
                         StaminaTrack awaySTSG = _awayStaminas.Find(x => x.PlayerId == awaySG.Id);
@@ -1033,7 +1069,8 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTSG;
                         break;
                     case 3:
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
                         {
                             awaySF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1041,10 +1078,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            ad2 = _awayDepth.FindAll(x => x.Depth == 2);
-                            awaySF = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
-                            awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
-                            awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            {
+                                awaySF = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
+                                awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
+                                awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            }
+                            else
+                            {
+                                awaySF = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack awaySTSF = _awayStaminas.Find(x => x.PlayerId == awaySF.Id);
@@ -1053,7 +1100,8 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTSF;
                         break;
                     case 4:
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
                         {
                             awayPF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1061,10 +1109,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            ad2 = _awayDepth.FindAll(x => x.Depth == 2);
-                            awayPF = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
-                            awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
-                            awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            {
+                                awayPF = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
+                                awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
+                                awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            }
+                            else
+                            {
+                                awayPF = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack awaySTPF = _awayStaminas.Find(x => x.PlayerId == awayPF.Id);
@@ -1073,7 +1131,8 @@ namespace ABASim.api.Controllers
                         _awayStaminas[index] = awaySTPF;
                         break;
                     case 5:
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
                         {
                             awayC = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayCRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1081,10 +1140,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            ad2 = _awayDepth.FindAll(x => x.Depth == 2);
-                            awayC = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
-                            awayCRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
-                            awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            {
+                                awayC = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
+                                awayCRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
+                                awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad2[i].PlayerId);
+                            }
+                            else
+                            {
+                                awayC = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                awayCRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack awaySTC = _awayStaminas.Find(x => x.PlayerId == awayC.Id);
@@ -1100,10 +1169,12 @@ namespace ABASim.api.Controllers
             for (int i = 0; i < hd.Count; i++)
             {
                 int index;
+                int onCourt = 0;
                 switch (hd[i].Position)
                 {
                     case 1:
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
                         {
                             homePG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1111,10 +1182,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            hd2 = _homeDepth.FindAll(x => x.Depth == 2);
-                            homePG = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
-                            homePGRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
-                            homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            {
+                                homePG = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
+                                homePGRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
+                                homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            }
+                            else
+                            {
+                                homePG = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                homePGRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack homeSTPG = _homeStaminas.Find(x => x.PlayerId == homePG.Id);
@@ -1123,7 +1204,8 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTPG;
                         break;
                     case 2:
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
                         {
                             homeSG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1131,10 +1213,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            hd2 = _homeDepth.FindAll(x => x.Depth == 2);
-                            homeSG = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
-                            homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
-                            homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
+                            {
+                                homeSG = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
+                                homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
+                                homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            }
+                            else
+                            {
+                                homeSG = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack homeSTSG = _homeStaminas.Find(x => x.PlayerId == homeSG.Id);
@@ -1143,7 +1235,8 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTSG;
                         break;
                     case 3:
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);    
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
                         {
                             homeSF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1151,10 +1244,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            hd2 = _homeDepth.FindAll(x => x.Depth == 2);
-                            homeSF = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
-                            homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
-                            homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            {
+                                homeSF = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
+                                homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
+                                homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            }
+                            else
+                            {
+                                homeSF = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack homeSTSF = _homeStaminas.Find(x => x.PlayerId == homeSF.Id);
@@ -1163,7 +1266,8 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTSF;
                         break;
                     case 4:
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
                         {
                             homePF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homePFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1171,10 +1275,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            hd2 = _homeDepth.FindAll(x => x.Depth == 2);
-                            homePF = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
-                            homePFRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
-                            homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            {
+                                homePF = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
+                                homePFRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
+                                homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            }
+                            else
+                            {
+                                homePF = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                homePFRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack homeSTPF = _homeStaminas.Find(x => x.PlayerId == homePF.Id);
@@ -1183,7 +1297,8 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTPF;
                         break;
                     case 5:
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId))
+                        onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
                         {
                             homeC = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeCRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1191,10 +1306,20 @@ namespace ABASim.api.Controllers
                         }
                         else
                         {
-                            hd2 = _homeDepth.FindAll(x => x.Depth == 2);
-                            homeC = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
-                            homeCRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
-                            homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            {
+                                homeC = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
+                                homeCRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
+                                homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd2[i].PlayerId);
+                            }
+                            else
+                            {
+                                homeC = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                homeCRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                            }
+
                         }
 
                         StaminaTrack homeSTC = _homeStaminas.Find(x => x.PlayerId == homeC.Id);
@@ -1391,12 +1516,15 @@ namespace ABASim.api.Controllers
             int threeTendancyStrategy = 0;
             int turnoverStrategy = 0;
 
-            if (_teamPossession == 0) {
+            if (_teamPossession == 0)
+            {
                 foulsDrawnStrategy = _homeFoulsDrawnStrategy;
                 twoTendancyStrategy = _homeTwoTendancyStrategy;
                 threeTendancyStrategy = _homeThreeTendancyStrategy;
                 turnoverStrategy = _homeTurnoversStrategy;
-            } else {
+            }
+            else
+            {
                 foulsDrawnStrategy = _awayFoulsDrawnStrategy;
                 twoTendancyStrategy = _awayTwoTendancyStrategy;
                 threeTendancyStrategy = _awayThreeTendancyStrategy;
@@ -1617,49 +1745,74 @@ namespace ABASim.api.Controllers
             int sgBonus = 0;
             int sfBonus = 0;
             int pfBonus = 0;
-            int cBonus = 0;           
+            int cBonus = 0;
 
             // Check 
             if (_teamPossession == 0)
             {
                 // Need to check the go to player bonus
-                if (homePG.Id == _homeSettings[0].GoToPlayerOne) {
+                if (homePG.Id == _homeSettings[0].GoToPlayerOne)
+                {
                     pgBonus = 30;
-                } else if (homePG.Id == _homeSettings[0].GoToPlayerTwo) {
+                }
+                else if (homePG.Id == _homeSettings[0].GoToPlayerTwo)
+                {
                     pgBonus = 20;
-                } else if (homePG.Id == _homeSettings[0].GoToPlayerThree) {
+                }
+                else if (homePG.Id == _homeSettings[0].GoToPlayerThree)
+                {
                     pgBonus = 10;
                 }
 
-                if (homeSG.Id == _homeSettings[0].GoToPlayerOne) {
+                if (homeSG.Id == _homeSettings[0].GoToPlayerOne)
+                {
                     sgBonus = 30;
-                } else if (homeSG.Id == _homeSettings[0].GoToPlayerTwo) {
+                }
+                else if (homeSG.Id == _homeSettings[0].GoToPlayerTwo)
+                {
                     sgBonus = 20;
-                } else if (homeSG.Id == _homeSettings[0].GoToPlayerThree) {
+                }
+                else if (homeSG.Id == _homeSettings[0].GoToPlayerThree)
+                {
                     sgBonus = 10;
                 }
 
-                if (homeSF.Id == _homeSettings[0].GoToPlayerOne) {
+                if (homeSF.Id == _homeSettings[0].GoToPlayerOne)
+                {
                     sfBonus = 30;
-                } else if (homeSF.Id == _homeSettings[0].GoToPlayerTwo) {
+                }
+                else if (homeSF.Id == _homeSettings[0].GoToPlayerTwo)
+                {
                     sfBonus = 20;
-                } else if (homeSF.Id == _homeSettings[0].GoToPlayerThree) {
+                }
+                else if (homeSF.Id == _homeSettings[0].GoToPlayerThree)
+                {
                     sfBonus = 10;
                 }
 
-                if (homePF.Id == _homeSettings[0].GoToPlayerOne) {
+                if (homePF.Id == _homeSettings[0].GoToPlayerOne)
+                {
                     pfBonus = 30;
-                } else if (homePF.Id == _homeSettings[0].GoToPlayerTwo) {
+                }
+                else if (homePF.Id == _homeSettings[0].GoToPlayerTwo)
+                {
                     pfBonus = 20;
-                } else if (homePF.Id == _homeSettings[0].GoToPlayerThree) {
+                }
+                else if (homePF.Id == _homeSettings[0].GoToPlayerThree)
+                {
                     pfBonus = 10;
                 }
 
-                if (homeC.Id == _homeSettings[0].GoToPlayerOne) {
+                if (homeC.Id == _homeSettings[0].GoToPlayerOne)
+                {
                     cBonus = 30;
-                } else if (homeC.Id == _homeSettings[0].GoToPlayerTwo) {
+                }
+                else if (homeC.Id == _homeSettings[0].GoToPlayerTwo)
+                {
                     cBonus = 20;
-                } else if (homeC.Id == _homeSettings[0].GoToPlayerThree) {
+                }
+                else if (homeC.Id == _homeSettings[0].GoToPlayerThree)
+                {
                     cBonus = 10;
                 }
 
@@ -1684,7 +1837,7 @@ namespace ABASim.api.Controllers
                         totalUsage = homePGUsageRating + homeSGUsageRating + homeSFUsageRating + homeCUsageRating;
                         break;
                     case 5:
-                        totalUsage = homePGUsageRating+ homeSFUsageRating + homePFUsageRating + homeSGUsageRating;
+                        totalUsage = homePGUsageRating + homeSFUsageRating + homePFUsageRating + homeSGUsageRating;
                         break;
                     default:
                         break;
@@ -1719,43 +1872,68 @@ namespace ABASim.api.Controllers
             else
             {
                 // Need to check the go to player bonus
-                if (awayPG.Id == _awaySettings[0].GoToPlayerOne) {
+                if (awayPG.Id == _awaySettings[0].GoToPlayerOne)
+                {
                     pgBonus = 30;
-                } else if (awayPG.Id == _awaySettings[0].GoToPlayerTwo) {
+                }
+                else if (awayPG.Id == _awaySettings[0].GoToPlayerTwo)
+                {
                     pgBonus = 20;
-                } else if (awayPG.Id == _awaySettings[0].GoToPlayerThree) {
+                }
+                else if (awayPG.Id == _awaySettings[0].GoToPlayerThree)
+                {
                     pgBonus = 10;
                 }
 
-                if (awaySG.Id == _awaySettings[0].GoToPlayerOne) {
+                if (awaySG.Id == _awaySettings[0].GoToPlayerOne)
+                {
                     sgBonus = 30;
-                } else if (awaySG.Id == _awaySettings[0].GoToPlayerTwo) {
+                }
+                else if (awaySG.Id == _awaySettings[0].GoToPlayerTwo)
+                {
                     sgBonus = 20;
-                } else if (awaySG.Id == _awaySettings[0].GoToPlayerThree) {
+                }
+                else if (awaySG.Id == _awaySettings[0].GoToPlayerThree)
+                {
                     sgBonus = 10;
                 }
 
-                if (awaySF.Id == _awaySettings[0].GoToPlayerOne) {
+                if (awaySF.Id == _awaySettings[0].GoToPlayerOne)
+                {
                     sfBonus = 30;
-                } else if (awaySF.Id == _awaySettings[0].GoToPlayerTwo) {
+                }
+                else if (awaySF.Id == _awaySettings[0].GoToPlayerTwo)
+                {
                     sfBonus = 20;
-                } else if (awaySF.Id == _awaySettings[0].GoToPlayerThree) {
+                }
+                else if (awaySF.Id == _awaySettings[0].GoToPlayerThree)
+                {
                     sfBonus = 10;
                 }
 
-                if (awayPF.Id == _awaySettings[0].GoToPlayerOne) {
+                if (awayPF.Id == _awaySettings[0].GoToPlayerOne)
+                {
                     pfBonus = 30;
-                } else if (awayPF.Id == _awaySettings[0].GoToPlayerTwo) {
+                }
+                else if (awayPF.Id == _awaySettings[0].GoToPlayerTwo)
+                {
                     pfBonus = 20;
-                } else if (awayPF.Id == _awaySettings[0].GoToPlayerThree) {
+                }
+                else if (awayPF.Id == _awaySettings[0].GoToPlayerThree)
+                {
                     pfBonus = 10;
                 }
 
-                if (awayC.Id == _awaySettings[0].GoToPlayerOne) {
+                if (awayC.Id == _awaySettings[0].GoToPlayerOne)
+                {
                     cBonus = 30;
-                } else if (awayC.Id == _awaySettings[0].GoToPlayerTwo) {
+                }
+                else if (awayC.Id == _awaySettings[0].GoToPlayerTwo)
+                {
                     cBonus = 20;
-                } else if (awayC.Id == _awaySettings[0].GoToPlayerThree) {
+                }
+                else if (awayC.Id == _awaySettings[0].GoToPlayerThree)
+                {
                     cBonus = 10;
                 }
 
@@ -2172,12 +2350,17 @@ namespace ABASim.api.Controllers
                 int result = _random.Next(1, 1001);
 
                 int twoPercStrategy = 0;
-                if (_teamPossession == 0) {
-                    if (_homeTwoPercentageStrategy != 0) {
+                if (_teamPossession == 0)
+                {
+                    if (_homeTwoPercentageStrategy != 0)
+                    {
                         twoPercStrategy = _homeTwoPercentageStrategy * -1;
                     }
-                } else {
-                    if (_awayTwoPercentageStrategy != 0) {
+                }
+                else
+                {
+                    if (_awayTwoPercentageStrategy != 0)
+                    {
                         twoPercStrategy = _awayTwoPercentageStrategy * -1;
                     }
                 }
@@ -2209,9 +2392,12 @@ namespace ABASim.api.Controllers
                     int assistRating = (_playerRatingPassed.AssitRating * 5);
 
                     int assistStrategy = 0;
-                    if (_teamPossession == 0) {
+                    if (_teamPossession == 0)
+                    {
                         assistStrategy = _homeAssistStrategy;
-                    } else {
+                    }
+                    else
+                    {
                         assistStrategy = _awayAssistStrategy;
                     }
                     assistRating = assistRating + assistStrategy;
@@ -2413,12 +2599,17 @@ namespace ABASim.api.Controllers
                 int result = _random.Next(1, 1001);
 
                 int threePercStrategy = 0;
-                if (_teamPossession == 0) {
-                    if (_homeThreePercentageStrategy != 0) {
+                if (_teamPossession == 0)
+                {
+                    if (_homeThreePercentageStrategy != 0)
+                    {
                         threePercStrategy = _homeThreePercentageStrategy * -1;
                     }
-                } else {
-                    if (_awayThreePercentageStrategy != 0) {
+                }
+                else
+                {
+                    if (_awayThreePercentageStrategy != 0)
+                    {
                         threePercStrategy = _awayThreePercentageStrategy * -1;
                     }
                 }
@@ -2448,15 +2639,18 @@ namespace ABASim.api.Controllers
                 if (_playerRatingPassed != null)
                 {
                     int assistRating = (_playerRatingPassed.AssitRating * 5); // Factor applied to increase the low Assist to Pass rate for low pass counts in sim
-                    
+
                     int assistStrategy = 0;
-                    if (_teamPossession == 0) {
+                    if (_teamPossession == 0)
+                    {
                         assistStrategy = _homeAssistStrategy;
-                    } else {
+                    }
+                    else
+                    {
                         assistStrategy = _awayAssistStrategy;
                     }
                     assistRating = assistRating + assistStrategy;
-                    
+
                     int assistResult = _random.Next(0, 1000);
 
                     if (assistResult <= assistRating)
@@ -3208,7 +3402,7 @@ namespace ABASim.api.Controllers
                     // Display Defensive Rebound Commentary
                     commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
                     // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot,commOReb, commDReb), 0);
+                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
                 }
             }
         }
@@ -3432,10 +3626,13 @@ namespace ABASim.api.Controllers
             playerFouling = UpdateFouler(fouler);
             string fouling = playerFouling.FirstName + " " + playerFouling.Surname;
             BoxScore bs = new BoxScore();
-            if (_teamPossession == 0) {
+            if (_teamPossession == 0)
+            {
                 bs = _awayBoxScores.Find(x => x.FirstName == playerFouling.FirstName && x.LastName == playerFouling.Surname);
                 foulComm = bs.Fouls;
-            } else {
+            }
+            else
+            {
                 bs = _homeBoxScores.Find(x => x.FirstName == playerFouling.FirstName && x.LastName == playerFouling.Surname);
                 foulComm = bs.Fouls;
             }
@@ -3521,12 +3718,12 @@ namespace ABASim.api.Controllers
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 2, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm), 0);
 
                     // Todo Injury Check
-                    InjuryCheck();
-                    InjuryStaminaChecks();
+                    // InjuryCheck();
+                    // InjuryStaminaChecks();
 
                     // Need to check if there are any subs to be made
                     // SubCheckFT();
-                    CheckForSubs(1);
+                    // CheckForSubs(1);
 
                     numberOfShots = 2;
                     isFreeThrows = 1;
@@ -3536,10 +3733,10 @@ namespace ABASim.api.Controllers
                     commentaryData.Add(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm));
                     PlayByPlayTracker(comm.FoulCommentary(GetCurrentPlayerFullName(), fouling, 3, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, foulComm), 1);
 
-                    InjuryCheck();
+                    // InjuryCheck();
                     // Need to check if there are any subs to be made
                     // SubCheckFT();
-                    CheckForSubs(0);
+                    // CheckForSubs(0);
 
                     numberOfShots = 3;
                     isFreeThrows = 1;
@@ -3977,23 +4174,23 @@ namespace ABASim.api.Controllers
                     if (_time < (_shotClock + 4) && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
-                        _endGameStealAddition = 500;
+                        _endGameStealAddition = 400;
                         // much increased in fouls
-                        _endGameFoulAddition = 1250;
+                        _endGameFoulAddition = 1500;
                     }
                     else if (_time < _shotClock && (diff >= 1 && diff <= 7))
                     {
                         // increased steal chance
-                        _endGameStealAddition = 500;
+                        _endGameStealAddition = 400;
                         // much increased in fouls
-                        _endGameFoulAddition = 1250;
+                        _endGameFoulAddition = 1560;
                     }
                     else if (_time > _shotClock && _time <= 40 && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
-                        _endGameStealAddition = 500;
+                        _endGameStealAddition = 400;
                         // much increased in fouls
-                        _endGameFoulAddition = 1250;
+                        _endGameFoulAddition = 1500;
                     }
                 }
             }
@@ -4007,23 +4204,23 @@ namespace ABASim.api.Controllers
                     if (_time < (_shotClock + 4) && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
-                        _endGameStealAddition = 500;
+                        _endGameStealAddition = 400;
                         // much increased in fouls
-                        _endGameFoulAddition = 1000;
+                        _endGameFoulAddition = 1500;
                     }
                     else if (_time < _shotClock && (diff >= 1 && diff <= 7))
                     {
                         // increased steal chance
-                        _endGameStealAddition = 500;
+                        _endGameStealAddition = 400;
                         // much increased in fouls
-                        _endGameFoulAddition = 1000;
+                        _endGameFoulAddition = 1500;
                     }
                     else if (_time > _shotClock && _time <= 40 && (diff >= 4 && diff <= 7))
                     {
                         // increased steal chance
-                        _endGameStealAddition = 500;
+                        _endGameStealAddition = 400;
                         // much increased in fouls
-                        _endGameFoulAddition = 1000;
+                        _endGameFoulAddition = 1500;
                     }
                 }
             }
@@ -4043,52 +4240,89 @@ namespace ABASim.api.Controllers
                     // home team is winning
                     if (_time > 16 || _shotClock > 16)
                     {
-                        _endGameShotClockBonus = -200;
+                        _endGameShotClockBonus = -500;
                     }
                     else if (_time > 12 || _shotClock > 12)
                     {
-                        _endGameShotClockBonus = -100;
+                        _endGameShotClockBonus = -300;
                     }
                     else if (_time > 8 || _shotClock > 8)
                     {
-                        _endGameShotClockBonus = 200;
+                        _endGameShotClockBonus = 400;
                     }
                     else if (_time > 4 || _shotClock > 4)
                     {
-                        _endGameShotClockBonus = 450;
+                        _endGameShotClockBonus = 750;
                     }
                     else
                     {
-                        _endGameShotClockBonus = 650;
+                        _endGameShotClockBonus = 1000;
                     }
                 }
                 else if (diff > 0)
                 {
                     // home team is losing
                     // losing margins
-                    if (diff == 5 || diff == 6 || diff == 7)
+                    if (diff <= 10 && diff > 7)
                     {
-                        // Shooting liklihood is increase significantly and 3's are increased most
-                        // team will shoot quicker
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.50);
                         if (_time > 16 || _shotClock > 16)
-                        {
-                            _endGameShotClockBonus = 50;
-                        }
-                        else if (_time > 14 || _shotClock > 14)
-                        {
-                            _endGameShotClockBonus = 100;
-                        }
-                        else if (_time > 12 || _shotClock > 12)
-                        {
-                            _endGameShotClockBonus = 150;
-                        }
-                        else if (_time > 10 || _shotClock > 10)
                         {
                             _endGameShotClockBonus = 200;
                         }
-                        else if (_time > 8 || _shotClock > 8)
+                        else if (_time > 14 || _shotClock > 14)
                         {
                             _endGameShotClockBonus = 400;
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
+                            _endGameShotClockBonus = 500;
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
+                            _endGameShotClockBonus = 600;
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
+                            _endGameShotClockBonus = 750;
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
+                            _endGameShotClockBonus = 9000;
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
+                            _endGameShotClockBonus = 1000;
+                        }
+                        else
+                        {
+                            _endGameShotClockBonus = 1100;
+                        }
+                    }
+                    else if (diff == 5 || diff == 6 || diff == 7)
+                    {
+                        // Shooting liklihood is increase significantly and 3's are increased most
+                        // team will shoot quicker
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
+                        if (_time > 16 || _shotClock > 16)
+                        {
+                            _endGameShotClockBonus = 150;
+                        }
+                        else if (_time > 14 || _shotClock > 14)
+                        {
+                            _endGameShotClockBonus = 200;
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
+                            _endGameShotClockBonus = 250;
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
+                            _endGameShotClockBonus = 300;
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
+                            _endGameShotClockBonus = 500;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
@@ -4108,35 +4342,35 @@ namespace ABASim.api.Controllers
                         // team will shoot quicker
                         if (_time > 16 || _shotClock > 16)
                         {
-                            _endGameShotClockBonus = 100;
+                            _endGameShotClockBonus = 150;
                         }
                         else if (_time > 14 || _shotClock > 14)
                         {
-                            _endGameShotClockBonus = 150;
+                            _endGameShotClockBonus = 200;
                         }
                         else if (_time > 12 || _shotClock > 12)
                         {
-                            _endGameShotClockBonus = 200;
+                            _endGameShotClockBonus = 250;
                         }
                         else if (_time > 10 || _shotClock > 10)
                         {
-                            _endGameShotClockBonus = 250;
+                            _endGameShotClockBonus = 300;
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 400;
+                            _endGameShotClockBonus = 500;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 750;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 900;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 1000;
+                            _endGameShotClockBonus = 1250;
                         }
 
                         // random between 5 and 10% added to shot result
@@ -4149,31 +4383,31 @@ namespace ABASim.api.Controllers
                         // increase is shot overall
                         if (_time > 14 || _shotClock > 14)
                         {
-                            _endGameShotClockBonus = 0;
+                            _endGameShotClockBonus = 100;
                         }
                         else if (_time > 12 || _shotClock > 12)
                         {
-                            _endGameShotClockBonus = 100;
+                            _endGameShotClockBonus = 150;
                         }
                         else if (_time > 10 || _shotClock > 10)
                         {
-                            _endGameShotClockBonus = 200;
+                            _endGameShotClockBonus = 250;
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 250;
+                            _endGameShotClockBonus = 300;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 700;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 850;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 1000;
+                            _endGameShotClockBonus = 1250;
                         }
                     }
                     else if (diff <= 2)
@@ -4182,31 +4416,31 @@ namespace ABASim.api.Controllers
                         // increase shot bonus as time runs out
                         if (_time > 14 || _shotClock > 14)
                         {
-                            _endGameShotClockBonus = -100;
+                            _endGameShotClockBonus = -0;
                         }
                         else if (_time > 12 || _shotClock > 12)
                         {
-                            _endGameShotClockBonus = -50;
+                            _endGameShotClockBonus = 0;
                         }
                         else if (_time > 10 || _shotClock > 10)
                         {
-                            _endGameShotClockBonus = 0;
+                            _endGameShotClockBonus = 50;
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 100;
+                            _endGameShotClockBonus = 200;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 500;
+                            _endGameShotClockBonus = 600;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 750;
+                            _endGameShotClockBonus = 900;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 900;
+                            _endGameShotClockBonus = 1250;
                         }
                     }
                 }
@@ -4220,52 +4454,89 @@ namespace ABASim.api.Controllers
                     // away team is losing
                     if (_time > 16 || _shotClock > 16)
                     {
-                        _endGameShotClockBonus = -200;
+                        _endGameShotClockBonus = -500;
                     }
                     else if (_time > 12 || _shotClock > 12)
                     {
-                        _endGameShotClockBonus = -100;
+                        _endGameShotClockBonus = -300;
                     }
                     else if (_time > 8 || _shotClock > 8)
                     {
-                        _endGameShotClockBonus = 200;
+                        _endGameShotClockBonus = 400;
                     }
                     else if (_time > 4 || _shotClock > 4)
                     {
-                        _endGameShotClockBonus = 450;
+                        _endGameShotClockBonus = 750;
                     }
                     else
                     {
-                        _endGameShotClockBonus = 650;
+                        _endGameShotClockBonus = 1000;
                     }
                 }
                 else if (diff > 0)
                 {
                     // away team is winning
                     // losing margins
-                    if (diff == 5 || diff == 6)
+                    if (diff <= 10 && diff > 7)
                     {
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.50);
+                        if (_time > 16 || _shotClock > 16)
+                        {
+                            _endGameShotClockBonus = 200;
+                        }
+                        else if (_time > 14 || _shotClock > 14)
+                        {
+                            _endGameShotClockBonus = 400;
+                        }
+                        else if (_time > 12 || _shotClock > 12)
+                        {
+                            _endGameShotClockBonus = 500;
+                        }
+                        else if (_time > 10 || _shotClock > 10)
+                        {
+                            _endGameShotClockBonus = 600;
+                        }
+                        else if (_time > 8 || _shotClock > 8)
+                        {
+                            _endGameShotClockBonus = 750;
+                        }
+                        else if (_time > 6 || _shotClock > 6)
+                        {
+                            _endGameShotClockBonus = 9000;
+                        }
+                        else if (_time > 4 || _shotClock > 4)
+                        {
+                            _endGameShotClockBonus = 1000;
+                        }
+                        else
+                        {
+                            _endGameShotClockBonus = 1100;
+                        }
+                    }
+                    else if (diff == 5 || diff == 6 || diff == 7)
+                    {
+                        _endGameThreePointAddition = (int)(GetCurrentPlayersTendancies().ThreePointTendancy * 0.33);
                         // Shooting liklihood is increase significantly and 3's are increased most
                         // team will shoot quicker
                         if (_time > 16 || _shotClock > 16)
                         {
-                            _endGameShotClockBonus = 50;
+                            _endGameShotClockBonus = 150;
                         }
                         else if (_time > 14 || _shotClock > 14)
                         {
-                            _endGameShotClockBonus = 100;
+                            _endGameShotClockBonus = 200;
                         }
                         else if (_time > 12 || _shotClock > 12)
                         {
-                            _endGameShotClockBonus = 150;
+                            _endGameShotClockBonus = 250;
                         }
                         else if (_time > 10 || _shotClock > 10)
                         {
-                            _endGameShotClockBonus = 200;
+                            _endGameShotClockBonus = 300;
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 400;
+                            _endGameShotClockBonus = 500;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
@@ -4285,35 +4556,35 @@ namespace ABASim.api.Controllers
                         // team will shoot quicker
                         if (_time > 16 || _shotClock > 16)
                         {
-                            _endGameShotClockBonus = 100;
+                            _endGameShotClockBonus = 150;
                         }
                         else if (_time > 14 || _shotClock > 14)
                         {
-                            _endGameShotClockBonus = 150;
+                            _endGameShotClockBonus = 200;
                         }
                         else if (_time > 12 || _shotClock > 12)
                         {
-                            _endGameShotClockBonus = 200;
+                            _endGameShotClockBonus = 250;
                         }
                         else if (_time > 10 || _shotClock > 10)
                         {
-                            _endGameShotClockBonus = 250;
+                            _endGameShotClockBonus = 300;
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 400;
+                            _endGameShotClockBonus = 500;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 750;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 900;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 1000;
+                            _endGameShotClockBonus = 1250;
                         }
 
                         // random between 5 and 10% added to shot result
@@ -4326,31 +4597,31 @@ namespace ABASim.api.Controllers
                         // increase is shot overall
                         if (_time > 14 || _shotClock > 14)
                         {
-                            _endGameShotClockBonus = 0;
+                            _endGameShotClockBonus = 100;
                         }
                         else if (_time > 12 || _shotClock > 12)
                         {
-                            _endGameShotClockBonus = 100;
+                            _endGameShotClockBonus = 150;
                         }
                         else if (_time > 10 || _shotClock > 10)
                         {
-                            _endGameShotClockBonus = 200;
+                            _endGameShotClockBonus = 250;
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 250;
+                            _endGameShotClockBonus = 300;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 600;
+                            _endGameShotClockBonus = 700;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 800;
+                            _endGameShotClockBonus = 850;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 1000;
+                            _endGameShotClockBonus = 1250;
                         }
                     }
                     else if (diff <= 2)
@@ -4359,31 +4630,31 @@ namespace ABASim.api.Controllers
                         // increase shot bonus as time runs out
                         if (_time > 14 || _shotClock > 14)
                         {
-                            _endGameShotClockBonus = -100;
+                            _endGameShotClockBonus = -0;
                         }
                         else if (_time > 12 || _shotClock > 12)
                         {
-                            _endGameShotClockBonus = -50;
+                            _endGameShotClockBonus = 0;
                         }
                         else if (_time > 10 || _shotClock > 10)
                         {
-                            _endGameShotClockBonus = 0;
+                            _endGameShotClockBonus = 50;
                         }
                         else if (_time > 8 || _shotClock > 8)
                         {
-                            _endGameShotClockBonus = 100;
+                            _endGameShotClockBonus = 200;
                         }
                         else if (_time > 6 || _shotClock > 6)
                         {
-                            _endGameShotClockBonus = 500;
+                            _endGameShotClockBonus = 600;
                         }
                         else if (_time > 4 || _shotClock > 4)
                         {
-                            _endGameShotClockBonus = 750;
+                            _endGameShotClockBonus = 900;
                         }
                         else
                         {
-                            _endGameShotClockBonus = 900;
+                            _endGameShotClockBonus = 1250;
                         }
                     }
                 }
@@ -4394,9 +4665,12 @@ namespace ABASim.api.Controllers
         {
             int speedStrategy = 0;
 
-            if (_teamPossession == 0) {
+            if (_teamPossession == 0)
+            {
                 speedStrategy = _homeSpeedStrategy * -1;
-            } else {
+            }
+            else
+            {
                 speedStrategy = _awaySpeedStrategy * -1;
             }
 
@@ -4516,14 +4790,17 @@ namespace ABASim.api.Controllers
             StaminaUpdates(timeValue);
 
             int value = 0;
-            if (_teamPossession == 0) {
+            if (_teamPossession == 0)
+            {
                 int total = homePGRatings.UsageRating + homeSGRatings.UsageRating + homeSFRatings.UsageRating + homePFRatings.UsageRating + homeCRatings.UsageRating;
                 int result = _random.Next(total);
 
                 Inbounding inbound = new Inbounding();
                 value = inbound.GetInboundsResult(homePGRatings, homeSGRatings, homeSFRatings, homePFRatings, homeCRatings, result);
 
-            } else {
+            }
+            else
+            {
                 int total = awayPGRatings.UsageRating + awaySGRatings.UsageRating + awaySFRatings.UsageRating + awayPFRatings.UsageRating + awayCRatings.UsageRating;
                 int result = _random.Next(total);
                 Inbounding inbound = new Inbounding();
@@ -4988,7 +5265,8 @@ namespace ABASim.api.Controllers
                 currentFouledOut = 1;
             }
 
-            int currentFoulTrouble = FoulTroubleCheck(team, player.Id);
+            int pid = GetPlayerPositionForPlayerId(player.Id, team);
+            int currentFoulTrouble = FoulTroubleCheck(team, pid);
 
             // Now need to check to ensure that the current player is not injured or fouled out or in foul trouble
             if (currentFoulTrouble == 1 || currentFouledOut == 1 || currentInjured == 1)
@@ -5183,19 +5461,47 @@ namespace ABASim.api.Controllers
             List<int> onCourtIds = new List<int>();
             if (team == 0)
             {
-                onCourtIds.Add(homePG.Id);
-                onCourtIds.Add(homeSG.Id);
-                onCourtIds.Add(homeSF.Id);
-                onCourtIds.Add(homePF.Id);
-                onCourtIds.Add(homeC.Id);
+                if (homePG != null) {
+                    onCourtIds.Add(homePG.Id);
+                }
+
+                if (homeSG != null) {
+                    onCourtIds.Add(homeSG.Id);
+                }
+
+                if (homeSF != null) {
+                    onCourtIds.Add(homeSF.Id);
+                }
+
+                if (homePF != null) {
+                    onCourtIds.Add(homePF.Id);
+                }
+                
+                if (homeC != null) {
+                    onCourtIds.Add(homeC.Id);
+                }
             }
             else
             {
-                onCourtIds.Add(awayPG.Id);
-                onCourtIds.Add(awaySG.Id);
-                onCourtIds.Add(awaySF.Id);
-                onCourtIds.Add(awayPF.Id);
-                onCourtIds.Add(awayC.Id);
+                if (awayPG != null) {
+                    onCourtIds.Add(awayPG.Id);
+                }
+
+                if (awaySG != null) {
+                    onCourtIds.Add(awaySG.Id);
+                }
+
+                if (awaySF != null) {
+                    onCourtIds.Add(awaySF.Id);
+                }
+                
+                if (awayPF != null) {
+                    onCourtIds.Add(awayPF.Id);
+                }
+                
+                if (awayC != null) {
+                    onCourtIds.Add(awayC.Id);
+                }
             }
             var exists = onCourtIds.Contains(playerId);
             if (exists)
@@ -6366,6 +6672,21 @@ namespace ABASim.api.Controllers
             if (playerSubbed == 0)
             {
                 throw new Exception("No player to sub on");
+            } else {
+                // Need to add commentary here
+                string outPlayer = current.FirstName + " " + current.Surname;
+                string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+
+                if (team == 0)
+                {
+                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                }
+                else
+                {
+                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                }
             }
         }
 
@@ -6537,16 +6858,16 @@ namespace ABASim.api.Controllers
                 else
                 {
                     // So what if the starter cannot play?
-                    var dc2 = _homeDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == j);
-                    var result2 = _homeInjuries.Find(x => x.PlayerId == dc2.PlayerId);
-                    var bs2 = _homeBoxScores.FirstOrDefault(x => x.Id == dc2.PlayerId);
+                    var dc2 = _awayDepth.FirstOrDefault(x => x.Depth == 2 && x.Position == j);
+                    var result2 = _awayInjuries.Find(x => x.PlayerId == dc2.PlayerId);
+                    var bs2 = _awayBoxScores.FirstOrDefault(x => x.Id == dc2.PlayerId);
 
                     if ((result2 == null || result2.Severity < 3) && dc2.PlayerId != current.Id && bs2.Fouls < 6)
                     {
                         // Get the player to pass in
-                        var player = _homePlayers.FirstOrDefault(x => x.Id == dc2.PlayerId);
+                        var player = _awayPlayers.FirstOrDefault(x => x.Id == dc2.PlayerId);
 
-                        SubPlayer(0, j, player);
+                        SubPlayer(1, j, player);
                         newPlayer = player;
                         playerSubbed = 1;
 
@@ -6564,16 +6885,16 @@ namespace ABASim.api.Controllers
                     else
                     {
                         // So what if the starter cannot play?
-                        var dc3 = _homeDepth.FirstOrDefault(x => x.Depth == 3 && x.Position == j);
-                        var result3 = _homeInjuries.Find(x => x.PlayerId == dc3.PlayerId);
-                        var bs3 = _homeBoxScores.FirstOrDefault(x => x.Id == dc3.PlayerId);
+                        var dc3 = _awayDepth.FirstOrDefault(x => x.Depth == 3 && x.Position == j);
+                        var result3 = _awayInjuries.Find(x => x.PlayerId == dc3.PlayerId);
+                        var bs3 = _awayBoxScores.FirstOrDefault(x => x.Id == dc3.PlayerId);
 
                         if ((result3 == null || result3.Severity < 3) && dc3.PlayerId != current.Id && bs3.Fouls < 6)
                         {
                             // Get the player to pass in
-                            var player = _homePlayers.FirstOrDefault(x => x.Id == dc3.PlayerId);
+                            var player = _awayPlayers.FirstOrDefault(x => x.Id == dc3.PlayerId);
 
-                            SubPlayer(0, j, player);
+                            SubPlayer(1, j, player);
                             newPlayer = player;
                             playerSubbed = 1;
 
@@ -7812,6 +8133,54 @@ namespace ABASim.api.Controllers
             if (endOfPlay == 1)
             {
                 _playNumber++;
+            }
+        }
+
+        public int GetPlayerPositionForPlayerId(int playerId, int team)
+        {
+            if (team == 0)
+            {
+                // Home
+                if (homePG.Id == playerId)
+                {
+                    return 1;
+                } else if (homeSG.Id == playerId)
+                {
+                    return 2;
+                } else if (homeSF.Id == playerId)
+                {
+                    return 3;
+                } else if (homePF.Id == playerId)
+                {
+                    return 4;
+                } else if (homeC.Id == playerId)
+                {
+                    return 5;
+                } else {
+                    return 0;
+                }
+            }
+            else
+            {
+                // Away
+                if (awayPG.Id == playerId)
+                {
+                    return 1;
+                } else if (awaySG.Id == playerId)
+                {
+                    return 2;
+                } else if (awaySF.Id == playerId)
+                {
+                    return 3;
+                } else if (awayPF.Id == playerId)
+                {
+                    return 4;
+                } else if (awayC.Id == playerId)
+                {
+                    return 5;
+                } else {
+                    return 0;
+                }
             }
         }
     }
