@@ -434,10 +434,295 @@ namespace ABASim.api.Data
                 league.Day = league.Day + 1;
             }
 
+            // Need to do the free agency checks here - TODO
+            await FreeAgentDecisionMaking();
+
             // Need to rollover the day to the next day
             _context.Update(league);
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> FreeAgentDecisionMaking()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            int leageState = league.StateId;
+
+            var freeAgentDecisions = await _context.FreeAgentDecisions.Where(x => x.DayToDecide == (league.Day + 1)).ToListAsync();
+
+            foreach (var fa in freeAgentDecisions)
+            {
+                var playerId = fa.PlayerId;
+
+                var offers = await _context.ContractOffers.Where(x => x.PlayerId == playerId && x.Decision == 0).ToListAsync();
+
+                ContractOffer acceptedOffer = null;
+                if (offers.Count > 1)
+                {
+                    // We have multiple offers
+                    foreach (var off in offers)
+                    {
+                        var rosterSpotChk = await _context.Rosters.Where(x => x.TeamId == off.TeamId).ToListAsync();
+                        int rosterCountChk = rosterSpotChk.Count;
+
+                        if (rosterCountChk < 15)
+                        {
+                            // Now need to check if the team can still afford the player
+                            var teamSalary = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == off.TeamId);
+                            var cap = await _context.SalaryCaps.FirstOrDefaultAsync();
+                            if ((teamSalary.CurrentCapAmount - cap.Cap) > 0 || off.YearOne == 1000000)
+                            {
+                                // Then can sign
+                                int offerTotalMoney = off.YearOne + off.YearTwo + off.YearThree + off.YearFour + off.YearFive;
+                                int acceptedTotalMoney = acceptedOffer.YearOne + acceptedOffer.YearTwo + acceptedOffer.YearThree + acceptedOffer.YearFour + acceptedOffer.YearFive;
+                                int offerYears = GetContractYears(off);
+                                int acceptedYears = GetContractYears(acceptedOffer);
+
+                                if (acceptedOffer == null)
+                                {
+                                    acceptedOffer = off;
+                                }
+                                else
+                                {
+                                    // Now need to check if these are the same amount of guarenteed years
+                                    int offGuarenteed = GetGuarenteedCount(off);
+                                    int accGuarenteed = GetGuarenteedCount(acceptedOffer);
+
+                                    if (offerYears > acceptedYears)
+                                    {
+                                        if (offGuarenteed >= accGuarenteed)
+                                        {
+                                            acceptedOffer = off;
+                                        }
+                                    }
+                                    else if (offerYears == acceptedYears)
+                                    {
+                                        // We look at the next item to compare
+                                        if (offGuarenteed > accGuarenteed)
+                                        {
+                                            acceptedOffer = off;
+                                        }
+                                        else if ((off.PlayerOption == 1 && off.PlayerOption != 1) || (off.TeamOption == 1 && off.TeamOption != 1))
+                                        {
+                                            acceptedOffer = off;
+                                        }
+                                        else
+                                        {
+                                            if (offerTotalMoney > acceptedTotalMoney)
+                                            {
+                                                acceptedOffer = off;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (offGuarenteed > (accGuarenteed + 1))
+                                        {
+                                            acceptedOffer = off;
+                                        }
+                                        else if ((off.PlayerOption == 1 && off.PlayerOption != 1) || (off.TeamOption == 1 && off.TeamOption != 1))
+                                        {
+                                            acceptedOffer = off;
+                                        }
+                                        else
+                                        {
+                                            // Deal is shorter so needs to be more money
+                                            int yearDifference = acceptedYears - offerYears;
+                                            decimal amountToMatch = (yearDifference * 20) / 100;
+
+                                            decimal percOfOffer = offerTotalMoney / acceptedTotalMoney;
+
+                                            if (percOfOffer > amountToMatch)
+                                            {
+                                                acceptedOffer = off;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+
+                    // we have only one offer - so the player will sign on
+                    acceptedOffer = offers.FirstOrDefault();
+                }
+
+                var rosterSpot = await _context.Rosters.Where(x => x.TeamId == acceptedOffer.TeamId).ToListAsync();
+                int rosterCount = rosterSpot.Count;
+
+                if (rosterCount < 15)
+                {
+                    var teamSalary = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == acceptedOffer.TeamId);
+                    var cap = await _context.SalaryCaps.FirstOrDefaultAsync();
+                    if ((teamSalary.CurrentCapAmount - cap.Cap) > 0 || acceptedOffer.YearOne == 1000000)
+                    {
+                        // Now setting up the details of the signing
+                        // Creating the players contract
+                        PlayerContract contract = new PlayerContract
+                        {
+                            PlayerId = playerId,
+                            TeamId = acceptedOffer.TeamId,
+                            YearOne = acceptedOffer.YearOne,
+                            GuranteedOne = acceptedOffer.GuranteedOne,
+                            YearTwo = acceptedOffer.YearTwo,
+                            GuranteedTwo = acceptedOffer.GuranteedTwo,
+                            YearThree = acceptedOffer.YearThree,
+                            GuranteedThree = acceptedOffer.GuranteedThree,
+                            YearFour = acceptedOffer.YearFour,
+                            GuranteedFour = acceptedOffer.GuranteedFour,
+                            YearFive = acceptedOffer.YearFive,
+                            GuranteedFive = acceptedOffer.GuranteedFive,
+                            TeamOption = acceptedOffer.TeamOption,
+                            PlayerOption = acceptedOffer.PlayerOption
+                        };
+                        await _context.AddAsync(contract);
+
+                        // Now add the player to the team roster
+                        Roster roster = new Roster
+                        {
+                            TeamId = acceptedOffer.TeamId,
+                            PlayerId = playerId
+                        };
+                        await _context.AddAsync(roster);
+
+                        PlayerTeam pt = new PlayerTeam
+                        {
+                            TeamId = acceptedOffer.TeamId,
+                            PlayerId = playerId
+                        };
+                        await _context.AddAsync(pt);
+
+                        // Now need to record a transaction
+                        Transaction trans = new Transaction
+                        {
+                            TeamId = acceptedOffer.TeamId,
+                            PlayerId = playerId,
+                            TransactionType = 1,
+                            Day = league.Day,
+                            Pick = 0,
+                            PickText = ""
+                        };
+                        await _context.AddAsync(trans);
+
+                        // Now need to add inbox messages - for successful signing
+                        var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == acceptedOffer.TeamId);
+                        var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == playerId);
+
+                        // Now need to send an inbox message
+                        DateTime date = new DateTime();
+                        var dd = date.Day.ToString();   //.getDate(); 
+                        var mm = date.Month.ToString();
+                        var yyyy = date.Year.ToString();
+
+                        InboxMessage im = new InboxMessage
+                        {
+                            SenderId = 0,
+                            SenderName = "Admin",
+                            SenderTeam = "System",
+                            ReceiverId = acceptedOffer.TeamId,
+                            ReceiverName = team.Mascot,
+                            ReceiverTeam = team.Mascot,
+                            Subject = player.FirstName + " " + player.Surname + " has signed with your team",
+                            Body = player.FirstName + " " + player.Surname + " has signed your offered contract with your team. They are now available on your roster.",
+                            MessageDate = dd + "/" + mm + "/" + yyyy,
+                            IsNew = 1
+                        };
+                        await _context.AddAsync(im);
+
+                        // Now need to update any other teams who were trying to sign the player
+                        if (offers.Count > 1)
+                        {
+                            foreach (var off in offers)
+                            {
+                                if (off.TeamId != acceptedOffer.TeamId)
+                                {
+                                    var t = await _context.Teams.FirstOrDefaultAsync(x => x.Id == off.TeamId);
+                                    InboxMessage rejectMessage = new InboxMessage
+                                    {
+                                        SenderId = 0,
+                                        SenderName = "Admin",
+                                        SenderTeam = "System",
+                                        ReceiverId = t.Id,
+                                        ReceiverName = t.Mascot,
+                                        ReceiverTeam = t.Mascot,
+                                        Subject = player.FirstName + " " + player.Surname + " has rejected your offer",
+                                        Body = player.FirstName + " " + player.Surname + " has rejected your offer and signed with another team.",
+                                        MessageDate = dd + "/" + mm + "/" + yyyy,
+                                        IsNew = 1
+                                    };
+                                    await _context.AddAsync(rejectMessage);
+                                }
+                                _context.Remove(off);
+                            }
+                        }
+
+                        // Now to remove the free agency decision
+                        _context.Remove(fa);
+
+                        return await _context.SaveChangesAsync() > 0;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public int GetContractYears(ContractOffer offer)
+        {
+            if (offer.YearFive > 0)
+            {
+                return 5;
+            }
+            else if (offer.YearFour > 0)
+            {
+                return 4;
+            }
+            else if (offer.YearThree > 0)
+            {
+                return 3;
+            }
+            else if (offer.YearTwo > 0)
+            {
+                return 2;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        public int GetGuarenteedCount(ContractOffer offer)
+        {
+            int count = 0;
+
+            if (offer.GuranteedFive > 0)
+            {
+                count++;
+            }
+
+            if (offer.GuranteedFour > 0)
+            {
+                count++;
+            }
+
+            if (offer.GuranteedThree > 0)
+            {
+                count++;
+            }
+
+            if (offer.GuranteedTwo > 0)
+            {
+                count++;
+            }
+
+            if (offer.GuranteedOne > 0)
+            {
+                count++;
+            }
+
+            return count;
         }
 
         public async Task<bool> DailyInjuriesUpdate(int state, int day)
@@ -1248,15 +1533,15 @@ namespace ABASim.api.Data
                 var playerRatings = await _context.PlayerRatings.ToListAsync();
                 foreach (var player in playerRatings)
                 {
-                    int twoRating = (int) player.TwoRating / 3;
-                    int threeRating = (int) player.ThreeRating / 2;
+                    int twoRating = (int)player.TwoRating / 3;
+                    int threeRating = (int)player.ThreeRating / 2;
                     int orebRating = player.ORebRating;
                     int drebRating = player.DRebRating;
                     int astRating = player.AssitRating;
                     int stealRating = player.StealRating;
                     int blockRating = player.BlockRating;
-                    int orpm = (int) player.ORPMRating;
-                    int drpm = (int) player.DRPMRating;
+                    int orpm = (int)player.ORPMRating;
+                    int drpm = (int)player.DRPMRating;
 
                     decimal staminaMultiplier = player.StaminaRating / 100;
                     int ts = twoRating + threeRating + orebRating + drebRating + astRating + stealRating + blockRating + orpm + drpm;
@@ -1649,34 +1934,39 @@ namespace ABASim.api.Data
 
                 int yearTwo = 0;
                 int twoGuarenteed = 0;
-                if (years >= 2) {
+                if (years >= 2)
+                {
                     yearTwo = amount;
                     twoGuarenteed = 1;
                 }
 
                 int yearThree = 0;
                 int threeGuarenteed = 0;
-                if (years >= 3) {
+                if (years >= 3)
+                {
                     yearThree = amount;
                     threeGuarenteed = 1;
                 }
 
                 int yearFour = 0;
                 int fourGuarenteed = 0;
-                if (years >= 4) {
+                if (years >= 4)
+                {
                     yearFour = amount;
                     fourGuarenteed = 1;
                 }
 
                 int yearFive = 0;
                 int fiveGuarenteed = 0;
-                if (years >= 5) {
+                if (years >= 5)
+                {
                     yearFive = amount;
                     fiveGuarenteed = 1;
                 }
 
                 int teamOption = 0;
-                if (years > 1) {
+                if (years > 1)
+                {
                     teamOption = 1;
                 }
 

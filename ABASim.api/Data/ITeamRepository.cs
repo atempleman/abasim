@@ -76,5 +76,11 @@ namespace ABASim.api.Data
         Task<TeamStrategyDto> GetStrategyForTeam(int teamId);
 
         Task<bool> SaveStrategy(TeamStrategyDto strategy);
+
+        Task<bool> SaveContractOffer(ContractOfferDto offer);
+
+        Task<IEnumerable<ContractOfferDto>> GetContractOffersForTeam(int teamId);
+
+        Task<bool> DeleteFreeAgentOffer(int contractId);
     }
 }

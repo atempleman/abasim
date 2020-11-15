@@ -35,5 +35,9 @@ namespace ABASim.api.Dtos
         public int StateSubmitted { get; set; }
 
         public int Decision { get; set; }
+
+        public string PlayerName { get; set; }
+
+        public int ContractId { get; set; }
     }
 }

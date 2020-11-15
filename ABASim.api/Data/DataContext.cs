@@ -113,5 +113,11 @@ namespace ABASim.api.Data
         public DbSet<OffensiveStrategy> OffensiveStrategies { get; set; }
 
         public DbSet<DefensiveStrategy> DefensiveStrategies { get; set; }
+
+        public DbSet<ContractOffer> ContractOffers { get; set; }
+
+        public DbSet<FreeAgentDecision> FreeAgentDecisions { get; set; }
+
+        public DbSet<WaivedContract> WaivedContracts { get; set; }
     }
 }

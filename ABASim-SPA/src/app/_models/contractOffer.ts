@@ -16,4 +16,6 @@ export interface ContractOffer {
     daySubmitted: number;
     stateSubmitted: number;
     decision: number;
+    playerName: string;
+    contractId: number;
 }

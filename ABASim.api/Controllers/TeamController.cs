@@ -236,10 +236,8 @@ namespace ABASim.api.Controllers
         [HttpPost("savestrategy")]
         public async Task<IActionResult> SaveStrategy(TeamStrategyDto strategy)
         {
-            // int t = value;
             var result = await _repo.SaveStrategy(strategy);
             return Ok(result);
-            // return Ok(true);
         }
 
         
@@ -250,11 +248,25 @@ namespace ABASim.api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("savestrategyrecord")]
-        public async Task<IActionResult> SaveStrategyRecord(StrategySaveDto setting)
+        [HttpPost("savecontractoffer")]
+        public async Task<IActionResult> SaveContractOffer(ContractOfferDto offer)
         {
-            // var result = await _repo.SaveCoachingSetting(setting);
+            var result = await _repo.SaveContractOffer(offer);
             return Ok(true);
+        }
+
+        [HttpGet("getcontractoffersforteam/{teamId}")]
+        public async Task<IActionResult> GetContractOffersForTeam(int teamId)
+        {
+            var offers = await _repo.GetContractOffersForTeam(teamId);
+            return Ok(offers);
+        }
+
+        [HttpGet("deletefreeagentoffer/{contractId}")]
+        public async Task<IActionResult> DeleteFreeAgentOffer(int contractId)
+        {
+            var result = await _repo.DeleteFreeAgentOffer(contractId);
+            return Ok(result);
         }
     }
 }

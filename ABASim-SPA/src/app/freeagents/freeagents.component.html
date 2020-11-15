@@ -4,7 +4,21 @@
 
 <div class="row ml-2 mr-2 textdesc">
 	<p>The following is a list of all the players who are available as free agents. You can sign players, but can only
-		have a maximum of 15 players on your roster at any time.</p>
+		have a maximum of 15 players on your roster at any time. Any offers made will go against your slary cap as a cap hold.</p>
+</div>
+
+<div class="row">
+	<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngFor="let co of this.contractOffers">
+		<div class="card-header"><i class="fa fa-question-circle fa-2x"></i><span
+				class="header-card ml-3"><strong>Contract Offer</strong></span></div>
+		<div class="card-body">
+			<h5 class="card-text">{{ co.playerName }}</h5>
+			<p>{{ this.GetContractYears(co) }} years, ${{ co.yearOne + co.yearTwo + co.yearThree + co.yearFour + co.yearFive  | number }} total value</p>
+			<div style="text-align: right;">
+				<button type="button" class="btn btn-link text-left" (click)="openViewModal(viewoffer, co)">View</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="box">
@@ -106,11 +120,11 @@
 					<label>Year 1 Amount</label>
 				</div>
 				<div class="col">
-					<input type="text" [(ngModel)]="year1Amount" required>
+					<input name="year1Amount" type="text" [(ngModel)]="year1Amount" required>
 				</div>
 				<div class="col ml-3">
 					<label>Guarenteed </label>
-					<input class="ml-2" [disabled]="true" type="checkbox" checked="guarenteed1.true">
+					<input name="year1G" class="ml-2" [disabled]="true" type="checkbox" checked="guarenteed1.true">
 				</div>
 			</div>
 			<div class="row" *ngIf="this.contractYears >= 2">
@@ -118,11 +132,11 @@
 					<label>Year 2 Amount</label>
 				</div>
 				<div class="col">
-					<input type="text" [(ngModel)]="year2Amount" required>
+					<input name="year2Amount" type="text" [(ngModel)]="year2Amount" required>
 				</div>
 				<div class="col ml-3">
 					<label>Guarenteed </label>
-					<input class="ml-2" type="checkbox" checked="guarenteed2.true">
+					<input class="ml-2" name="year2G" type="checkbox" checked="guarenteed2.true">
 				</div>
 			</div>
 			<div class="row" *ngIf="this.contractYears >= 3">
@@ -130,11 +144,11 @@
 					<label>Year 3 Amount</label>
 				</div>
 				<div class="col">
-					<input type="text" [(ngModel)]="year3Amount" required>
+					<input type="text" name="year3Amount" [(ngModel)]="year3Amount" required>
 				</div>
 				<div class="col ml-3">
 					<label>Guarenteed </label>
-					<input class="ml-2" type="checkbox" checked="guarenteed3.true">
+					<input class="ml-2" name="year3G" type="checkbox" checked="guarenteed3.true">
 				</div>
 			</div>
 			<div class="row" *ngIf="this.contractYears >= 4" >
@@ -142,11 +156,11 @@
 					<label>Year 4 Amount</label>
 				</div>
 				<div class="col">
-					<input type="text" [(ngModel)]="year4Amount" required>
+					<input type="text" name="year4Amount" [(ngModel)]="year4Amount" required>
 				</div>
 				<div class="col ml-3">
 					<label>Guarenteed </label>
-					<input class="ml-2" type="checkbox" checked="guarenteed4.true">
+					<input class="ml-2" type="checkbox" name="year4G" checked="guarenteed4.true">
 				</div>
 			</div>
 			<div class="row" *ngIf="this.contractYears >= 5">
@@ -154,11 +168,11 @@
 					<label>Year 5 Amount</label>
 				</div>
 				<div class="col">
-					<input type="text" [(ngModel)]="year5Amount" required>
+					<input type="text" [(ngModel)]="year5Amount" name="year5Amount" required>
 				</div>
 				<div class="col ml-3">
 					<label>Guarenteed </label>
-					<input class="ml-2" type="checkbox" checked="guarenteed5.true">
+					<input class="ml-2" type="checkbox" name="year5G" checked="guarenteed5.true">
 				</div>
 			</div>
 			<div class="row mt-2">
@@ -187,4 +201,110 @@
 			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
 		</div>
 	</form>
+</ng-template>
+
+
+<!-- VIEW OFFER MODAL -->
+<ng-template #viewoffer>
+	<div class="modal-header">
+		<h5 class="modal-title">Contract Offer - {{ this.viewedOffer.playerName }}</h5>
+		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col">
+				<label>Number of Years</label>
+			</div>
+			<div class="col">
+				<label>{{ this.GetContractYears(this.viewedOffer) }} years</label>
+			</div>
+			<div class="col">
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<label>Year 1 Amount</label>
+			</div>
+			<div class="col">
+				<label>${{ this.viewedOffer.yearOne | number }}</label>
+			</div>
+			<div class="col ml-3">
+				<label>Guarenteed </label>
+				<input name="year1G" class="ml-2" [disabled]="true" type="checkbox" checked="this.viewedOffer.guarenteed1 == 1">
+			</div>
+		</div>
+		<div class="row" *ngIf="this.contractYears >= 2">
+			<div class="col">
+				<label>Year 2 Amount</label>
+			</div>
+			<div class="col">
+				<label>${{ this.viewedOffer.yearTwo | number }}</label>
+			</div>
+			<div class="col ml-3">
+				<label>Guarenteed </label>
+				<input class="ml-2" name="year2G" type="checkbox" checked="this.viewedOffer.guarenteed2 == 1">
+			</div>
+		</div>
+		<div class="row" *ngIf="this.contractYears >= 3">
+			<div class="col">
+				<label>Year 3 Amount</label>
+			</div>
+			<div class="col">
+				<label>${{ this.viewedOffer.yearThree | number }}</label>
+			</div>
+			<div class="col ml-3">
+				<label>Guarenteed </label>
+				<input class="ml-2" name="year3G" type="checkbox" checked="this.viewedOffer.guarenteed3 == 1">
+			</div>
+		</div>
+		<div class="row" *ngIf="this.contractYears >= 4" >
+			<div class="col">
+				<label>Year 4 Amount</label>
+			</div>
+			<div class="col">
+				<label>${{ this.viewedOffer.yearFour | number }}</label>
+			</div>
+			<div class="col ml-3">
+				<label>Guarenteed </label>
+				<input class="ml-2" type="checkbox" name="year4G" checked="this.viewedOffer.guarenteed4 == 1">
+			</div>
+		</div>
+		<div class="row" *ngIf="this.contractYears >= 5">
+			<div class="col">
+				<label>Year 5 Amount</label>
+			</div>
+			<div class="col">
+				<label>${{ this.viewedOffer.yearFive | number }}</label>
+			</div>
+			<div class="col ml-3">
+				<label>Guarenteed </label>
+				<input class="ml-2" type="checkbox" name="year5G" checked="this.viewedOffer.guarenteed5 == 1">
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col">
+				<label>Option </label>
+			</div>
+			<div class="col" *ngIf="this.viewedOffer.playerOption == 1">
+				<label>Player</label>
+			</div>
+			<div class="col" *ngIf="this.viewedOffer.teamOption == 1">
+				<label>Team</label>
+			</div>
+			<div class="col" *ngIf="this.viewedOffer.playerOption == 0 && this.viewedOffer.teamOption == 0">
+				<label>None</label>
+			</div>
+			<div class="col">
+				
+			</div>
+		</div>
+		<div class="row">
+			<p>Note: Team or player option will guarentee all other years of contract</p>
+		</div>
+	</div>
+	<div class="modal-footer form-group text-center">
+		<button type="submit" class="btn btn-danger" (click)="cancelContract()">Cancel Offer</button>
+		<button type="button" class="btn btn-success" (click)="modalRef.hide()">Close</button>
+	</div>
 </ng-template>

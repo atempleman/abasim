@@ -14,6 +14,8 @@ import { SignedPlayer } from '../_models/signedPlayer';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerInjury } from '../_models/playerInjury';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
+import { ContractOffer } from '../_models/contractOffer';
 
 @Component({
   selector: 'app-freeagents',
@@ -48,9 +50,15 @@ export class FreeagentsComponent implements OnInit {
   selectControl: FormControl = new FormControl();
   optionControl: FormControl = new FormControl();
 
+  capInfo: TeamSalaryCapInfo;
+  availableCapSpace = 0;
+  contractOffers: ContractOffer[] = [];
+  viewedOffer: ContractOffer;
+
   constructor(private alertify: AlertifyService, private playerService: PlayerService, private teamService: TeamService,
               private authService: AuthService, private router: Router, private transferService: TransferService,
-              private modalService: BsModalService, private spinner: NgxSpinnerService, private fb: FormBuilder) { }
+              private modalService: BsModalService, private spinner: NgxSpinnerService, private fb: FormBuilder,
+              private leagueServie: LeagueService) { }
 
   ngOnInit() {
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
@@ -59,12 +67,54 @@ export class FreeagentsComponent implements OnInit {
       this.alertify.error('Error getting your team');
     }, () => {
       this.CheckRosterSpots();
+      this.GetSalaryCapDetails();
+      this.GetContractOffers();
+    });
+
+    this.leagueServie.getLeague().subscribe(result => {
+      this.league = result;
+    }, error => {
+      this.alertify.error('Error getting league details');
     });
 
     this.GetFreeAgents();
 
     this.searchForm = this.fb.group({
       filter: ['']
+    });
+  }
+
+  GetContractOffers() {
+    this.teamService.getContractOffersForTeam(this.team.id).subscribe(result => {
+      this.contractOffers = result;
+    }, error => {
+      this.alertify.error('Error getting contract offers made');
+    });
+  }
+
+  GetContractYears(offer: ContractOffer) {
+    let years = 0;
+    if (offer.yearFive > 0) {
+      years = 5;
+    } else if (offer.yearFour > 0) {
+      years = 4;
+    } else if (offer.yearThree > 0) {
+      years = 3;
+    } else if (offer.yearTwo > 0) {
+      years = 2;
+    } else if (offer.yearOne > 0) {
+      years = 1;
+    }
+    return years;
+  }
+
+  GetSalaryCapDetails() {
+    this.teamService.getTeamSalaryCapDetails(this.team.id).subscribe(result => {
+      this.capInfo = result;
+    }, error => {
+      this.alertify.error('Error getting salary cap details');
+    }, () => {
+      this.availableCapSpace = this.capInfo.salaryCapAmount - this.capInfo.currentSalaryAmount;
     });
   }
 
@@ -138,6 +188,12 @@ export class FreeagentsComponent implements OnInit {
     this.modalRef = this.modalService.show(template);
   }
 
+  public openViewModal(template: TemplateRef<any>, offer: ContractOffer) {
+
+    this.viewedOffer = offer;
+    this.modalRef = this.modalService.show(template);
+  }
+
   goToTeam() {
     this.router.navigate(['/team']);
   }
@@ -207,8 +263,118 @@ export class FreeagentsComponent implements OnInit {
     this.contractYears = this.selectControl.value;
   }
 
+  cancelContract() {
+    this.teamService.deleteFreeAgentOffer(this.viewedOffer.contractId).subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error cancelling contract');
+    }, () => {
+      this.alertify.success('Contract offer has been cancelled');
+      this.GetContractOffers();
+      this.modalRef.hide();
+    });
+  }
+
   offerContract() {
-    console.log('ash');
+    console.log('available cap space: ' + this.availableCapSpace);
+    console.log('contract year 1: ' + this.year1Amount);
+    console.log('contract year 2: ' + this.year2Amount);
+    if (this.year1Amount < 1000000) {
+      this.alertify.error('Error in offer - Minimum contract is $1,000,000 per season');
+    } else if (this.year2Amount !== 0 && this.year2Amount < 1000000) {
+      this.alertify.error('Error in offer - Minimum contract is $1,000,000 per season');
+    } else if (this.year3Amount !== 0 && this.year3Amount < 1000000) {
+      this.alertify.error('Error in offer - Minimum contract is $1,000,000 per season');
+    } else if (this.year4Amount !== 0 && this.year4Amount < 1000000) {
+      this.alertify.error('Error in offer - Minimum contract is $1,000,000 per season');
+    } else if (this.year5Amount !== 0 && this.year5Amount < 1000000) {
+      this.alertify.error('Error in offer - Minimum contract is $1,000,000 per season');
+    } else {
+      if (this.availableCapSpace < this.year1Amount && this.year1Amount !== 1000000) {
+        if (this.availableCapSpace < 1000000) {
+          this.alertify.error('You cannot afford this contract. You can offer a minimum contract of $1,000,000');
+        } else {
+          this.alertify.error('You cannot afford this contract. You can offer up to $' + this.availableCapSpace);
+        }
+      } else {
+        this.alertify.success('Valid contract');
+
+        let g1 = 0;
+        let g2 = 0;
+        let g3 = 0;
+        let g4 = 0;
+        let g5 = 0;
+
+        // Fix guarentees
+        if (this.guarenteed1) {
+          g1 = 1;
+        }
+
+        if (this.guarenteed2) {
+          g2 = 1;
+        }
+
+        if (this.guarenteed3) {
+          g3 = 1;
+        }
+
+        if (this.guarenteed4) {
+          g4 = 1;
+        }
+
+        if (this.guarenteed5) {
+          g5 = 1;
+        }
+
+        // Now determine the option values
+        let to = 0;
+        let po = 0;
+
+        if (this.option === 0) {
+          to = 0;
+          po = 0;
+        } else if (this.option === 1) {
+          to = 1;
+          po = 0;
+        } else if (this.option === 2) {
+          to = 0;
+          po = 1;
+        }
+
+        // Now to create the offer
+        const contractOffer: ContractOffer = {
+          playerId: this.selectedPlayer.id,
+          teamId: this.team.id,
+          yearOne: this.year1Amount,
+          guranteedOne: g1,
+          yearTwo: this.year1Amount,
+          guranteedTwo: g2,
+          yearThree: this.year1Amount,
+          guranteedThree: g3,
+          yearFour: this.year1Amount,
+          guranteedFour: g4,
+          yearFive: this.year1Amount,
+          guranteedFive: g5,
+          teamOption: to,
+          playerOption: po,
+          daySubmitted: this.league.day,
+          stateSubmitted: this.league.stateId,
+          decision: 0,
+          playerName: this.selectedPlayer.firstName + ' ' + this.selectedPlayer.surname,
+          contractId: 0
+        };
+
+        this.teamService.saveContractOffer(contractOffer).subscribe(result => {
+
+        }, error => {
+          this.alertify.error('Error making contract offer');
+        }, () => {
+          this.alertify.success('Contract offer has been made');
+          this.GetContractOffers();
+          this.modalRef.hide();
+        });
+      }
+    }
   }
 
   minAmount() {
@@ -236,6 +402,26 @@ export class FreeagentsComponent implements OnInit {
   }
 
   maxAmount() {
-
+    if (this.contractYears === 1) {
+      this.year1Amount = 25000000;
+    } else if (this.contractYears === 2) {
+      this.year1Amount = 25000000;
+      this.year2Amount = 25000000;
+    } else if (this.contractYears === 3) {
+      this.year1Amount = 25000000;
+      this.year2Amount = 25000000;
+      this.year3Amount = 25000000;
+    } else if (this.contractYears === 4) {
+      this.year1Amount = 25000000;
+      this.year2Amount = 25000000;
+      this.year3Amount = 25000000;
+      this.year4Amount = 25000000;
+    } else if (this.contractYears === 5) {
+      this.year1Amount = 25000000;
+      this.year2Amount = 25000000;
+      this.year3Amount = 25000000;
+      this.year4Amount = 25000000;
+      this.year5Amount = 25000000;
+    }
   }
 }

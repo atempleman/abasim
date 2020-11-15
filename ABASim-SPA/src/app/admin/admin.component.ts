@@ -287,6 +287,6 @@ export class AdminComponent implements OnInit {
     }, () => {
       this.alertify.success('Autopicks generated');
       this.modalRef.hide();
-    })
+    });
   }
 }

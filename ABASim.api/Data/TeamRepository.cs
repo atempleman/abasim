@@ -196,6 +196,18 @@ namespace ABASim.api.Data
 
         }
 
+        public async Task<bool> DeleteFreeAgentOffer(int contractId)
+        {
+            var offer = await _context.ContractOffers.FirstOrDefaultAsync(x => x.Id == contractId);
+
+            // Now remove the cap hold
+            var salaryCap = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == offer.TeamId);
+            salaryCap.CurrentCapAmount = salaryCap.CurrentCapAmount - offer.YearOne;
+            _context.Update(salaryCap);
+            _context.Remove(offer);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<IEnumerable<TradeDto>> GetAllOfferedTrades(int teamId)
         {
             List<TradeDto> tradesList = new List<TradeDto>();
@@ -298,6 +310,41 @@ namespace ABASim.api.Data
             }
 
             return coachingSetting;
+        }
+
+        public async Task<IEnumerable<ContractOfferDto>> GetContractOffersForTeam(int teamId)
+        {
+            List<ContractOfferDto> offers = new List<ContractOfferDto>();
+            var contractOffers = await _context.ContractOffers.Where(x => x.TeamId == teamId && x.Decision == 0).ToListAsync();
+
+            foreach (var co in contractOffers)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == co.PlayerId);
+                ContractOfferDto dto = new ContractOfferDto
+                {
+                    PlayerId = co.PlayerId,
+                    TeamId = co.TeamId,
+                    YearOne = co.YearOne,
+                    GuranteedOne = co.GuranteedOne,
+                    YearTwo = co.YearTwo,
+                    GuranteedTwo = co.GuranteedTwo,
+                    YearThree = co.YearThree,
+                    GuranteedThree = co.GuranteedThree,
+                    YearFour = co.YearFour,
+                    GuranteedFour = co.GuranteedFour,
+                    YearFive = co.YearFive,
+                    GuranteedFive = co.GuranteedFive,
+                    TeamOption = co.TeamOption,
+                    PlayerOption = co.PlayerOption,
+                    DaySubmitted = co.DaySubmitted,
+                    StateSubmitted = co.StateSubmitted,
+                    Decision = co.Decision,
+                    PlayerName = player.FirstName + ' ' + player.Surname,
+                    ContractId = co.Id
+                };
+                offers.Add(dto);
+            }
+            return offers;
         }
 
         public async Task<IEnumerable<DefensiveStrategy>> GetDefensiveStrategies()
@@ -680,7 +727,8 @@ namespace ABASim.api.Data
                 var os = await _context.OffensiveStrategies.FirstOrDefaultAsync(x => x.Id == teamStrategy.OffensiveStrategyId);
                 var ds = await _context.DefensiveStrategies.FirstOrDefaultAsync(x => x.Id == teamStrategy.DefensiveStrategyId);
 
-                if (os == null) {
+                if (os == null)
+                {
                     os = new OffensiveStrategy
                     {
                         Id = 0,
@@ -689,7 +737,8 @@ namespace ABASim.api.Data
                     };
                 }
 
-                if (ds == null) {
+                if (ds == null)
+                {
                     ds = new DefensiveStrategy
                     {
                         Id = 0,
@@ -1073,6 +1122,63 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> SaveContractOffer(ContractOfferDto offer)
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+
+            // Check to see if the player has a decision already pending
+            var faDecision = await _context.FreeAgentDecisions.FirstOrDefaultAsync(x => x.PlayerId == offer.PlayerId);
+
+            if (faDecision == null)
+            {
+                int daysToDecide = 0;
+                if (league.StateId == 7)
+                {
+                    daysToDecide = 3;
+                }
+                else if (league.StateId == 15)
+                {
+                    daysToDecide = 5;
+                }
+                // Need to create the Free Agency Decision record
+                FreeAgentDecision freeAgentDecision = new FreeAgentDecision
+                {
+                    PlayerId = offer.PlayerId,
+                    DayToDecide = daysToDecide
+                };
+                await _context.AddAsync(freeAgentDecision);
+            }
+
+            ContractOffer co = new ContractOffer
+            {
+                PlayerId = offer.PlayerId,
+                TeamId = offer.TeamId,
+                YearOne = offer.YearOne,
+                GuranteedOne = offer.GuranteedOne,
+                YearTwo = offer.YearTwo,
+                GuranteedTwo = offer.GuranteedTwo,
+                YearThree = offer.YearThree,
+                GuranteedThree = offer.GuranteedThree,
+                YearFour = offer.YearFour,
+                GuranteedFour = offer.GuranteedFour,
+                YearFive = offer.YearFive,
+                GuranteedFive = offer.GuranteedFive,
+                TeamOption = offer.TeamOption,
+                PlayerOption = offer.PlayerOption,
+                DaySubmitted = league.Day,
+                StateSubmitted = league.StateId,
+                Decision = offer.Decision
+            };
+            await _context.AddAsync(co);
+
+            // Now need to update the cap for the team
+            var salaryCap = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == co.TeamId);
+            salaryCap.CurrentCapAmount = salaryCap.CurrentCapAmount + co.YearOne;
+            _context.Update(salaryCap);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> SaveDepthChartForTeam(DepthChart[] charts)
         {
             int teamId = charts[0].TeamId;
@@ -1219,6 +1325,48 @@ namespace ABASim.api.Data
 
         public async Task<bool> WaivePlayer(WaivePlayerDto waived)
         {
+            // NEed to get the players contract
+            var playerContract = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == waived.PlayerId);
+
+            // Now need to check if the player has any guarenteed years
+            WaivedContract wc = new WaivedContract();
+            wc.PlayerId = waived.PlayerId;
+            int guarenteed = 0;
+
+            if (playerContract.GuranteedOne > 0) {
+                // Year one is guarenteed
+                guarenteed = 1;
+                wc.YearOne = playerContract.YearOne;
+
+                if (playerContract.GuranteedTwo > 0) {
+                    wc.YearTwo = playerContract.YearTwo;
+
+                    if (playerContract.GuranteedThree > 0) {
+                        wc.YearThree = playerContract.YearThree;
+
+                        if (playerContract.GuranteedFour > 0) {
+                            wc.YearFour = playerContract.YearFour;
+
+                            if (playerContract.GuranteedFive > 0) {
+                                wc.YearFive = playerContract.YearFive;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (guarenteed == 1) {
+                // We need to save the record
+                await _context.AddAsync(wc);
+            } else {
+                // Contract was not guarenteed and we need to remove it from the team salary cap
+                var teamCap = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == waived.TeamId);
+                teamCap.CurrentCapAmount = teamCap.CurrentCapAmount - playerContract.YearOne;
+                _context.Update(teamCap);
+            }
+
+            _context.PlayerContracts.Remove(playerContract);
+
             // need to remove from teams roster
             var rosterRecord = await _context.Rosters.FirstOrDefaultAsync(x => x.PlayerId == waived.PlayerId && x.TeamId == waived.TeamId);
             _context.Rosters.Remove(rosterRecord);

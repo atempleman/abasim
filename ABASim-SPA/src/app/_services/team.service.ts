@@ -20,6 +20,7 @@ import { OffensiveStrategy } from '../_models/offensiveStrategy';
 import { DefensiveStrategy } from '../_models/defensiveStrategyId';
 import { Strategy } from '../_models/strategy';
 import { SaveStrategy } from '../_models/saveStrategy';
+import { ContractOffer } from '../_models/contractOffer';
 
 @Injectable({
   providedIn: 'root'
@@ -160,5 +161,17 @@ export class TeamService {
 
   saveStrategy(strategy: Strategy) {
     return this.http.post(this.baseUrl + 'savestrategy', strategy);
+  }
+
+  getContractOffersForTeam(teamId: number): Observable<ContractOffer[]> {
+    return this.http.get<ContractOffer[]>(this.baseUrl + 'getcontractoffersforteam/' + teamId);
+  }
+
+  saveContractOffer(offer: ContractOffer) {
+    return this.http.post(this.baseUrl + 'savecontractoffer', offer);
+  }
+
+  deleteFreeAgentOffer(contractId: number) {
+    return this.http.get<boolean>(this.baseUrl + 'deletefreeagentoffer/' + contractId);
   }
 }
