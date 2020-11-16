@@ -43,6 +43,7 @@ namespace ABASim.api.Data
                 newPlayer.PlayerId = playerRecord.Id;
                 newPlayer.BlockGrade = playerGrades.BlockGrade;
                 newPlayer.CPosition = playerRecord.CPosition;
+                newPlayer.Age = playerRecord.Age;
                 newPlayer.DRebGrade = playerGrades.DRebGrade;
                 newPlayer.FirstName = playerRecord.FirstName;
                 newPlayer.FTGrade = playerGrades.FTGrade;

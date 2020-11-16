@@ -7,6 +7,7 @@ export interface ExtendedPlayer {
     sfPosition: number;
     pfPosition: number;
     cPosition: number;
+    age: number;
     twoGrade: number;
     threeGrade: number;
     ftGrade: number;

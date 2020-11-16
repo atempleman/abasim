@@ -17,5 +17,7 @@ namespace ABASim.api.Models
         public int PFPosition { get; set; }
 
         public int CPosition { get; set; }
+
+        public int Age { get; set; }
     }
 }

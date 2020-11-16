@@ -7,4 +7,5 @@ export interface Player {
     sfPosition: number;
     pfPosition: number;
     cPosition: number;
+    age: number;
 }

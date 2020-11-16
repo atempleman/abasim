@@ -19,6 +19,8 @@ namespace ABASim.api.Dtos
 
         public int CPosition { get; set; }
 
+        public int Age { get; set; }
+
         public string TwoGrade { get; set; }
 
         public string ThreeGrade { get; set; }

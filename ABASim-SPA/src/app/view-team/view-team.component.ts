@@ -75,7 +75,7 @@ export class ViewTeamComponent implements OnInit {
   checkIfInjured(playerId: number) {
     const injured = this.teamsInjuries.find(x => x.playerId === playerId);
 
-    if(injured) {
+    if (injured) {
       return 1;
     } else {
       return 0;

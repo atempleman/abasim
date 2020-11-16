@@ -58,6 +58,7 @@ namespace ABASim.api.Data
                     newPlayer.PlayerId = player.Id;
                     newPlayer.BlockGrade = playerGrade.BlockGrade;
                     newPlayer.CPosition = player.CPosition;
+                    newPlayer.Age = player.Age;
                     newPlayer.DRebGrade = playerGrade.DRebGrade;
                     newPlayer.FirstName = player.FirstName;
                     newPlayer.FTGrade = playerGrade.FTGrade;
@@ -130,6 +131,7 @@ namespace ABASim.api.Data
                     newPlayer.PlayerId = player.Id;
                     newPlayer.BlockGrade = playerGrade.BlockGrade;
                     newPlayer.CPosition = player.CPosition;
+                    newPlayer.Age = player.Age;
                     newPlayer.DRebGrade = playerGrade.DRebGrade;
                     newPlayer.FirstName = player.FirstName;
                     newPlayer.FTGrade = playerGrade.FTGrade;
@@ -430,6 +432,7 @@ namespace ABASim.api.Data
                         SFPosition = playerDetails.SFPosition,
                         PFPosition = playerDetails.PFPosition,
                         CPosition = playerDetails.CPosition,
+                        Age = playerDetails.Age,
                         TwoGrade = playerGrades.TwoGrade,
                         ThreeGrade = playerGrades.ThreeGrade,
                         FTGrade = playerGrades.FTGrade,
@@ -508,6 +511,7 @@ namespace ABASim.api.Data
                         SFPosition = playerDetails.SFPosition,
                         PFPosition = playerDetails.PFPosition,
                         CPosition = playerDetails.CPosition,
+                        Age = playerDetails.Age,
                         TwoGrade = playerGrades.TwoGrade,
                         ThreeGrade = playerGrades.ThreeGrade,
                         FTGrade = playerGrades.FTGrade,
@@ -587,6 +591,7 @@ namespace ABASim.api.Data
                     SFPosition = playerDetails.SFPosition,
                     PFPosition = playerDetails.PFPosition,
                     CPosition = playerDetails.CPosition,
+                    Age = playerDetails.Age,
                     TwoGrade = playerGrades.TwoGrade,
                     ThreeGrade = playerGrades.ThreeGrade,
                     FTGrade = playerGrades.FTGrade,
@@ -821,6 +826,7 @@ namespace ABASim.api.Data
                     newPlayer.PlayerId = player.Id;
                     newPlayer.BlockGrade = playerGrade.BlockGrade;
                     newPlayer.CPosition = player.CPosition;
+                    newPlayer.Age = player.Age;
                     newPlayer.DRebGrade = playerGrade.DRebGrade;
                     newPlayer.FirstName = player.FirstName;
                     newPlayer.FTGrade = playerGrade.FTGrade;
@@ -865,6 +871,7 @@ namespace ABASim.api.Data
                     newPlayer.PlayerId = player.Id;
                     newPlayer.BlockGrade = playerGrade.BlockGrade;
                     newPlayer.CPosition = player.CPosition;
+                    newPlayer.Age = player.Age;
                     newPlayer.DRebGrade = playerGrade.DRebGrade;
                     newPlayer.FirstName = player.FirstName;
                     newPlayer.FTGrade = playerGrade.FTGrade;

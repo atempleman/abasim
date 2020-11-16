@@ -58,6 +58,7 @@
 				<tr>
 					<th>Name</th>
 					<th>Position</th>
+					<th>Age</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -73,6 +74,7 @@
 					<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
 					<ng-container *ngIf="player.cPosition == 1">C </ng-container>
 				</td>
+				<td>{{ player.age }}</td>
 				<td class="text-center">
 					<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"> View</button>
 					<button class="btn btn-success btn-xs tablebutton" (click)="openModal(sign, player)"

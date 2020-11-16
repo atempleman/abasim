@@ -6,57 +6,6 @@
 	<h3 class="display">TRADES</h3>
 </div>
 
-<!-- <div class="box">
-	<div class="container">
-		<div class="row cards-row">
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-users fa-2x"></i><span
-						class="header-card ml-3"><strong>TEAM</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the players on your team, stats, ratings, tendancies.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToTeam()">Go to Team</button>
-					</div>
-				</div>
-      </div>
-      
-      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>COACHING</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Modify your team's strategy and coach them to victory.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToCoaching()">Coaching</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-address-book fa-2x"></i><span
-						class="header-card ml-3"><strong>DEPTH CHART</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Manage your team's depth chart. Decide who plays at every position.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToDepthCharts()">Set Depth Chart</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>FREE AGENTS</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">View the available free agents and sign players.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="goToFreeAgents()">Go to Free Agents</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> -->
-
-
 <div class="box" *ngIf="this.tradesReady">
 	<ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
 		<p class="loading">Loading Trades...</p>
@@ -193,6 +142,9 @@
 							<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
 							<ng-container *ngIf="player.cPosition == 1">C </ng-container>
 						</td>
+						<td>
+							{{ player.age }}
+						</td>
 						<td class="text-center">
 							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
 							<div class="divider"></div>
@@ -238,6 +190,9 @@
 							<ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
 							<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
 							<ng-container *ngIf="player.cPosition == 1">C </ng-container>
+						</td>
+						<td>
+							{{ player.age }}
 						</td>
 						<td class="text-center">
 							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>

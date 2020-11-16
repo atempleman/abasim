@@ -7,6 +7,7 @@ export interface DraftPlayer {
     sfPosition: number;
     pfPosition: number;
     cPosition: number;
+    age: number;
     twoGrade: string;
     threeGrade: string;
     ftGrade: string;

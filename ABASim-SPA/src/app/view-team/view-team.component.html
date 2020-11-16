@@ -30,6 +30,7 @@
 					<tr>
 						<th>Name</th>
 						<th>Position(s)</th>
+						<th>Age</th>
 						<th>2pt</th>
 						<th>3pt</th>
 						<th>Ft</th>
@@ -57,6 +58,9 @@
 							<ng-container *ngIf="player.sfPosition == 1">SF </ng-container>
 							<ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
 							<ng-container *ngIf="player.cPosition == 1">C </ng-container>
+						</td>
+						<td>
+							{{ player.age }}
 						</td>
 						<td>
 							{{ player.twoGrade }}
@@ -102,6 +106,7 @@
 				<thead>
 					<tr>
 						<th>Name</th>
+						<th>Age</th>
 						<th>G</th>
 						<th>MP</th>
 						<th>FG</th>
@@ -128,6 +133,9 @@
 					<tr class="table-secondary" *ngFor="let player of this.playingRoster">
 						<td>
 							{{ this.player?.firstName }} {{ this.player?.surname }}
+						</td>
+						<td>
+							{{ this.player?.age }}
 						</td>
 						<td>
 							{{ this.player?.gamesStats }}

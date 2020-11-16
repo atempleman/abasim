@@ -57,6 +57,7 @@
           <tr>
             <th>Name</th>
             <th>Position(s)</th>
+            <th>Age</th>
             <th>2s</th>
             <th>3s</th>
             <th>FTs</th>
@@ -80,6 +81,7 @@
             <ng-container *ngIf="player.pfPosition == 1">PF </ng-container>
             <ng-container *ngIf="player.cPosition == 1">C </ng-container>
           </td>
+          <td>{{ player.age }}</td>
           <td>{{ player.twoGrade }}</td>
           <td>{{ player.threeGrade }}</td>
           <td>{{ player.ftGrade }}</td>
