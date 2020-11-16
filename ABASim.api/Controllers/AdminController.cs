@@ -119,5 +119,19 @@ namespace ABASim.api.Controllers
             var result = await _repo.GenerateAutoPickOrder();
             return result;
         }
+
+        [HttpGet("getgamesforreset")]
+        public async Task<IActionResult> GetGamesForRreset()
+        {
+            var nextGames = await _repo.GetGamesForRreset();
+            return Ok(nextGames);
+        }
+
+        [HttpGet("resetgame/{gameId}")]
+        public async Task<bool> ResetGame(int gameId)
+        {
+            var result = await _repo.ResetGame(gameId);
+            return result;
+        }
     }
 }

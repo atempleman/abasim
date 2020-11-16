@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ABASim.api.Dtos;
 using ABASim.api.Models;
@@ -33,5 +34,9 @@ namespace ABASim.api.Data
          Task<bool> RunTeamDraftPicks();
 
          Task<bool> GenerateInitialContracts();
+
+         Task<bool> ResetGame(int gameId);
+
+         Task<IEnumerable<CurrentDayGamesDto>> GetGamesForRreset();
     }
 }

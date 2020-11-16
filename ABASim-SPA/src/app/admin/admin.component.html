@@ -175,6 +175,17 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-sync-alt"></i><span
+						class="header-card ml-3"><strong>Reset Game</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Had an error in a game? Reset a specific game for the current day.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left" (click)="openModal(resetgame, 10)">Reset</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -415,6 +426,32 @@
 			<div class="modal-footer form-group text-center">
 				<button type="submit" class="btn btn-primary">Generate</button>
 				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+			  </div>
+		</form>
+	</ng-template> 
+
+	<ng-template #resetgame>
+		<div class="modal-header">
+		  <h4 class="modal-title">Reset Game</h4>
+		  <button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+		</div>
+		<form #draftlotteryForm>
+			<div class="modal-body">
+		  		<table>
+					<thead>
+						<tr>
+							<th>Game</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tr *ngFor="let game of this.todaysGames">
+						<td>{{ game.awayTeamName }} @ {{ game.homeTeamName }}</td>
+						<td *ngIf="game.completed == 1"><button class="btn btn-info btn-xs tablebutton" (click)="resetGame(game.id)">Reset</button></td>
+					</tr>
+				</table>
+			</div>
+			<div class="modal-footer form-group text-center">
+				<button type="submit" class="btn btn-primary" (click)="modalRef.hide()">Close</button>
 			  </div>
 		</form>
 	</ng-template> 

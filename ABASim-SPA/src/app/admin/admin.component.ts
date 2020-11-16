@@ -11,6 +11,7 @@ import { AdminService } from '../_services/admin.service';
 import { Team } from '../_models/team';
 import { TeamService } from '../_services/team.service';
 import { CheckGame } from '../_models/checkGame';
+import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
 
 @Component({
   selector: 'app-admin',
@@ -37,6 +38,8 @@ export class AdminComponent implements OnInit {
   dayEntered = 0;
   dayForm: FormGroup;
 
+  todaysGames: GameDisplayCurrent[] = [];
+
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private modalService: BsModalService, private adminService: AdminService,
               private teamService: TeamService, private fb: FormBuilder) { }
@@ -47,6 +50,16 @@ export class AdminComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting League Details');
     }, () => {
+    });
+
+    this.getTodaysGames();
+  }
+
+  getTodaysGames() {
+    this.adminService.getGamesForReset().subscribe(result => {
+      this.todaysGames = result;
+    }, error => {
+      this.alertify.error('Error getting todays games');
     });
   }
 
@@ -287,6 +300,19 @@ export class AdminComponent implements OnInit {
     }, () => {
       this.alertify.success('Autopicks generated');
       this.modalRef.hide();
+    });
+  }
+
+  resetGame(gameId: number) {
+    this.adminService.resetGame(gameId).subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error resetting game');
+    }, () => {
+      this.alertify.success('Game has been reset');
+      this.getTodaysGames();
+      this.modalRef.hide();
+
     });
   }
 }

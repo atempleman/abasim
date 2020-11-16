@@ -4,6 +4,7 @@ import { LeagueState } from '../_models/leagueState';
 import { environment } from 'src/environments/environment';
 import { CheckGame } from '../_models/checkGame';
 import { Observable } from 'rxjs';
+import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
 
 @Injectable({
   providedIn: 'root'
@@ -67,5 +68,13 @@ export class AdminService {
 
   generateAutoPicks() {
     return this.http.get<boolean>(this.baseUrl + 'testautopickordering');
+  }
+
+  getGamesForReset(): Observable<GameDisplayCurrent[]> {
+    return this.http.get<GameDisplayCurrent[]>(this.baseUrl + 'getgamesforreset');
+  }
+
+  resetGame(gameId: number) {
+    return this.http.get<boolean>(this.baseUrl + 'resetgame/' + gameId);
   }
 }
