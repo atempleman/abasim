@@ -21,6 +21,8 @@ import { DefensiveStrategy } from '../_models/defensiveStrategyId';
 import { Strategy } from '../_models/strategy';
 import { SaveStrategy } from '../_models/saveStrategy';
 import { ContractOffer } from '../_models/contractOffer';
+import { WaivedContract } from '../_models/waivedContract';
+import { TradePlayerView } from '../_models/tradePlayerView';
 
 @Injectable({
   providedIn: 'root'
@@ -173,5 +175,13 @@ export class TeamService {
 
   deleteFreeAgentOffer(contractId: number) {
     return this.http.get<boolean>(this.baseUrl + 'deletefreeagentoffer/' + contractId);
+  }
+
+  getWaivedContracts(teamId: number): Observable<WaivedContract[]> {
+    return this.http.get<WaivedContract[]>(this.baseUrl + 'getwaivedcontracts/' + teamId);
+  }
+
+  getTradePlayerView(teamId: number): Observable<TradePlayerView[]> {
+    return this.http.get<TradePlayerView[]>(this.baseUrl + 'gettradeplayerviews/' + teamId);
   }
 }

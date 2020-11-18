@@ -268,5 +268,20 @@ namespace ABASim.api.Controllers
             var result = await _repo.DeleteFreeAgentOffer(contractId);
             return Ok(result);
         }
+
+        [HttpGet("getwaivedcontracts/{teamId}")]
+        public async Task<IActionResult> GetWaivedContracts(int teamId)
+        {
+            var result = await _repo.GetWaivedContracts(teamId);
+            return Ok(result);
+        }
+
+        // 
+        [HttpGet("gettradeplayerviews/{teamId}")]
+        public async Task<IActionResult> GetTradePlayerViews(int teamId)
+        {
+            var result = await _repo.GetTradePlayerViews(teamId);
+            return Ok(result);
+        }
     }
 }

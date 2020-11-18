@@ -14,6 +14,7 @@ import { PlayerInjury } from '../_models/playerInjury';
 import { CompletePlayer } from '../_models/completePlayer';
 import { TeamSalaryCapInfo } from '../_models/teamSalaryCapInfo';
 import { PlayerContractDetailed } from '../_models/playerContractDetailed';
+import { WaivedContract } from '../_models/waivedContract';
 
 @Component({
   selector: 'app-team',
@@ -38,6 +39,7 @@ export class TeamComponent implements OnInit {
 
   teamsInjuries: PlayerInjury[] = [];
   teamContracts: PlayerContractDetailed[] = [];
+  waivedContracts: WaivedContract[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private teamService: TeamService, private modalService: BsModalService,
@@ -72,6 +74,12 @@ export class TeamComponent implements OnInit {
       this.teamContracts = result;
     }, error => {
       this.alertify.error('Error getting team contracts');
+    });
+
+    this.teamService.getWaivedContracts(this.team.id).subscribe(result => {
+      this.waivedContracts = result;
+    }, error => {
+      this.alertify.error('Error getting waived contracts');
     });
   }
 

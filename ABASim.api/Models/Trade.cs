@@ -19,5 +19,11 @@ namespace ABASim.api.Models
         public int Year { get; set; }
 
         public int OriginalTeam { get; set; }
+
+        public int Years { get; set; }
+
+        public int YearOne { get; set; }
+
+        public int TotalValue { get; set; }
     }
 }

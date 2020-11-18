@@ -219,10 +219,31 @@ namespace ABASim.api.Data
                 var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
 
                 var playerName = "";
+                int years = 0;
+                int total = 0;
+                int current = 0;
                 if (trade.PlayerId != 0)
                 {
                     var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
                     playerName = player.FirstName + " " + player.Surname;
+
+                    var playerContract = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+                    if (playerContract != null) {
+                        if (playerContract.YearFive > 0) {
+                            years = 5;
+                        } else if (playerContract.YearFour > 0) {
+                            years = 4;
+                        } else if (playerContract.YearThree > 0) {
+                            years = 3;
+                        } else if (playerContract.YearTwo > 0) {
+                            years = 2;
+                        } else {
+                            years = 1;
+                        }
+
+                        total = playerContract.YearFive + playerContract.YearFour + playerContract.YearThree + playerContract.YearTwo + playerContract.YearOne;
+                        current = playerContract.YearOne;
+                    }
                 }
 
                 TradeDto newTrade = new TradeDto
@@ -237,7 +258,10 @@ namespace ABASim.api.Data
                     Pick = trade.Pick,
                     Year = trade.Year,
                     OriginalTeamId = trade.OriginalTeam,
-                    Status = trade.Status
+                    Status = trade.Status,
+                    YearOne = current,
+                    Years = years,
+                    TotalValue = total
                 };
                 tradesList.Add(newTrade);
             }
@@ -255,10 +279,32 @@ namespace ABASim.api.Data
                 var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
 
                 var playerName = "";
+                int total = 0;
+                int years = 0;
+                int current = 0;
+
                 if (trade.PlayerId != 0)
                 {
                     var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
                     playerName = player.FirstName + " " + player.Surname;
+
+                    var playerContract = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+                    if (playerContract != null) {
+                        if (playerContract.YearFive > 0) {
+                            years = 5;
+                        } else if (playerContract.YearFour > 0) {
+                            years = 4;
+                        } else if (playerContract.YearThree > 0) {
+                            years = 3;
+                        } else if (playerContract.YearTwo > 0) {
+                            years = 2;
+                        } else {
+                            years = 1;
+                        }
+
+                        total = playerContract.YearFive + playerContract.YearFour + playerContract.YearThree + playerContract.YearTwo + playerContract.YearOne;
+                        current = playerContract.YearOne;
+                    }
                 }
 
                 TradeDto newTrade = new TradeDto
@@ -273,7 +319,10 @@ namespace ABASim.api.Data
                     Pick = trade.Pick,
                     Year = trade.Year,
                     OriginalTeamId = trade.OriginalTeam,
-                    Status = trade.Status
+                    Status = trade.Status,
+                    YearOne = current,
+                    Years = years,
+                    TotalValue = total
                 };
                 tradesList.Add(newTrade);
             }
@@ -974,7 +1023,6 @@ namespace ABASim.api.Data
         {
             List<TradeDto> tradesList = new List<TradeDto>();
 
-
             var trades = await _context.Trades.Where(x => (x.ReceivingTeam == teamId || x.TradingTeam == teamId) && (x.Status == 0 || x.Status == 2)).ToListAsync();
 
             if (trades != null)
@@ -985,10 +1033,32 @@ namespace ABASim.api.Data
                     var receivingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.Id == trade.ReceivingTeam);
 
                     var playerName = "";
+                    int years = 0;
+                    int current = 0;
+                    int total = 0;
+
                     if (trade.PlayerId != 0)
                     {
                         var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == trade.PlayerId);
                         playerName = player.FirstName + " " + player.Surname;
+
+                        var playerContract = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+                    if (playerContract != null) {
+                        if (playerContract.YearFive > 0) {
+                            years = 5;
+                        } else if (playerContract.YearFour > 0) {
+                            years = 4;
+                        } else if (playerContract.YearThree > 0) {
+                            years = 3;
+                        } else if (playerContract.YearTwo > 0) {
+                            years = 2;
+                        } else {
+                            years = 1;
+                        }
+
+                        total = playerContract.YearFive + playerContract.YearFour + playerContract.YearThree + playerContract.YearTwo + playerContract.YearOne;
+                        current = playerContract.YearOne;
+                    }
                     }
 
                     TradeDto newTrade = new TradeDto
@@ -1003,12 +1073,95 @@ namespace ABASim.api.Data
                         Pick = trade.Pick,
                         Year = trade.Year,
                         OriginalTeamId = trade.OriginalTeam,
-                        Status = trade.Status
+                        Status = trade.Status,
+                        YearOne = current,
+                        Years = years,
+                        TotalValue = total
                     };
                     tradesList.Add(newTrade);
                 }
             }
             return tradesList;
+        }
+
+        public async Task<IEnumerable<TradePlayerViewDto>> GetTradePlayerViews(int teamId)
+        {
+            List<TradePlayerViewDto> players = new List<TradePlayerViewDto>();
+            var teamsRosteredPlayers = await _context.Rosters.Where(x => x.TeamId == teamId).ToListAsync();
+
+            // Now need to get the player details
+            foreach (var rosterPlayer in teamsRosteredPlayers)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == rosterPlayer.PlayerId);
+
+                // Now we have all of the players for the team, we now need to get some contract details
+                var contract = await _context.PlayerContracts.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+
+                // Get the number of years on the contract
+                int years = 0;
+                int totalValue = 0;
+
+                if (contract != null) {
+                    if (contract.YearFive > 0) {
+                        years = 5;
+                    } else if (contract.YearFour > 0) {
+                        years = 4;
+                    } else if (contract.YearThree > 0) {
+                        years = 3;
+                    } else if (contract.YearTwo > 0) {
+                        years = 2;
+                    } else {
+                        years = 1;
+                    }
+
+                    totalValue = contract.YearOne + contract.YearTwo + contract.YearThree + contract.YearFour + contract.YearFive;
+                }
+
+                
+
+                TradePlayerViewDto dto = new TradePlayerViewDto
+                {
+                    PlayerId = player.Id,
+                    FisrtName = player.FirstName,
+                    Surname = player.Surname,
+                    PGPosition = player.PGPosition,
+                    SGPosition = player.SGPosition,
+                    SFPosition = player.SFPosition,
+                    PFPosition = player.PFPosition,
+                    CPosition = player.CPosition,
+                    Age = player.Age,
+                    Years = years,
+                    TotalValue = totalValue,
+                    CurrentSeasonValue = contract.YearOne,
+                    YearOneGuarentee = contract.GuranteedOne
+                };
+                players.Add(dto);
+            }
+            return players;            
+        }
+
+        public async Task<IEnumerable<WaivedContractDto>> GetWaivedContracts(int teamId)
+        {
+            List<WaivedContractDto> wcsDtos = new List<WaivedContractDto>();
+            var contracts = await _context.WaivedPlayerContracts.Where(x => x.TeamId == teamId).ToListAsync();
+
+            foreach (var wc in contracts)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == wc.PlayerId);
+                WaivedContractDto dto = new WaivedContractDto
+                {
+                    PlayerName = player.FirstName + " " + player.Surname,
+                    PlayerId = wc.PlayerId,
+                    TeamId = wc.TeamId,
+                    YearOne = wc.YearOne,
+                    YearTwo = wc.YearTwo,
+                    YearThree = wc.YearThree,
+                    YearFour = wc.YearFour,
+                    YearFive = wc.YearFive
+                };
+                wcsDtos.Add(dto);
+            }
+            return wcsDtos;
         }
 
         public async Task<bool> PullTradeProposal(int tradeId)
@@ -1264,7 +1417,10 @@ namespace ABASim.api.Data
                     TradeId = lastTradeId + 1,
                     Year = trade.Year,
                     OriginalTeam = trade.OriginalTeamId,
-                    Status = 0
+                    Status = 0,
+                    YearOne = trade.YearOne,
+                    Years = trade.Years,
+                    TotalValue = trade.TotalValue
                 };
                 await _context.AddAsync(t);
 

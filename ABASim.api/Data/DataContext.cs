@@ -118,6 +118,6 @@ namespace ABASim.api.Data
 
         public DbSet<FreeAgentDecision> FreeAgentDecisions { get; set; }
 
-        public DbSet<WaivedContract> WaivedContracts { get; set; }
+        public DbSet<WaivedContract> WaivedPlayerContracts { get; set; }
     }
 }

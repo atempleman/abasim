@@ -49,6 +49,7 @@
 				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>YOU RECEIVE</strong></span></div>
 				<div class="card-body">
+					<p>Available cap space: ${{ (this.yourSalaryCapSpace.salaryCapAmount - this.yourSalaryCapSpace.currentSalaryAmount) | number }}</p>
 					<p *ngIf="this.proposedTradeReceiving.length == 0">No assets added</p>
 					<div class="row" *ngIf="this.proposedTradeReceiving.length != 0">
 						<table class="table table-hover events-table">
@@ -74,6 +75,7 @@
 				<div class="card-header"><i class="fa fa-list fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>THEY RECEIVE</strong></span></div>
 				<div class="card-body">
+					<p>Available cap space: ${{ (this.theirSalaryCapSpace.salaryCapAmount - this.theirSalaryCapSpace.currentSalaryAmount) | number }}</p>
 					<p *ngIf="this.proposedTradeSending.length == 0">No assets added</p>
 					<div class="row" *ngIf="this.proposedTradeSending.length != 0">
 						<table class="table table-hover events-table">
@@ -130,6 +132,16 @@
 				  </ul>
 			</div>
 			<table class="table table-hover events-table" *ngIf="this.yourPlayersSelection">
+				<thead>
+					<th>Name</th>
+					<th>Position</th>
+					<th>Age</th>
+					<th>Current Season</th>
+					<th>Total Value</th>
+					<th>Years</th>
+					<th>Current Guarentee</th>
+					<th></th>
+				</thead>
 				<tbody>
 					<tr class="table-secondary" *ngFor="let player of this.yourTeamRoster">
 						<td>
@@ -144,6 +156,18 @@
 						</td>
 						<td>
 							{{ player.age }}
+						</td>
+						<td>
+							${{ player.years | number }}
+						</td>
+						<td>
+							${{ player.totalValue | number }}
+						</td>
+						<td>
+							{{ player.years | number }}
+						</td>
+						<td>
+							{{ player.yearOneGuarentee }}
 						</td>
 						<td class="text-center">
 							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>
@@ -179,6 +203,16 @@
 				  </ul>
 			</div>
 			<table class="table table-hover events-table" *ngIf="this.theirPlayersSelection">
+				<thead>
+					<th>Name</th>
+					<th>Position</th>
+					<th>Age</th>
+					<th>Current Season</th>
+					<th>Total Value</th>
+					<th>Years</th>
+					<th>Current Guarentee</th>
+					<th></th>
+				</thead>
 				<tbody>
 					<tr class="table-secondary" *ngFor="let player of this.selectedTeamRoster">
 						<td>
@@ -193,6 +227,18 @@
 						</td>
 						<td>
 							{{ player.age }}
+						</td>
+						<td>
+							${{ player.years | number }}
+						</td>
+						<td>
+							${{ player.totalValue | number }}
+						</td>
+						<td>
+							{{ player.years | number }}
+						</td>
+						<td>
+							{{ player.yearOneGuarentee }}
 						</td>
 						<td class="text-center">
 							<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player)"><span class="glyphicon glyphicon-edit"></span> View</button>

@@ -41,10 +41,6 @@ namespace ABASim.api.Data
 
          Task<IEnumerable<Team>> GetAllTeamsExceptUsers(int teamId);
 
-        //  Task<IEnumerable<TradeDto>> GetAllReceivedTradeOffers(int teamId);
-
-        //  Task<IEnumerable<TradeDto>> GetAllOfferedTrades(int teamId);
-
         Task<IEnumerable<TradeDto>> GetTradeOffers(int teamId);
 
          Task<bool> SaveTradeProposal(TradeDto[] trades);
@@ -82,5 +78,9 @@ namespace ABASim.api.Data
         Task<IEnumerable<ContractOfferDto>> GetContractOffersForTeam(int teamId);
 
         Task<bool> DeleteFreeAgentOffer(int contractId);
+
+        Task<IEnumerable<WaivedContractDto>> GetWaivedContracts(int teamId);
+
+        Task<IEnumerable<TradePlayerViewDto>> GetTradePlayerViews(int teamId);
     }
 }

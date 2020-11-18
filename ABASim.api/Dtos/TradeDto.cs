@@ -23,5 +23,11 @@ namespace ABASim.api.Dtos
         public int OriginalTeamId { get; set; }
 
         public int Status { get; set; }
+
+        public int Years { get; set; }
+
+        public int YearOne { get; set; }
+
+        public int TotalValue { get; set; }
     }
 }

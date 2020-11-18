@@ -10,4 +10,7 @@ export interface Trade {
     year: number;
     originalTeamId: number;
     status: number;
+    years: number;
+    yearOne: number;
+    totalValue: number;
 }

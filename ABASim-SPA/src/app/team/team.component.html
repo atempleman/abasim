@@ -303,6 +303,42 @@
 					</tr>
 				</tbody>
 			</table>
+			<div class="row" *ngIf="this.statusContracts"></div>
+			<h6>Waived Contracts still counting towards salary cap</h6>
+			<table class="table table-hover roster-table" *ngIf="this.statusContracts">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Current Year</th>
+						<th>2nd Year</th>
+						<th>3rd Year</th>
+						<th>4th Year</th>
+						<th>5th Year</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="table-secondary" *ngFor="let player of this.waivedContracts">
+						<td>
+							{{ player?.playerName }}
+						</td>
+						<td>
+							${{ player?.yearOne | number }}
+						</td>
+						<td>
+							${{ player?.yearTwo | number }}
+						</td>
+						<td>
+							${{ player?.yearThree | number }}
+						</td>
+						<td>
+							${{ player?.yearFour | number }}
+						</td>
+						<td>
+							${{ player?.yearFive | number }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
