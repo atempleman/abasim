@@ -1117,13 +1117,18 @@ namespace ABASim.api.Data
                     totalValue = contract.YearOne + contract.YearTwo + contract.YearThree + contract.YearFour + contract.YearFive;
                 }
 
-                
+                int contractYearOne = 0;
+                int contractGuarentee = 0;
+                if (contract != null) {
+                    contractYearOne = contract.YearOne;
+                    contractGuarentee = contract.GuranteedOne;
+                }
 
                 TradePlayerViewDto dto = new TradePlayerViewDto
                 {
                     PlayerId = player.Id,
-                    FisrtName = player.FirstName,
-                    Surname = player.Surname,
+                    Fisrtname = player.FirstName,
+                    Surname = player.FirstName + " " + player.Surname,
                     PGPosition = player.PGPosition,
                     SGPosition = player.SGPosition,
                     SFPosition = player.SFPosition,
@@ -1132,8 +1137,8 @@ namespace ABASim.api.Data
                     Age = player.Age,
                     Years = years,
                     TotalValue = totalValue,
-                    CurrentSeasonValue = contract.YearOne,
-                    YearOneGuarentee = contract.GuranteedOne
+                    CurrentSeasonValue = contractYearOne,
+                    YearOneGuarentee = contractGuarentee
                 };
                 players.Add(dto);
             }
@@ -1283,7 +1288,7 @@ namespace ABASim.api.Data
             var league = await _context.Leagues.FirstOrDefaultAsync();
 
             // Check to see if the player has a decision already pending
-            var faDecision = await _context.FreeAgentDecisions.FirstOrDefaultAsync(x => x.PlayerId == offer.PlayerId);
+            var faDecision = await _context.FreeAgencyDecisions.FirstOrDefaultAsync(x => x.PlayerId == offer.PlayerId);
 
             if (faDecision == null)
             {

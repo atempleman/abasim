@@ -19,7 +19,6 @@ import { PlayerContractDetailed } from '../_models/playerContractDetailed';
 import { OffensiveStrategy } from '../_models/offensiveStrategy';
 import { DefensiveStrategy } from '../_models/defensiveStrategyId';
 import { Strategy } from '../_models/strategy';
-import { SaveStrategy } from '../_models/saveStrategy';
 import { ContractOffer } from '../_models/contractOffer';
 import { WaivedContract } from '../_models/waivedContract';
 import { TradePlayerView } from '../_models/tradePlayerView';

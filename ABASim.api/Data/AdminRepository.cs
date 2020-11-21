@@ -448,7 +448,7 @@ namespace ABASim.api.Data
             var league = await _context.Leagues.FirstOrDefaultAsync();
             int leageState = league.StateId;
 
-            var freeAgentDecisions = await _context.FreeAgentDecisions.Where(x => x.DayToDecide == (league.Day + 1)).ToListAsync();
+            var freeAgentDecisions = await _context.FreeAgencyDecisions.Where(x => x.DayToDecide == (league.Day + 1)).ToListAsync();
 
             foreach (var fa in freeAgentDecisions)
             {
@@ -2044,7 +2044,12 @@ namespace ABASim.api.Data
                 var boxScores = await _context.GameBoxScores.Where(x => x.GameId == gameId).ToListAsync();
                 var playByPlays = await _context.PlayByPlays.Where(x => x.GameId == gameId).ToListAsync();
 
-                _context.GameResults.Remove(gameresult);
+                // _context.GameResults.Remove(gameresult);
+                gameresult.AwayScore = 0;
+                gameresult.Completed = 0;
+                gameresult.HomeScore = 0;
+                gameresult.WinningTeamId = 0;
+                _context.GameResults.Update(gameresult);
                 await _context.SaveChangesAsync();
 
                 foreach (var bs in boxScores)
@@ -2059,6 +2064,122 @@ namespace ABASim.api.Data
                 return await _context.SaveChangesAsync() > 0;
             }
             return true;
+        }
+
+        public async Task<bool> SaveSeasonHistoricalRecords()
+        {
+            // Team Records
+            var teams = await _context.Teams.ToListAsync();
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+
+            foreach (var team in teams)
+            {
+                HistoricalTeamRecord htr = new HistoricalTeamRecord
+                {
+                    TeamId = team.Id,
+                    SeasonId = league.Id,
+                    
+                };
+                await _context.AddAsync(htr);
+            }
+            await _context.SaveChangesAsync();
+
+            // Awards
+
+            return true;
+        }
+
+        public async Task<bool> RolloverSeasonCareerStats()
+        {
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            var playerStats = await _context.PlayerStats.ToListAsync();
+            var playerStatsPlayoffs = await _context.PlayerStatsPlayoffs.ToListAsync();
+
+            // Player Stats
+            foreach (var ps in playerStats)
+            {
+                var pt = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == pt.TeamId);
+
+                CareerPlayerStat stats = new CareerPlayerStat
+                {
+                    PlayerId = ps.PlayerId,
+                    Team = team.ShortCode,
+                    SeasonId = league.Id,
+                    GamesPlayed = ps.GamesPlayed,
+                    Minutes = ps.Minutes,
+                    Points = ps.Points,
+                    Rebounds = ps.Rebounds,
+                    Assists = ps.Assists,
+                    Steals = ps.Steals,
+                    Blocks = ps.Blocks,
+                    FieldGoalsMade = ps.FieldGoalsMade,
+                    FieldGoalsAttempted = ps.FieldGoalsAttempted,
+                    ThreeFieldGoalsAttempted = ps.ThreeFieldGoalsAttempted,
+                    ThreeFieldGoalsMade = ps.ThreeFieldGoalsMade,
+                    FreeThrowsAttempted = ps.FreeThrowsAttempted,
+                    FreeThrowsMade = ps.FreeThrowsMade,
+                    ORebs = ps.ORebs,
+                    DRebs = ps.DRebs,
+                    Turnovers = ps.Turnovers,
+                    Fouls = ps.Fouls,
+                    Ppg = ps.Ppg, //ps.Points / ps.GamesPlayed,
+                    Apg = ps.Apg, //ps.Assists / ps.GamesPlayed,
+                    Rpg = ps.Rpg, //ps.Rebounds / ps.GamesPlayed,
+                    Spg = ps.Spg,
+                    Bpg = ps.Bpg,
+                    Mpg = ps.Mpg,
+                    Fpg = ps.Fpg,
+                    Tpg = ps.Tpg
+                };
+                await _context.AddAsync(stats);
+                _context.PlayerStats.Remove(ps);
+            }
+
+
+
+            // Player Stats Playoffs
+            foreach (var ps in playerStatsPlayoffs)
+            {
+                var pt = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == ps.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == pt.TeamId);
+
+                CareerPlayerStatsPlayoff stats = new CareerPlayerStatsPlayoff
+                {
+                    PlayerId = ps.PlayerId,
+                    Team = team.ShortCode,
+                    SeasonId = league.Id,
+                    GamesPlayed = ps.GamesPlayed,
+                    Minutes = ps.Minutes,
+                    Points = ps.Points,
+                    Rebounds = ps.Rebounds,
+                    Assists = ps.Assists,
+                    Steals = ps.Steals,
+                    Blocks = ps.Blocks,
+                    FieldGoalsMade = ps.FieldGoalsMade,
+                    FieldGoalsAttempted = ps.FieldGoalsAttempted,
+                    ThreeFieldGoalsAttempted = ps.ThreeFieldGoalsAttempted,
+                    ThreeFieldGoalsMade = ps.ThreeFieldGoalsMade,
+                    FreeThrowsAttempted = ps.FreeThrowsAttempted,
+                    FreeThrowsMade = ps.FreeThrowsMade,
+                    ORebs = ps.ORebs,
+                    DRebs = ps.DRebs,
+                    Turnovers = ps.Turnovers,
+                    Fouls = ps.Fouls,
+                    Ppg = ps.Ppg, //ps.Points / ps.GamesPlayed,
+                    Apg = ps.Apg, //ps.Assists / ps.GamesPlayed,
+                    Rpg = ps.Rpg, //ps.Rebounds / ps.GamesPlayed,
+                    Spg = ps.Spg,
+                    Bpg = ps.Bpg,
+                    Mpg = ps.Mpg,
+                    Fpg = ps.Fpg,
+                    Tpg = ps.Tpg
+                };
+                await _context.AddAsync(stats);
+                _context.PlayerStatsPlayoffs.Remove(ps);
+            }
+
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

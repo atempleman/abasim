@@ -1,6 +1,6 @@
 export interface TradePlayerView {
     playerId: number;
-    firstName: string;
+    firstname: string;
     surname: string;
     pgPosition: number;
     sgPosition: number;

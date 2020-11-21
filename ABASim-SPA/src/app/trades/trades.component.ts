@@ -95,18 +95,6 @@ export class TradesComponent implements OnInit {
       this.alertify.error('Error getting your team');
     });
 
-    // this.teamService.getRosterForTeam(teamId).subscribe(result => {
-    //   this.yourTeamRoster = result;
-    // }, error => {
-    //   this.alertify.error('Error getting your roster');
-    // });
-
-    // this.teamService.getTeamContracts(this.team.id).subscribe(result => {
-    //   this.teamContracts = result;
-    // }, error => {
-    //   this.alertify.error('Error getting team contracts');
-    // });
-
     this.teamService.getTradePlayerView(teamId).subscribe(result => {
       this.yourTeamRoster = result;
     }, error => {
@@ -115,12 +103,9 @@ export class TradesComponent implements OnInit {
 
     this.teamService.getTradeOffers(teamId).subscribe(result => {
       this.offeredTrades = result;
-      console.log(result);
       this.offeredTrades.forEach(element => {
         const value = this.tradeIds.includes(element.tradeId);
         if (!value) {
-          console.log('test ash');
-          console.log(element);
           this.tradeIds.push(element.tradeId);
           this.tradesToDisplay.push(element);
         }
@@ -168,11 +153,10 @@ export class TradesComponent implements OnInit {
     // }, () => {
     //   this.displayTeams = 1;
     // });
-
-    this.teamService.getTradePlayerView(this.team.id).subscribe(result => {
+    this.teamService.getTradePlayerView(this.tradeTeam.id).subscribe(result => {
       this.selectedTeamRoster = result;
     }, error => {
-      this.alertify.error('Error gett player details');
+      this.alertify.error('Error get player details');
     }, () => {
       this.displayTeams = 1;
     });
@@ -254,6 +238,10 @@ export class TradesComponent implements OnInit {
         this.selectedTeamRoster.push(ply);
 
         this.playersInTrade.splice(idx, 1);
+
+        // Now need to update the salary caps
+        this.yourSalaryCapSpace.currentSalaryAmount = this.yourSalaryCapSpace.currentSalaryAmount - ply.currentSeasonValue;
+        this.theirSalaryCapSpace.currentSalaryAmount = this.theirSalaryCapSpace.currentSalaryAmount + ply.currentSeasonValue;
       } else {
         // Pick is being removed
         const index = this.proposedTradeReceiving.findIndex(x => x.pick === player.pick);
@@ -277,6 +265,10 @@ export class TradesComponent implements OnInit {
         this.yourTeamRoster.push(ply);
 
         this.playersInTrade.splice(idx, 1);
+
+        // Now need to update the salary caps
+        this.yourSalaryCapSpace.currentSalaryAmount = this.yourSalaryCapSpace.currentSalaryAmount + ply.currentSeasonValue;
+        this.theirSalaryCapSpace.currentSalaryAmount = this.theirSalaryCapSpace.currentSalaryAmount - ply.currentSeasonValue;
       } else {
         // Pick is being removed
         const index = this.proposedTradeSending.findIndex(x => x.pick === player.pick);
@@ -377,7 +369,7 @@ export class TradesComponent implements OnInit {
         receivingTeamName: '',
         tradeId: 0,
         playerId: player.playerId,
-        playerName: player.firstName + ' ' + player.surname,
+        playerName: player.surname,
         pick: 0,
         year: 0,
         originalTeamId: 0,
@@ -395,6 +387,9 @@ export class TradesComponent implements OnInit {
       this.yourTeamRoster.splice(index, 1);
 
       // Now need to update both teams salary caps
+      this.yourSalaryCapSpace.currentSalaryAmount = this.yourSalaryCapSpace.currentSalaryAmount - trade.yearOne;
+      this.theirSalaryCapSpace.currentSalaryAmount = this.theirSalaryCapSpace.currentSalaryAmount + trade.yearOne;
+
 
     } else if (side === 1) {
       // the selected team
@@ -406,7 +401,7 @@ export class TradesComponent implements OnInit {
         receivingTeamName: this.team.mascot,
         tradeId: 0,
         playerId: player.playerId,
-        playerName: player.firstName + ' ' + player.surname,
+        playerName: player.surname,
         pick: 0,
         year: 0,
         originalTeamId: 0,
@@ -422,6 +417,10 @@ export class TradesComponent implements OnInit {
       this.playersInTrade.push(player);
       const index = this.selectedTeamRoster.findIndex(x => x.playerId === player.playerId);
       this.selectedTeamRoster.splice(index, 1);
+
+      // Need to update cap space situations
+      this.yourSalaryCapSpace.currentSalaryAmount = this.yourSalaryCapSpace.currentSalaryAmount + trade.yearOne;
+      this.theirSalaryCapSpace.currentSalaryAmount = this.theirSalaryCapSpace.currentSalaryAmount - trade.yearOne;
     }
   }
 
@@ -544,14 +543,13 @@ export class TradesComponent implements OnInit {
   }
 
   public openModal(template: TemplateRef<any>, tradeId: number) {
-    // console.log(this.tradesToDisplay);
     this.tradeDisplay = this.offeredTrades.filter(x => x.tradeId === tradeId);
     if (this.team.id !== this.tradeDisplay[0].receivingTeam) {
       this.recevingTeamText = this.tradesToDisplay[0].receivingTeamName;
     } else if (this.team.id !== this.tradeDisplay[0].tradingTeam) {
       this.recevingTeamText = this.tradesToDisplay[0].tradingTeamName;
     }
-    // console.log(this.tradeDisplay);
+
     if (this.tradeDisplay[0].status === 2) {
       this.teamService.getTradeMessageForTradeId(this.tradeDisplay[0].tradeId).subscribe(result => {
         this.tradeMessage = result;

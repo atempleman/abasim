@@ -4,7 +4,7 @@ namespace ABASim.api.Dtos
     {
         public int PlayerId { get; set; }
 
-        public string FisrtName { get; set; }
+        public string Fisrtname { get; set; }
 
         public string Surname { get; set; }
 

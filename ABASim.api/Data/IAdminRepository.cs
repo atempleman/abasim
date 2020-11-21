@@ -38,5 +38,9 @@ namespace ABASim.api.Data
          Task<bool> ResetGame(int gameId);
 
          Task<IEnumerable<CurrentDayGamesDto>> GetGamesForRreset();
+
+         Task<bool> RolloverSeasonCareerStats();
+
+         Task<bool> SaveSeasonHistoricalRecords();
     }
 }
