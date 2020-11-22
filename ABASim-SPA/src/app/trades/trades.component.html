@@ -109,6 +109,9 @@
 				</div>
 			</div>
 		</div>
+		<div class="row cards-row" style="color:red" *ngIf='this.validTrade == 0'>
+			{{ this.invalidTradeMessage }}
+		</div>
 		<div class="row cards-row">
 			<button class="btn btn-info btn-xs" (click)="proposeTrade()" *ngIf="this.showPropose"><span
 					class="glyphicon glyphicon-edit"></span> Propose Trade</button>
@@ -302,7 +305,6 @@
 		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
 	</div>
 	<div class="modal-body">
-		ASH BODY TEST
 		<div *ngIf="!this.tmDisplay">
 			<div class="row"
 				*ngIf="this.tradeDisplay[0]?.status == 2 && this.team.id == this.tradeDisplay[0]?.tradingTeam">
@@ -352,13 +354,13 @@
 	</div>
 	<div class="modal-footer form-group text-center">
 		<button type="submit" class="btn btn-primary"
-			*ngIf="this.team.id == this.tradeDisplay[0].receivingTeam && !this.tmDisplay && this.tradeDisplay[0].status != 2"
+			*ngIf="this.team.id == this.tradeDisplay[0].tradingTeam && !this.tmDisplay && this.tradeDisplay[0].status != 2"
 			(click)="acceptTrade(this.tradeDisplay[0].tradeId)">Accept</button>
 		<button type="submit" class="btn btn-primary" (click)="modalRef.hide()" *ngIf="!this.tmDisplay">Close</button>
 		<button type="button" class="btn btn-danger"
-			*ngIf="this.team.id == this.tradeDisplay[0].tradingTeam && !this.tmDisplay"
+			*ngIf="this.team.id == this.tradeDisplay[0].receivingTeam && !this.tmDisplay"
 			(click)="pullTrade(this.tradeDisplay[0].tradeId)">Cancel Offer</button>
 		<button type="button" class="btn btn-danger" (click)="rejectTrade()"
-			*ngIf="this.team.id == this.tradeDisplay[0].receivingTeam && !this.tmDisplay && this.tradeDisplay[0].status != 2">Reject</button>
+			*ngIf="this.team.id == this.tradeDisplay[0].tradingTeam && !this.tmDisplay && this.tradeDisplay[0].status != 2">Reject</button>
 	</div>
 </ng-template>

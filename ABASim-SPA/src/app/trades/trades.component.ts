@@ -71,8 +71,8 @@ export class TradesComponent implements OnInit {
   yourSalaryCapSpace: TeamSalaryCapInfo;
   theirSalaryCapSpace: TeamSalaryCapInfo;
 
-  // teamContracts: PlayerContractDetailed[] = [];
-  // oppContracts: PlayerContractDetailed[] = [];
+  invalidTradeMessage = '';
+  validTrade = 0;
   yourTeamRoster: TradePlayerView[] = [];
   selectedTeamRoster: TradePlayerView[] = [];
 
@@ -138,21 +138,6 @@ export class TradesComponent implements OnInit {
     const temp = this.allOtherTeams.filter(x => x.id == this.teamSelected);
     this.tradeTeam = temp[0];
 
-    // this.teamService.getRosterForTeam(this.teamSelected).subscribe(result => {
-    //   this.selectedTeamRoster = result;
-    // }, error => {
-    //   this.alertify.error('Error getting selected roster');
-    // }, () => {
-    //   this.displayTeams = 1;
-    // });
-
-    // this.teamService.getTeamContracts(this.team.id).subscribe(result => {
-    //   this.oppContracts = result;
-    // }, error => {
-    //   this.alertify.error('Error getting team contracts');
-    // }, () => {
-    //   this.displayTeams = 1;
-    // });
     this.teamService.getTradePlayerView(this.tradeTeam.id).subscribe(result => {
       this.selectedTeamRoster = result;
     }, error => {
@@ -200,30 +185,90 @@ export class TradesComponent implements OnInit {
   }
 
   proposeTrade() {
-    this.spinner.show();
-    if (this.proposedTradeSending.length !== 0 || this.proposedTradeReceiving.length !== 0) {
-      // Now need to create an array to pass through into API
+    // First we need to check if the salary cap rules pass for the trade to be accepted
+    const yourSalary = this.yourSalaryCapSpace.salaryCapAmount - this.yourSalaryCapSpace.currentSalaryAmount;
+    const theirSalary = this.theirSalaryCapSpace.salaryCapAmount - this.theirSalaryCapSpace.currentSalaryAmount;
+    this.validTrade = 0;
+
+    // tslint:disable-next-line: max-line-length
+    if ((yourSalary >= 0) && (theirSalary >= 0)) {
+      // Both Teams are under the salary cap correctly
+      this.validTrade = 1;
+    } else if (yourSalary < 0) {
+      // Your Team is over the cap
+      let yourSalaryReceived = 0;
+      let theirSalaryReceived = 0;
+
       this.proposedTradeSending.forEach(element => {
-        this.actualTradeOffer.push(element);
+        theirSalaryReceived = theirSalaryReceived + element.yearOne;
       });
 
       this.proposedTradeReceiving.forEach(element => {
-        this.actualTradeOffer.push(element);
+        yourSalaryReceived = yourSalaryReceived + element.yearOne;
       });
 
-      // Now need to pass into the service
-      this.teamService.saveTradeProposal(this.actualTradeOffer).subscribe(result => {
+      // Now the calc to check if the trade is valid
+      const value = 100000 + (theirSalaryReceived * .25);
 
-      }, error => {
-        this.alertify.error('Error making trade offer');
-        this.spinner.hide();
-      }, () => {
-        this.alertify.success('Trade offer has been made');
-        // Now need to update the screen back to its original state - do this with a page reload
-        window.location.reload();
-        this.spinner.hide();
+      if (value < yourSalaryReceived) {
+        this.invalidTradeMessage = 'Your team cannot make this trade due to salary cap rules';
+      } else {
+        this.validTrade = 1;
+      }
+    } else if (theirSalary < 0) {
+      // Receiving team is over the cap
+      let yourSalaryReceived = 0;
+      let theirSalaryReceived = 0;
+
+      this.proposedTradeSending.forEach(element => {
+        theirSalaryReceived = theirSalaryReceived + element.yearOne;
       });
+
+      this.proposedTradeReceiving.forEach(element => {
+        yourSalaryReceived = yourSalaryReceived + element.yearOne;
+      });
+
+      // Now the calc to check if the trade is valid
+      const value = 100000 + (yourSalaryReceived * .25);
+
+      if (value < theirSalaryReceived) {
+        this.invalidTradeMessage = 'Their team cannot make this trade due to salary cap rules';
+      } else {
+        this.validTrade = 1;
+      }
     }
+
+    if (this.validTrade === 1) {
+      this.spinner.show();
+      if (this.proposedTradeSending.length !== 0 && this.proposedTradeReceiving.length !== 0) {
+        // Now need to create an array to pass through into API
+        this.proposedTradeSending.forEach(element => {
+          this.actualTradeOffer.push(element);
+        });
+
+        this.proposedTradeReceiving.forEach(element => {
+          this.actualTradeOffer.push(element);
+        });
+
+        // Now need to pass into the service
+        this.teamService.saveTradeProposal(this.actualTradeOffer).subscribe(result => {
+
+        }, error => {
+          this.alertify.error('Error making trade offer');
+          this.spinner.hide();
+        }, () => {
+          this.alertify.success('Trade offer has been made');
+          // Now need to update the screen back to its original state - do this with a page reload
+          window.location.reload();
+          this.spinner.hide();
+        });
+      } else {
+        this.alertify.error('Both sides must have something in a trade');
+      }
+    } else {
+      this.alertify.error('Trade is invalid due to salary cap rules');
+    }
+
   }
 
   removePlayer(player: Trade, side: number) {
@@ -449,7 +494,7 @@ export class TradesComponent implements OnInit {
       // Need to remove the player from the players list
       this.picksInTrade.push(pick);
       const index = this.yourTeamPicks.findIndex(x => x.round === pick.round && x.year === pick.year &&
-                                                x.originalTeam === pick.originalTeam);
+        x.originalTeam === pick.originalTeam);
       this.yourTeamPicks.splice(index, 1);
     } else {
       // the selected team
@@ -476,7 +521,7 @@ export class TradesComponent implements OnInit {
       // Need to remove the player from the players list
       this.picksInTrade.push(pick);
       const index = this.selectedTeamPicks.findIndex(x => x.round === pick.round && x.year === pick.year &&
-                                                     x.originalTeam === pick.originalTeam);
+        x.originalTeam === pick.originalTeam);
       this.selectedTeamPicks.splice(index, 1);
     }
   }
@@ -544,6 +589,11 @@ export class TradesComponent implements OnInit {
 
   public openModal(template: TemplateRef<any>, tradeId: number) {
     this.tradeDisplay = this.offeredTrades.filter(x => x.tradeId === tradeId);
+
+    console.log('TeamId: ' + this.team.id);
+    console.log('Receiving Team Id: ' + this.tradeDisplay[0].receivingTeam);
+    console.log('Trading Team Id: ' + this.tradeDisplay[0].tradingTeam);
+
     if (this.team.id !== this.tradeDisplay[0].receivingTeam) {
       this.recevingTeamText = this.tradesToDisplay[0].receivingTeamName;
     } else if (this.team.id !== this.tradeDisplay[0].tradingTeam) {
