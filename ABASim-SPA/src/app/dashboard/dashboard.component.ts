@@ -30,6 +30,7 @@ import { DraftTracker } from '../_models/draftTracker';
 import { DraftService } from '../_services/draft.service';
 import { DashboardDraftPick } from '../_models/dashboardDraftPick';
 import { Transaction } from '../_models/transaction';
+import { Votes } from '../_models/votes';
 
 @Component({
   selector: 'app-dashboard',
@@ -64,6 +65,10 @@ export class DashboardComponent implements OnInit {
   nextPick: DashboardDraftPick;
 
   yesterdaysTransactions: Transaction[] = [];
+
+  mvp: Votes[] = [];
+  sixth: Votes[] = [];
+  dpoy: Votes[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
     private authService: AuthService, private teamService: TeamService, private adminService: AdminService,
@@ -104,7 +109,7 @@ export class DashboardComponent implements OnInit {
       } else if (this.league.stateId === 11) {
         this.getFinalsSummaries();
       }
-      console.log(this.league);
+
       if (this.league.stateId === 3 || this.league.stateId === 4) {
         this.interval = setInterval(() => {
           this.getPicksToDisplay();
@@ -124,6 +129,26 @@ export class DashboardComponent implements OnInit {
         });
       } else {
         this.spinner.hide();
+      }
+
+      if (this.league.stateId > 7) {
+        this.leagueService.getMvpTopFive().subscribe(result => {
+          this.mvp = result;
+        }, error => {
+          this.alertify.error('Error getting MVP');
+        });
+
+        this.leagueService.getSixthManTopFive().subscribe(result => {
+          this.sixth = result;
+        }, error => {
+          this.alertify.error('Error getting Sixth Man');
+        });
+
+        this.leagueService.getDpoyTopFive().subscribe(result => {
+          this.dpoy = result;
+        }, error => {
+          this.alertify.error('Error getting DPOY');
+        });
       }
     });
 

@@ -309,6 +309,16 @@
 		<p>The {{ this.champion.teamname }} {{ this.champion.mascot }} are the ABA champions! Congratulations.</p>
 	</div>
 
+	<div class="card" style="background-color:rgb(22, 24, 100);" *ngIf="this.league?.stateId > 7">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Award Winners</h4>
+		<p>The Award Winners for the season have been announced</p>
+		<div class="rowpo ml-3 mt-2">
+			<h5>Most Valuable Player - {{ this.mvp[0].playerName }} ({{ this.mvp[0].teamName }})</h5>
+			<h5>6th Man of the Year- {{ this.sixth[0].playerName }} ({{ this.sixth[0].teamName }})</h5>
+			<h5>Defensive Player of the Year - {{ this.dpoy[0].playerName }} ({{ this.dpoy[0].teamName }})</h5>
+		</div>
+	</div>
+
 	<div class="card" style="background-color:rgb(22, 24, 100);">
 		<h4><i class="fa fa-commenting-o" aria-hidden="true"></i> GLOBAL CHAT <button class="btn btn-secondary ml-2"
 				(click)="refreshChat()"><i class="fa fa-refresh"></i></button></h4>
