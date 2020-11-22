@@ -144,6 +144,7 @@ export class DashboardComponent implements OnInit {
   getRoundOneSummaries() {
     this.leagueService.getFirstRoundSummaries(1).subscribe(result => {
       this.playoffSummaries = result;
+      console.log(this.playoffSummaries);
     }, error => {
       this.alertify.error('Error getting playoff summaries');
     });

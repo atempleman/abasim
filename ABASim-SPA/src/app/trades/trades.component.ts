@@ -77,8 +77,8 @@ export class TradesComponent implements OnInit {
   selectedTeamRoster: TradePlayerView[] = [];
 
   constructor(private alertify: AlertifyService, private router: Router, private teamService: TeamService,
-              private transferService: TransferService, private modalService: BsModalService,
-              private fb: FormBuilder, private spinner: NgxSpinnerService) { }
+    private transferService: TransferService, private modalService: BsModalService,
+    private fb: FormBuilder, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     const teamId = +localStorage.getItem('teamId');
@@ -330,22 +330,76 @@ export class TradesComponent implements OnInit {
   }
 
   acceptTrade(tradeId: number) {
-    this.spinner.show();
-    let tradeResult = false;
-    this.teamService.acceptTradeProposal(tradeId).subscribe(result => {
-      tradeResult = result;
-    }, error => {
-      this.alertify.error('Error accepting trade');
-    }, () => {
-      if (!tradeResult) {
-        this.alertify.error('Error accepting trade');
+    const yourSalary = this.yourSalaryCapSpace.salaryCapAmount - this.yourSalaryCapSpace.currentSalaryAmount;
+    const theirSalary = this.theirSalaryCapSpace.salaryCapAmount - this.theirSalaryCapSpace.currentSalaryAmount;
+    this.validTrade = 0;
+
+    // tslint:disable-next-line: max-line-length
+    if ((yourSalary >= 0) && (theirSalary >= 0)) {
+      // Both Teams are under the salary cap correctly
+      this.validTrade = 1;
+    } else if (yourSalary < 0) {
+      // Your Team is over the cap
+      let yourSalaryReceived = 0;
+      let theirSalaryReceived = 0;
+
+      this.proposedTradeSending.forEach(element => {
+        theirSalaryReceived = theirSalaryReceived + element.yearOne;
+      });
+
+      this.proposedTradeReceiving.forEach(element => {
+        yourSalaryReceived = yourSalaryReceived + element.yearOne;
+      });
+
+      // Now the calc to check if the trade is valid
+      const value = 100000 + (theirSalaryReceived * .25);
+
+      if (value < yourSalaryReceived) {
+        this.invalidTradeMessage = 'Your team cannot make this trade due to salary cap rules';
       } else {
-        this.modalRef.hide();
-        this.alertify.success('Trade completed!');
-        this.spinner.hide();
-        this.goToTeam();
+        this.validTrade = 1;
       }
-    });
+    } else if (theirSalary < 0) {
+      // Receiving team is over the cap
+      let yourSalaryReceived = 0;
+      let theirSalaryReceived = 0;
+
+      this.proposedTradeSending.forEach(element => {
+        theirSalaryReceived = theirSalaryReceived + element.yearOne;
+      });
+
+      this.proposedTradeReceiving.forEach(element => {
+        yourSalaryReceived = yourSalaryReceived + element.yearOne;
+      });
+
+      // Now the calc to check if the trade is valid
+      const value = 100000 + (yourSalaryReceived * .25);
+
+      if (value < theirSalaryReceived) {
+        this.invalidTradeMessage = 'Their team cannot make this trade due to salary cap rules';
+      } else {
+        this.validTrade = 1;
+      }
+    }
+
+    if (this.validTrade === 1) {
+      this.spinner.show();
+      let tradeResult = false;
+      this.teamService.acceptTradeProposal(tradeId).subscribe(result => {
+        tradeResult = result;
+      }, error => {
+        this.alertify.error('Error accepting trade');
+      }, () => {
+        if (!tradeResult) {
+          this.alertify.error('Error accepting trade');
+        } else {
+          this.modalRef.hide();
+          this.alertify.success('Trade completed!');
+          this.spinner.hide();
+          this.goToTeam();
+        }
+      });
+    }
   }
 
   pullTrade(tradeId: number) {

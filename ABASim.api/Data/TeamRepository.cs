@@ -27,6 +27,7 @@ namespace ABASim.api.Data
 
             var tradePieces = await _context.Trades.Where(x => x.TradeId == tradeId).ToListAsync();
 
+            // First we need to check if the trade is still suitable
             foreach (var tp in tradePieces)
             {
                 var playerId = tp.PlayerId;

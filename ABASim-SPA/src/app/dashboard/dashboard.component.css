@@ -34,6 +34,10 @@
      text-align: center;
      position: relative;
  }
+ .rowpo {
+    text-align: left;
+    position: relative;
+ }
  .card p {
     font-size: 18px;
  }

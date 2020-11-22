@@ -352,6 +352,9 @@
 			</div>
 		</form>
 	</div>
+	<div class="row cards-row" style="color:red" *ngIf='this.validTrade == 0'>
+		{{ this.invalidTradeMessage }}
+	</div>
 	<div class="modal-footer form-group text-center">
 		<button type="submit" class="btn btn-primary"
 			*ngIf="this.team.id == this.tradeDisplay[0].tradingTeam && !this.tmDisplay && this.tradeDisplay[0].status != 2"

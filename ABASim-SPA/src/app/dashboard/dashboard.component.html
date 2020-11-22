@@ -142,126 +142,171 @@
 		<div class="row ml-3 mr-5">
 			<carousel>
 				<slide>
-			<h5>PPG Leaders</h5>
-			<table>
-				<thead>
-					<tr>
-						<th>Rank</th>
-						<th>Player</th>
-						<th>Team</th>
-						<th>PPG</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tr *ngFor="let player of this.topFivePoints; let i = index">
-					<td>{{ i + 1 }}</td>
-					<td>{{ player.playerName }}</td>
-					<td>{{ player.teamShortCode }}</td>
-					<td>{{ (player.points / player.gamesPlayed).toFixed(1) }}</td>
-					<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
-				</tr>
-			</table>
-			<br />
-			<button class="btn btn-link" (click)="goToStats(1)">More</button>
-			</slide>
-			<slide class="slideclass center-block">
-				<h5>RPG Leaders</h5>
-				<table>
-					<thead>
-						<tr>
-							<th>Rank</th>
-							<th>Player</th>
-							<th>Team</th>
-							<th>RPG</th>
-							<th></th>
+					<h5>PPG Leaders</h5>
+					<table>
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Player</th>
+								<th>Team</th>
+								<th>PPG</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tr *ngFor="let player of this.topFivePoints; let i = index">
+							<td>{{ i + 1 }}</td>
+							<td>{{ player.playerName }}</td>
+							<td>{{ player.teamShortCode }}</td>
+							<td>{{ (player.points / player.gamesPlayed).toFixed(1) }}</td>
+							<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i
+										class="fa fa-eye"></i></button></td>
 						</tr>
-					</thead>
-					<tr *ngFor="let player of this.topFiveRebounds; let i = index">
-						<td>{{ i + 1 }}</td>
-						<td>{{ player.playerName }}</td>
-						<td>{{ player.teamShortCode }}</td>
-						<td>{{ (player.rebounds / player.gamesPlayed).toFixed(1) }}</td>
-						<td><button class="btn btn-info btn-xs tablebutton"
-								(click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
-					</tr>
-				</table>
-				<br />
-				<button class="btn btn-link" (click)="goToStats(2)">More</button>
-			</slide>
-			<slide class="slideclass center-block">
-				<h5>APG Leaders</h5>
-				<table>
-					<thead>
-						<tr>
-							<th>Rank</th>
-							<th>Player</th>
-							<th>Team</th>
-							<th>APG</th>
-							<th></th>
+					</table>
+					<br />
+					<button class="btn btn-link" (click)="goToStats(1)">More</button>
+				</slide>
+				<slide class="slideclass center-block">
+					<h5>RPG Leaders</h5>
+					<table>
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Player</th>
+								<th>Team</th>
+								<th>RPG</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tr *ngFor="let player of this.topFiveRebounds; let i = index">
+							<td>{{ i + 1 }}</td>
+							<td>{{ player.playerName }}</td>
+							<td>{{ player.teamShortCode }}</td>
+							<td>{{ (player.rebounds / player.gamesPlayed).toFixed(1) }}</td>
+							<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i
+										class="fa fa-eye"></i></button></td>
 						</tr>
-					</thead>
-					<tr *ngFor="let player of this.topFiveAssists; let i = index">
-						<td>{{ i + 1 }}</td>
-						<td>{{ player.playerName }}</td>
-						<td>{{ player.teamShortCode }}</td>
-						<td>{{ (player.assists / player.gamesPlayed).toFixed(1) }}</td>
-						<td><button class="btn btn-info btn-xs tablebutton"
-								(click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
-					</tr>
-				</table>
-				<br />
-				<button class="btn btn-link" (click)="goToStats(3)">More</button>
-			</slide>
-			<slide class="slideclass center-block">
-				<h5>SPG Leaders</h5>
-				<table>
-					<thead>
-						<tr>
-							<th>Rank</th>
-							<th>Player</th>
-							<th>Team</th>
-							<th>SPG</th>
-							<th></th>
+					</table>
+					<br />
+					<button class="btn btn-link" (click)="goToStats(2)">More</button>
+				</slide>
+				<slide class="slideclass center-block">
+					<h5>APG Leaders</h5>
+					<table>
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Player</th>
+								<th>Team</th>
+								<th>APG</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tr *ngFor="let player of this.topFiveAssists; let i = index">
+							<td>{{ i + 1 }}</td>
+							<td>{{ player.playerName }}</td>
+							<td>{{ player.teamShortCode }}</td>
+							<td>{{ (player.assists / player.gamesPlayed).toFixed(1) }}</td>
+							<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i
+										class="fa fa-eye"></i></button></td>
 						</tr>
-					</thead>
-					<tr *ngFor="let player of this.topFiveSteals; let i = index">
-						<td>{{ i + 1 }}</td>
-						<td>{{ player.playerName }}</td>
-						<td>{{ player.teamShortCode }}</td>
-						<td>{{ (player.steals / player.gamesPlayed).toFixed(1) }}</td>
-						<td><button class="btn btn-info btn-xs tablebutton"
-								(click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
-					</tr>
-				</table>
-				<br />
-				<button class="btn btn-link" (click)="goToStats(4)">More</button>
-			</slide>
-			<slide class="slideclass center-block">
-				<h5>BPG Leaders</h5>
-				<table>
-					<thead>
-						<tr>
-							<th>Rank</th>
-							<th>Player</th>
-							<th>Team</th>
-							<th>BPG</th>
-							<th></th>
+					</table>
+					<br />
+					<button class="btn btn-link" (click)="goToStats(3)">More</button>
+				</slide>
+				<slide class="slideclass center-block">
+					<h5>SPG Leaders</h5>
+					<table>
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Player</th>
+								<th>Team</th>
+								<th>SPG</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tr *ngFor="let player of this.topFiveSteals; let i = index">
+							<td>{{ i + 1 }}</td>
+							<td>{{ player.playerName }}</td>
+							<td>{{ player.teamShortCode }}</td>
+							<td>{{ (player.steals / player.gamesPlayed).toFixed(1) }}</td>
+							<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i
+										class="fa fa-eye"></i></button></td>
 						</tr>
-					</thead>
-					<tr *ngFor="let player of this.topFiveBlocks; let i = index">
-						<td>{{ i + 1 }}</td>
-						<td>{{ player.playerName }}</td>
-						<td>{{ player.teamShortCode }}</td>
-						<td>{{ (player.blocks / player.gamesPlayed).toFixed(1) }}</td>
-						<td><button class="btn btn-info btn-xs tablebutton"
-								(click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
-					</tr>
-				</table>
-				<br />
-				<button class="btn btn-link" (click)="goToStats(5)">More</button>
-			</slide>
+					</table>
+					<br />
+					<button class="btn btn-link" (click)="goToStats(4)">More</button>
+				</slide>
+				<slide class="slideclass center-block">
+					<h5>BPG Leaders</h5>
+					<table>
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Player</th>
+								<th>Team</th>
+								<th>BPG</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tr *ngFor="let player of this.topFiveBlocks; let i = index">
+							<td>{{ i + 1 }}</td>
+							<td>{{ player.playerName }}</td>
+							<td>{{ player.teamShortCode }}</td>
+							<td>{{ (player.blocks / player.gamesPlayed).toFixed(1) }}</td>
+							<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i
+										class="fa fa-eye"></i></button></td>
+						</tr>
+					</table>
+					<br />
+					<button class="btn btn-link" (click)="goToStats(5)">More</button>
+				</slide>
 			</carousel>
 		</div>
+	</div>
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 8">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> First Round of the Playoffs</h4>
+		<p>The playoffs have begun! The first round is underway.</p>
+		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
+			<h5>Matchup #{{ i + 1 }}</h5>
+			<ul style="list-style-type:none;">
+				{{ mu.awayTeam }} {{ mu.awayWins }} vs {{ mu.homeTeam }} {{ mu.homeWins }}
+			</ul> 
+		</div>
+	</div>
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 9">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Second Round of the Playoffs</h4>
+		<p>The Conference Semi-Finals are now underway.</p>
+		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
+			<h5>Matchup #{{ i + 1 }}</h5>
+			<ul style="list-style-type:none;">
+				{{ mu.awayTeam }} {{ mu.awayWins }} vs {{ mu.homeTeam }} {{ mu.homeWins }}
+			</ul> 
+		</div>
+	</div>
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 10">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Conference Finals</h4>
+		<p>The Conference Finals are now underway.</p>
+		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
+			<h5>Matchup #{{ i + 1 }}</h5>
+			<ul style="list-style-type:none;">
+				{{ mu.awayTeam }} {{ mu.awayWins }} vs {{ mu.homeTeam }} {{ mu.homeWins }}
+			</ul> 
+		</div>
+	</div>
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 11">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> ABA Finals</h4>
+		<p>The ABA Finals are now underway.</p>
+		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
+			<h5>Matchup #{{ i + 1 }}</h5>
+			<ul style="list-style-type:none;">
+				{{ mu.awayTeam }} {{ mu.awayWins }} vs {{ mu.homeTeam }} {{ mu.homeWins }}
+			</ul> 
+		</div>
+	</div>
+	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 12">
+		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i>Champions: {{ this.champion.teamname }} {{ this.champion.mascot }}</h4>
+		<p>The {{ this.champion.teamname }} {{ this.champion.mascot }} are the ABA champions! Congratulations.</p>
 	</div>
 
 	<div class="card" style="background-color:rgb(22, 24, 100);">
@@ -299,7 +344,8 @@
 		</div>
 	</div>
 
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 6 || this.league?.stateId == 7 || this.league?.stateId == 15">
+	<div class="card" style="background-color:rgb(12, 126, 120);"
+		*ngIf="this.league?.stateId == 6 || this.league?.stateId == 7 || this.league?.stateId == 15">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Yesterday's Transactions</h4>
 		<table *ngIf="this.yesterdaysTransactions?.length > 0">
 			<thead>
