@@ -12,6 +12,7 @@ import { Team } from '../_models/team';
 import { TeamService } from '../_services/team.service';
 import { CheckGame } from '../_models/checkGame';
 import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-admin',
@@ -34,6 +35,7 @@ export class AdminComponent implements OnInit {
   teamSelected: number;
 
   run = 0;
+  progress = 0;
 
   dayEntered = 0;
   dayForm: FormGroup;
@@ -42,7 +44,7 @@ export class AdminComponent implements OnInit {
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private modalService: BsModalService, private adminService: AdminService,
-              private teamService: TeamService, private fb: FormBuilder) { }
+              private teamService: TeamService, private fb: FormBuilder, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.leagueService.getLeague().subscribe(result => {
@@ -100,9 +102,6 @@ export class AdminComponent implements OnInit {
       this.league.day = 0;
       this.modalRef.hide();
     });
-  }
-
-  endSeason() {
   }
 
   beginConfSemis() {
@@ -313,6 +312,111 @@ export class AdminComponent implements OnInit {
       this.getTodaysGames();
       this.modalRef.hide();
 
+    });
+  }
+
+  rolloverToNextSeason() {
+    this.spinner.show();
+
+    this.adminService.rolloverSeasonStats().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error rolling over season stats');
+    }, () => {
+      this.progress = 10;
+      this.rolloverAwardWinners();
+    });
+  }
+
+  rolloverAwardWinners() {
+    this.adminService.rolloverAwardWinners().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error rolling over historical records and award winners');
+    }, () => {
+      this.progress = 20;
+      this.rolloverContractUpdates();
+    });
+  }
+
+  rolloverContractUpdates() {
+    this.adminService.rolloverContractUpdates().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error rolling over contracts');
+    }, () => {
+      this.progress = 30;
+      this.generateDraft();
+    });
+  }
+
+  generateDraft() {
+    this.adminService.generateDraft().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error setting up draft');
+    }, () => {
+      this.progress = 40;
+      this.deleteData();
+    });
+  }
+
+  deleteData() {
+    this.adminService.deletePreseasonAndPlayoffsData().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error deleting preason and playoff data');
+    }, () => {
+      this.progress = 50;
+      this.adminService.deleteAwardsData().subscribe(result => {
+
+      }, error => {
+        this.alertify.error('Error saving stats and deleting awards');
+      }, () => {
+        this.progress = 60;
+        this.adminService.deleteOtherData().subscribe(result => {
+        }, error => {
+          this.alertify.error('Error deleting other data');
+        }, () => {
+          this.progress = 70;
+          this.adminService.deleteTeamSettingsData().subscribe(result => {
+          }, error => {
+            this.alertify.error('Error deleting team settings data');
+          }, () => {
+            this.progress = 75;
+            this.adminService.deleteSeasonData().subscribe(result => {
+              this.alertify.error('Error deleting season data');
+            }, () => {
+              this.progress = 80;
+              this.resetStandings();
+            });
+          });
+        });
+      });
+    });
+  }
+
+  resetStandings() {
+    this.adminService.resetStandings().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error resetting standings');
+    }, () => {
+      this.progress = 90;
+      this.rolloverLeague();
+    });
+  }
+
+  endSeason() {
+    this.adminService.endSeason().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error ending season properly');
+    }, () => {
+      this.rolloverToNextSeason();
+    });
+  }
+
+  rolloverLeague() {
+    this.adminService.rolloverLeague().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error rolling over league');
+    }, () => {
+      this.modalRef.hide();
+      this.spinner.hide();
     });
   }
 }

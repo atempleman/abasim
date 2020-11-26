@@ -77,4 +77,48 @@ export class AdminService {
   resetGame(gameId: number) {
     return this.http.get<boolean>(this.baseUrl + 'resetgame/' + gameId);
   }
+
+  rolloverSeasonStats() {
+    return this.http.get<boolean>(this.baseUrl + 'rolloverseasonstats');
+  }
+
+  rolloverAwardWinners() {
+    return this.http.get<boolean>(this.baseUrl + 'rolloverawards');
+  }
+
+  rolloverContractUpdates() {
+    return this.http.get<boolean>(this.baseUrl + 'rollovercontractupdates');
+  }
+
+  generateDraft() {
+    return this.http.get<boolean>(this.baseUrl + 'generatedraft');
+  }
+
+  deletePreseasonAndPlayoffsData() {
+    return this.http.get<boolean>(this.baseUrl + 'deletepreseasonplayoffs');
+  }
+
+  deleteTeamSettingsData() {
+    return this.http.get<boolean>(this.baseUrl + 'deleteteamsettings');
+  }
+
+  deleteAwardsData() {
+    return this.http.get<boolean>(this.baseUrl + 'deleteawards');
+  }
+
+  deleteOtherData() {
+    return this.http.get<boolean>(this.baseUrl + 'deleteother');
+  }
+
+  deleteSeasonData() {
+    return this.http.get<boolean>(this.baseUrl + 'deleteseason');
+  }
+
+  resetStandings() {
+    return this.http.get<boolean>(this.baseUrl + 'resetstandings');
+  }
+
+  rolloverLeague() {
+    return this.http.get<boolean>(this.baseUrl + 'rolloverleague');
+  }
 }

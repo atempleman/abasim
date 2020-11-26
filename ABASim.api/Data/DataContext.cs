@@ -121,5 +121,7 @@ namespace ABASim.api.Data
         public DbSet<WaivedContract> WaivedPlayerContracts { get; set; }
 
         public DbSet<HistoricalTeamRecord> HistoricalTeamRecords { get; set; }
+
+        public DbSet<AwardWinner> AwardWinners { get; set; }
     }
 }

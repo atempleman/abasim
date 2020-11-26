@@ -42,5 +42,27 @@ namespace ABASim.api.Data
          Task<bool> RolloverSeasonCareerStats();
 
          Task<bool> SaveSeasonHistoricalRecords();
+
+         Task<bool> ContractUpdates();
+
+         Task<bool> UpdateTeamSalaries();
+
+         Task<bool> GenerateDraftLottery();
+
+         Task<bool> DeletePlayoffData();
+
+         Task<bool> DeletePreseasonData();
+
+         Task<bool> DeleteTeamSettings();
+
+         Task<bool> DeleteAwardsData();
+
+         Task<bool> DeleteOtherSeasonData();
+
+         Task<bool> DeleteSeasonData();
+
+         Task<bool> ResetStandings();
+
+         Task<bool> RolloverLeague();
     }
 }

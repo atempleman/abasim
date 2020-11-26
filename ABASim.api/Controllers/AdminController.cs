@@ -133,5 +133,85 @@ namespace ABASim.api.Controllers
             var result = await _repo.ResetGame(gameId);
             return result;
         }
+
+        [HttpGet("rolloverseasonstats")]
+        public async Task<bool> RolloverSeasonStats()
+        {
+            var result = await _repo.RolloverSeasonCareerStats();
+            return result;
+        }
+
+        [HttpGet("rolloverawards")]
+        public async Task<bool> RolloverAwards()
+        {
+            var result = await _repo.SaveSeasonHistoricalRecords();
+            return result;
+        }
+
+        [HttpGet("rollovercontractupdates")]
+        public async Task<bool> RolloverContractUpdates()
+        {
+            var result = await _repo.ContractUpdates();
+            var result2 = await _repo.UpdateTeamSalaries();
+            return result;
+        }
+
+        [HttpGet("generatedraft")]
+        public async Task<bool> GenerateDraft()
+        {
+            var result = await _repo.GenerateDraftLottery();
+            return result;
+        }
+
+        [HttpGet("deletepreseasonplayoffs")]
+        public async Task<bool> DeletePreseasonPlayoffs()
+        {
+            var result = await _repo.DeletePlayoffData();
+            result = await _repo.DeletePreseasonData();
+            return result;
+        }
+
+        [HttpGet("deleteteamsettings")]
+        public async Task<bool> DeleteTeamSettings()
+        {
+            var result = await _repo.DeleteTeamSettings();
+            return result;
+        }
+
+        [HttpGet("deleteawards")]
+        public async Task<bool> DeleteAwards()
+        {
+            var result = await _repo.SaveSeasonHistoricalRecords();
+            result = await _repo.DeleteAwardsData();
+            return result;
+        }
+
+        [HttpGet("deleteother")]
+        public async Task<bool> DeleteOther()
+        {
+            var result = await _repo.DeleteOtherSeasonData();
+            return result;
+        }
+
+        [HttpGet("deleteseason")]
+        public async Task<bool> DeleteSeason()
+        {
+            var result = await _repo.DeleteSeasonData();
+            return result;
+        }
+
+        [HttpGet("resetstandings")]
+        public async Task<bool> ResetStandings()
+        {
+            var result = await _repo.ResetStandings();
+            return result;
+        }
+
+        [HttpGet("rolloverleague")]
+        public async Task<bool> RolloverLeague()
+        {
+            var result = await _repo.RolloverLeague();
+            return result;
+        }
     }
 }
