@@ -17,6 +17,9 @@ export class AwardsComponent implements OnInit {
   mvpList: Votes[] = [];
   dpoyList: Votes[] = [];
   sixthList: Votes[] = [];
+  firstTeam: Votes[] = [];
+  secondTeam: Votes[] = [];
+  thirdTeam: Votes[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private transferService: TransferService, private spinner: NgxSpinnerService) { }

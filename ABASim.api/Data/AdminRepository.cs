@@ -288,7 +288,10 @@ namespace ABASim.api.Data
                                 int homeTeamId = 0;
                                 int awayTeamId = 0;
 
-                                if (league.Day == 3 || league.Day == 4 || league.Day == 6)
+                                int totalGamesPlayed = series.HomeWins + series.AwayWins;
+                                int nextGameDay = league.Day + 1;
+
+                                if (totalGamesPlayed == 3 || totalGamesPlayed == 4 || totalGamesPlayed == 6)
                                 {
                                     homeTeamId = series.AwayTeamId;
                                     awayTeamId = series.HomeTeamId;
@@ -299,12 +302,16 @@ namespace ABASim.api.Data
                                     awayTeamId = series.AwayTeamId;
                                 }
 
+                                if (totalGamesPlayed == 2 || totalGamesPlayed == 4) {
+                                    nextGameDay = nextGameDay + 1;
+                                }
+
                                 SchedulesPlayoff sched = new SchedulesPlayoff
                                 {
                                     AwayTeamId = awayTeamId,
                                     HomeTeamId = homeTeamId,
                                     SeriesId = series.Id,
-                                    GameDay = league.Day
+                                    GameDay = nextGameDay
                                 };
                                 await _context.AddAsync(sched);
                             }
@@ -326,7 +333,10 @@ namespace ABASim.api.Data
                                 int homeTeamId = 0;
                                 int awayTeamId = 0;
 
-                                if (league.Day == 10 || league.Day == 11 || league.Day == 13)
+                                int totalGamesPlayed = series.HomeWins + series.AwayWins;
+                                int nextGameDay = league.Day + 1;
+
+                                if (totalGamesPlayed == 3 || totalGamesPlayed == 4 || totalGamesPlayed == 6)
                                 {
                                     homeTeamId = series.AwayTeamId;
                                     awayTeamId = series.HomeTeamId;
@@ -337,12 +347,16 @@ namespace ABASim.api.Data
                                     awayTeamId = series.AwayTeamId;
                                 }
 
+                                if (totalGamesPlayed == 2 || totalGamesPlayed == 4) {
+                                    nextGameDay = nextGameDay + 1;
+                                }
+
                                 SchedulesPlayoff sched = new SchedulesPlayoff
                                 {
                                     AwayTeamId = awayTeamId,
                                     HomeTeamId = homeTeamId,
                                     SeriesId = series.Id,
-                                    GameDay = league.Day
+                                    GameDay = nextGameDay
                                 };
                                 await _context.AddAsync(sched);
                             }
@@ -364,7 +378,10 @@ namespace ABASim.api.Data
                                 int homeTeamId = 0;
                                 int awayTeamId = 0;
 
-                                if (league.Day == 17 || league.Day == 18 || league.Day == 20)
+                                int totalGamesPlayed = series.HomeWins + series.AwayWins;
+                                int nextGameDay = league.Day + 1;
+
+                                if (totalGamesPlayed == 3 || totalGamesPlayed == 4 || totalGamesPlayed == 6)
                                 {
                                     homeTeamId = series.AwayTeamId;
                                     awayTeamId = series.HomeTeamId;
@@ -375,12 +392,16 @@ namespace ABASim.api.Data
                                     awayTeamId = series.AwayTeamId;
                                 }
 
+                                if (totalGamesPlayed == 2 || totalGamesPlayed == 4) {
+                                    nextGameDay = nextGameDay + 1;
+                                }
+
                                 SchedulesPlayoff sched = new SchedulesPlayoff
                                 {
                                     AwayTeamId = awayTeamId,
                                     HomeTeamId = homeTeamId,
                                     SeriesId = series.Id,
-                                    GameDay = league.Day
+                                    GameDay = nextGameDay
                                 };
                                 await _context.AddAsync(sched);
                             }
@@ -402,7 +423,10 @@ namespace ABASim.api.Data
                                 int homeTeamId = 0;
                                 int awayTeamId = 0;
 
-                                if (league.Day == 24 || league.Day == 25 || league.Day == 27)
+                                int totalGamesPlayed = series.HomeWins + series.AwayWins;
+                                int nextGameDay = league.Day + 1;
+
+                                if (totalGamesPlayed == 3 || totalGamesPlayed == 4 || totalGamesPlayed == 6)
                                 {
                                     homeTeamId = series.AwayTeamId;
                                     awayTeamId = series.HomeTeamId;
@@ -413,12 +437,16 @@ namespace ABASim.api.Data
                                     awayTeamId = series.AwayTeamId;
                                 }
 
+                                if (totalGamesPlayed == 2 || totalGamesPlayed == 4) {
+                                    nextGameDay = nextGameDay + 1;
+                                }
+
                                 SchedulesPlayoff sched = new SchedulesPlayoff
                                 {
                                     AwayTeamId = awayTeamId,
                                     HomeTeamId = homeTeamId,
                                     SeriesId = series.Id,
-                                    GameDay = league.Day
+                                    GameDay = nextGameDay
                                 };
                                 await _context.AddAsync(sched);
                             }
@@ -805,19 +833,28 @@ namespace ABASim.api.Data
                 }
                 else if (injury.Severity == 3)
                 {
-                    int tm = rng.Next(3, 21);
+                    int tm = rng.Next(3, 16);
                     timeMissed = tm;
                     currentlyInjured = 1;
                 }
                 else if (injury.Severity == 4)
                 {
-                    int tm = rng.Next(10, 50);
+                    int tm = rng.Next(10, 40);
                     timeMissed = tm;
                     currentlyInjured = 1;
                 }
                 else if (injury.Severity == 5)
                 {
-                    int tm = rng.Next(21, 180);
+                    int tm = 0;
+                    int rand = rng.Next(0, 100);
+
+                    if (rand <= 70) {
+                        tm = rng.Next(28, 60);
+                    } else if (rand <= 90) {
+                        tm = rng.Next(60, 100);
+                    } else {
+                        tm = rng.Next(100, 180);
+                    }
                     timeMissed = tm;
                     currentlyInjured = 1;
                 }

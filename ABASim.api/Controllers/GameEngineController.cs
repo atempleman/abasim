@@ -7485,19 +7485,19 @@ namespace ABASim.api.Controllers
             int injurySeverity = 0;
             int severityResult = _random.Next(1, 101);
 
-            if (severityResult <= 35)
+            if (severityResult <= 40)
             {
                 injurySeverity = 1;
             }
-            else if (severityResult > 35 && severityResult <= 60)
+            else if (severityResult > 40 && severityResult <= 65)
             {
                 injurySeverity = 2;
             }
-            else if (severityResult > 60 && severityResult <= 85)
+            else if (severityResult > 65 && severityResult <= 90)
             {
                 injurySeverity = 3;
             }
-            else if (severityResult > 85 && severityResult <= 95)
+            else if (severityResult > 90 && severityResult <= 97)
             {
                 injurySeverity = 4;
             }

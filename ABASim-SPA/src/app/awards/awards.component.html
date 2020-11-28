@@ -76,6 +76,75 @@
 					<td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
 				</tr>
 			</table>
-    </div>
+	</div>
+	<div class="card" style="background-color:rgb(22, 24, 100);" *ngIf="this.league?.stateId >= 7">
+		<h4><i class="fa fa-trophy" aria-hidden="true"></i> All-ABA First Team</h4>
+		<table>
+				  <thead>
+					  <tr>
+						  <th>Position</th>
+						  <th>Player</th>
+						  <th>Team</th>
+						  <th></th>
+					  </tr>
+				  </thead>
+				  <tr *ngFor="let player of this.firstTeam; let i = index">
+					  <td *ngIf="i == 0">PG</td>
+					  <td *ngIf="i == 1">SG</td>
+					  <td *ngIf="i == 2">SF</td>
+					  <td *ngIf="i == 3">PF</td>
+					  <td *ngIf="i == 4">C</td>
+					  <td>{{ player.playerName }}</td>
+					  <td>{{ player.teamName }}</td>
+					  <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
+				  </tr>
+			  </table>
+	  </div>
+	  <div class="card" style="background-color:rgb(22, 24, 100);" *ngIf="this.league?.stateId >= 7">
+		<h4><i class="fa fa-trophy" aria-hidden="true"></i> All-ABA Second Team</h4>
+		<table>
+				  <thead>
+					  <tr>
+						  <th>Position</th>
+						  <th>Player</th>
+						  <th>Team</th>
+						  <th></th>
+					  </tr>
+				  </thead>
+				  <tr *ngFor="let player of this.secondTeam; let i = index">
+					  <td *ngIf="i == 0">PG</td>
+					  <td *ngIf="i == 1">SG</td>
+					  <td *ngIf="i == 2">SF</td>
+					  <td *ngIf="i == 3">PF</td>
+					  <td *ngIf="i == 4">C</td>
+					  <td>{{ player.playerName }}</td>
+					  <td>{{ player.teamName }}</td>
+					  <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
+				  </tr>
+			  </table>
+	  </div>
+	  <div class="card" style="background-color:rgb(22, 24, 100);" *ngIf="this.league?.stateId >= 7">
+		<h4><i class="fa fa-trophy" aria-hidden="true"></i> All-ABA Third Team</h4>
+		<table>
+				  <thead>
+					  <tr>
+						  <th>Position</th>
+						  <th>Player</th>
+						  <th>Team</th>
+						  <th></th>
+					  </tr>
+				  </thead>
+				  <tr *ngFor="let player of this.thirdTeam; let i = index">
+					  <td *ngIf="i == 0">PG</td>
+					  <td *ngIf="i == 1">SG</td>
+					  <td *ngIf="i == 2">SF</td>
+					  <td *ngIf="i == 3">PF</td>
+					  <td *ngIf="i == 4">C</td>
+					  <td>{{ player.playerName }}</td>
+					  <td>{{ player.teamName }}</td>
+					  <td><button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(player.playerId)"><i class="fa fa-eye"></i></button></td>
+				  </tr>
+			  </table>
+	  </div>
   </div>
 </div>
