@@ -213,5 +213,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.RolloverLeague();
             return result;
         }
+
+        [HttpGet("resetleague")]
+        public async Task<bool> RolloResetLeague()
+        {
+            var result = await _repo.RolloverLeague();
+            return result;
+        }
     }
 }

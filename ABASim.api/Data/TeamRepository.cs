@@ -343,6 +343,21 @@ namespace ABASim.api.Data
             return allTeams;
         }
 
+        public async Task<IEnumerable<Team>> GetAvailableTeams()
+        {
+            List<Team> teams = new List<Team>();
+            var availableTeams = await _context.Teams.Where(x => x.UserId == 0).ToListAsync();
+            
+            if (availableTeams != null)
+            {
+                foreach (var team in availableTeams)
+                {
+                    teams.Add(team);
+                }
+            }
+            return teams;
+        }
+
         public async Task<CoachSetting> GetCoachSettingForTeamId(int teamId)
         {
             var coachingSetting = await _context.CoachSettings.FirstOrDefaultAsync(x => x.TeamId == teamId);

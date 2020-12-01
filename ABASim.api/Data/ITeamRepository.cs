@@ -9,6 +9,8 @@ namespace ABASim.api.Data
     {
          Task<bool> CheckForAvailableTeams();
 
+         Task<IEnumerable<Team>> GetAvailableTeams();
+
          Task<Team> GetTeamForUserId(int userId);
 
          Task<Team> GetTeamForTeamId(int teamId);

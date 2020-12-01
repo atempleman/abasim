@@ -13,6 +13,7 @@ import { TeamService } from '../_services/team.service';
 import { CheckGame } from '../_models/checkGame';
 import { GameDisplayCurrent } from '../_models/gameDisplayCurrent';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DraftService } from '../_services/draft.service';
 
 @Component({
   selector: 'app-admin',
@@ -42,9 +43,12 @@ export class AdminComponent implements OnInit {
 
   todaysGames: GameDisplayCurrent[] = [];
 
+  username = 0;
+
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private authService: AuthService, private modalService: BsModalService, private adminService: AdminService,
-              private teamService: TeamService, private fb: FormBuilder, private spinner: NgxSpinnerService) { }
+              private teamService: TeamService, private fb: FormBuilder, private spinner: NgxSpinnerService,
+              private draftService: DraftService) { }
 
   ngOnInit() {
     this.leagueService.getLeague().subscribe(result => {
@@ -55,6 +59,9 @@ export class AdminComponent implements OnInit {
     });
 
     this.getTodaysGames();
+
+    this.username = +this.authService.decodedToken.nameid;
+    console.log(this.username);
   }
 
   getTodaysGames() {
@@ -65,9 +72,98 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  gotToDraft() {
-    this.router.navigate(['/admindraft']);
+  public openConfirm(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
   }
+
+  // State 2
+  moveToInitialLottery() {
+    this.adminService.updateLeagueStatus(2).subscribe(result => {
+    }, error => {
+      this.alertify.error('Error saving league status');
+    }, () => {
+      this.alertify.success('League Status updated.');
+      this.modalRef.hide();
+      this.league.stateId = this.statusSelection;
+    });
+  }
+
+  // Running lottery and changing to state 3
+  runInitialDraftLottery() {
+    this.adminService.runInitialDraftLottery().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error running initial draft lottery');
+    }, () => {
+      this.alertify.success('Initial Draft Lottery Run successfully');
+      this.league.stateId = 3;
+      this.modalRef.hide();
+    });
+  }
+
+  // Begin the draft
+  beginDraft() {
+    this.draftService.beginInitialDraft().subscribe(result => {
+    }, error => {
+      this.alertify.error('Error starting the draft');
+    }, () => {
+      this.alertify.success('Initial Draft has begun!');
+      this.league.stateId = 4;
+      this.modalRef.hide();
+    });
+  }
+
+  // Begin the preseason
+  beginPreseason() {
+    this.adminService.updateLeagueStatus(6).subscribe(result => {
+    }, error => {
+      this.alertify.error('Error saving league status');
+    }, () => {
+      this.alertify.success('League Status updated.');
+      this.modalRef.hide();
+      this.league.stateId = 6;
+    });
+  }
+
+
+  //#region Super Admin Functions
+
+  resetLeague() {
+    this.adminService.resetLeague().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error resetting the league.');
+    }, () => {
+      this.league.stateId = 1;
+      this.modalRef.hide();
+      this.alertify.success('League has been completely reset');
+    });
+  }
+
+  //#endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   runEngine() {
     this.router.navigate(['/admintestengine']);
@@ -90,6 +186,8 @@ export class AdminComponent implements OnInit {
     }
     this.modalRef = this.modalService.show(template);
   }
+
+  
 
   beginPlayoffs() {
     this.adminService.beginPlayoffs().subscribe(result => {
@@ -258,16 +356,7 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  runInitialDraftLottery() {
-    this.adminService.runInitialDraftLottery().subscribe(result => {
-    }, error => {
-      this.alertify.error('Error running initial draft lottery');
-    }, () => {
-      this.alertify.success('Initial Draft Lottery Run successfully');
-      this.league.stateId = 3;
-      this.modalRef.hide();
-    });
-  }
+  
 
   runDraftPicks() {
     this.adminService.runTeamDraftPicksSetup().subscribe(result => {

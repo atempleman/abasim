@@ -12,18 +12,12 @@ namespace ABASim.api.Dtos
         public string Password { get; set; }
 
         [Required]
-        public string Teamname { get; set; }
-
-        [Required]
         public string Email { get; set; }
 
         [Required]
         public string Name { get; set; }
 
         [Required]
-        public string Mascot { get; set; }
-        
-        [Required]
-        public string ShortCode { get; set; }
+        public int TeamId { get; set; }
     }
 }

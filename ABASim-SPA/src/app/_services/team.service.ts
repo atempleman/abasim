@@ -35,6 +35,10 @@ export class TeamService {
     return this.http.get<boolean>(this.baseUrl + 'checkavailableteams');
   }
 
+  getAvailableTeams(): Observable<Team[]> {
+    return this.http.get<Team[]>(this.baseUrl + 'getavailableteams');
+  }
+
   getRosterForTeam(teamId: number): Observable<Player[]> {
     return this.http.get<Player[]>(this.baseUrl + 'getrosterforteam/' + teamId);
   }

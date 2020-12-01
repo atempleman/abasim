@@ -7,6 +7,7 @@ import { User } from '../_models/user';
 import { TeamService } from '../_services/team.service';
 import { ContactForm } from '../_models/contactForm';
 import { ContactService } from '../_services/contact.service';
+import { Team } from '../_models/team';
 
 @Component({
   selector: 'app-home',
@@ -38,6 +39,7 @@ export class HomeComponent implements OnInit {
   loginDisplay = false;
 
   contactObject: ContactForm;
+  selectableTeams: Team[] = [];
 
   constructor(private authService: AuthService, private alertify: AlertifyService, private fb: FormBuilder,
               private teamService: TeamService, private router: Router, private contactService: ContactService) { }
@@ -51,7 +53,16 @@ export class HomeComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
     }, () => {
+      this.getAvailableTeams();
       this.createRegisterForm();
+    });
+  }
+
+  getAvailableTeams() {
+    this.teamService.getAvailableTeams().subscribe(result => {
+      this.selectableTeams = result;
+    }, error => {
+      this.alertify.error('Error getting available teams');
     });
   }
 
@@ -69,9 +80,7 @@ export class HomeComponent implements OnInit {
       confirmPassword: ['', Validators.required],
       email: ['', Validators.required],
       name: ['', Validators.required],
-      teamname: ['', Validators.required],
-      mascot: ['', Validators.required],
-      shortcode: ['', Validators.required]
+      teamSelection: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }
 
@@ -115,6 +124,7 @@ export class HomeComponent implements OnInit {
   }
 
   register() {
+    console.log(this.registerForm)
     if (this.registerForm.valid) {
       this.user = Object.assign({}, this.registerForm.value);
       this.authService.register(this.user).subscribe(() => {

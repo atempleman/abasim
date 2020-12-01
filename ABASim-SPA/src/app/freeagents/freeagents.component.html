@@ -1,5 +1,8 @@
 <section class="dashboard-area">
 	<h3 class="display">Free Agents</h3>
+	<p>Current Salary - ${{ this.capInfo?.currentSalaryAmount | number }}</p>
+	<p>League Salary Cap - ${{ this.capInfo?.salaryCapAmount | number }}</p>
+	<p>Cap Space Remaining - ${{ this.availableCapSpace | number }}</p>
 </section>
 
 <div class="row ml-2 mr-2 textdesc">

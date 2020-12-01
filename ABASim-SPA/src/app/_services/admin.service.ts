@@ -121,4 +121,8 @@ export class AdminService {
   rolloverLeague() {
     return this.http.get<boolean>(this.baseUrl + 'rolloverleague');
   }
+
+  resetLeague() {
+    return this.http.get<boolean>(this.baseUrl + 'resetleague');
+  }
 }

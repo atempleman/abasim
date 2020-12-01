@@ -9,3 +9,8 @@
     display: flex;
     justify-content: center;
 }
+
+.centreheading {
+    text-align: center;
+    position: relative;
+}

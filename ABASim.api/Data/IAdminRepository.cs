@@ -64,5 +64,7 @@ namespace ABASim.api.Data
          Task<bool> ResetStandings();
 
          Task<bool> RolloverLeague();
+
+         Task<bool> ResetLeague();
     }
 }

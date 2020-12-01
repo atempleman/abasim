@@ -2756,5 +2756,10 @@ namespace ABASim.api.Data
             _context.Leagues.Update(league);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public Task<bool> ResetLeague()
+        {
+            
+        }
     }
 }

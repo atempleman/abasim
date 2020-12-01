@@ -70,15 +70,11 @@ namespace ABASim.api.Data
             return false;
         }
 
-        public async Task<bool> RegisterTeam(int userId, string teamname, string mascot, string shortcode)
+        public async Task<bool> RegisterTeam(int userId, int teamId)
         {
-            // Need to get a team with a 0 userId
-            var team = await _context.Teams.FirstAsync(x => x.UserId == 0);
-
+            // THIS NEEDS TO BE UPDATED
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
             team.UserId = userId;
-            team.Teamname = teamname;
-            team.Mascot = mascot;
-            team.ShortCode = shortcode;
 
             // Now need to update
             _context.Update(team);

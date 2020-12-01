@@ -345,15 +345,15 @@ export class FreeagentsComponent implements OnInit {
         const contractOffer: ContractOffer = {
           playerId: this.selectedPlayer.id,
           teamId: this.team.id,
-          yearOne: this.year1Amount,
+          yearOne: +this.year1Amount,
           guranteedOne: g1,
-          yearTwo: this.year2Amount,
+          yearTwo: +this.year2Amount,
           guranteedTwo: g2,
-          yearThree: this.year3Amount,
+          yearThree: +this.year3Amount,
           guranteedThree: g3,
-          yearFour: this.year4Amount,
+          yearFour: +this.year4Amount,
           guranteedFour: g4,
-          yearFive: this.year5Amount,
+          yearFive: +this.year5Amount,
           guranteedFive: g5,
           teamOption: to,
           playerOption: po,
@@ -364,6 +364,8 @@ export class FreeagentsComponent implements OnInit {
           contractId: 0
         };
 
+        console.log('test multi');
+        console.log(contractOffer);
         this.teamService.saveContractOffer(contractOffer).subscribe(result => {
 
         }, error => {
@@ -372,6 +374,19 @@ export class FreeagentsComponent implements OnInit {
           this.alertify.success('Contract offer has been made');
           this.GetContractOffers();
           this.modalRef.hide();
+
+          this.contractYears = 1;
+          this.year1Amount = 1000000;
+          this.year2Amount = 0;
+          this.year3Amount = 0;
+          this.year4Amount = 0;
+          this.year5Amount = 0;
+          this.option = 0;
+          this.guarenteed1 = true;
+          this.guarenteed2 = 0;
+          this.guarenteed3 = 0;
+          this.guarenteed4 = 0;
+          this.guarenteed5 = 0;
         });
       }
     }

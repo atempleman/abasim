@@ -24,6 +24,13 @@ namespace ABASim.api.Controllers
             return Ok(exists);
         }
 
+        [HttpGet("getavailableteams")]
+        public async Task<IActionResult> GetAvailableTeams()
+        {
+            var teams = await _repo.GetAvailableTeams();
+            return Ok(teams);
+        }
+
         [HttpGet("getteamforuserid/{userId}")]
         public async Task<IActionResult> GetTeamForUserId(int userId)
         {

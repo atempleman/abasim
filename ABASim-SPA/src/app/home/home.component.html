@@ -51,7 +51,7 @@
         <div class="form-group">
           <input class="form-control" placeholder="Name" name="name" type="text" value="" formControlName="name">
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <input class="form-control" placeholder="City - e.g. Atlanta" name="teamname" type="text" value=""
             formControlName="teamname">
         </div>
@@ -62,7 +62,14 @@
         <div class="form-group">
           <input class="form-control" placeholder="Short code - e.g. ATL" name="shortcode" type="text" value=""
             formControlName="shortcode">
-        </div>
+        </div> -->
+        <label class="col-md-6 control-label" for="textinput">Select your team: </label>
+				<span>
+					<select teamSelection name="teamSelection">
+						<option *ngFor="let team of this.selectableTeams" [value]="team.id">{{ team.teamname }} {{ team.mascot }}
+						</option>
+					</select>
+				</span>
         <input class="btn btn-lg btn-success btn-block" type="submit" value="Register">
       </fieldset>
     </form>
