@@ -7,5 +7,7 @@ namespace ABASim.api.Models
         public int StateId { get; set; }
 
         public int Day { get; set; }
+
+        public int Year { get; set; }
     }
 }

@@ -1363,5 +1363,262 @@ namespace ABASim.api.Data
             }
             return topFive;
         }
+
+        public async Task<IEnumerable<VotesDto>> GetAllNBATeams()
+        {
+            List<VotesDto> allFirstTeam = new List<VotesDto>();
+            List<VotesDto> allSecondTeam = new List<VotesDto>();
+            List<VotesDto> allThirdTeam = new List<VotesDto>();
+            List<VotesDto> allTeams = new List<VotesDto>();
+            List<int> addedPlayers = new List<int>();
+            var votes = await _context.MvpVoting.OrderByDescending(x => x.Votes).ToListAsync();
+            
+            // Point Guard
+            int pgCount = 0;
+            foreach (var vote in votes)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == vote.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                if (player.PGPosition == 1) {
+                    var added = addedPlayers.Contains(player.Id);
+
+                    if (!added)
+                    {
+                        VotesDto dto = new VotesDto
+                        {
+                        PlayerId = vote.PlayerId,
+                        PlayerName = player.FirstName + " " + player.Surname,
+                        TeamName = team.ShortCode,
+                        Votes = vote.Votes
+                        };
+
+                        if (pgCount == 0)
+                        {
+                            allFirstTeam.Add(dto);
+                        }
+
+                        if (pgCount == 1)
+                        {
+                            allSecondTeam.Add(dto);
+                        }
+
+                        if (pgCount == 2)
+                        {
+                            allThirdTeam.Add(dto);
+                        }
+                        addedPlayers.Add(dto.PlayerId);
+                        pgCount++;
+
+                        if (pgCount == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Shooting Guard
+            int sgCount = 0;
+            foreach (var vote in votes)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == vote.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                if (player.SGPosition == 1) {
+                    var added = addedPlayers.Contains(player.Id);
+
+                    if (!added)
+                    {
+                        VotesDto dto = new VotesDto
+                        {
+                        PlayerId = vote.PlayerId,
+                        PlayerName = player.FirstName + " " + player.Surname,
+                        TeamName = team.ShortCode,
+                        Votes = vote.Votes
+                        };
+
+                        if (sgCount == 0)
+                        {
+                            allFirstTeam.Add(dto);
+                        }
+
+                        if (sgCount == 1)
+                        {
+                            allSecondTeam.Add(dto);
+                        }
+
+                        if (sgCount == 2)
+                        {
+                            allThirdTeam.Add(dto);
+                        }
+                        addedPlayers.Add(dto.PlayerId);
+                        sgCount++;
+
+                        if (sgCount == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Small Forward
+            int sfCount = 0;
+            foreach (var vote in votes)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == vote.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                if (player.SFPosition == 1) {
+                    var added = addedPlayers.Contains(player.Id);
+
+                    if (!added)
+                    {
+                        VotesDto dto = new VotesDto
+                        {
+                        PlayerId = vote.PlayerId,
+                        PlayerName = player.FirstName + " " + player.Surname,
+                        TeamName = team.ShortCode,
+                        Votes = vote.Votes
+                        };
+
+                        if (sfCount == 0)
+                        {
+                            allFirstTeam.Add(dto);
+                        }
+
+                        if (sfCount == 1)
+                        {
+                            allSecondTeam.Add(dto);
+                        }
+
+                        if (sfCount == 2)
+                        {
+                            allThirdTeam.Add(dto);
+                        }
+                        addedPlayers.Add(dto.PlayerId);
+                        sfCount++;
+
+                        if (sfCount == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Power Forward
+            int pfCount = 0;
+            foreach (var vote in votes)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == vote.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                if (player.PFPosition == 1) {
+                    var added = addedPlayers.Contains(player.Id);
+
+                    if (!added)
+                    {
+                        VotesDto dto = new VotesDto
+                        {
+                        PlayerId = vote.PlayerId,
+                        PlayerName = player.FirstName + " " + player.Surname,
+                        TeamName = team.ShortCode,
+                        Votes = vote.Votes
+                        };
+
+                        if (pfCount == 0)
+                        {
+                            allFirstTeam.Add(dto);
+                        }
+
+                        if (pfCount == 1)
+                        {
+                            allSecondTeam.Add(dto);
+                        }
+
+                        if (pfCount == 2)
+                        {
+                            allThirdTeam.Add(dto);
+                        }
+                        addedPlayers.Add(dto.PlayerId);
+                        pfCount++;
+
+                        if (pfCount == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Centre
+            int cCount = 0;
+            foreach (var vote in votes)
+            {
+                var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == vote.PlayerId);
+                var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == vote.PlayerId);
+                var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == playerTeam.TeamId);
+
+                if (player.CPosition == 1) {
+                    var added = addedPlayers.Contains(player.Id);
+
+                    if (!added)
+                    {
+                        VotesDto dto = new VotesDto
+                        {
+                        PlayerId = vote.PlayerId,
+                        PlayerName = player.FirstName + " " + player.Surname,
+                        TeamName = team.ShortCode,
+                        Votes = vote.Votes
+                        };
+
+                        if (cCount == 0)
+                        {
+                            allFirstTeam.Add(dto);
+                        }
+
+                        if (cCount == 1)
+                        {
+                            allSecondTeam.Add(dto);
+                        }
+
+                        if (cCount == 2)
+                        {
+                            allThirdTeam.Add(dto);
+                        }
+                        addedPlayers.Add(dto.PlayerId);
+                        cCount++;
+
+                        if (cCount == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Now to add the 3 lists together in apprporiate order
+            foreach (var item in allFirstTeam)
+            {
+                allTeams.Add(item);
+            }
+
+            foreach (var item in allSecondTeam)
+            {
+                allTeams.Add(item);
+            }
+
+            foreach (var item in allThirdTeam)
+            {
+                allTeams.Add(item);
+            }
+            return allTeams;
+        }
     }
 }

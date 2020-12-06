@@ -723,7 +723,7 @@ namespace ABASim.api.Data
             {
                 var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
 
-                if (playerTeam.TeamId == 31 || playerTeam.TeamId == 0)
+                if (playerTeam.TeamId == 0)
                 {
                     // Player is free agent
                     freeAgents.Add(player);
@@ -741,7 +741,7 @@ namespace ABASim.api.Data
             {
                 var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
 
-                if (playerTeam.TeamId == 31 || playerTeam.TeamId == 0)
+                if (playerTeam.TeamId == 0)
                 {
                     // Player is free agent
                     freeAgents.Add(player);
@@ -780,7 +780,7 @@ namespace ABASim.api.Data
             {
                 var playerTeam = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == player.Id);
 
-                if (playerTeam.TeamId == 31 || playerTeam.TeamId == 0)
+                if (playerTeam.TeamId == 0)
                 {
                     // Player is free agent
                     freeAgents.Add(player);

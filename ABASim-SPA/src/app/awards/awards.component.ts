@@ -20,6 +20,7 @@ export class AwardsComponent implements OnInit {
   firstTeam: Votes[] = [];
   secondTeam: Votes[] = [];
   thirdTeam: Votes[] = [];
+  allnbateams: Votes[] = [];
 
   constructor(private router: Router, private leagueService: LeagueService, private alertify: AlertifyService,
               private transferService: TransferService, private spinner: NgxSpinnerService) { }
@@ -47,6 +48,16 @@ export class AwardsComponent implements OnInit {
       this.sixthList = result;
     }, error => {
       this.alertify.error('Error getting 6th man leaders');
+    });
+
+    this.leagueService.getAllNBATeams().subscribe(result => {
+      this.allnbateams = result;
+    }, error => {
+      this.alertify.error('Error getting All-ABA Teams');
+    }, () => {
+      this.firstTeam = this.allnbateams.splice(0, 5);
+      this.secondTeam = this.allnbateams.splice(5, 10);
+      this.thirdTeam = this.allnbateams.splice(10, 15);
     });
   }
 

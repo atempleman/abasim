@@ -2693,9 +2693,7 @@ namespace ABASim.api.Data
         public async Task<bool> DeleteTeamSettings()
         {
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CoachSettings");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DefensiveStrategies");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DepthCharts");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE OffensiveStratgies");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE TeamStrategies");
             return await _context.SaveChangesAsync() > 0;
         }
@@ -2757,9 +2755,94 @@ namespace ABASim.api.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<bool> ResetLeague()
+        public async Task<bool> ResetLeague()
         {
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE GameBoxScores");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE GameResults");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerStats");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayByPlays");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE FreeAgencyDecisions");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE InboxMessages");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE TradeMessages");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Trades");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Transactions");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DpoyVoting");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE MvpVoting");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE SixthManVoting");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CoachSettings");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DepthCharts");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE TeamStrategies");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayByPlaysPlayoffs");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerStatsPlayoffs");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayoffBoxScores");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayoffResults");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayoffSeries");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE SchedulePlayoffs");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PreseasonGameResults");
+
+            // Now the extras for a complete reset to fresh league
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE AutoPickOrders");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE AwardWinners");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CareerPlayerStats");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CareerPlayerStatsPlayoffs");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE ContractOffers");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DraftPicks");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DraftRankings");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DraftTrackers");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE GlobalChats");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE HistoricalTeamRecords");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE InitialDrafts");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerCareerStats");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PLayerCareerPlayoffStats");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerContracts");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerGradings");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerInjuries");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerRatings");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Players");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerTeams");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerTendancies");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Rosters");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE TeamDraftPicks");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Users");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE WaivedPlayerContracts");
             
+            // Update the league
+            var league = await _context.Leagues.FirstOrDefaultAsync();
+            league.Day = 0;
+            league.StateId = 1;
+            league.Year = 1;
+            _context.Leagues.Update(league);
+
+            var teams = await _context.Teams.ToListAsync();
+            foreach (var team in teams)
+            {
+                team.UserId = 0;
+                _context.Teams.Update(team);
+            }
+
+            var teamSalarycaps = await _context.TeamSalaryCaps.ToListAsync();
+            foreach (var caps in teamSalarycaps)
+            {
+                caps.CurrentCapAmount = 0;
+                _context.TeamSalaryCaps.Update(caps);
+            }
+
+            var standings = await _context.Standings.ToListAsync();
+            foreach (var stand in standings)
+            {
+                stand.ConfLosses = 0;
+                stand.ConfWins = 0;
+                stand.GamesPlayed = 0;
+                stand.HomeLosses = 0;
+                stand.HomeWins = 0;
+                stand.Losses = 0;
+                stand.RoadLosses = 0;
+                stand.RoadWins = 0;
+                stand.Wins = 0;
+
+                _context.Standings.Update(stand);
+            }
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

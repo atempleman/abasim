@@ -5,6 +5,7 @@
 	<p>Cap Space Remaining - ${{ this.availableCapSpace | number }}</p>
 </section>
 
+<section *ngIf="this.league?.stateId > 5">
 <div class="row ml-2 mr-2 textdesc">
 	<p>The following is a list of all the players who are available as free agents. You can sign players, but can only
 		have a maximum of 15 players on your roster at any time. Any offers made will go against your slary cap as a cap hold.</p>
@@ -91,6 +92,11 @@
 <div *ngIf="this.freeAgents.length == 0">
 	There are no players left in the free agent pool
 </div>
+</section>
+
+<section *ngIf="this.league?.stateId < 6">
+	Free agents are not able to be signed at this time.
+</section>
 
 
 

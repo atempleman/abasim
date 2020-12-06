@@ -235,4 +235,8 @@ export class LeagueService {
   getDpoyTopFive(): Observable<Votes[]> {
     return this.http.get<Votes[]>(this.baseUrl + 'getdpoytopfive');
   }
+
+  getAllNBATeams(): Observable<Votes[]> {
+    return this.http.get<Votes[]>(this.baseUrl + 'getallnbateams');
+  }
 }

@@ -400,5 +400,12 @@ namespace ABASim.api.Controllers
             var votes = await _repo.GetDpoyTopFive();
             return Ok(votes);
         }
+
+        [HttpGet("getallnbateams")]
+        public async Task<IActionResult> GetAllNBATeams()
+        {
+            var votes = await _repo.GetAllNBATeams();
+            return Ok(votes);
+        }
     }
 }

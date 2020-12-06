@@ -202,7 +202,9 @@ namespace ABASim.api.Controllers
             RunQuarter();
 
             // 3rd Quarter
-            SetStartingLineups();
+            // SetStartingLineups();
+            EndGameSubCheck(0);
+
             RunQuarter();
 
             // 4th Quarter
@@ -1235,7 +1237,7 @@ namespace ABASim.api.Controllers
                         _homeStaminas[index] = homeSTSG;
                         break;
                     case 3:
-                        onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);    
+                        onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
                         if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
                         {
                             homeSF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
@@ -3777,7 +3779,8 @@ namespace ABASim.api.Controllers
                 InjuryStaminaChecks();
                 // Need to check if there are any subs to be made
                 // SubCheckFT();
-                CheckForSubs(1);
+                // CheckForSubs(1);
+                SubstitutionCheck(1);
 
                 int ftResult = FreeThrows(numberOfShots);
                 if (ftResult == 0)
@@ -3804,7 +3807,8 @@ namespace ABASim.api.Controllers
                 InjuryCheck();
                 InjuryStaminaChecks();
                 // SubCheck();
-                CheckForSubs(0);
+                // CheckForSubs(0);
+                SubstitutionCheck(0);
                 Inbounds();
             }
         }
@@ -4125,7 +4129,8 @@ namespace ABASim.api.Controllers
             _shotClock = 24;
             InjuryCheck();
             // SubCheck();
-            CheckForSubs(0);
+            // CheckForSubs(0);
+            SubstitutionCheck(0);
         }
 
         public void ShotClockViolation()
@@ -4154,7 +4159,8 @@ namespace ABASim.api.Controllers
             InjuryCheck();
             InjuryStaminaChecks();
             // SubCheck();
-            CheckForSubs(0);
+            // CheckForSubs(0);
+            SubstitutionCheck(0);
 
             // Inbounds the ball to continue on
             Inbounds();
@@ -4966,55 +4972,13 @@ namespace ABASim.api.Controllers
 
             if (team == 0)
             {
-                switch (player)
-                {
-                    case 1:
-                        BoxScore temp = _homeBoxScores.Find(x => x.Id == homePG.Id);
-                        fouls = temp.Fouls;
-                        break;
-                    case 2:
-                        BoxScore temp2 = _homeBoxScores.Find(x => x.Id == homeSG.Id);
-                        fouls = temp2.Fouls;
-                        break;
-                    case 3:
-                        BoxScore temp3 = _homeBoxScores.Find(x => x.Id == homeSF.Id);
-                        fouls = temp3.Fouls;
-                        break;
-                    case 4:
-                        BoxScore temp4 = _homeBoxScores.Find(x => x.Id == homePF.Id);
-                        fouls = temp4.Fouls;
-                        break;
-                    case 5:
-                        BoxScore temp5 = _homeBoxScores.Find(x => x.Id == homeC.Id);
-                        fouls = temp5.Fouls;
-                        break;
-                }
+                BoxScore temp = _homeBoxScores.Find(x => x.Id == player);
+                fouls = temp.Fouls;
             }
             else
             {
-                switch (player)
-                {
-                    case 1:
-                        BoxScore temp6 = _awayBoxScores.Find(x => x.Id == awayPG.Id);
-                        fouls = temp6.Fouls;
-                        break;
-                    case 2:
-                        BoxScore temp7 = _awayBoxScores.Find(x => x.Id == awaySG.Id);
-                        fouls = temp7.Fouls;
-                        break;
-                    case 3:
-                        BoxScore temp8 = _awayBoxScores.Find(x => x.Id == awaySF.Id);
-                        fouls = temp8.Fouls;
-                        break;
-                    case 4:
-                        BoxScore temp9 = _awayBoxScores.Find(x => x.Id == awayPF.Id);
-                        fouls = temp9.Fouls;
-                        break;
-                    case 5:
-                        BoxScore temp10 = _awayBoxScores.Find(x => x.Id == awayC.Id);
-                        fouls = temp10.Fouls;
-                        break;
-                }
+                BoxScore temp = _awayBoxScores.Find(x => x.Id == player);
+                fouls = temp.Fouls;
             }
 
             switch (_quarter)
@@ -5040,11 +5004,6 @@ namespace ABASim.api.Controllers
                 default:
                     subOut = 0;
                     break;
-            }
-
-            if (fouls == 6)
-            {
-                subOut = 1;
             }
             return subOut;
         }
@@ -5286,50 +5245,10 @@ namespace ABASim.api.Controllers
                 if (team == 0)
                 {
                     staminas = _homeStaminas;
-                    switch (position)
-                    {
-                        case 1:
-                            playerId = homePG.Id;
-                            break;
-                        case 2:
-                            playerId = homeSG.Id;
-                            break;
-                        case 3:
-                            playerId = homeSF.Id;
-                            break;
-                        case 4:
-                            playerId = homePF.Id;
-                            break;
-                        case 5:
-                            playerId = homeC.Id;
-                            break;
-                        default:
-                            break;
-                    }
                 }
                 else
                 {
                     staminas = _awayStaminas;
-                    switch (position)
-                    {
-                        case 1:
-                            playerId = awayPG.Id;
-                            break;
-                        case 2:
-                            playerId = awaySG.Id;
-                            break;
-                        case 3:
-                            playerId = awaySF.Id;
-                            break;
-                        case 4:
-                            playerId = awayPF.Id;
-                            break;
-                        case 5:
-                            playerId = awayC.Id;
-                            break;
-                        default:
-                            break;
-                    }
                 }
             }
             var st = staminas.FirstOrDefault(x => x.PlayerId == playerId);
@@ -5461,45 +5380,55 @@ namespace ABASim.api.Controllers
             List<int> onCourtIds = new List<int>();
             if (team == 0)
             {
-                if (homePG != null) {
+                if (homePG != null)
+                {
                     onCourtIds.Add(homePG.Id);
                 }
 
-                if (homeSG != null) {
+                if (homeSG != null)
+                {
                     onCourtIds.Add(homeSG.Id);
                 }
 
-                if (homeSF != null) {
+                if (homeSF != null)
+                {
                     onCourtIds.Add(homeSF.Id);
                 }
 
-                if (homePF != null) {
+                if (homePF != null)
+                {
                     onCourtIds.Add(homePF.Id);
                 }
-                
-                if (homeC != null) {
+
+                if (homeC != null)
+                {
                     onCourtIds.Add(homeC.Id);
                 }
             }
             else
             {
-                if (awayPG != null) {
+                if (awayPG != null)
+                {
                     onCourtIds.Add(awayPG.Id);
                 }
 
-                if (awaySG != null) {
+                if (awaySG != null)
+                {
                     onCourtIds.Add(awaySG.Id);
                 }
 
-                if (awaySF != null) {
+                if (awaySF != null)
+                {
                     onCourtIds.Add(awaySF.Id);
                 }
-                
-                if (awayPF != null) {
+
+                if (awayPF != null)
+                {
                     onCourtIds.Add(awayPF.Id);
                 }
-                
-                if (awayC != null) {
+
+                if (awayC != null)
+                {
                     onCourtIds.Add(awayC.Id);
                 }
             }
@@ -6672,7 +6601,9 @@ namespace ABASim.api.Controllers
             if (playerSubbed == 0)
             {
                 throw new Exception("No player to sub on");
-            } else {
+            }
+            else
+            {
                 // Need to add commentary here
                 string outPlayer = current.FirstName + " " + current.Surname;
                 string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
@@ -8144,19 +8075,25 @@ namespace ABASim.api.Controllers
                 if (homePG.Id == playerId)
                 {
                     return 1;
-                } else if (homeSG.Id == playerId)
+                }
+                else if (homeSG.Id == playerId)
                 {
                     return 2;
-                } else if (homeSF.Id == playerId)
+                }
+                else if (homeSF.Id == playerId)
                 {
                     return 3;
-                } else if (homePF.Id == playerId)
+                }
+                else if (homePF.Id == playerId)
                 {
                     return 4;
-                } else if (homeC.Id == playerId)
+                }
+                else if (homeC.Id == playerId)
                 {
                     return 5;
-                } else {
+                }
+                else
+                {
                     return 0;
                 }
             }
@@ -8166,22 +8103,998 @@ namespace ABASim.api.Controllers
                 if (awayPG.Id == playerId)
                 {
                     return 1;
-                } else if (awaySG.Id == playerId)
+                }
+                else if (awaySG.Id == playerId)
                 {
                     return 2;
-                } else if (awaySF.Id == playerId)
+                }
+                else if (awaySF.Id == playerId)
                 {
                     return 3;
-                } else if (awayPF.Id == playerId)
+                }
+                else if (awayPF.Id == playerId)
                 {
                     return 4;
-                } else if (awayC.Id == playerId)
+                }
+                else if (awayC.Id == playerId)
                 {
                     return 5;
-                } else {
+                }
+                else
+                {
                     return 0;
                 }
             }
         }
+
+        #region Sub Code Rebuild
+
+        // This function will replace - CheckForSubs calls
+        public void SubstitutionCheck(int ftPlayerId)
+        {
+            if ((_quarter > 3 && _time <= 240) || (_quarter > 4))
+            {
+                EndGameSubCheck(ftPlayerId);
+            }
+            else
+            {
+                for (int i = 1; i < 6; i++)
+                {
+                    int result = 0;
+                    int toSub = 0;
+
+                    // Check to see if the player is at the free throw line
+                    result = CheckIfShooter(0, i, ftPlayerId);
+                    Player p = new Player();
+
+                    if (result != 1)
+                    {
+                        switch (i)
+                        {
+                            case 1:
+                                p = homePG;
+                                break;
+                            case 2:
+                                p = homeSG;
+                                break;
+                            case 3:
+                                p = homeSF;
+                                break;
+                            case 4:
+                                p = homePF;
+                                break;
+                            case 5:
+                                p = homeC;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        toSub = CheckIfPlayerNeedsSub(p.Id, 0, i);
+                    }
+
+                    // Now to action what should happen with this player
+                    if (toSub != 0)
+                    {
+                        Player newPlayer = new Player();
+                        // The player could conceivably stay on
+                        if (toSub == 1 || toSub == 2)
+                        {
+                            // The player can be subbed out
+                            newPlayer = FindPlayerToBeSubbed(p.Id, 0, i);
+
+                            if (newPlayer == null)
+                            {
+                                // We do not have a player on.
+                                // Realistically this should not happen for a toSub 1 or 2 as the player should continue
+                            }
+
+                            if (newPlayer.Id != p.Id)
+                            {
+                                // The Player is to be subbed
+                                SubPlayer(0, i, newPlayer);
+
+                                // Add the commentary here
+                                string outPlayer = p.FirstName + " " + p.Surname;
+                                string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            }
+                        }
+                        else
+                        {
+                            // Then the player has a concern and is possibly requiring to be subbed out
+                            newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 0, i);
+
+                            // Now we go through the SubPlayer actions
+                            SubPlayer(0, i, newPlayer);
+                            // Add the commentary here
+                            string outPlayer = p.FirstName + " " + p.Surname;
+                            string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        }
+                    }
+                }
+
+                for (int i = 1; i < 6; i++)
+                {
+                    int result = 0;
+                    int toSub = 0;
+
+                    // Check to see if the player is at the free throw line
+                    result = CheckIfShooter(1, i, ftPlayerId);
+                    Player p = new Player();
+
+                    if (result != 1)
+                    {
+                        switch (i)
+                        {
+                            case 1:
+                                p = awayPG;
+                                break;
+                            case 2:
+                                p = awaySG;
+                                break;
+                            case 3:
+                                p = awaySF;
+                                break;
+                            case 4:
+                                p = awayPF;
+                                break;
+                            case 5:
+                                p = awayC;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        toSub = CheckIfPlayerNeedsSub(p.Id, 1, i);
+                    }
+
+                    // Now to action what should happen with this player
+                    if (toSub != 0)
+                    {
+                        Player newPlayer = new Player();
+                        // The player could conceivably stay on
+                        if (toSub == 1 || toSub == 2)
+                        {
+                            // The player can be subbed out
+                            newPlayer = FindPlayerToBeSubbed(p.Id, 1, i);
+
+                            if (newPlayer == null)
+                            {
+                                // We do not have a player on.
+                                // Realistically this should not happen for a toSub 1 or 2 as the player should continue
+                            }
+
+                            if (newPlayer.Id != p.Id)
+                            {
+                                // The Player is to be subbed
+                                SubPlayer(1, i, newPlayer);
+
+                                string outPlayer = p.FirstName + " " + p.Surname;
+                                string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            }
+                        }
+                        else
+                        {
+                            // Then the player has a concern and is possibly requiring to be subbed out
+                            newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 1, i);
+
+                            // Now we go through the SubPlayer actions
+                            SubPlayer(1, 1, newPlayer);
+
+                            string outPlayer = p.FirstName + " " + p.Surname;
+                            string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        }
+                    }
+                }
+            }
+        }
+
+        public int CheckIfPlayerNeedsSub(int playerId, int teamId, int position)
+        {
+            InjuryDto injuryCheck = null;
+            BoxScore bs = null;
+            if (teamId == 0)
+            {
+                injuryCheck = _homeInjuries.Find(x => x.PlayerId == playerId);
+                bs = _homeBoxScores.FirstOrDefault(x => x.Id == playerId);
+            }
+            else
+            {
+                injuryCheck = _awayInjuries.Find(x => x.PlayerId == playerId);
+                bs = _awayBoxScores.FirstOrDefault(x => x.Id == playerId);
+            }
+            // CheckSubEligility(p, 0); is replaced by below
+
+            // Check to see if the player has fouled out
+            if (bs.Fouls >= 6)
+            {
+                return 4;
+            }
+
+            // Check to see if player is injured
+            if (injuryCheck != null)
+            {
+                if (injuryCheck.Severity > 2)
+                {
+                    return 3;
+                }
+            }
+
+            if (_quarter == 1 && bs.Fouls == 2)
+            {
+                string t = "";
+            }
+
+            // Check to see if the player is in foul trouble
+            int foulTrouble = FoulTroubleCheck(teamId, playerId);
+            if (foulTrouble == 1)
+            {
+                return 2;
+            }
+
+            // Check to see if the player is fatigued
+            int fatigued = CheckPlayerFatigue(teamId, position, playerId);
+            if (fatigued == 1)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        public Player FindPlayerToBeSubbed(int playerId, int team, int position)
+        {
+            // Now set up the filtered depth chart and teams players for later use
+            List<DepthChart> filterDepth = new List<DepthChart>();
+            List<Player> teamPlayers = new List<Player>();
+            if (team == 0)
+            {
+                List<DepthChart> depth = _homeDepth.OrderBy(x => x.Depth).ToList();
+                filterDepth = depth.Where(x => x.Position == position).ToList();
+                teamPlayers = _homePlayers;
+
+            }
+            else
+            {
+                List<DepthChart> depth = _awayDepth.OrderBy(x => x.Depth).ToList();
+                filterDepth = depth.Where(x => x.Position == position).ToList();
+                teamPlayers = _awayPlayers;
+            }
+
+            for (int i = 0; i < filterDepth.Count; i++)
+            {
+                DepthChart dc = filterDepth[i];
+                // Need to take out current player
+                if (dc.PlayerId != 0 && dc.PlayerId != playerId)
+                {
+                    // Potential replacement player
+                    Player p = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, p.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(p.Id, team, position);
+                        if (result == 0)
+                        {
+                            // Player is totally fine to come on and can be subbed on
+                            return p;
+                        }
+                    }
+                }
+            }
+
+            // Now potentially we could not find a player to sub on initially, so next round of checks
+            // Ignore fatigue in the depth chart
+            // Firstly check to see if the current player is fatigued
+            int currentResult = CheckIfPlayerNeedsSub(playerId, team, position);
+            if (currentResult == 1)
+            {
+                // Current Player is fatigued but can continue
+                Player p = teamPlayers.FirstOrDefault(x => x.Id == playerId);
+                return p;
+            }
+
+            // Else we need to check through the depth charts
+            for (int i = 0; i < filterDepth.Count; i++)
+            {
+                DepthChart dc = filterDepth[i];
+                // Need to take out current player
+                if (dc.PlayerId != 0 && dc.PlayerId != playerId)
+                {
+                    // Potential replacement player
+                    Player p = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, p.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(p.Id, team, position);
+                        if (result == 1)
+                        {
+                            // Player is fatigued but could continue
+                            return p;
+                        }
+                    }
+                }
+            }
+
+            // Now if we still have not got a player to sub on, we can ignore foul trouble
+            // Secondly check to see if the current player is in foul trouble
+            int currentFoulResult = CheckIfPlayerNeedsSub(playerId, team, position);
+            if (currentFoulResult == 2)
+            {
+                // Current Player is in foul trouble but can continue
+                Player p = teamPlayers.FirstOrDefault(x => x.Id == playerId);
+                return p;
+            }
+
+            // Else we need to check through the depth charts
+            for (int i = 0; i < filterDepth.Count; i++)
+            {
+                DepthChart dc = filterDepth[i];
+                // Need to take out current player
+                if (dc.PlayerId != 0 && dc.PlayerId != playerId)
+                {
+                    // Potential replacement player
+                    Player p = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, p.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(p.Id, team, position);
+                        if (result == 2)
+                        {
+                            // Player is in foul trouble but could continue
+                            return p;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public Player FindPlayerToBeSubbedMandatory(int playerId, int team, int position)
+        {
+            // Now set up the filtered depth chart and teams players for later use
+            List<DepthChart> filterDepth = new List<DepthChart>();
+            List<Player> teamPlayers = new List<Player>();
+            if (team == 0)
+            {
+                List<DepthChart> depth = _homeDepth.OrderBy(x => x.Depth).ToList();
+                filterDepth = depth.Where(x => x.Position == position).ToList();
+                teamPlayers = _homePlayers;
+
+            }
+            else
+            {
+                List<DepthChart> depth = _awayDepth.OrderBy(x => x.Depth).ToList();
+                filterDepth = depth.Where(x => x.Position == position).ToList();
+                teamPlayers = _awayPlayers;
+            }
+
+            for (int i = 0; i < filterDepth.Count; i++)
+            {
+                DepthChart dc = filterDepth[i];
+                // Need to take out current player
+                if (dc.PlayerId != 0 && dc.PlayerId != playerId)
+                {
+                    // Potential replacement player
+                    Player p = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, p.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(p.Id, team, position);
+                        if (result == 0)
+                        {
+                            // Player is totally fine to come on and can be subbed on
+                            return p;
+                        }
+                    }
+                }
+            }
+
+            // Now potentially we could not find a player to sub on initially, so next round of checks
+            // Ignore fatigue in the depth chart - we need to check through the depth charts
+            for (int i = 0; i < filterDepth.Count; i++)
+            {
+                DepthChart dc = filterDepth[i];
+                // Need to take out current player
+                if (dc.PlayerId != 0 && dc.PlayerId != playerId)
+                {
+                    // Potential replacement player
+                    Player p = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, p.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(p.Id, team, position);
+                        if (result == 1)
+                        {
+                            // Player is fatigued but could continue
+                            return p;
+                        }
+                    }
+                }
+            }
+
+            // Now if we still have not got a player to sub on, we can ignore foul trouble - we need to check through the depth charts
+            for (int i = 0; i < filterDepth.Count; i++)
+            {
+                DepthChart dc = filterDepth[i];
+                // Need to take out current player
+                if (dc.PlayerId != 0 && dc.PlayerId != playerId)
+                {
+                    // Potential replacement player
+                    Player p = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, p.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(p.Id, team, position);
+                        if (result == 2)
+                        {
+                            // Player is in foul trouble but could continue
+                            return p;
+                        }
+                    }
+                }
+            }
+
+            // Now if we do not have a player - we need 
+            Player returned = CheckPlayersAtPosition(playerId, team, position);
+            if (returned != null)
+            {
+                return returned;
+            }
+
+            // If we have reached here, we still have no player - so now go through secondard positions
+            Player secondary = CheckPlayersAtPositionSecondary(playerId, team, position);
+            if (secondary != null)
+            {
+                return secondary;
+            }
+
+            // Now if we reach here, then still no player found, now we open it up to anything
+            Player anyPlayer = CheckAllPlayersForSub(playerId, team, position);
+            return anyPlayer;
+        }
+
+        public Player CheckPlayersAtPosition(int playerId, int team, int position)
+        {
+            List<Player> teamPlayers = new List<Player>();
+            List<Player> filteredPlayers = new List<Player>();
+            if (team == 0)
+            {
+                teamPlayers = _homePlayers;
+            }
+            else
+            {
+                teamPlayers = _awayPlayers;
+            }
+
+            switch (position)
+            {
+                case 1:
+                    filteredPlayers = teamPlayers.FindAll(x => x.PGPosition == 1);
+                    break;
+                case 2:
+                    filteredPlayers = teamPlayers.FindAll(x => x.SGPosition == 1);
+                    break;
+                case 3:
+                    filteredPlayers = teamPlayers.FindAll(x => x.SFPosition == 1);
+                    break;
+                case 4:
+                    filteredPlayers = teamPlayers.FindAll(x => x.PFPosition == 1);
+                    break;
+                case 5:
+                    filteredPlayers = teamPlayers.FindAll(x => x.CPosition == 1);
+                    break;
+                default:
+                    break;
+            }
+
+            // Now we need to go through the checks for these players
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 0)
+                        {
+                            // Player is totally fine to come on and can be subbed on
+                            return pc;
+                        }
+                    }
+                }
+            }
+
+            // Now potentially we could not find a player to sub on initially, so next round of checks
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 1)
+                        {
+                            // Player is fatigued but could continue
+                            return pc;
+                        }
+                    }
+                }
+            }
+
+            // Now if we still have not got a player to sub on, we can ignore foul trouble - we need to check through the depth charts
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 2)
+                        {
+                            // Player is in foul trouble but could continue
+                            return pc;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public Player CheckPlayersAtPositionSecondary(int playerId, int team, int position)
+        {
+            List<Player> teamPlayers = new List<Player>();
+            List<Player> filteredPlayers = new List<Player>();
+            if (team == 0)
+            {
+                teamPlayers = _homePlayers;
+            }
+            else
+            {
+                teamPlayers = _awayPlayers;
+            }
+
+            switch (position)
+            {
+                case 1:
+                    filteredPlayers = teamPlayers.FindAll(x => x.SGPosition == 1);
+                    break;
+                case 2:
+                    filteredPlayers = teamPlayers.FindAll(x => x.PGPosition == 1 || x.SFPosition == 1);
+                    break;
+                case 3:
+                    filteredPlayers = teamPlayers.FindAll(x => x.SGPosition == 1 || x.PFPosition == 1);
+                    break;
+                case 4:
+                    filteredPlayers = teamPlayers.FindAll(x => x.SFPosition == 1 || x.CPosition == 1);
+                    break;
+                case 5:
+                    filteredPlayers = teamPlayers.FindAll(x => x.PFPosition == 1);
+                    break;
+                default:
+                    break;
+            }
+
+            // Now we need to go through the checks for these players
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 0)
+                        {
+                            // Player is totally fine to come on and can be subbed on
+                            return pc;
+                        }
+                    }
+                }
+            }
+
+            // Now potentially we could not find a player to sub on initially, so next round of checks
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 1)
+                        {
+                            // Player is fatigued but could continue
+                            return pc;
+                        }
+                    }
+                }
+            }
+
+            // Now if we still have not got a player to sub on, we can ignore foul trouble - we need to check through the depth charts
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 2)
+                        {
+                            // Player is in foul trouble but could continue
+                            return pc;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public Player CheckAllPlayersForSub(int playerId, int team, int position)
+        {
+            List<Player> teamPlayers = new List<Player>();
+            List<Player> filteredPlayers = new List<Player>();
+            if (team == 0)
+            {
+                teamPlayers = _homePlayers;
+            }
+            else
+            {
+                teamPlayers = _awayPlayers;
+            }
+
+            // Now we need to go through the checks for these players
+            for (int i = 0; i < teamPlayers.Count; i++)
+            {
+                Player pc = teamPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 0)
+                        {
+                            // Player is totally fine to come on and can be subbed on
+                            return pc;
+                        }
+                    }
+                }
+            }
+
+            // Now potentially we could not find a player to sub on initially, so next round of checks
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 1)
+                        {
+                            // Player is fatigued but could continue
+                            return pc;
+                        }
+                    }
+                }
+            }
+
+            // Now if we still have not got a player to sub on, we can ignore foul trouble - we need to check through the depth charts
+            for (int i = 0; i < filteredPlayers.Count; i++)
+            {
+                Player pc = filteredPlayers[i];
+                // Need to take out current player
+                if (pc.Id != playerId)
+                {
+                    // Now to check if the player is already on the court in a different position
+                    int onCourt = CheckIfPlayerIsOnCourt(team, pc.Id);
+                    if (onCourt == 0)
+                    {
+                        int result = CheckIfPlayerNeedsSub(pc.Id, team, position);
+                        if (result == 2)
+                        {
+                            // Player is in foul trouble but could continue
+                            return pc;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public void EndGameSubCheck(int ftPlayerId)
+        {
+            // Home Team Check First
+            for (int i = 1; i < 6; i++)
+            {
+                int result = 0;
+                int toSub = 0;
+
+                // Check to see if the player is at the free throw line
+                result = CheckIfShooter(0, i, ftPlayerId);
+                Player p = new Player();
+
+                DepthChart starter = new DepthChart();
+                DepthChart backup = new DepthChart();
+                switch (i)
+                {
+                    case 1:
+                        starter = _homeDepth.Find(x => x.Position == 1 && x.Depth == 1);
+                        backup = _homeDepth.Find(x => x.Position == 1 && x.Depth == 2);
+                        p = homePG;
+                        break;
+                    case 2:
+                        starter = _homeDepth.Find(x => x.Position == 2 && x.Depth == 1);
+                        backup = _homeDepth.Find(x => x.Position == 2 && x.Depth == 2);
+                        p = homeSG;
+                        break;
+                    case 3:
+                        starter = _homeDepth.Find(x => x.Position == 3 && x.Depth == 1);
+                        backup = _homeDepth.Find(x => x.Position == 3 && x.Depth == 2);
+                        p = homeSF;
+                        break;
+                    case 4:
+                        starter = _homeDepth.Find(x => x.Position == 4 && x.Depth == 1);
+                        backup = _homeDepth.Find(x => x.Position == 4 && x.Depth == 2);
+                        p = homePF;
+                        break;
+                    case 5:
+                        starter = _homeDepth.Find(x => x.Position == 5 && x.Depth == 1);
+                        backup = _homeDepth.Find(x => x.Position == 5 && x.Depth == 2);
+                        p = homeC;
+                        break;
+                    default:
+                        break;
+                }
+
+                // Check to see if player on is starter
+                if (p.Id == starter.PlayerId)
+                {
+                    toSub = CheckIfPlayerNeedsSub(p.Id, 0, i);
+
+                    if (toSub == 3 || toSub == 4)
+                    {
+                        // The player must be subbed
+                        Player newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 0, i);
+
+                        // Now we go through the SubPlayer actions
+                        SubPlayer(0, i, newPlayer);
+                        // Add the commentary here
+                        string outPlayer = p.FirstName + " " + p.Surname;
+                        string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                    }
+                    // else we continue on with this player on
+                }
+                else
+                {
+                    // The player is not the starter - so check if the starter can come on
+                    toSub = CheckIfPlayerNeedsSub(starter.PlayerId, 0, i);
+
+                    if (toSub != 3 || toSub != 4)
+                    {
+                        // The starter can come back on
+                        Player newPlayer = _homePlayers.FirstOrDefault(x => x.Id == starter.PlayerId);
+
+                        // Now we go through the SubPlayer actions
+                        SubPlayer(0, i, newPlayer);
+                        // Add the commentary here
+                        string outPlayer = p.FirstName + " " + p.Surname;
+                        string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                    }
+                    else
+                    {
+                        // The starter could not come on, so now check the 2nd in Depth Chart
+                        if (p.Id == backup.PlayerId)
+                        {
+                            // The backup is on the court
+                            toSub = CheckIfPlayerNeedsSub(backup.PlayerId, 0, i);
+
+                            if (toSub == 3 || toSub == 4)
+                            {
+                                // The player must be subbed
+                                Player newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 0, i);
+
+                                // Now we go through the SubPlayer actions
+                                SubPlayer(0, i, newPlayer);
+                                // Add the commentary here
+                                string outPlayer = p.FirstName + " " + p.Surname;
+                                string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            }
+                            // else we continue on with this player on
+                        }
+                        else
+                        {
+                            // The backup is not on the court either, so now we need to see if the current player needs to be subbed off
+                            toSub = CheckIfPlayerNeedsSub(p.Id, 0, i);
+
+                            if (toSub == 3 || toSub == 4)
+                            {
+                                // The player must be subbed
+                                Player newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 0, i);
+
+                                // Now we go through the SubPlayer actions
+                                SubPlayer(0, i, newPlayer);
+                                // Add the commentary here
+                                string outPlayer = p.FirstName + " " + p.Surname;
+                                string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            }
+                            // else we continue on with this player on
+                        }
+                    }
+                }
+            }
+
+            // Away Team Check First
+            for (int i = 1; i < 6; i++)
+            {
+                int result = 0;
+                int toSub = 0;
+
+                // Check to see if the player is at the free throw line
+                result = CheckIfShooter(1, i, ftPlayerId);
+                Player p = new Player();
+
+                DepthChart starter = new DepthChart();
+                DepthChart backup = new DepthChart();
+                switch (i)
+                {
+                    case 1:
+                        starter = _awayDepth.Find(x => x.Position == 1 && x.Depth == 1);
+                        backup = _awayDepth.Find(x => x.Position == 1 && x.Depth == 2);
+                        p = awayPG;
+                        break;
+                    case 2:
+                        starter = _awayDepth.Find(x => x.Position == 2 && x.Depth == 1);
+                        backup = _awayDepth.Find(x => x.Position == 2 && x.Depth == 2);
+                        p = awaySG;
+                        break;
+                    case 3:
+                        starter = _awayDepth.Find(x => x.Position == 3 && x.Depth == 1);
+                        backup = _awayDepth.Find(x => x.Position == 3 && x.Depth == 2);
+                        p = awaySF;
+                        break;
+                    case 4:
+                        starter = _awayDepth.Find(x => x.Position == 4 && x.Depth == 1);
+                        backup = _awayDepth.Find(x => x.Position == 4 && x.Depth == 2);
+                        p = awayPF;
+                        break;
+                    case 5:
+                        starter = _awayDepth.Find(x => x.Position == 5 && x.Depth == 1);
+                        backup = _awayDepth.Find(x => x.Position == 5 && x.Depth == 2);
+                        p = awayC;
+                        break;
+                    default:
+                        break;
+                }
+
+                // Check to see if player on is starter
+                if (p.Id == starter.PlayerId)
+                {
+                    toSub = CheckIfPlayerNeedsSub(p.Id, 1, i);
+
+                    if (toSub == 3 || toSub == 4)
+                    {
+                        // The player must be subbed
+                        Player newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 1, i);
+
+                        // Now we go through the SubPlayer actions
+                        SubPlayer(1, i, newPlayer);
+                        // Add the commentary here
+                        string outPlayer = p.FirstName + " " + p.Surname;
+                        string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                    }
+                    // else we continue on with this player on
+                }
+                else
+                {
+                    // The player is not the starter - so check if the starter can come on
+                    toSub = CheckIfPlayerNeedsSub(starter.PlayerId, 1, i);
+
+                    if (toSub != 3 || toSub != 4)
+                    {
+                        // The starter can come back on
+                        Player newPlayer = _awayPlayers.FirstOrDefault(x => x.Id == starter.PlayerId);
+
+                        // Now we go through the SubPlayer actions
+                        SubPlayer(1, i, newPlayer);
+                        // Add the commentary here
+                        string outPlayer = p.FirstName + " " + p.Surname;
+                        string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                    }
+                    else
+                    {
+                        // The starter could not come on, so now check the 2nd in Depth Chart
+                        if (p.Id == backup.PlayerId)
+                        {
+                            // The backup is on the court
+                            toSub = CheckIfPlayerNeedsSub(backup.PlayerId, 1, i);
+
+                            if (toSub == 3 || toSub == 4)
+                            {
+                                // The player must be subbed
+                                Player newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 1, i);
+
+                                // Now we go through the SubPlayer actions
+                                SubPlayer(1, i, newPlayer);
+                                // Add the commentary here
+                                string outPlayer = p.FirstName + " " + p.Surname;
+                                string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            }
+                            // else we continue on with this player on
+                        }
+                        else
+                        {
+                            // The backup is not on the court either, so now we need to see if the current player needs to be subbed off
+                            toSub = CheckIfPlayerNeedsSub(p.Id, 1, i);
+
+                            if (toSub == 3 || toSub == 4)
+                            {
+                                // The player must be subbed
+                                Player newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 1, i);
+
+                                // Now we go through the SubPlayer actions
+                                SubPlayer(1, i, newPlayer);
+                                // Add the commentary here
+                                string outPlayer = p.FirstName + " " + p.Surname;
+                                string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
+                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            }
+                            // else we continue on with this player on
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

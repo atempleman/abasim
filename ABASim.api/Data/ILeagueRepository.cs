@@ -112,5 +112,7 @@ namespace ABASim.api.Data
          Task<IEnumerable<VotesDto>> GetSixthManTopFive();
 
          Task<IEnumerable<VotesDto>> GetDpoyTopFive();
+
+         Task<IEnumerable<VotesDto>> GetAllNBATeams();
     }
 }
