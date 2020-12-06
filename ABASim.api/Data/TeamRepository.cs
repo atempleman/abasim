@@ -973,7 +973,7 @@ namespace ABASim.api.Data
 
             TeamSalaryCapInfo info = new TeamSalaryCapInfo
             {
-                SeasonId = league.Id,
+                SeasonId = league.Year,
                 SalaryCapAmount = capInfo.Cap,
                 TeamId = teamId,
                 CurrentSalaryAmount = teamCap.CurrentCapAmount

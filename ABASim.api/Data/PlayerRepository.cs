@@ -279,7 +279,7 @@ namespace ABASim.api.Data
                     CareerStatsDto dto = new CareerStatsDto
                     {
                         PlayerId = currentSeasonPlayerStats.PlayerId,
-                        SeasonId = league.Id,
+                        SeasonId = league.Year,
                         TeamName = team.Mascot,
                         GamesStats = currentSeasonPlayerStats.GamesPlayed,
                         MinutesStats = currentSeasonPlayerStats.Minutes,
@@ -321,7 +321,7 @@ namespace ABASim.api.Data
                     CareerStatsDto dto = new CareerStatsDto
                     {
                         PlayerId = currentSeasonPlayerStats.PlayerId,
-                        SeasonId = league.Id,
+                        SeasonId = league.Year,
                         TeamName = team.Mascot,
                         GamesStats = currentSeasonPlayerStats.GamesPlayed,
                         MinutesStats = currentSeasonPlayerStats.Minutes,

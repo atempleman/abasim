@@ -29,6 +29,11 @@ namespace ABASim.api.Data
                 league.Day = 0;
             }
 
+            if (newState == 3)
+            {
+                var result = GenerateAutoPickOrder();
+            }
+
             _context.Update(league);
             return await _context.SaveChangesAsync() > 0;
         }
@@ -1662,7 +1667,7 @@ namespace ABASim.api.Data
                 CareerPlayerStat stats = new CareerPlayerStat
                 {
                     PlayerId = ps.PlayerId,
-                    SeasonId = league.Id,
+                    SeasonId = league.Year,
                     Team = team.ShortCode,
                     GamesPlayed = ps.GamesPlayed,
                     Minutes = ps.Minutes,
@@ -1704,7 +1709,7 @@ namespace ABASim.api.Data
                 CareerPlayerStatsPlayoff stats = new CareerPlayerStatsPlayoff
                 {
                     PlayerId = ps.PlayerId,
-                    SeasonId = league.Id,
+                    SeasonId = league.Year,
                     Team = team.ShortCode,
                     GamesPlayed = ps.GamesPlayed,
                     Minutes = ps.Minutes,
@@ -1738,7 +1743,7 @@ namespace ABASim.api.Data
 
             // Now need to update the draft picks for the next additional season
             var teams = await _context.Teams.ToListAsync();
-            int newSeasonForPicks = league.Id + 6;
+            int newSeasonForPicks = league.Year + 6;
 
             foreach (var team in teams)
             {
@@ -1764,7 +1769,7 @@ namespace ABASim.api.Data
 
             foreach (var team in teams)
             {
-                int start = league.Id + 1;
+                int start = league.Year + 1;
                 for (int i = start; i < start + 6; i++)
                 {
                     for (int j = 1; j < 3; j++)
@@ -2228,7 +2233,7 @@ namespace ABASim.api.Data
                 HistoricalTeamRecord htr = new HistoricalTeamRecord
                 {
                     TeamId = team.Id,
-                    SeasonId = league.Id,
+                    SeasonId = league.Year,
                     Wins = teamStanding.Wins,
                     Losses = teamStanding.Losses,
                     Lottery = lottery,
@@ -2262,7 +2267,7 @@ namespace ABASim.api.Data
 
             AwardWinner mvpWinner = new AwardWinner
             {
-                SeasonId = league.Id,
+                SeasonId = league.Year,
                 PlayerId = mvpVotes.PlayerId,
                 PlayerName = mvpPlayer.FirstName + " " + mvpPlayer.Surname,
                 Team = mvpTeam.Teamname + " " + mvpTeam.Mascot,
@@ -2274,7 +2279,7 @@ namespace ABASim.api.Data
 
             AwardWinner dpoyWinner = new AwardWinner
             {
-                SeasonId = league.Id,
+                SeasonId = league.Year,
                 PlayerId = dpoyVotes.PlayerId,
                 PlayerName = dpoyPlayer.FirstName + " " + dpoyPlayer.Surname,
                 Team = dpoyTeam.Teamname + " " + dpoyTeam.Mascot,
@@ -2286,7 +2291,7 @@ namespace ABASim.api.Data
 
             AwardWinner sixthWinner = new AwardWinner
             {
-                SeasonId = league.Id,
+                SeasonId = league.Year,
                 PlayerId = sixthVotes.PlayerId,
                 PlayerName = sixthPlayer.FirstName + " " + sixthPlayer.Surname,
                 Team = sixthTeam.Teamname + " " + sixthTeam.Mascot,
@@ -2315,7 +2320,7 @@ namespace ABASim.api.Data
                 {
                     PlayerId = ps.PlayerId,
                     Team = team.ShortCode,
-                    SeasonId = league.Id,
+                    SeasonId = league.Year,
                     GamesPlayed = ps.GamesPlayed,
                     Minutes = ps.Minutes,
                     Points = ps.Points,
@@ -2356,7 +2361,7 @@ namespace ABASim.api.Data
                 {
                     PlayerId = ps.PlayerId,
                     Team = team.ShortCode,
-                    SeasonId = league.Id,
+                    SeasonId = league.Year,
                     GamesPlayed = ps.GamesPlayed,
                     Minutes = ps.Minutes,
                     Points = ps.Points,
@@ -2753,7 +2758,7 @@ namespace ABASim.api.Data
         public async Task<bool> RolloverLeague()
         {
             var league = await _context.Leagues.FirstOrDefaultAsync();
-            league.Id = league.Id + 1;
+            league.Year = league.Year + 1;
             league.StateId = 14;
             _context.Leagues.Update(league);
             return await _context.SaveChangesAsync() > 0;
@@ -2776,12 +2781,12 @@ namespace ABASim.api.Data
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CoachSettings");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DepthCharts");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE TeamStrategies");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayByPlaysPlayoffs");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayByPlayPlayoffs");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerStatsPlayoffs");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayoffBoxScores");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayoffResults");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayoffSeries");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE SchedulePlayoffs");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayoffSerieses");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE SchedulesPlayoffs");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PreseasonGameResults");
 
             // Now the extras for a complete reset to fresh league
@@ -2797,7 +2802,7 @@ namespace ABASim.api.Data
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE HistoricalTeamRecords");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE InitialDrafts");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerCareerStats");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PLayerCareerPlayoffStats");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerCareerStatsPlayoffs");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerContracts");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerGradings");
             await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE PlayerInjuries");
