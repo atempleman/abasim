@@ -1620,24 +1620,28 @@ namespace ABASim.api.Data
                 {
                     int twoRating = (int)player.TwoRating / 3;
                     int threeRating = (int)player.ThreeRating / 2;
+                    int ftRating = (int)player.FTRating / 4;
                     int orebRating = player.ORebRating;
                     int drebRating = player.DRebRating;
-                    int astRating = player.AssitRating;
+                    int astRating = player.PassAssistRating;
+                    int ast2Rating = player.AssitRating / 3;
                     int stealRating = player.StealRating;
                     int blockRating = player.BlockRating;
                     int orpm = (int)player.ORPMRating;
                     int drpm = (int)player.DRPMRating;
+                    int staminaRating = 100 - player.StaminaRating;
+                    int foulRating = 100 - player.FoulingRating;
 
-                    decimal staminaMultiplier = player.StaminaRating / 100;
-                    int ts = twoRating + threeRating + orebRating + drebRating + astRating + stealRating + blockRating + orpm + drpm;
+                    // Need to get the players age
+                    var p = await _context.Players.FirstOrDefaultAsync(x => x.Id == player.PlayerId);
 
-                    int score = (int)(ts * staminaMultiplier);
-                    int totalScore = ts - score;
+                    int firstScore = twoRating + threeRating + ftRating + orebRating + drebRating + ast2Rating + astRating + stealRating + blockRating + staminaRating + orpm + drpm + foulRating;
+                    int finalScore = (firstScore - (ftRating) + ((100 - p.Age) * 5));
 
                     AutoPickOrder apo = new AutoPickOrder
                     {
                         PlayerId = player.PlayerId,
-                        Score = totalScore
+                        Score = finalScore
                     };
                     await _context.AddAsync(apo);
                 }
