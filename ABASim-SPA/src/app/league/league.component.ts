@@ -156,6 +156,10 @@ export class LeagueComponent implements OnInit {
     this.router.navigate(['/awards']);
   }
 
+  goToRetiredPlayers() {
+    this.router.navigate(['/retired']);
+  }
+
   fullGame(gameId: number, stateId: number) {
     this.transferService.setData(gameId);
     this.transferService.setState(stateId);

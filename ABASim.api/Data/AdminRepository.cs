@@ -22,16 +22,22 @@ namespace ABASim.api.Data
         public async Task<bool> UpdateLeagueState(int newState)
         {
             var league = await _context.Leagues.FirstOrDefaultAsync(x => x.Id == 1);
+            var currentState = league.StateId;
             league.StateId = newState;
 
-            if (newState == 7 || newState == 8 || newState == 9 || newState == 10 || newState == 11)
+            if (newState == 2)
             {
-                league.Day = 0;
-            }
-
-            if (newState == 3)
+                league.Day = 1;
+            } else if (newState == 3)
             {
                 var result = GenerateAutoPickOrder();
+                league.Day = 2;
+            } else if (newState == 6)
+            {
+                league.Day = 30;
+            } else if (newState == 7)
+            {
+                league.Day = 45;
             }
 
             _context.Update(league);

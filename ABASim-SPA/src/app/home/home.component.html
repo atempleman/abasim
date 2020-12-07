@@ -63,25 +63,29 @@
           <input class="form-control" placeholder="Short code - e.g. ATL" name="shortcode" type="text" value=""
             formControlName="shortcode">
         </div> -->
-        <label class="col-md-6 control-label" for="textinput">Select your team: </label>
-				<span>
-					<select teamSelection name="teamSelection">
-						<option *ngFor="let team of this.selectableTeams" [value]="team.id">{{ team.teamname }} {{ team.mascot }}
-						</option>
-					</select>
-				</span>
+        <div class="form-group">
+          <label class="col-md-6 control-label" for="textinput">Select your team: </label>
+          <span>
+            <select formControlName="teamSelection" teamSelection name="teamSelection">
+              <option *ngFor="let team of this.selectableTeams" [value]="team.id">{{ team.teamname }} {{ team.mascot }}
+              </option>
+            </select>
+          </span>
+        </div>
         <input class="btn btn-lg btn-success btn-block" type="submit" value="Register">
       </fieldset>
     </form>
   </div>
   <div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="!this.availableTeams">
     <h2>Register</h2>
-    <p>Currently no teams are available for registration. Please contact us and register your interest to go on our waiting list or to discuss options of starting your own league!</p>
+    <p>Currently no teams are available for registration. Please contact us and register your interest to go on our
+      waiting list or to discuss options of starting your own league!</p>
     <p>New leagues will be set up shortly after interest has been provided.</p>
   </div>
   <div class="card" style="background-color:rgb(22, 24, 100);">
     <h2>Contact Us</h2>
-    <p>Have any questions about our Basketball Simulation? Want to get your own compeition started up? Have some general feedback? Drop us a line!</p>
+    <p>Have any questions about our Basketball Simulation? Want to get your own compeition started up? Have some general
+      feedback? Drop us a line!</p>
     <form [formGroup]="contactForm" class="form-horizontal" (ngSubmit)="submitContactForm()">
       <div class="form-row">
         <div class="col-md-6 form-group">
@@ -90,8 +94,7 @@
         </div>
         <div class="col-md-6 form-group">
           <label for="email">Email</label>
-          <input type="email" class="form-control" id="email" placeholder="email@example.com"
-            formControlName="email">
+          <input type="email" class="form-control" id="email" placeholder="email@example.com" formControlName="email">
         </div>
       </div>
       <div class="form-group ">

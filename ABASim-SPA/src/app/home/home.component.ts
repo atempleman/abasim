@@ -124,7 +124,6 @@ export class HomeComponent implements OnInit {
   }
 
   register() {
-    console.log(this.registerForm)
     if (this.registerForm.valid) {
       this.user = Object.assign({}, this.registerForm.value);
       this.authService.register(this.user).subscribe(() => {

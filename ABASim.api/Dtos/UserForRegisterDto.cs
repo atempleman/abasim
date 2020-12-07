@@ -18,6 +18,6 @@ namespace ABASim.api.Dtos
         public string Name { get; set; }
 
         [Required]
-        public int TeamId { get; set; }
+        public string TeamSelection { get; set; }
     }
 }

@@ -40,5 +40,7 @@ namespace ABASim.api.Data
          Task<PlayerContractQuickViewDto> GetContractForPlayer(int playerId);
 
          Task<PlayerContract> GetFullContractForPlayer(int playerId);
+
+         Task<IEnumerable<RetiredPlayer>> GetRetiredPlayers();
     }
 }

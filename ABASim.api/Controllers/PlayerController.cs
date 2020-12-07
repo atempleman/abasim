@@ -132,5 +132,12 @@ namespace ABASim.api.Controllers
             var player = await _repo.GetFullContractForPlayer(playerId);
             return Ok(player);
         }
+
+        [HttpGet("getretiredplayers")]
+        public async Task<IActionResult> GetRetiredPlayers()
+        {
+            var players = await _repo.GetRetiredPlayers();
+            return Ok(players);
+        }
     }
 }

@@ -1,0 +1,60 @@
+.dashboard-area {
+    position: relative;
+    text-align: center;
+    background: #202120;
+    overflow: hidden;
+}
+.dashboard-area h3, span {
+    padding: 10px;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+    color: #ffffff;
+}
+
+
+.table-row, box {
+    padding: 10px;
+    text-align: center;
+    position: relative;
+}
+.textdesc p {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+.pager {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.pager {
+    overflow: hidden;
+    text-align: center;
+}
+
+.pager ul {
+    display: inline-flex;
+    position: relative;
+}
+
+.demoPadder {
+    padding-top:15px;
+}
+.btn-default {
+    color: #007aff;
+    background-color: #fff;
+    border-color: #007aff;
+}
+.btn-default:hover, .btn-default:active, .btn-default.active, .open > .btn-default.dropdown-toggle {
+    color: #fff;
+    background-color: #c8e0fa;
+    border-color: #007aff;
+}
+.fill-data-btn{
+    background-color: #007aff;
+    color: #fff;
+}

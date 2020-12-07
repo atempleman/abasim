@@ -8,6 +8,7 @@ import { CompletePlayer } from '../_models/completePlayer';
 import { CareerStats } from '../_models/careerStats';
 import { PlayerContractQuickView } from '../_models/playerContractQuickView';
 import { PlayerContract } from '../_models/playerContract';
+import { RetiredPlayer } from '../_models/retiredPlayer';
 
 @Injectable({
   providedIn: 'root'
@@ -84,5 +85,9 @@ export class PlayerService {
 
   getPlayerContractForPlayer(playerId: number): Observable<PlayerContract> {
     return this.http.get<PlayerContract>(this.baseUrl + 'getfullcontractforplayer/' + playerId);
+  }
+
+  getRetiredPlayers(): Observable<RetiredPlayer[]> {
+    return this.http.get<RetiredPlayer[]>(this.baseUrl + 'getretiredplayers/');
   }
 }

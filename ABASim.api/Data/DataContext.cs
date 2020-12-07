@@ -123,5 +123,7 @@ namespace ABASim.api.Data
         public DbSet<HistoricalTeamRecord> HistoricalTeamRecords { get; set; }
 
         public DbSet<AwardWinner> AwardWinners { get; set; }
+
+        public DbSet<RetiredPlayer> RetiredPlayers { get; set; }
     }
 }

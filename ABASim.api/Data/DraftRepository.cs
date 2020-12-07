@@ -124,6 +124,7 @@ namespace ABASim.api.Data
             // Now the draft record is saved - now need to update the league state
             var league = await _context.Leagues.FirstOrDefaultAsync();
             league.StateId = 4;
+            league.Day = 3;
             _context.Update(league);
             return await _context.SaveChangesAsync() > 0;
         }
@@ -237,6 +238,7 @@ namespace ABASim.api.Data
                     // Draft is finished
                     var leagueState = await _context.Leagues.FirstOrDefaultAsync();
                     leagueState.StateId = 5;
+                    leagueState.Day = 5;
                     _context.Update(leagueState);
                 }
             }

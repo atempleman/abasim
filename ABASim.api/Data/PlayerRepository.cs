@@ -923,5 +923,11 @@ namespace ABASim.api.Data
                 return null;
             }
         }
+
+        public async Task<IEnumerable<RetiredPlayer>> GetRetiredPlayers()
+        {
+            var retiredPlayers = await _context.RetiredPlayers.ToListAsync();
+            return retiredPlayers;
+        }
     }
 }
