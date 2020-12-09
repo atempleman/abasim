@@ -14,6 +14,8 @@ import { InitialDraftPicks } from '../_models/initialDraftPicks';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AdminService } from '../_services/admin.service';
 import { DraftSelection } from '../_models/draftSelection';
+import { LeagueService } from '../_services/league.service';
+import { League } from '../_models/league';
 
 @Component({
   selector: 'app-draftboard',
@@ -26,13 +28,22 @@ export class DraftboardComponent implements OnInit {
   public modalRef: BsModalRef;
   currentPick: InitialDraftPicks;
   selection: DraftPlayer;
+  league: League;
 
   constructor(private alertify: AlertifyService, private draftService: DraftService, private authService: AuthService,
               private teamService: TeamService, private router: Router, private transferService: TransferService,
-              private spinner: NgxSpinnerService, private modalService: BsModalService, private adminService: AdminService) { }
+              private spinner: NgxSpinnerService, private modalService: BsModalService, private adminService: AdminService,
+              private leagueService: LeagueService) { }
 
   ngOnInit() {
     this.spinner.show();
+
+    this.leagueService.getLeague().subscribe(result => {
+      this.league = result;
+    }, error => {
+      this.alertify.error('Error getting league details');
+    });
+
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
       this.team = result;
     }, error => {

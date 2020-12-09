@@ -16,20 +16,20 @@
 		<table class="table table-striped custab">
 			<thead>
 				<tr>
-          <th>Name</th>
-          <th>Season Retired</th>
+					<th>Name</th>
+					<th>Season Retired</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tr *ngFor="let rp of this.allPlayers">
 				<td>
 					{{ rp.name }}
-        </td>
-        <td>
-          {{ rp.year }}
-        </td>
+				</td>
+				<td>
+					{{ rp.year }}
+				</td>
 				<td class="text-center">
-					<button class="btn btn-info btn-xs tablebutton"> View</button>
+					<button class="btn btn-info btn-xs tablebutton" (click)="viewPlayer(rp)"> View</button>
 				</td>
 			</tr>
 		</table>

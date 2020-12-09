@@ -36,6 +36,7 @@ import { ViewTeamComponent } from './view-team/view-team.component';
 import { InjuriesComponent } from './injuries/injuries.component';
 import { AwardsComponent } from './awards/awards.component';
 import { RetiredComponent } from './retired/retired.component';
+import { ViewRetiredPlayerComponent } from './view-retired-player/view-retired-player.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -70,6 +71,7 @@ const routes: Routes = [
   { path: 'injuries', component: InjuriesComponent, canActivate: [AuthGuard] },
   { path: 'awards', component: AwardsComponent, canActivate: [AuthGuard] },
   { path: 'retired', component: RetiredComponent, canActivate: [AuthGuard] },
+  { path: 'view-retired-player', component: ViewRetiredPlayerComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

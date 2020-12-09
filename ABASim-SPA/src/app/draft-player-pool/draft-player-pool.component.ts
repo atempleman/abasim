@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { TransferService } from '../_services/transfer.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { LeagueService } from '../_services/league.service';
+import { League } from '../_models/league';
 
 @Component({
   selector: 'app-draft-player-pool',
@@ -31,12 +33,21 @@ export class DraftPlayerPoolComponent implements OnInit {
   positionFilter = 0;
   displayPaging = 0;
 
+  league: League;
+
   constructor(private alertify: AlertifyService, private playerService: PlayerService, private teamService: TeamService,
     private authService: AuthService, private draftService: DraftService, private router: Router,
-    private transferService: TransferService, private spinner: NgxSpinnerService, private fb: FormBuilder) { }
+    private transferService: TransferService, private spinner: NgxSpinnerService, private fb: FormBuilder,
+    private leagueService: LeagueService) { }
 
   ngOnInit() {
     this.spinner.show();
+
+    this.leagueService.getLeague().subscribe(result => {
+      this.league = result;
+    }, error => {
+      this.alertify.error('Error getting league details');
+    });
 
     this.teamService.getTeamForUserId(this.authService.decodedToken.nameid).subscribe(result => {
       this.team = result;

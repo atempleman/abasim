@@ -1,0 +1,237 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title mb-4">
+            <div class="d-flex justify-content-start">
+              <div class="image-container">
+                <!-- <img src="http://placehold.it/150x150" id="imgProfile" -->
+                <img src="{{ this.imageSrc }}" id="imgProfile" style="width: 150px; height: 150px"
+                  class="img-thumbnail" />
+              </div>
+              <div class="userData ml-3">
+                <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold">
+                  {{ this.detailedPlayer?.firstName }} {{ this.detailedPlayer?.surname }}</h2>
+                <h6 class="d-block">
+                  Position:
+                  <ng-container *ngIf="this.detailedPlayer?.pgPosition == 1">PG </ng-container>
+                  <ng-container *ngIf="this.detailedPlayer?.sgPosition == 1">SG </ng-container>
+                  <ng-container *ngIf="this.detailedPlayer?.sfPosition == 1">SF </ng-container>
+                  <ng-container *ngIf="this.detailedPlayer?.pfPosition == 1">PF </ng-container>
+                  <ng-container *ngIf="this.detailedPlayer?.cPosition == 1">C </ng-container>
+                </h6>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="tab-content ml-1" id="myTabContent">
+                <h4>Regular Season</h4>
+                <table class="table table-hover roster-table">
+                  <thead>
+                    <tr>
+                      <th>Season</th>
+                      <th>Team</th>
+                      <th>G</th>
+                      <th>MP</th>
+                      <th>FG</th>
+                      <th>FGA</th>
+                      <th>FG%</th>
+                      <th>3P</th>
+                      <th>3PA</th>
+                      <th>3P%</th>
+                      <th>FT</th>
+                      <th>FTA</th>
+                      <th>FT%</th>
+                      <th>ORB</th>
+                      <th>DRB</th>
+                      <th>TRB</th>
+                      <th>AST</th>
+                      <th>STL</th>
+                      <th>BLK</th>
+                      <th>TOV</th>
+                      <th>PF</th>
+                      <th>PTS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="table-secondary" *ngFor="let seasonStats of this.careerStats">
+                      <td>
+                        {{ seasonStats?.seasonId }}
+                      </td>
+                      <td>
+                        {{ seasonStats?.teamName }}
+                      </td>
+                      <td>
+                        {{ seasonStats?.gamesStats }}
+                      </td>
+                      <td>
+                        {{ getMinutesAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getFGAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getFGAAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getFgPercentageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getThreeFGAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getThreeFGAAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getThreeFgPercentageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getFTAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getFTAAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getFTPercentageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getOrebAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getDrebverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getTotalRebAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getTotalAstAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getTotalStlAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getTotalBlkAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getTotalTovAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getTotalFoulsAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getTotalPointsAverageForCareer(seasonStats) }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <h4>Playoffs</h4>
+                <table class="table table-hover roster-table">
+                  <thead>
+                    <tr>
+                      <th>Season</th>
+                      <th>Team</th>
+                      <th>G</th>
+                      <th>MP</th>
+                      <th>FG</th>
+                      <th>FGA</th>
+                      <th>FG%</th>
+                      <th>3P</th>
+                      <th>3PA</th>
+                      <th>3P%</th>
+                      <th>FT</th>
+                      <th>FTA</th>
+                      <th>FT%</th>
+                      <th>ORB</th>
+                      <th>DRB</th>
+                      <th>TRB</th>
+                      <th>AST</th>
+                      <th>STL</th>
+                      <th>BLK</th>
+                      <th>TOV</th>
+                      <th>PF</th>
+                      <th>PTS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="table-secondary" *ngFor="let seasonStats of this.careerStats">
+                      <td>
+                        {{ seasonStats?.seasonId }}
+                      </td>
+                      <td>
+                        {{ seasonStats?.teamName }}
+                      </td>
+                      <td>
+                        {{ seasonStats.playoffGamesStats }}
+                      </td>
+                      <td>
+                        {{ getPlayoffMinutesAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffFGAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffFGAAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffFgPercentageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffThreeFGAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffThreeFGAAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffThreeFgPercentageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffFTAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffFTAAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffFTPercentageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffOrebAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffDrebverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffTotalRebAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffTotalAstAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffTotalStlAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffTotalBlkAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffTotalTovAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffTotalFoulsAverageForCareer(seasonStats) }}
+                      </td>
+                      <td>
+                        {{ getPlayoffTotalPointsAverageForCareer(seasonStats) }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

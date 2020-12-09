@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+            <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId != 1">
                 <div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
                         class="header-card ml-3"><strong>Draft Lottery</strong></span></div>
                 <div class="card-body">
@@ -77,7 +77,7 @@
         </div>
 
         <div class="row cards-row">
-            <p>View default salaries for each pick - </p><button (click)="openModal(viewsalaries)"><i class="fa fa-info-circle"></i></button>
+            <p>View default salaries for each pick </p><i class="fa fa-info-circle" (click)="openModal(viewsalaries)"></i>
         </div>
 
         <div class="row cards-row" *ngIf="this.league?.stateId == 4">

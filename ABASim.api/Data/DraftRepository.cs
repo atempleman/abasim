@@ -240,6 +240,14 @@ namespace ABASim.api.Data
                     leagueState.StateId = 5;
                     leagueState.Day = 5;
                     _context.Update(leagueState);
+
+                    // Make all undrafted players a free agent
+                    var undraftedPlayers = await _context.PlayerTeams.Where(x => x.TeamId == 31).ToListAsync();
+                    foreach (var up in undraftedPlayers)
+                    {
+                        up.TeamId = 0;
+                        _context.PlayerTeams.Update(up);
+                    }
                 }
             }
             DateTime dt = DateTime.UtcNow.ToUniversalTime();

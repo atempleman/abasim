@@ -713,6 +713,24 @@ namespace ABASim.api.Data
             return count;
         }
 
+        public async Task<DetailedRetiredPlayerDto> GetDetailRetiredPlayer(int playerId)
+        {
+            var retiredPlayer = await _context.Players.FirstOrDefaultAsync(x => x.Id == playerId);
+
+            DetailedRetiredPlayerDto dto = new DetailedRetiredPlayerDto
+            {
+                PlayerId = playerId,
+                FirstName = retiredPlayer.FirstName,
+                Surname = retiredPlayer.Surname,
+                PGPosition = retiredPlayer.PGPosition,
+                SGPosition = retiredPlayer.SGPosition,
+                SFPosition = retiredPlayer.SFPosition,
+                PFPosition = retiredPlayer.PFPosition,
+                CPosition = retiredPlayer.CPosition,
+            };
+            return dto;
+        }
+
         public async Task<IEnumerable<Player>> GetFilteredFreeAgents(string value)
         {
             List<Player> freeAgents = new List<Player>();

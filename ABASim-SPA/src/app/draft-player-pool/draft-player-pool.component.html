@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+      <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId != 1">
         <div class="card-header"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i><span
             class="header-card ml-3"><strong>Draft Lottery</strong></span></div>
         <div class="card-body">

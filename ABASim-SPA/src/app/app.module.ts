@@ -50,13 +50,14 @@ import { ViewTeamComponent } from './view-team/view-team.component';
 import { InjuriesComponent } from './injuries/injuries.component';
 import { AwardsComponent } from './awards/awards.component';
 import { RetiredComponent } from './retired/retired.component';
+import { ViewRetiredPlayerComponent } from './view-retired-player/view-retired-player.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
 }
 
 @NgModule({
-   declarations: [	
+   declarations: [		
       AppComponent,
       NavbarComponent,
       FooterComponent,
@@ -95,7 +96,8 @@ export function tokenGetter() {
       ViewTeamComponent,
       InjuriesComponent,
       AwardsComponent,
-      RetiredComponent
+      RetiredComponent,
+      ViewRetiredPlayerComponent
    ],
    imports: [
       BrowserModule,

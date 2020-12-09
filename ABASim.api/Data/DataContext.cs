@@ -125,5 +125,11 @@ namespace ABASim.api.Data
         public DbSet<AwardWinner> AwardWinners { get; set; }
 
         public DbSet<RetiredPlayer> RetiredPlayers { get; set; }
+
+        public DbSet<MidLevelException> MidLevelExceptions { get; set; }
+
+        public DbSet<BiAnnualException> BiAnnualExceptions { get; set; }
+
+        public DbSet<WaiverWire> WaiverWires { get; set; }
     }
 }

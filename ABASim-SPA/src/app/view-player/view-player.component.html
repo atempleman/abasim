@@ -66,6 +66,7 @@
                             </ul>
 
                             <div class="tab-content ml-1" id="myTabContent">
+                                <h4 *ngIf="this.statusStats">Regular Season</h4>
                                 <table class="table table-hover roster-table" *ngIf="this.statusStats">
                                     <thead>
                                         <tr>
@@ -400,7 +401,8 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
+                                
+                                <h4 *ngIf="this.statusCareerStats">Regular Season</h4>
                                 <table class="table table-hover roster-table" *ngIf="this.statusCareerStats">
                                     <thead>
                                         <tr>
@@ -542,8 +544,7 @@
                                     </tbody>
                                 </table>
 
-                                <h4 *ngIf="this.statusCareerStats">
-                                    Playoffs</h4>
+                                <h4 *ngIf="this.statusCareerStats">Playoffs</h4>
                                 <table class="table table-hover roster-table" *ngIf="this.statusCareerStats">
                                     <thead>
                                         <tr>

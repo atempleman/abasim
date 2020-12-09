@@ -51,9 +51,8 @@ export class ViewPlayerComponent implements OnInit {
     }, error => {
       this.alertify.error('Error getting league');
     });
-
     this.playerId = this.transferService.getData();
-    console.log('value: ' + this.playerId);
+
     this.playerService.playerForPlayerProfileById(this.playerId).subscribe(result => {
       this.detailedPlayer = result;
       this.imageSrc = 'https://nba-players.herokuapp.com/players/' + this.detailedPlayer.surname + '/' + this.detailedPlayer.firstName;
@@ -243,7 +242,7 @@ export class ViewPlayerComponent implements OnInit {
 
   getTotalRebAverageForCareer(stats: CareerStats) {
     const totalRebs = stats.orebsStats + stats.drebsStats;
-    const value = (totalRebs / this.detailedPlayer.gamesStats);
+    const value = (totalRebs / stats.gamesStats);
     const display = value.toFixed(1);
     return display;
   }
@@ -473,7 +472,7 @@ export class ViewPlayerComponent implements OnInit {
 
   getPlayoffTotalRebAverageForCareer(stats: CareerStats) {
     const totalRebs = stats.playoffOrebsStats + stats.playoffDrebsStats;
-    const value = (totalRebs / this.detailedPlayer.playoffGamesStats);
+    const value = (totalRebs / stats.playoffGamesStats);
     const display = value.toFixed(1);
     return display;
   }
