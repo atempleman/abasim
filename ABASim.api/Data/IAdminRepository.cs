@@ -66,5 +66,7 @@ namespace ABASim.api.Data
          Task<bool> RolloverLeague();
 
          Task<bool> ResetLeague();
+
+         Task<bool> GenerateInitialSalaryCaps();
     }
 }

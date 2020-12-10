@@ -220,5 +220,12 @@ namespace ABASim.api.Controllers
             var result = await _repo.ResetLeague();
             return result;
         }
+
+        [HttpGet("generateinitialsalarycaps")]
+        public async Task<bool> GenerateInitialSalaryCaps()
+        {
+            var result = await _repo.GenerateInitialSalaryCaps();
+            return result;
+        }
     }
 }

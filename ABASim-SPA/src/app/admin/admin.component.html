@@ -93,11 +93,27 @@
 						</div>
 					</div>
 				</div>
+
+				<!-- STATE 6 -->
+				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;"
+					*ngIf="this.league?.stateId == 6">
+					<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+							class="header-card ml-3"><strong>Run Preseason Day</strong></span></div>
+					<div class="card-body">
+						<p class="card-text">If all games are run, proceed to the next day.</p>
+						<div style="text-align: right;">
+							<button type="button" class="btn btn-link text-left"
+								(click)="openModal(completepreseasondays, 2)">Complete Day</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
+		
 		<div class="row">
 
 		</div>
+
 		<div class="row">
 			<h4 class="display centreheading">Super User Functions</h4>
 		</div>
@@ -218,6 +234,19 @@
 					<div style="text-align: right;">
 						<button type="button" class="btn btn-link text-left"
 							(click)="openModal(generatecontracts, 9)">Generate</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Generate Initial Team Salary Caps -->
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
+				<div class="card-header"><i class="fa fa-file-contract"></i><span
+						class="header-card ml-3"><strong>Initial Team Salary Caps</strong></span></div>
+				<div class="card-body">
+					<p class="card-text">Temporary tool to generate initial team salary caps while not implmented.</p>
+					<div style="text-align: right;">
+						<button type="button" class="btn btn-link text-left"
+							(click)="openModal(generatesalarycaps, 10)">Generate</button>
 					</div>
 				</div>
 			</div>
@@ -424,6 +453,23 @@
 	</form>
 </ng-template>
 
+<!-- Generate Initial Draft Contracts Modal -->
+<ng-template #generatesalarycaps>
+	<div class="modal-header">
+		<h4 class="modal-title">Generate Salary Caps</h4>
+		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #draftlotteryForm (ngSubmit)="generateSalaryCaps()">
+		<div class="modal-body">
+			<p>Generate Initial Team Salary Caps</p>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary">Generate</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		</div>
+	</form>
+</ng-template>
+
 <!-- Auto Pick Test Modal -->
 <ng-template #autopicktest>
 	<div class="modal-header">
@@ -469,6 +515,21 @@
 	</form>
 </ng-template>
 
+<!-- Run Preseason Day -->
+<ng-template #completepreseasondays>
+	<div class="modal-header">
+		<h4 class="modal-title">Run Preseason Day</h4>
+		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<div class="modal-body">
+		<p>Move to the next day of the preseason. This can only be done once all of the days games have been run.</p>
+		<p>To run games, click on the run option for games on the Dashboard.</p>
+	</div>
+	<div class="modal-footer form-group text-center">
+		<button type="submit" class="btn btn-primary" *ngIf="this.gamesAllRun == 1 && this.run == 0" (click)="confirmRollOverDay()">Move to next day</button>
+		<button type="button" class="btn btn-danger" (click)="modalRef.hide()">No</button>
+	</div>
+</ng-template>
 
 
 

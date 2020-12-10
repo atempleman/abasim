@@ -187,8 +187,6 @@ export class AdminComponent implements OnInit {
     this.modalRef = this.modalService.show(template);
   }
 
-  
-
   beginPlayoffs() {
     this.adminService.beginPlayoffs().subscribe(result => {
 
@@ -356,8 +354,6 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  
-
   runDraftPicks() {
     this.adminService.runTeamDraftPicksSetup().subscribe(result => {
 
@@ -376,6 +372,17 @@ export class AdminComponent implements OnInit {
       this.alertify.error('Error generating contracts');
     }, () => {
       this.alertify.success('Contracts generated');
+      this.modalRef.hide();
+    });
+  }
+
+  generateSalaryCaps() {
+    this.adminService.generateInitialSalaryCaps().subscribe(result => {
+
+    }, error => {
+      this.alertify.error('Error generating salary caps');
+    }, () => {
+      this.alertify.success('Salary caps updated');
       this.modalRef.hide();
     });
   }

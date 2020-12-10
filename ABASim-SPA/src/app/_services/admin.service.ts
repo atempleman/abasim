@@ -66,6 +66,10 @@ export class AdminService {
     return this.http.get<boolean>(this.baseUrl + 'generateinitialcontracts');
   }
 
+  generateInitialSalaryCaps() {
+    return this.http.get<boolean>(this.baseUrl + 'generateinitialsalarycaps');
+  }
+
   generateAutoPicks() {
     return this.http.get<boolean>(this.baseUrl + 'testautopickordering');
   }

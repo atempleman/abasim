@@ -467,11 +467,13 @@ namespace ABASim.api.Data
                 }
 
             }
-            else if (league.StateId == 6)
-            {
+            // else if (league.StateId == 6)
+            // {
                 // Preseaon - just rollover day
-                league.Day = league.Day + 1;
-            }
+                // league.Day = league.Day + 1;
+            // }
+
+            league.Day = league.Day + 1;
 
             // Need to do the free agency checks here - TODO
             await FreeAgentDecisionMaking();
@@ -2032,63 +2034,7 @@ namespace ABASim.api.Data
                         break;
                 }
 
-                int yearTwo = 0;
-                int twoGuarenteed = 0;
-                if (years >= 2)
-                {
-                    yearTwo = amount;
-                    twoGuarenteed = 1;
-                }
-
-                int yearThree = 0;
-                int threeGuarenteed = 0;
-                if (years >= 3)
-                {
-                    yearThree = amount;
-                    threeGuarenteed = 1;
-                }
-
-                int yearFour = 0;
-                int fourGuarenteed = 0;
-                if (years >= 4)
-                {
-                    yearFour = amount;
-                    fourGuarenteed = 1;
-                }
-
-                int yearFive = 0;
-                int fiveGuarenteed = 0;
-                if (years >= 5)
-                {
-                    yearFive = amount;
-                    fiveGuarenteed = 1;
-                }
-
-                int teamOption = 0;
-                if (years > 1)
-                {
-                    teamOption = 1;
-                }
-
-                // InitialDraftContract pc = new InitialDraftContract
-                // {
-                //     PlayerId = dp.PlayerId,
-                //     TeamId = dp.TeamId,
-                //     YearOne = amount,
-                //     GuranteedOne = 1,
-                //     YearTwo = yearTwo,
-                //     GuranteedTwo = twoGuarenteed,
-                //     YearThree = yearThree,
-                //     GuranteedThree = threeGuarenteed,
-                //     YearFour = yearFour,
-                //     GuranteedFour = fourGuarenteed,
-                //     YearFive = yearFive,
-                //     GuranteedFive = fiveGuarenteed,
-                //     PlayerOption = 0,
-                //     TeamOption = teamOption
-                // };
-
-                 InitialDraftContract pc = new InitialDraftContract
+                InitialDraftContract pc = new InitialDraftContract
                 {
                     Round = dp.Round,
                     Pick = dp.Pick,
@@ -2856,6 +2802,26 @@ namespace ABASim.api.Data
                 stand.Wins = 0;
 
                 _context.Standings.Update(stand);
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> GenerateInitialSalaryCaps()
+        {
+            var teams = await _context.Teams.ToListAsync();
+            foreach (var team in teams)
+            {
+                int teamSalary = 0;
+                var contracts = await _context.PlayerContracts.Where(x => x.TeamId == team.Id).ToListAsync();
+                foreach (var contract in contracts)
+                {
+                    teamSalary = teamSalary + contract.YearOne;
+                }
+
+                // Now update the TeamSalary Record
+                var salaryCap = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == team.Id);
+                salaryCap.CurrentCapAmount = teamSalary;
+                _context.TeamSalaryCaps.Update(salaryCap);
             }
             return await _context.SaveChangesAsync() > 0;
         }

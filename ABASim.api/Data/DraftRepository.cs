@@ -19,7 +19,7 @@ namespace ABASim.api.Data
         public async Task<bool> AddDraftRanking(AddDraftRankingDto draftRanking)
         {
             var teamsDraftRankings = await _context.DraftRankings.Where(x => x.TeamId == draftRanking.TeamId).ToListAsync();
-            DraftRanking newRanking = new DraftRanking 
+            DraftRanking newRanking = new DraftRanking
             {
                 TeamId = draftRanking.TeamId,
                 PlayerId = draftRanking.PlayerId,
@@ -33,8 +33,8 @@ namespace ABASim.api.Data
         {
             List<DraftPlayerDto> draftboardPlayers = new List<DraftPlayerDto>();
             var draftRankings = await _context.DraftRankings.Where(x => x.TeamId == teamId).OrderBy(x => x.Rank).ToListAsync();
-	        
-            foreach(var player in draftRankings)
+
+            foreach (var player in draftRankings)
             {
                 var playerRecord = await _context.Players.FirstOrDefaultAsync(x => x.Id == player.PlayerId);
                 var playerGrades = await _context.PlayerGradings.FirstOrDefaultAsync(x => x.PlayerId == player.PlayerId);
@@ -69,8 +69,8 @@ namespace ABASim.api.Data
         public async Task<bool> RemoveDraftRanking(RemoveDraftRankingDto draftRanking)
         {
             var draftRankingRecord = await _context.DraftRankings.FirstOrDefaultAsync(x => x.TeamId == draftRanking.TeamId && x.PlayerId == draftRanking.PlayerId);
-	        _context.Remove(draftRankingRecord);
-	        return await _context.SaveChangesAsync() > 0;
+            _context.Remove(draftRankingRecord);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> MovePlayerRankingUp(AddDraftRankingDto ranking)
@@ -120,7 +120,7 @@ namespace ABASim.api.Data
                 DateTimeOfLastPick = dateAndTime
             };
             await _context.AddAsync(draftTracker);
-            
+
             // Now the draft record is saved - now need to update the league state
             var league = await _context.Leagues.FirstOrDefaultAsync();
             league.StateId = 4;
@@ -151,7 +151,8 @@ namespace ABASim.api.Data
             playerTeam.TeamId = draftPick.TeamId;
             _context.Update(playerTeam);
 
-            var teamRoser = new Roster {
+            var teamRoser = new Roster
+            {
                 PlayerId = draftPick.PlayerId,
                 TeamId = draftPick.TeamId
             };
@@ -173,22 +174,29 @@ namespace ABASim.api.Data
             int gFour = 0;
             int gFive = 0;
 
-            if (contractDetails.Years == 1) {
+            if (contractDetails.Years == 1)
+            {
                 yearOne = contractDetails.SalaryAmount;
                 gOne = 1;
-            } else if (contractDetails.Years == 2) {
+            }
+            else if (contractDetails.Years == 2)
+            {
                 yearOne = contractDetails.SalaryAmount;
                 gOne = 1;
                 yearTwo = contractDetails.SalaryAmount;
                 gTwo = 1;
-            } else if (contractDetails.Years == 3) {
+            }
+            else if (contractDetails.Years == 3)
+            {
                 yearOne = contractDetails.SalaryAmount;
                 gOne = 1;
                 yearTwo = contractDetails.SalaryAmount;
                 gTwo = 1;
                 yearThree = contractDetails.SalaryAmount;
                 gThree = 1;
-            } else if (contractDetails.Years == 4) {
+            }
+            else if (contractDetails.Years == 4)
+            {
                 yearOne = contractDetails.SalaryAmount;
                 gOne = 1;
                 yearTwo = contractDetails.SalaryAmount;
@@ -197,7 +205,9 @@ namespace ABASim.api.Data
                 gThree = 1;
                 yearFour = contractDetails.SalaryAmount;
                 gFour = 1;
-            } else if (contractDetails.Years == 5) {
+            }
+            else if (contractDetails.Years == 5)
+            {
                 yearOne = contractDetails.SalaryAmount;
                 gOne = 1;
                 yearTwo = contractDetails.SalaryAmount;
@@ -225,16 +235,22 @@ namespace ABASim.api.Data
                 YearFive = yearFive,
                 GuranteedFive = gFive
             };
-            await _context.AddAsync(pc);            
+            await _context.AddAsync(pc);
 
-            
-            if (tracker.Pick < 30) {
+
+            if (tracker.Pick < 30)
+            {
                 tracker.Pick++;
-            } else {
-                if (tracker.Round < 13) {
+            }
+            else
+            {
+                if (tracker.Round < 13)
+                {
                     tracker.Pick = 1;
                     tracker.Round++;
-                } else if (tracker.Round == 13 && tracker.Pick == 30) {
+                }
+                else if (tracker.Round == 13 && tracker.Pick == 30)
+                {
                     // Draft is finished
                     var leagueState = await _context.Leagues.FirstOrDefaultAsync();
                     leagueState.StateId = 5;
@@ -247,6 +263,23 @@ namespace ABASim.api.Data
                     {
                         up.TeamId = 0;
                         _context.PlayerTeams.Update(up);
+                    }
+
+                    // Update all teams salary caps
+                    var teams = await _context.Teams.ToListAsync();
+                    foreach (var team in teams)
+                    {
+                        int teamSalary = 0;
+                        var contracts = await _context.PlayerContracts.Where(x => x.TeamId == team.Id).ToListAsync();
+                        foreach (var contract in contracts)
+                        {
+                            teamSalary = teamSalary + contract.YearOne;
+                        }
+
+                        // Now update the TeamSalary Record
+                        var salaryCap = await _context.TeamSalaryCaps.FirstOrDefaultAsync(x => x.TeamId == team.Id);
+                        salaryCap.CurrentCapAmount = teamSalary;
+                        _context.TeamSalaryCaps.Update(salaryCap);
                     }
                 }
             }
@@ -270,7 +303,8 @@ namespace ABASim.api.Data
 
                 foreach (var record in teamDB)
                 {
-                    if (record.Rank > rank) {
+                    if (record.Rank > rank)
+                    {
                         record.Rank--;
                         _context.Update(record);
                     }
@@ -291,21 +325,25 @@ namespace ABASim.api.Data
             var teamId = draftSelection.TeamId;
 
             // Need to check whether the team has set a draft board
-            var draftboard = await _context.DraftRankings.Where(x => x.TeamId == teamId) .OrderBy(x => x.Rank).ToListAsync();
+            var draftboard = await _context.DraftRankings.Where(x => x.TeamId == teamId).OrderBy(x => x.Rank).ToListAsync();
 
-            if (draftboard.Count > 0) {
+            if (draftboard.Count > 0)
+            {
                 foreach (var db in draftboard)
                 {
                     var playerTeamForPlayerId = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == db.PlayerId);
 
-                    if (playerTeamForPlayerId.TeamId == 31) {
+                    if (playerTeamForPlayerId.TeamId == 31)
+                    {
                         // Then this is the player that we will draft
                         draftPick.TeamId = teamId;
                         draftPick.PlayerId = playerTeamForPlayerId.PlayerId;
                         return await this.MakeDraftPick(draftPick);
                     }
                 }
-            } else {
+            }
+            else
+            {
                 // Now need to get the auto pick order
                 var autopick = await _context.AutoPickOrders.OrderByDescending(x => x.Score).FirstOrDefaultAsync();
                 draftPick.TeamId = teamId;
@@ -322,7 +360,7 @@ namespace ABASim.api.Data
             var initalDraftPicks = await _context.InitialDrafts.Where(x => x.Round == page).OrderBy(x => x.Pick).ToListAsync();
             var teams = await _context.Teams.ToListAsync();
 
-            foreach(var dp in initalDraftPicks)
+            foreach (var dp in initalDraftPicks)
             {
                 var currentTeam = teams.FirstOrDefault(x => x.Id == dp.TeamId);
 
@@ -330,7 +368,7 @@ namespace ABASim.api.Data
                 var playerName = "";
                 if (player != null)
                 {
-                    playerName =  player.FirstName + " " + player.Surname;
+                    playerName = player.FirstName + " " + player.Surname;
                 }
 
                 DraftPickDto dto = new DraftPickDto
@@ -358,24 +396,35 @@ namespace ABASim.api.Data
             int pickNumber = draftTracker.Pick;
             int roundNumber = draftTracker.Round;
 
-            if (pickSpot == 0) {
+            if (pickSpot == 0)
+            {
                 // current pick
                 pickDto.Pick = pickNumber;
-            } else if (pickSpot == 1) {
+            }
+            else if (pickSpot == 1)
+            {
                 // next pick
-                if (pickNumber == 30) {
+                if (pickNumber == 30)
+                {
                     roundNumber = roundNumber + 1;
                     pickDto.Pick = 30;
-                } else {
+                }
+                else
+                {
                     pickDto.Pick = pickNumber + 1;
                 }
-            } else if (pickSpot == -1) {
+            }
+            else if (pickSpot == -1)
+            {
                 // previous pick
-                if (pickNumber == 1) {
+                if (pickNumber == 1)
+                {
                     roundNumber = roundNumber - 1;
                     pickDto.Pick = 30;
-                } else {
-                    pickDto.Pick = draftTracker.Pick - 1;    
+                }
+                else
+                {
+                    pickDto.Pick = draftTracker.Pick - 1;
                 }
             }
 
@@ -386,10 +435,13 @@ namespace ABASim.api.Data
             var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == pick.TeamId);
             pickDto.TeamMascot = team.Mascot;
 
-            if (pickSpot == -1) {
+            if (pickSpot == -1)
+            {
                 var player = await _context.Players.FirstOrDefaultAsync(x => x.Id == pick.PlayerId);
                 pickDto.PlayerName = player.FirstName + " " + player.Surname;
-            } else {
+            }
+            else
+            {
                 pickDto.PlayerName = "";
             }
 
@@ -406,7 +458,8 @@ namespace ABASim.api.Data
         public async Task<IEnumerable<InitialPickSalaryDto>> GetInitialDraftSalaryDetails()
         {
             List<InitialPickSalaryDto> details = new List<InitialPickSalaryDto>();
-            for (int i = 1; i < 14; i++) {
+            for (int i = 1; i < 14; i++)
+            {
                 var info1 = await _context.InitialDraftContracts.FirstOrDefaultAsync(x => x.Round == i && x.Pick == 5);
                 var info2 = await _context.InitialDraftContracts.FirstOrDefaultAsync(x => x.Round == i && x.Pick == 15);
                 var info3 = await _context.InitialDraftContracts.FirstOrDefaultAsync(x => x.Round == i && x.Pick == 25);
