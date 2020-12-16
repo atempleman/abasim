@@ -276,9 +276,6 @@ export class FreeagentsComponent implements OnInit {
   }
 
   offerContract() {
-    console.log('available cap space: ' + this.availableCapSpace);
-    console.log('contract year 1: ' + this.year1Amount);
-    console.log('contract year 2: ' + this.year2Amount);
     if (this.year1Amount < 1000000) {
       this.alertify.error('Error in offer - Minimum contract is $1,000,000 per season');
     } else if (this.year2Amount !== 0 && this.year2Amount < 1000000) {
@@ -364,8 +361,6 @@ export class FreeagentsComponent implements OnInit {
           contractId: 0
         };
 
-        console.log('test multi');
-        console.log(contractOffer);
         this.teamService.saveContractOffer(contractOffer).subscribe(result => {
 
         }, error => {
@@ -387,6 +382,9 @@ export class FreeagentsComponent implements OnInit {
           this.guarenteed3 = 0;
           this.guarenteed4 = 0;
           this.guarenteed5 = 0;
+
+          // Need to update the displayed cap space
+          this.GetSalaryCapDetails();
         });
       }
     }

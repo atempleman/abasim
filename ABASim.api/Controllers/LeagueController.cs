@@ -30,7 +30,8 @@ namespace ABASim.api.Controllers
                 Id = league.Id,
                 StateId = league.StateId,
                 Day = league.Day,
-                State = leagueState.State
+                State = leagueState.State,
+                Year = league.Year
             };
 
             return Ok(leagueDto);

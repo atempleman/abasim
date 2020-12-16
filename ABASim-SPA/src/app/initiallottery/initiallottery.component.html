@@ -1,5 +1,6 @@
 <div class="jumbotron">
-	<h3 class="display">Draft Lottery</h3>
+  <h3 class="display">Draft Lottery</h3>
+  <p>Season #{{ this.league?.year }}</p>
 	<span class="badge badge-danger"
 		*ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
 	<span class="badge badge-info"

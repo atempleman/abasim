@@ -1,5 +1,6 @@
 {
     "appService.preDeployTask": "publish-release",
     "appService.deploySubpath": "ABASim.api\\bin\\Release\\netcoreapp3.1\\publish",
-    "appService.defaultWebAppToDeploy": "/subscriptions/de884fa4-f23a-4468-b359-a3a535617c39/resourceGroups/abasim/providers/Microsoft.Web/sites/abasim"
+    "appService.defaultWebAppToDeploy": "/subscriptions/de884fa4-f23a-4468-b359-a3a535617c39/resourceGroups/abasim/providers/Microsoft.Web/sites/abasim",
+    "C_Cpp.intelliSenseEngineFallback": "Enabled"
 }

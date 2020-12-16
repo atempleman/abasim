@@ -1308,15 +1308,21 @@ namespace ABASim.api.Data
 
             if (faDecision == null)
             {
+                // NEdd to update this to have the actual day # to decide on
                 int daysToDecide = 0;
                 if (league.StateId == 7)
                 {
-                    daysToDecide = 2;
+                    daysToDecide = league.Day + 2;
                 }
                 else if (league.StateId == 15)
                 {
-                    daysToDecide = 3;
+                    daysToDecide = league.Day + 3;
                 }
+                else 
+                {
+                    daysToDecide = league.Day + 2;
+                }
+
                 // Need to create the Free Agency Decision record
                 FreeAgentDecision freeAgentDecision = new FreeAgentDecision
                 {

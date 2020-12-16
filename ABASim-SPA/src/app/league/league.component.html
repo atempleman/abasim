@@ -1,5 +1,6 @@
 <div class="jumbotron">
 	<h3 class="display">LEAGUE</h3>
+	<p>Season #{{ this.league?.year }}</p>
 	<span class="badge badge-danger"
 		*ngIf="this.league?.stateId == 1 || this.league?.stateId == 14">{{ this.league?.state }}</span>
 	<span class="badge badge-info"
@@ -90,7 +91,7 @@
 				</div>
 			</div>
 
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId > 5">
+			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.year > 1">
 				<div class="card-header"><i class="fa fa-suitcase fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>Retired Players</strong></span></div>
 				<div class="card-body">

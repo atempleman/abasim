@@ -9,5 +9,7 @@ namespace ABASim.api.Dtos
         public int Day { get; set; }
 
         public string State { get; set; }
+
+        public int Year { get; set; }
     }
 }

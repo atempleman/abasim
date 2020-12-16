@@ -3,4 +3,5 @@ export interface League {
     stateId: number;
     day: number;
     state: string;
+    year: number;
 }
