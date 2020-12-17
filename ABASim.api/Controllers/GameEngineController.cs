@@ -1430,8 +1430,8 @@ namespace ABASim.api.Controllers
                             timeCounter = timeCounter + 1;
                             StaminaUpdates(1);
                             UpdateTimeInBoxScores(1);
-                            commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                            PlayByPlayTracker(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                            // commentaryData.Add(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                            // PlayByPlayTracker(comm.GetHoldBallCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                             break;
                         default:
                             break;
@@ -2327,8 +2327,8 @@ namespace ABASim.api.Controllers
                 StaminaUpdates(timeValue);
 
                 // COMMENTARY
-                commentaryData.Add(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                PlayByPlayTracker(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+                // commentaryData.Add(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                // PlayByPlayTracker(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                 // Console.WriteLine(comm.GetPassCommentary(passer, receiver, _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
             }
         }
@@ -8197,7 +8197,8 @@ namespace ABASim.api.Controllers
                                 // Add the commentary here
                                 string outPlayer = p.FirstName + " " + p.Surname;
                                 string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                             }
                         }
                         else
@@ -8210,7 +8211,8 @@ namespace ABASim.api.Controllers
                             // Add the commentary here
                             string outPlayer = p.FirstName + " " + p.Surname;
                             string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                         }
                     }
                 }
@@ -8273,7 +8275,8 @@ namespace ABASim.api.Controllers
 
                                 string outPlayer = p.FirstName + " " + p.Surname;
                                 string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                             }
                         }
                         else
@@ -8286,7 +8289,8 @@ namespace ABASim.api.Controllers
 
                             string outPlayer = p.FirstName + " " + p.Surname;
                             string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                            commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                            PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                         }
                     }
                 }
@@ -8904,7 +8908,8 @@ namespace ABASim.api.Controllers
                         // Add the commentary here
                         string outPlayer = p.FirstName + " " + p.Surname;
                         string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                     }
                     // else we continue on with this player on
                 }
@@ -8923,7 +8928,8 @@ namespace ABASim.api.Controllers
                         // Add the commentary here
                         string outPlayer = p.FirstName + " " + p.Surname;
                         string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                     }
                     else
                     {
@@ -8943,7 +8949,8 @@ namespace ABASim.api.Controllers
                                 // Add the commentary here
                                 string outPlayer = p.FirstName + " " + p.Surname;
                                 string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                             }
                             // else we continue on with this player on
                         }
@@ -8962,7 +8969,8 @@ namespace ABASim.api.Controllers
                                 // Add the commentary here
                                 string outPlayer = p.FirstName + " " + p.Surname;
                                 string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 0);
                             }
                             // else we continue on with this player on
                         }
@@ -9028,7 +9036,8 @@ namespace ABASim.api.Controllers
                         // Add the commentary here
                         string outPlayer = p.FirstName + " " + p.Surname;
                         string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     }
                     // else we continue on with this player on
                 }
@@ -9047,7 +9056,8 @@ namespace ABASim.api.Controllers
                         // Add the commentary here
                         string outPlayer = p.FirstName + " " + p.Surname;
                         string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                        commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                     }
                     else
                     {
@@ -9067,7 +9077,8 @@ namespace ABASim.api.Controllers
                                 // Add the commentary here
                                 string outPlayer = p.FirstName + " " + p.Surname;
                                 string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                             }
                             // else we continue on with this player on
                         }
@@ -9086,7 +9097,8 @@ namespace ABASim.api.Controllers
                                 // Add the commentary here
                                 string outPlayer = p.FirstName + " " + p.Surname;
                                 string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
-                                commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+                                PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
                             }
                             // else we continue on with this player on
                         }

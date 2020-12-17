@@ -609,7 +609,6 @@ namespace ABASim.api.Data
                 }
                 else
                 {
-
                     // we have only one offer - so the player will sign on
                     acceptedOffer = offers.FirstOrDefault();
                 }
@@ -646,6 +645,10 @@ namespace ABASim.api.Data
                             };
                             await _context.AddAsync(contract);
 
+                            var pt = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+                            pt.TeamId = acceptedOffer.TeamId;
+                            _context.Update(pt);
+
                             // Now add the player to the team roster
                             Roster roster = new Roster
                             {
@@ -653,10 +656,6 @@ namespace ABASim.api.Data
                                 PlayerId = playerId
                             };
                             await _context.AddAsync(roster);
-
-                            var pt = await _context.PlayerTeams.FirstOrDefaultAsync(x => x.PlayerId == playerId);
-                            pt.TeamId = acceptedOffer.TeamId;
-                            await _context.AddAsync(pt);
 
                             // Now need to record a transaction
                             Transaction trans = new Transaction
