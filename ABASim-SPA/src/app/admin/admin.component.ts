@@ -124,6 +124,17 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  beginSeason() {
+    this.adminService.updateLeagueStatus(7).subscribe(result => {
+    }, error => {
+      this.alertify.error('Error saving league status');
+    }, () => {
+      this.alertify.success('League Status updated.');
+      this.modalRef.hide();
+      this.league.stateId = 7;
+    });
+  }
+
 
   //#region Super Admin Functions
 

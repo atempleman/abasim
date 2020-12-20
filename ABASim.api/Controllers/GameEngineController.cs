@@ -1010,7 +1010,7 @@ namespace ABASim.api.Controllers
                 {
                     case 1:
                         onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) || onCourt == 0)
                         {
                             awayPG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1021,7 +1021,7 @@ namespace ABASim.api.Controllers
                             // Now need to check the next tier
                             // ad2 = _awayDepth.FindAll(x => x.Depth == 2);
                             onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
-                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) || onCourt == 0)
                             {
                                 awayPG = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
                                 awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
@@ -1042,7 +1042,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 2:
                         onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) || onCourt == 0)
                         {
                             awaySG = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1051,7 +1051,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
-                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) || onCourt == 0)
                             {
                                 awaySG = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
                                 awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
@@ -1072,7 +1072,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 3:
                         onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) || onCourt == 0)
                         {
                             awaySF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1081,7 +1081,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
-                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) || onCourt == 0)
                             {
                                 awaySF = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
                                 awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
@@ -1103,7 +1103,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 4:
                         onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) || onCourt == 0)
                         {
                             awayPF = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1112,7 +1112,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
-                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) || onCourt == 0)
                             {
                                 awayPF = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
                                 awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
@@ -1134,7 +1134,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 5:
                         onCourt = CheckIfPlayerIsOnCourt(1, ad[i].PlayerId);
-                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) && onCourt == 0)
+                        if (!_awayInjuries.Exists(x => x.PlayerId == ad[i].PlayerId) || onCourt == 0)
                         {
                             awayC = _awayPlayers.Find(x => x.Id == ad[i].PlayerId);
                             awayCRatings = _awayRatings.Find(x => x.PlayerId == ad[i].PlayerId);
@@ -1143,7 +1143,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(1, ad2[i].PlayerId);
-                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) && onCourt == 0)
+                            if (!_awayInjuries.Exists(x => x.PlayerId == ad2[i].PlayerId) || onCourt == 0)
                             {
                                 awayC = _awayPlayers.Find(x => x.Id == ad2[i].PlayerId);
                                 awayCRatings = _awayRatings.Find(x => x.PlayerId == ad2[i].PlayerId);
@@ -1176,7 +1176,7 @@ namespace ABASim.api.Controllers
                 {
                     case 1:
                         onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) || onCourt == 0)
                         {
                             homePG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homePGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1185,7 +1185,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
-                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) || onCourt == 0)
                             {
                                 homePG = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
                                 homePGRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
@@ -1207,7 +1207,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 2:
                         onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) || onCourt == 0)
                         {
                             homeSG = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1216,7 +1216,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
-                            if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) || onCourt == 0)
                             {
                                 homeSG = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
                                 homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
@@ -1238,7 +1238,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 3:
                         onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) || onCourt == 0)
                         {
                             homeSF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1247,7 +1247,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
-                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) || onCourt == 0)
                             {
                                 homeSF = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
                                 homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
@@ -1269,7 +1269,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 4:
                         onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) || onCourt == 0)
                         {
                             homePF = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homePFRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1278,7 +1278,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
-                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) || onCourt == 0)
                             {
                                 homePF = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
                                 homePFRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
@@ -1300,7 +1300,7 @@ namespace ABASim.api.Controllers
                         break;
                     case 5:
                         onCourt = CheckIfPlayerIsOnCourt(0, hd[i].PlayerId);
-                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) && onCourt == 0)
+                        if (!_homeInjuries.Exists(x => x.PlayerId == hd[i].PlayerId) || onCourt == 0)
                         {
                             homeC = _homePlayers.Find(x => x.Id == hd[i].PlayerId);
                             homeCRatings = _homeRatings.Find(x => x.PlayerId == hd[i].PlayerId);
@@ -1309,7 +1309,7 @@ namespace ABASim.api.Controllers
                         else
                         {
                             onCourt = CheckIfPlayerIsOnCourt(0, hd2[i].PlayerId);
-                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) && onCourt == 0)
+                            if (!_homeInjuries.Exists(x => x.PlayerId == hd2[i].PlayerId) || onCourt == 0)
                             {
                                 homeC = _homePlayers.Find(x => x.Id == hd2[i].PlayerId);
                                 homeCRatings = _homeRatings.Find(x => x.PlayerId == hd2[i].PlayerId);
@@ -1700,7 +1700,7 @@ namespace ABASim.api.Controllers
                 {
                     // The player has potentially fouled
                     int check = _random.Next(1, 101);
-                    if (check < 45)
+                    if (check < 35)
                     {
                         // The player has turned the ball over
                         decision = 5;
@@ -2385,8 +2385,10 @@ namespace ABASim.api.Controllers
                 }
                 int drpmValue = GetDrpmValue(defence);
 
-                result = result - orpmValue + drpmValue;
+                result = result - ((orpmValue + drpmValue) / 2);
                 result = result + _endGameResultIncrease;
+
+                result = result - 20;
 
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
@@ -2634,8 +2636,10 @@ namespace ABASim.api.Controllers
                 }
                 int drpmValue = GetDrpmValue(defence);
 
-                result = result - orpmValue + drpmValue;
+                // result = result - orpmValue + drpmValue;
+                result = result - ((orpmValue + drpmValue) / 2);
                 result = result + _endGameResultIncrease;
+                result = result - 10;
 
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
@@ -3442,7 +3446,7 @@ namespace ABASim.api.Controllers
                     PlayerRating checking = awayRatingsSorted[i];
                     int stealRating = checking.StealRating + stealStrategy;
                     int rating = StaminaEffect(checking.PlayerId, 1, stealRating);
-                    int result = _random.Next(1, (3501 - stealBonus)); // This is times 5 to account for all 5 players pn the court
+                    int result = _random.Next(1, (4201 - stealBonus)); // This is times 5 to account for all 5 players pn the court
 
                     if (result <= rating)
                     {
@@ -3519,7 +3523,7 @@ namespace ABASim.api.Controllers
                     PlayerRating checking = homeRatingsSorted[i];
                     int stealRating = checking.StealRating + stealStrategy;
                     int rating = StaminaEffect(checking.PlayerId, 0, stealRating);
-                    int result = _random.Next(1, (3501 - stealBonus));
+                    int result = _random.Next(1, (4201 - stealBonus));
 
                     if (result <= rating)
                     {

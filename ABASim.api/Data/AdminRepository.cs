@@ -496,7 +496,7 @@ namespace ABASim.api.Data
             var league = await _context.Leagues.FirstOrDefaultAsync();
             int leageState = league.StateId;
 
-            var freeAgentDecisions = await _context.FreeAgencyDecisions.Where(x => x.DayToDecide == (league.Day + 1)).ToListAsync();
+            var freeAgentDecisions = await _context.FreeAgencyDecisions.Where(x => x.DayToDecide <= (league.Day + 1)).ToListAsync();
 
             foreach (var fa in freeAgentDecisions)
             {
@@ -723,8 +723,7 @@ namespace ABASim.api.Data
 
                             // Now to remove the free agency decision
                             _context.Remove(fa);
-
-                            return await _context.SaveChangesAsync() > 0;
+                            await _context.SaveChangesAsync();
                         }
                     }
                 }
