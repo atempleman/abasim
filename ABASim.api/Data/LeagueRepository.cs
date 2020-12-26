@@ -1283,7 +1283,9 @@ namespace ABASim.api.Data
                 injuries.Add(dto);
             }
 
-            return injuries;
+            var injuryList = injuries.OrderBy(x => x.TeamName);
+
+            return injuryList;
         }
 
         public async Task<IEnumerable<VotesDto>> GetMvpTopFive()

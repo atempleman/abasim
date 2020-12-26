@@ -194,7 +194,7 @@ namespace ABASim.api.Data
                 // Need to check the injuries and update appropriately
                 await DailyInjuriesUpdate(league.StateId, league.Day);
 
-                league.Day = league.Day + 1;
+                // league.Day = league.Day + 1;
             }
             else if (league.StateId == 8 || league.StateId == 9 || league.StateId == 10 || league.StateId == 11)
             {

@@ -40,7 +40,7 @@ export class PlayerService {
   }
 
   filterPlayers(value: string): Observable<Player[]> {
-    return this.http.get<Player[]>(this.baseUrl + 'filteredplayers/' + value);
+    return this.http.get<Player[]>(this.baseUrl + 'filterplayers/' + value);
   }
 
   getFreeAgents(): Observable<Player[]> {

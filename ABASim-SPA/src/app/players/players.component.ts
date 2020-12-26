@@ -50,12 +50,13 @@ export class PlayersComponent implements OnInit {
     this.spinner.show();
     // this.displayPaging = 1;
     const filter = this.searchForm.value.filter;
-
+    console.log(filter);
     // Need to call service
     this.playerService.filterPlayers(filter).subscribe(result => {
       this.allPlayers = result;
     }, error => {
       this.alertify.error('Error getting filtered players');
+      console.log(error);
       this.spinner.hide();
     }, () => {
       this.spinner.hide();
