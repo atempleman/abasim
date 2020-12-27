@@ -118,7 +118,6 @@ export class DepthchartComponent implements OnInit {
           this.playingRoster.splice(index, 1);
         }
       });
-      console.log('test ash');
       this.getDepthCharts();
     });
   }
@@ -126,7 +125,6 @@ export class DepthchartComponent implements OnInit {
   getDepthCharts() {
     this.teamService.getDepthChartForTeamId(this.team.id).subscribe(result => {
       this.depthCharts = result;
-      console.log(this.depthCharts);
     }, error => {
       this.alertify.error('Error getting depth charts');
     }, () => {
@@ -266,6 +264,85 @@ export class DepthchartComponent implements OnInit {
           depth: 3
         };
         this.depthCharts.push(dc503);
+      } else {
+        // Set the position depth charts
+        this.depthCharts.forEach(dc => {
+          if (dc.position === 1)
+          {
+            if(dc.depth === 1)
+            {
+              this.pg01Id = dc.playerId;
+            }
+            else if (dc.depth === 2)
+            {
+              this.pg02Id = dc.playerId;
+            }
+            else if (dc.depth === 3)
+            {
+              this.pg03Id = dc.playerId;
+            }
+          }
+          else if (dc.position === 2)
+          {
+            if(dc.depth === 1)
+            {
+              this.sg01Id = dc.playerId;
+            }
+            else if (dc.depth === 2)
+            {
+              this.sg02Id = dc.playerId;
+            }
+            else if (dc.depth === 3)
+            {
+              this.sg03Id = dc.playerId;
+            }
+          }
+          else if (dc.position === 3)
+          {
+            if(dc.depth === 1)
+            {
+              this.sf01Id = dc.playerId;
+            }
+            else if (dc.depth === 2)
+            {
+              this.sf02Id = dc.playerId;
+            }
+            else if (dc.depth === 3)
+            {
+              this.sf03Id = dc.playerId;
+            }
+          }
+          else if (dc.position === 4)
+          {
+            if(dc.depth === 1)
+            {
+              this.pf01Id = dc.playerId;
+            }
+            else if (dc.depth === 2)
+            {
+              this.pf02Id = dc.playerId;
+            }
+            else if (dc.depth === 3)
+            {
+              this.pf03Id = dc.playerId;
+            }
+          }
+          else if (dc.position === 5)
+          {
+            if(dc.depth === 1)
+            {
+              this.c01Id = dc.playerId;
+            }
+            else if (dc.depth === 2)
+            {
+              this.c02Id = dc.playerId;
+            }
+            else if (dc.depth === 3)
+            {
+              this.c03Id = dc.playerId;
+            }
+          }
+        });
       }
       this.rosterSet = 1;
     });
@@ -326,10 +403,6 @@ export class DepthchartComponent implements OnInit {
       }
     }
 
-    console.log(dc);
-    console.log(this.depthCharts);
-    console.log('ash');
-    console.log(this.playingRoster);
     if (isSet === 1 || dc.playerId === 0) {
       return '';
     } else {
@@ -390,11 +463,8 @@ export class DepthchartComponent implements OnInit {
       dc.playerId = pid;
     });
 
-    console.log(this.depthCharts);
-
     // Now call the service passing the array
     this.teamService.saveDepthCharts(this.depthCharts).subscribe(result => {
-      // console.log(result);
     }, error => {
       this.alertify.error('Error saving depth charts');
     }, () => {
