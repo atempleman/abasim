@@ -21,7 +21,7 @@
 	<ngx-spinner [fullScreen]="false" type="ball-spin-fade" size="medium">
 		<p class="loading">Loading Game Data...</p>
 	</ngx-spinner>
-	<div class="card" style="background-color:rgb(22, 24, 100);">
+	<div class="card" [style.background-color]="'rgb(' + primaryColor + ')'">
 		<h4><i class="fa fa-calendar" aria-hidden="true"></i> TODAY'S GAMES</h4>
 		<p class="text-success" *ngIf="this.league?.stateId == 1">Awaiting Users to register and fill the league</p>
 		<p class="text-success" *ngIf="this.league?.stateId == 2">Initial Draft Lottery</p>
@@ -90,23 +90,23 @@
 		<h2 *ngIf="this.league?.stateId == 11 && this.league?.day > 28" class="text-success">The
 			{{ champion.teamname }} {{ champion.mascot }} are the ABA champions!!</h2>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 1">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 1">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
 		<p>Currently the league is taking on user registrations. If you know anyone get them to join the league! Once
 			the league is full, the initial draft lottery will be run. For now use the global chat and scout players
 			under the Players section.</p>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 2">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 2">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
 		<p>The league has now been filled! The draft lottery will be run shortly!</p>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 3">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 3">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
 		<p>The draft lottery has now been run. View the draft order and all things draft related under the draft menu
 			option and don't forget to set your draftboard to cover the auto-picks! The draft will begin soon, exact
 			time and date will be posted in the chat.</p>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 4">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 4">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Draft HQ</h4>
 		<p>Round #{{ this.tracker.round }}</p>
 		<div class="small-card">
@@ -124,18 +124,18 @@
 			</div>
 		</div>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 5">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 5">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> League News</h4>
 		<p>The draft is no complete. Teams can fill out their rosters via Teams. A roster may contain up to 15 players.
 			Teams are required to set their depth charts via the Team section which is required. Teams may also choose
 			to set go to players via the Team section.</p>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 6">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 6">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Preseason</h4>
 		<p>Preseason has now begun. Each team will play 4 games - 1 per day. Now is the time to try and work out your
 			lineups.</p>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 7">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 7">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Regular Season</h4>
 		<p>Regular Season is underway. Ensure your depth charts and tactics are up to do and updated when injuries
 			occur.</p>
@@ -265,7 +265,7 @@
 			</carousel>
 		</div>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 8">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 8">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> First Round of the Playoffs</h4>
 		<p>The playoffs have begun! The first round is underway.</p>
 		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
@@ -275,7 +275,7 @@
 			</ul> 
 		</div>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 9">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 9">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Second Round of the Playoffs</h4>
 		<p>The Conference Semi-Finals are now underway.</p>
 		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
@@ -285,7 +285,7 @@
 			</ul> 
 		</div>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 10">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 10">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Conference Finals</h4>
 		<p>The Conference Finals are now underway.</p>
 		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
@@ -295,7 +295,7 @@
 			</ul> 
 		</div>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 11">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 11">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> ABA Finals</h4>
 		<p>The ABA Finals are now underway.</p>
 		<div class="rowpo ml-3 mt-2" *ngFor="let mu of this.playoffSummaries; let i = index">
@@ -305,12 +305,12 @@
 			</ul> 
 		</div>
 	</div>
-	<div class="card" style="background-color:rgb(12, 126, 120);" *ngIf="this.league?.stateId == 12">
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'" *ngIf="this.league?.stateId == 12">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i>Champions: {{ this.champion.teamname }} {{ this.champion.mascot }}</h4>
 		<p>The {{ this.champion.teamname }} {{ this.champion.mascot }} are the ABA champions! Congratulations.</p>
 	</div>
 
-	<div class="card" style="background-color:rgb(22, 24, 100);" *ngIf="this.league?.stateId > 7">
+	<div class="card" [style.background-color]="'rgb(' + primaryColor + ')'" *ngIf="this.league?.stateId > 7">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Award Winners</h4>
 		<p>The Award Winners for the season have been announced</p>
 		<div class="rowpo ml-3 mt-2">
@@ -320,7 +320,7 @@
 		</div>
 	</div>
 
-	<div class="card" style="background-color:rgb(22, 24, 100);">
+	<div class="card" [style.background-color]="'rgb(' + primaryColor + ')'">
 		<h4><i class="fa fa-commenting-o" aria-hidden="true"></i> GLOBAL CHAT <button class="btn btn-secondary ml-2"
 				(click)="refreshChat()"><i class="fa fa-refresh"></i></button></h4>
 		<p *ngIf="this.chatRecords.length == 0">No chat records exist</p>
@@ -355,7 +355,7 @@
 		</div>
 	</div>
 
-	<div class="card" style="background-color:rgb(12, 126, 120);"
+	<div class="card" [style.background-color]="'rgb(' + secondaryColor + ')'"
 		*ngIf="this.league?.stateId == 6 || this.league?.stateId == 7 || this.league?.stateId == 15">
 		<h4><i class="fa fa-newspaper-o" aria-hidden="true"></i> Yesterday's Transactions</h4>
 		<table *ngIf="this.yesterdaysTransactions?.length > 0">
