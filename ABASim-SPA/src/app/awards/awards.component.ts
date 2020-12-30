@@ -52,12 +52,13 @@ export class AwardsComponent implements OnInit {
 
     this.leagueService.getAllNBATeams().subscribe(result => {
       this.allnbateams = result;
+      console.log(result);
     }, error => {
       this.alertify.error('Error getting All-ABA Teams');
     }, () => {
       this.firstTeam = this.allnbateams.splice(0, 5);
-      this.secondTeam = this.allnbateams.splice(5, 10);
-      this.thirdTeam = this.allnbateams.splice(10, 15);
+      this.secondTeam = this.allnbateams.splice(0, 5);
+      this.thirdTeam = this.allnbateams.splice(0, 5);
     });
   }
 
