@@ -58,6 +58,12 @@ export class ViewPlayerComponent implements OnInit {
       this.imageSrc = 'https://nba-players.herokuapp.com/players/' + this.detailedPlayer.surname + '/' + this.detailedPlayer.firstName;
     }, error => {
       this.alertify.error('Error getting player profile');
+    }, () => {
+      this.teamService.getTeamForTeamName(this.detailedPlayer.teamName).subscribe(result => {
+        this.playersTeam = result;
+      }, error => {
+        this.alertify.error('Error getting players team');
+      });
     });
 
     this.teamService.getInjuryForPlayer(this.playerId).subscribe(result => {
@@ -615,13 +621,7 @@ export class ViewPlayerComponent implements OnInit {
 
   viewTeam() {
     // Need to go a call to get the team id
-    this.teamService.getTeamForTeamName(this.detailedPlayer.teamName).subscribe(result => {
-      this.playersTeam = result;
-    }, error => {
-      this.alertify.error('Error getting players team');
-    }, () => {
-      this.transferService.setData(this.playersTeam.id);
-      this.router.navigate(['/view-team']);
-    });
+    this.transferService.setData(this.playersTeam.id);
+    this.router.navigate(['/view-team']);
   }
 }
