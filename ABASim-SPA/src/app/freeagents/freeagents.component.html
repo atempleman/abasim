@@ -13,9 +13,9 @@
 
 <div class="row ml-5 mr-5">
 	<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngFor="let co of this.contractOffers">
-		<div class="card-header"><i class="fa fa-question-circle fa-2x"></i><span
+		<div class="card-header" [style.background-color]="'rgb(' + primaryColor + ')'"><i class="fa fa-question-circle fa-2x"></i><span
 				class="header-card ml-3"><strong>Contract Offer</strong></span></div>
-		<div class="card-body">
+		<div class="card-body" [style.background-color]="'rgb(' + secondaryColor + ')'">
 			<h5 class="card-text">{{ co.playerName }}</h5>
 			<p>{{ this.GetContractYears(co) }} years, ${{ co.yearOne + co.yearTwo + co.yearThree + co.yearFour + co.yearFive  | number }} total value</p>
 			<div style="text-align: right;">
