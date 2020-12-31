@@ -3053,8 +3053,8 @@ namespace ABASim.api.Controllers
                 int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.DRebRating) + defRebStrategy;
                 int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.DRebRating) + defRebStrategy;
 
-                offensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound;
-                defensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound;
+                offensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 10;
+                defensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound + 10;
 
                 // home team shot
                 int randValue = offensiveRate + defensiveRate;
@@ -3133,12 +3133,29 @@ namespace ABASim.api.Controllers
                         _homeBoxScores[index] = temp;
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
+                    } else {
+                        _playerPossession = -1;
                     }
 
-                    // Commentary for Offensive Rebound
-                    commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
-                    // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    if (_playerPossession != -1)
+                    {
+                        // Commentary for Offensive Rebound
+                        commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                        // Sub Check
+                        // Inbounds
+                        SubstitutionCheck(0);
+                        Inbounds();
+                    }
+                    else
+                    {
+                        // Commentary for Offensive Rebound
+                        commentaryData.Add(comm.GetOffensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetOffensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    }
+                    
                 }
                 else
                 {
@@ -3217,11 +3234,29 @@ namespace ABASim.api.Controllers
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
                     }
+                    else {
+                        _playerPossession = -1;
+                    }
 
-                    // Display Defensive Rebound Commentary
-                    commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
-                    // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    if (_playerPossession != -1)
+                    {
+                        // Display Defensive Rebound Commentary
+                        commentaryData.Add(comm.GetDefensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetDefensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+
+                        // Sub Check
+                        // Inbounds
+                        SubstitutionCheck(0);
+                        Inbounds();
+                    }
+                    else
+                    {
+                        // Display Defensive Rebound Commentary
+                        commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    }
                 }
             }
             else
@@ -3322,12 +3357,28 @@ namespace ABASim.api.Controllers
                         _awayBoxScores[index] = temp;
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
+                    } else {
+                        _playerPossession = -1;
                     }
 
-                    // Commentary for Offensive Rebound
-                    commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
-                    // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    if (_playerPossession != -1)
+                    {
+                        // Commentary for Offensive Rebound
+                        commentaryData.Add(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                        // Sub Check
+                        // Inbounds
+                        SubstitutionCheck(0);
+                        Inbounds();
+                    }
+                    else
+                    {
+                        // Commentary for Offensive Rebound
+                        commentaryData.Add(comm.GetOffensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetOffensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetOffensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    }
                 }
                 else
                 {
@@ -3403,12 +3454,29 @@ namespace ABASim.api.Controllers
                         _homeBoxScores[index] = temp;
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
+                    } else {
+                        _playerPossession = -1;
                     }
 
-                    // Display Defensive Rebound Commentary
-                    commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
-                    // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-                    PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    if (_playerPossession != -1)
+                    {
+                        // Display Defensive Rebound Commentary
+                        commentaryData.Add(comm.GetDefensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetDefensiveTeamReboundCommentary(_time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+
+                        // Sub Check
+                        // Inbounds
+                        SubstitutionCheck(0);
+                        Inbounds();
+                    }
+                    else
+                    {
+                        // Display Defensive Rebound Commentary
+                        commentaryData.Add(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb));
+                        // Console.WriteLine(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+                        PlayByPlayTracker(comm.GetDefensiveReboundCommentary(GetCurrentPlayerFullName(), _time, _quarter, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, commOReb, commDReb), 0);
+                    }
                 }
             }
         }
@@ -3645,7 +3713,7 @@ namespace ABASim.api.Controllers
 
             int result = _random.Next(1, 20);
 
-            if (result < 14)
+            if (result < 13)
             {
                 // Non-Shooting Foul
                 if (_teamPossession == 0)

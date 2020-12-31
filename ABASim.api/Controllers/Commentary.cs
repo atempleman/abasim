@@ -307,6 +307,25 @@ namespace ABASim.api.Controllers
             }
         }
 
+        public string GetOffensiveTeamReboundCommentary(int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int commOReb, int commDReb)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            Random random = new Random();
+            int choice = random.Next(0, 5);
+
+            int commTotal = commDReb + commOReb;
+
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+                return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The rebound has been tipped out of bounds and possession is with " + homeTeamName;
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+                return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The rebound has been tipped out of bounds and possession is with " + awayTeamName;
+            }
+        }
+
         public string GetDefensiveReboundCommentary(string playername, int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int commOReb, int commDReb)
         {
             int minutes = time / 60;
@@ -337,6 +356,25 @@ namespace ABASim.api.Controllers
                     return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm +" A strong box out leads to " + playername + " getting the defensive rebound" + " (off: " + commOReb + ", def: " + commDReb + ")";
                 default:
                     return "Error in defensive rebound commentary";
+            }
+        }
+
+        public string GetDefensiveTeamReboundCommentary(int time, int quarter, int awayScore, int homeScore, int possession, string awayTeamName, string homeTeamName, int commOReb, int commDReb)
+        {
+            int minutes = time / 60;
+            int seconds = time % 60;
+            Random random = new Random();
+            int choice = random.Next(0, 5);
+
+            int commTotal = commDReb + commOReb;
+            
+            string scoreComm = "";
+            if (possession == 0) {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
+                return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The rebound has been tipped out of bounds and possession is with " + homeTeamName;
+            } else {
+                scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+                return "Quarter #" + quarter + " - " + minutes + ":" + seconds + " - " + scoreComm + " The rebound has been tipped out of bounds and possession is with " + awayTeamName;
             }
         }
 
