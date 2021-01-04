@@ -111,7 +111,7 @@ export class DepthchartComponent implements OnInit {
       this.alertify.error('Error getting your roster');
     }, () => {
       this.playingRoster.forEach(element => {
-        const injured = this.teamsInjuries.find(x => x.playerId === element.id);
+        const injured = this.teamsInjuries.find(x => x.playerId === element.id && x.severity > 2);
 
         if (injured) {
           const index = this.playingRoster.indexOf(element, 0);
