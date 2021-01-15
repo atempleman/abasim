@@ -85,9 +85,9 @@ namespace ABASim.api.Controllers
 
             string scoreComm = "";
             if (possession == 0) {
-                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
-            } else {
                 scoreComm = awayTeamName + " " + awayScore + " " + homeTeamName + " " + homeScore + " - ";
+            } else {
+                scoreComm = homeTeamName + " " + homeScore + " " + awayTeamName + " " + awayScore + " - ";
             }
 
             switch (choice)

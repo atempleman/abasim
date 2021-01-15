@@ -1053,9 +1053,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                awayPG = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
-                                awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
-                                awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(1, ad3[i].PlayerId);
+                                injured = _awayInjuries.Exists(x => x.PlayerId == ad3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _awayInjuries.FirstOrDefault(x => x.PlayerId == ad3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    awayPG = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                    awayPGRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                    awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    awayPG = FindPlayerToBeSubbedMandatory(0, 1, 1);
+                                    awayPGRatings = _awayRatings.Find(x => x.PlayerId == awayPG.Id);
+                                    awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == awayPG.Id);
+                                }
                             }
                         }
 
@@ -1101,9 +1122,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                awaySG = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
-                                awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
-                                awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(1, ad3[i].PlayerId);
+                                injured = _awayInjuries.Exists(x => x.PlayerId == ad3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _awayInjuries.FirstOrDefault(x => x.PlayerId == ad3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    awaySG = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                    awaySGRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                    awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    awaySG = FindPlayerToBeSubbedMandatory(0, 1, 2);
+                                    awaySGRatings = _awayRatings.Find(x => x.PlayerId == awaySG.Id);
+                                    awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == awaySG.Id);
+                                }
                             }
                         }
 
@@ -1149,9 +1191,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                awaySF = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
-                                awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
-                                awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(1, ad3[i].PlayerId);
+                                injured = _awayInjuries.Exists(x => x.PlayerId == ad3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _awayInjuries.FirstOrDefault(x => x.PlayerId == ad3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    awaySF = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                    awaySFRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                    awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    awaySF = FindPlayerToBeSubbedMandatory(0, 1, 3);
+                                    awaySFRatings = _awayRatings.Find(x => x.PlayerId == awaySF.Id);
+                                    awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == awaySF.Id);
+                                }
                             }
 
                         }
@@ -1198,9 +1261,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                awayPF = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
-                                awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
-                                awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(1, ad3[i].PlayerId);
+                                injured = _awayInjuries.Exists(x => x.PlayerId == ad3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _awayInjuries.FirstOrDefault(x => x.PlayerId == ad3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    awayPF = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                    awayPFRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                    awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    awayPF = FindPlayerToBeSubbedMandatory(0, 1, 4);
+                                    awayPFRatings = _awayRatings.Find(x => x.PlayerId == awayPF.Id);
+                                    awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == awayPF.Id);
+                                }
                             }
 
                         }
@@ -1247,9 +1331,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                awayC = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
-                                awayCRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
-                                awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(1, ad3[i].PlayerId);
+                                injured = _awayInjuries.Exists(x => x.PlayerId == ad3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _awayInjuries.FirstOrDefault(x => x.PlayerId == ad3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    awayC = _awayPlayers.Find(x => x.Id == ad3[i].PlayerId);
+                                    awayCRatings = _awayRatings.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                    awayCTendancy = _awayTendancies.Find(x => x.PlayerId == ad3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    awayC = FindPlayerToBeSubbedMandatory(0, 1, 5);
+                                    awayCRatings = _awayRatings.Find(x => x.PlayerId == awayC.Id);
+                                    awayCTendancy = _awayTendancies.Find(x => x.PlayerId == awayC.Id);
+                                }
                             }
 
                         }
@@ -1310,9 +1415,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                homePG = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
-                                homePGRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
-                                homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(0, hd3[i].PlayerId);
+                                injured = _homeInjuries.Exists(x => x.PlayerId == hd3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _homeInjuries.FirstOrDefault(x => x.PlayerId == hd3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    homePG = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                    homePGRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                    homePGTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    homePG = FindPlayerToBeSubbedMandatory(0, 0, 1);
+                                    homePGRatings = _homeRatings.Find(x => x.PlayerId == homePG.Id);
+                                    homePGTendancy = _homeTendancies.Find(x => x.PlayerId == homePG.Id);
+                                }
                             }
 
                         }
@@ -1359,9 +1485,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                homeSG = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
-                                homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
-                                homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(0, hd3[i].PlayerId);
+                                injured = _homeInjuries.Exists(x => x.PlayerId == hd3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _homeInjuries.FirstOrDefault(x => x.PlayerId == hd3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    homeSG = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                    homeSGRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                    homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    homeSG = FindPlayerToBeSubbedMandatory(0, 0, 2);
+                                    homeSGRatings = _homeRatings.Find(x => x.PlayerId == homeSG.Id);
+                                    homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == homeSG.Id);
+                                }
                             }
 
                         }
@@ -1408,9 +1555,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                homeSF = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
-                                homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
-                                homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(0, hd3[i].PlayerId);
+                                injured = _homeInjuries.Exists(x => x.PlayerId == hd3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _homeInjuries.FirstOrDefault(x => x.PlayerId == hd3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    homeSF = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                    homeSFRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                    homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    homeSF = FindPlayerToBeSubbedMandatory(0, 0, 3);
+                                    homeSFRatings = _homeRatings.Find(x => x.PlayerId == homeSF.Id);
+                                    homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == homeSF.Id);
+                                }
                             }
 
                         }
@@ -1457,9 +1625,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                homePF = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
-                                homePFRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
-                                homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(0, hd3[i].PlayerId);
+                                injured = _homeInjuries.Exists(x => x.PlayerId == hd3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _homeInjuries.FirstOrDefault(x => x.PlayerId == hd3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    homePF = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                    homePFRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                    homePFTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    homePF = FindPlayerToBeSubbedMandatory(0, 0, 4);
+                                    homePFRatings = _homeRatings.Find(x => x.PlayerId == homePF.Id);
+                                    homePFTendancy = _homeTendancies.Find(x => x.PlayerId == homePF.Id);
+                                }
                             }
 
                         }
@@ -1506,9 +1695,30 @@ namespace ABASim.api.Controllers
                             }
                             else
                             {
-                                homeC = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
-                                homeCRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
-                                homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                onCourt = CheckIfPlayerIsOnCourt(0, hd3[i].PlayerId);
+                                injured = _homeInjuries.Exists(x => x.PlayerId == hd3[i].PlayerId);
+                                if (injured)
+                                {
+                                    var injury = _homeInjuries.FirstOrDefault(x => x.PlayerId == hd3[i].PlayerId);
+                                    if (injury.Severity > 2)
+                                    {
+                                        canPlay = false;
+                                    }
+                                }
+
+                                if (canPlay && onCourt == 0)
+                                {
+                                    homeC = _homePlayers.Find(x => x.Id == hd3[i].PlayerId);
+                                    homeCRatings = _homeRatings.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                    homeCTendancy = _homeTendancies.Find(x => x.PlayerId == hd3[i].PlayerId);
+                                }
+                                else
+                                {
+                                    // Need to find anyone who can play
+                                    homeC = FindPlayerToBeSubbedMandatory(0, 0, 5);
+                                    homeCRatings = _homeRatings.Find(x => x.PlayerId == homeC.Id);
+                                    homeCTendancy = _homeTendancies.Find(x => x.PlayerId == homeC.Id);
+                                }
                             }
 
                         }
@@ -1752,6 +1962,11 @@ namespace ABASim.api.Controllers
             {
                 // Now need to get the current players tendancies
                 PlayerTendancy tendancy = GetCurrentPlayersTendancies();
+
+                if (tendancy.PlayerId == 203)
+                {
+                    string s = "";
+                }
 
                 int foulBonusValue = 0;
                 if (_quarter > 3 && _time <= 48 && _endGameFoulAddition != 0)
@@ -5266,114 +5481,114 @@ namespace ABASim.api.Controllers
             return subOut;
         }
 
-        public void CheckForSubs(int ftPlayerId)
-        {
-            if ((_quarter > 3 && _time <= 240) || (_quarter > 4))
-            {
-                // End Game Subs
-                SubToStarters();
-            }
-            else
-            {
-                // Normal non-end game subs
-                // For each teamm - Home and Away
-                // Home
-                for (int i = 1; i < 6; i++)
-                {
-                    int result = 0;
-                    if (ftPlayerId == 1)
-                    {
-                        result = CheckIfShooter(0, i, ftPlayerId);
-                    }
+        // public void CheckForSubs(int ftPlayerId)
+        // {
+        //     if ((_quarter > 3 && _time <= 240) || (_quarter > 4))
+        //     {
+        //         // End Game Subs
+        //         SubToStarters();
+        //     }
+        //     else
+        //     {
+        //         // Normal non-end game subs
+        //         // For each teamm - Home and Away
+        //         // Home
+        //         for (int i = 1; i < 6; i++)
+        //         {
+        //             int result = 0;
+        //             if (ftPlayerId == 1)
+        //             {
+        //                 result = CheckIfShooter(0, i, ftPlayerId);
+        //             }
 
-                    if (result != 1)
-                    {
-                        Player p = new Player();
-                        switch (i)
-                        {
-                            case 1:
-                                p = homePG;
-                                break;
-                            case 2:
-                                p = homeSG;
-                                break;
-                            case 3:
-                                p = homeSF;
-                                break;
-                            case 4:
-                                p = homePF;
-                                break;
-                            case 5:
-                                p = homeC;
-                                break;
-                            default:
-                                break;
-                        }
+        //             if (result != 1)
+        //             {
+        //                 Player p = new Player();
+        //                 switch (i)
+        //                 {
+        //                     case 1:
+        //                         p = homePG;
+        //                         break;
+        //                     case 2:
+        //                         p = homeSG;
+        //                         break;
+        //                     case 3:
+        //                         p = homeSF;
+        //                         break;
+        //                     case 4:
+        //                         p = homePF;
+        //                         break;
+        //                     case 5:
+        //                         p = homeC;
+        //                         break;
+        //                     default:
+        //                         break;
+        //                 }
 
-                        result = CheckSubEligility(p, 0);
-                        if (result == 0)
-                        {
-                            // Passed the first check, now for fatigue
-                            result = CheckPlayerFatigue(0, i, p.Id);
-                        }
+        //                 result = CheckSubEligility(p, 0);
+        //                 if (result == 0)
+        //                 {
+        //                     // Passed the first check, now for fatigue
+        //                     result = CheckPlayerFatigue(0, i, p.Id);
+        //                 }
 
-                        if (result == 1)
-                        {
-                            // The player is to be subbed off
-                            Substitution(0, i);
-                        }
-                    }
-                }
+        //                 if (result == 1)
+        //                 {
+        //                     // The player is to be subbed off
+        //                     Substitution(0, i);
+        //                 }
+        //             }
+        //         }
 
-                // Away
-                for (int j = 1; j < 6; j++)
-                {
-                    int result = 0;
-                    if (ftPlayerId == 1)
-                    {
-                        result = CheckIfShooter(1, j, ftPlayerId);
-                    }
+        //         // Away
+        //         for (int j = 1; j < 6; j++)
+        //         {
+        //             int result = 0;
+        //             if (ftPlayerId == 1)
+        //             {
+        //                 result = CheckIfShooter(1, j, ftPlayerId);
+        //             }
 
-                    if (result != 1)
-                    {
-                        Player p = new Player();
-                        switch (j)
-                        {
-                            case 1:
-                                p = awayPG;
-                                break;
-                            case 2:
-                                p = awaySG;
-                                break;
-                            case 3:
-                                p = awaySF;
-                                break;
-                            case 4:
-                                p = awayPF;
-                                break;
-                            case 5:
-                                p = awayC;
-                                break;
-                            default:
-                                break;
-                        }
+        //             if (result != 1)
+        //             {
+        //                 Player p = new Player();
+        //                 switch (j)
+        //                 {
+        //                     case 1:
+        //                         p = awayPG;
+        //                         break;
+        //                     case 2:
+        //                         p = awaySG;
+        //                         break;
+        //                     case 3:
+        //                         p = awaySF;
+        //                         break;
+        //                     case 4:
+        //                         p = awayPF;
+        //                         break;
+        //                     case 5:
+        //                         p = awayC;
+        //                         break;
+        //                     default:
+        //                         break;
+        //                 }
 
-                        result = CheckSubEligility(p, 1);   // TODO fix up the Player and team
-                        if (result == 0)
-                        {
-                            // Passed the first check, now for fatigue
-                            result = CheckPlayerFatigue(1, j, p.Id);
-                        }
+        //                 result = CheckSubEligility(p, 1);   // TODO fix up the Player and team
+        //                 if (result == 0)
+        //                 {
+        //                     // Passed the first check, now for fatigue
+        //                     result = CheckPlayerFatigue(1, j, p.Id);
+        //                 }
 
-                        if (result == 1)
-                        {
-                            // The player is to be subbed off
-                            Substitution(1, j);
-                        }
-                    }
-                }
-            }
-        }
+        //                 if (result == 1)
+        //                 {
+        //                     // The player is to be subbed off
+        //                     Substitution(1, j);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         public int CheckIfShooter(int team, int position, int playerId)
         {
@@ -5521,117 +5736,117 @@ namespace ABASim.api.Controllers
             }
         }
 
-        public void Substitution(int team, int position)
-        {
-            Player current = new Player();
-            Player checkingPlayer = new Player();
-            List<DepthChart> filterDepth = new List<DepthChart>();
-            List<Player> teamPlayers = new List<Player>();
-            int playerSet = 0;
+        // public void Substitution(int team, int position)
+        // {
+        //     Player current = new Player();
+        //     Player checkingPlayer = new Player();
+        //     List<DepthChart> filterDepth = new List<DepthChart>();
+        //     List<Player> teamPlayers = new List<Player>();
+        //     int playerSet = 0;
 
-            if (team == 0)
-            {
-                List<DepthChart> depth = _homeDepth.OrderBy(x => x.Depth).ToList();
-                filterDepth = depth.Where(x => x.Position == position).ToList();
-                teamPlayers = _homePlayers;
-                switch (position)
-                {
-                    case 1:
-                        current = homePG;
-                        break;
-                    case 2:
-                        current = homeSG;
-                        break;
-                    case 3:
-                        current = homeSF;
-                        break;
-                    case 4:
-                        current = homePF;
-                        break;
-                    case 5:
-                        current = homeC;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                List<DepthChart> depth = _awayDepth.OrderBy(x => x.Depth).ToList();
-                filterDepth = depth.Where(x => x.Position == position).ToList();
-                teamPlayers = _awayPlayers;
-                switch (position)
-                {
-                    case 1:
-                        current = awayPG;
-                        break;
-                    case 2:
-                        current = awaySG;
-                        break;
-                    case 3:
-                        current = awaySF;
-                        break;
-                    case 4:
-                        current = awayPF;
-                        break;
-                    case 5:
-                        current = awayC;
-                        break;
-                    default:
-                        break;
-                }
-            }
+        //     if (team == 0)
+        //     {
+        //         List<DepthChart> depth = _homeDepth.OrderBy(x => x.Depth).ToList();
+        //         filterDepth = depth.Where(x => x.Position == position).ToList();
+        //         teamPlayers = _homePlayers;
+        //         switch (position)
+        //         {
+        //             case 1:
+        //                 current = homePG;
+        //                 break;
+        //             case 2:
+        //                 current = homeSG;
+        //                 break;
+        //             case 3:
+        //                 current = homeSF;
+        //                 break;
+        //             case 4:
+        //                 current = homePF;
+        //                 break;
+        //             case 5:
+        //                 current = homeC;
+        //                 break;
+        //             default:
+        //                 break;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         List<DepthChart> depth = _awayDepth.OrderBy(x => x.Depth).ToList();
+        //         filterDepth = depth.Where(x => x.Position == position).ToList();
+        //         teamPlayers = _awayPlayers;
+        //         switch (position)
+        //         {
+        //             case 1:
+        //                 current = awayPG;
+        //                 break;
+        //             case 2:
+        //                 current = awaySG;
+        //                 break;
+        //             case 3:
+        //                 current = awaySF;
+        //                 break;
+        //             case 4:
+        //                 current = awayPF;
+        //                 break;
+        //             case 5:
+        //                 current = awayC;
+        //                 break;
+        //             default:
+        //                 break;
+        //         }
+        //     }
 
-            for (int i = 0; i < filterDepth.Count; i++)
-            {
-                DepthChart dc = filterDepth[i];
+        //     for (int i = 0; i < filterDepth.Count; i++)
+        //     {
+        //         DepthChart dc = filterDepth[i];
 
-                if (dc.PlayerId != 0)
-                {
-                    checkingPlayer = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+        //         if (dc.PlayerId != 0)
+        //         {
+        //             checkingPlayer = teamPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
 
-                    int onCourt = CheckIfPlayerIsOnCourt(team, checkingPlayer.Id);
-                    if (onCourt != 1)
-                    {
-                        int result = CheckSubEligility(checkingPlayer, team);
-                        if (result == 0)
-                        {
-                            // Passed the first check, now for fatigue
-                            result = CheckPlayerFatigue(team, position, checkingPlayer.Id);
+        //             int onCourt = CheckIfPlayerIsOnCourt(team, checkingPlayer.Id);
+        //             if (onCourt != 1)
+        //             {
+        //                 int result = CheckSubEligility(checkingPlayer, team);
+        //                 if (result == 0)
+        //                 {
+        //                     // Passed the first check, now for fatigue
+        //                     result = CheckPlayerFatigue(team, position, checkingPlayer.Id);
 
-                            if (result == 1)
-                            {
-                                // The player is to be subbed on
-                                SubPlayer(team, position, checkingPlayer);
+        //                     if (result == 1)
+        //                     {
+        //                         // The player is to be subbed on 
+        //                         SubPlayer(team, position, checkingPlayer);
 
-                                playerSet = 1;
+        //                         playerSet = 1;
 
-                                // Add the commentary here
-                                string outPlayer = current.FirstName + " " + current.Surname;
-                                string inPlayer = checkingPlayer.FirstName + " " + checkingPlayer.Surname;
+        //                         // Add the commentary here
+        //                         string outPlayer = current.FirstName + " " + current.Surname;
+        //                         string inPlayer = checkingPlayer.FirstName + " " + checkingPlayer.Surname;
 
-                                if (team == 0)
-                                {
-                                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
-                                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                                }
-                                else
-                                {
-                                    commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
-                                    PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        //                         if (team == 0)
+        //                         {
+        //                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
+        //                             PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+        //                         }
+        //                         else
+        //                         {
+        //                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
+        //                             PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
 
-            if (playerSet == 0)
-            {
-                // Player has not yet been subbed - need to check NoPlayersToSubIn
-                NoPlayersToSubIn(team, position);
-            }
-        }
+        //     if (playerSet == 0)
+        //     {
+        //         // Player has not yet been subbed - need to check NoPlayersToSubIn
+        //         NoPlayersToSubIn(team, position);
+        //     }
+        // }
 
         public int CheckIfPlayerIsOnCourt(int team, int playerId)
         {
@@ -5711,6 +5926,7 @@ namespace ABASim.api.Controllers
                     Player current = homePG;
                     homePG = player;
                     homePGRatings = _homeRatings.Find(x => x.PlayerId == player.Id);
+                    homePGTendancy = _homeTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
@@ -5728,6 +5944,7 @@ namespace ABASim.api.Controllers
                     Player current = homeSG;
                     homeSG = player;
                     homeSGRatings = _homeRatings.Find(x => x.PlayerId == player.Id);
+                    homeSGTendancy = _homeTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
@@ -5745,6 +5962,7 @@ namespace ABASim.api.Controllers
                     Player current = homeSF;
                     homeSF = player;
                     homeSFRatings = _homeRatings.Find(x => x.PlayerId == player.Id);
+                    homeSFTendancy = _homeTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
@@ -5762,6 +5980,7 @@ namespace ABASim.api.Controllers
                     Player current = homePF;
                     homePF = player;
                     homePFRatings = _homeRatings.Find(x => x.PlayerId == player.Id);
+                    homePFTendancy = _homeTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
@@ -5779,6 +5998,7 @@ namespace ABASim.api.Controllers
                     Player current = homeC;
                     homeC = player;
                     homeCRatings = _homeRatings.Find(x => x.PlayerId == player.Id);
+                    homeCTendancy = _homeTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _homeStaminas.Find(x => x.PlayerId == current.Id);
@@ -5800,6 +6020,7 @@ namespace ABASim.api.Controllers
                     Player current = awayPG;
                     awayPG = player;
                     awayPGRatings = _awayRatings.Find(x => x.PlayerId == player.Id);
+                    awayPGTendancy = _awayTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
@@ -5817,6 +6038,7 @@ namespace ABASim.api.Controllers
                     Player current = awaySG;
                     awaySG = player;
                     awaySGRatings = _awayRatings.Find(x => x.PlayerId == player.Id);
+                    awaySGTendancy = _awayTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
@@ -5834,6 +6056,7 @@ namespace ABASim.api.Controllers
                     Player current = awaySF;
                     awaySF = player;
                     awaySFRatings = _awayRatings.Find(x => x.PlayerId == player.Id);
+                    awaySFTendancy = _awayTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
@@ -5851,6 +6074,7 @@ namespace ABASim.api.Controllers
                     Player current = awayPF;
                     awayPF = player;
                     awayPFRatings = _awayRatings.Find(x => x.PlayerId == player.Id);
+                    awayPFTendancy = _awayTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
@@ -5868,6 +6092,7 @@ namespace ABASim.api.Controllers
                     Player current = awayC;
                     awayC = player;
                     awayCRatings = _awayRatings.Find(x => x.PlayerId == player.Id);
+                    awayCTendancy = _awayTendancies.Find(x => x.PlayerId == player.Id);
 
                     // Need to update the stamina track objects for on and off court
                     StaminaTrack stOff = _awayStaminas.Find(x => x.PlayerId == current.Id);
@@ -6919,6 +7144,10 @@ namespace ABASim.api.Controllers
                     // Get the player to pass in
                     var player = _homePlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
 
+                    int onCourt = CheckIfPlayerIsOnCourt(0, player.Id);
+
+                    if (onCourt == 0)
+                    {
                     SubPlayer(0, i, player);
                     newPlayer = player;
                     playerSubbed = 1;
@@ -6929,6 +7158,7 @@ namespace ABASim.api.Controllers
 
                     commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                    }
                 }
                 else if (dc.PlayerId == current.Id)
                 {
@@ -6945,8 +7175,11 @@ namespace ABASim.api.Controllers
                     {
                         // Get the player to pass in
                         var player = _homePlayers.FirstOrDefault(x => x.Id == dc2.PlayerId);
+                        int onCourt = CheckIfPlayerIsOnCourt(0, player.Id);
 
-                        SubPlayer(0, i, player);
+                        if (onCourt == 0)
+                        {
+                            SubPlayer(0, i, player);
                         newPlayer = player;
                         playerSubbed = 1;
 
@@ -6956,6 +7189,7 @@ namespace ABASim.api.Controllers
 
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
                         PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                        }
                     }
                     else if (dc2.PlayerId == current.Id)
                     {
@@ -6972,8 +7206,11 @@ namespace ABASim.api.Controllers
                         {
                             // Get the player to pass in
                             var player = _homePlayers.FirstOrDefault(x => x.Id == dc3.PlayerId);
+                            int onCourt = CheckIfPlayerIsOnCourt(0, player.Id);
 
-                            SubPlayer(0, i, player);
+                            if (onCourt == 0)
+                            {
+                                SubPlayer(0, i, player);
                             newPlayer = player;
                             playerSubbed = 1;
 
@@ -6983,6 +7220,7 @@ namespace ABASim.api.Controllers
 
                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
                             PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                            }
                         }
                         else if (dc3.PlayerId == current.Id)
                         {
@@ -7028,7 +7266,10 @@ namespace ABASim.api.Controllers
                 {
                     // Get the player to pass in
                     var player = _awayPlayers.FirstOrDefault(x => x.Id == dc.PlayerId);
+                    int onCourt = CheckIfPlayerIsOnCourt(1, player.Id);
 
+                    if (onCourt == 0)
+                    {
                     SubPlayer(1, j, player);
                     newPlayer = player;
                     playerSubbed = 1;
@@ -7039,6 +7280,7 @@ namespace ABASim.api.Controllers
 
                     commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                     PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                    }
                 }
                 else if (dc.PlayerId == current.Id)
                 {
@@ -7055,7 +7297,10 @@ namespace ABASim.api.Controllers
                     {
                         // Get the player to pass in
                         var player = _awayPlayers.FirstOrDefault(x => x.Id == dc2.PlayerId);
+                        int onCourt = CheckIfPlayerIsOnCourt(0, player.Id);
 
+                        if (onCourt == 0)
+                        {
                         SubPlayer(1, j, player);
                         newPlayer = player;
                         playerSubbed = 1;
@@ -7066,6 +7311,7 @@ namespace ABASim.api.Controllers
 
                         commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                         PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                        }
                     }
                     else if (dc2.PlayerId == current.Id)
                     {
@@ -7082,7 +7328,10 @@ namespace ABASim.api.Controllers
                         {
                             // Get the player to pass in
                             var player = _awayPlayers.FirstOrDefault(x => x.Id == dc3.PlayerId);
+                            int onCourt = CheckIfPlayerIsOnCourt(0, player.Id);
 
+                            if (onCourt == 0)
+                            {
                             SubPlayer(1, j, player);
                             newPlayer = player;
                             playerSubbed = 1;
@@ -7093,6 +7342,7 @@ namespace ABASim.api.Controllers
 
                             commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                             PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                            }
                         }
                         else if (dc3.PlayerId == current.Id)
                         {
@@ -8450,7 +8700,7 @@ namespace ABASim.api.Controllers
                             if (newPlayer.Id != p.Id)
                             {
                                 // The Player is to be subbed
-                                SubPlayer(0, i, newPlayer);
+                                SubPlayer(0, i, newPlayer); // Covered in function
 
                                 // Add the commentary here
                                 string outPlayer = p.FirstName + " " + p.Surname;
@@ -8464,8 +8714,8 @@ namespace ABASim.api.Controllers
                             // Then the player has a concern and is possibly requiring to be subbed out
                             newPlayer = FindPlayerToBeSubbedMandatory(p.Id, 0, i);
 
-                            // Now we go through the SubPlayer actions
-                            SubPlayer(0, i, newPlayer);
+                            // Now we go through the SubPlayer actions 
+                            SubPlayer(0, i, newPlayer); // Covered in above function
                             // Add the commentary here
                             string outPlayer = p.FirstName + " " + p.Surname;
                             string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
@@ -9163,7 +9413,7 @@ namespace ABASim.api.Controllers
 
                         // Now we go through the SubPlayer actions
                         SubPlayer(0, i, newPlayer);
-                        // Add the commentary here
+                        // Add the commentary here 
                         string outPlayer = p.FirstName + " " + p.Surname;
                         string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
                         // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 0, _awayTeam.Mascot, _homeTeam.Mascot));
@@ -9304,11 +9554,14 @@ namespace ABASim.api.Controllers
                     // The player is not the starter - so check if the starter can come on
                     toSub = CheckIfPlayerNeedsSub(starter.PlayerId, 1, i);
 
-                    if (toSub < 3) // BUG HERE!!! If it is 3 it will pass
+                    if (toSub < 3)
                     {
                         // The starter can come back on
                         Player newPlayer = _awayPlayers.FirstOrDefault(x => x.Id == starter.PlayerId);
+                        int onCourt = CheckIfPlayerIsOnCourt(1, newPlayer.Id);
 
+                        if (onCourt == 0)
+                        {
                         // Now we go through the SubPlayer actions
                         SubPlayer(1, i, newPlayer);
                         // Add the commentary here
@@ -9316,6 +9569,7 @@ namespace ABASim.api.Controllers
                         string inPlayer = newPlayer.FirstName + " " + newPlayer.Surname;
                         // commentaryData.Add(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot));
                         PlayByPlayTracker(comm.GetSubCommentary(outPlayer, inPlayer, 1, _awayTeam.Mascot, _homeTeam.Mascot), 1);
+                        }
                     }
                     else
                     {
