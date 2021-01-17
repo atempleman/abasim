@@ -1758,8 +1758,13 @@ namespace ABASim.api.Controllers
             string currentPlayerName = GetCurrentPlayerFullName();
 
             // Need to do the commentary
-            commentaryData.Add(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
-            PlayByPlayTracker(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+            // commentaryData.Add(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot));
+            // PlayByPlayTracker(comm.GetJumpballCommentary(winningTeam, _quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot), 0);
+
+            string awayJump = awayC.FirstName + " " + awayC.Surname;
+            string homeJump = homeC.FirstName + " " + homeC.Surname;
+            commentaryData.Add(comm.GetJumpballCommentary(_quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, awayJump, homeJump, currentPlayerName));
+            PlayByPlayTracker(comm.GetJumpballCommentary(_quarter, _time, _awayScore, _homeScore, _teamPossession, _awayTeam.Mascot, _homeTeam.Mascot, awayJump, homeJump, currentPlayerName), 0);
 
             int timeValue = _random.Next(1, 5);
 
@@ -3276,7 +3281,7 @@ namespace ABASim.api.Controllers
                     PlayerRating checking = awayRatingsSorted[i];
                     int blockRating = checking.BlockRating + blockStrategy;
                     int rating = StaminaEffect(checking.PlayerId, 1, blockRating);
-                    int result = _random.Next(1, 1501);
+                    int result = _random.Next(1, 1451);
 
                     if (result <= rating)
                     {
@@ -3348,7 +3353,7 @@ namespace ABASim.api.Controllers
                     PlayerRating checking = homeRatingsSorted[i];
                     int blockRating = checking.BlockRating + blockStrategy;
                     int rating = StaminaEffect(checking.PlayerId, 0, blockRating);
-                    int result = _random.Next(1, 1501);
+                    int result = _random.Next(1, 1451);
 
                     if (result <= rating)
                     {
@@ -3457,8 +3462,8 @@ namespace ABASim.api.Controllers
                 int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.DRebRating) + defRebStrategy;
                 int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.DRebRating) + defRebStrategy;
 
-                offensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 5;
-                defensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound + 10;
+                offensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 10;
+                defensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound + 20;
 
                 // home team shot
                 int randValue = offensiveRate + defensiveRate;
@@ -3538,7 +3543,7 @@ namespace ABASim.api.Controllers
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
                     }
-                    else if (result >= (homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound) && result < (homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 5))
+                    else if (result >= (homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound) && result < (homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 10))
                     {
                         _playerPossession = -1;
                     }
@@ -3638,7 +3643,7 @@ namespace ABASim.api.Controllers
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
                     }
-                    else if (result >= (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound) && result < (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound + 10))
+                    else if (result >= (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound) && result < (offensiveRate + awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound + 20))
                     {
                         _playerPossession = -1;
                     }
@@ -3678,8 +3683,8 @@ namespace ABASim.api.Controllers
                 int awayPFRebound = StaminaEffect(awayPFRatings.PlayerId, 1, awayPFRatings.ORebRating) + offRebStrategy;
                 int awayCRebound = StaminaEffect(awayCRatings.PlayerId, 1, awayCRatings.ORebRating) + offRebStrategy;
 
-                defensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 10;
-                offensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound + 5;
+                defensiveRate = homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 20;
+                offensiveRate = awayPGRebound + awaySGRebound + awaySFRebound + awaySFRebound + awayCRebound + 10;
 
                 // home team shot
                 int randValue = offensiveRate + defensiveRate;
@@ -3760,7 +3765,7 @@ namespace ABASim.api.Controllers
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
                     }
-                    else if (result >= (awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound) && result < (awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound + 5))
+                    else if (result >= (awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound) && result < (awayPGRebound + awaySGRebound + awaySFRebound + awayPFRebound + awayCRebound + 10))
                     {
                         _playerPossession = -1;
                     }
@@ -3857,7 +3862,7 @@ namespace ABASim.api.Controllers
                         commOReb = temp.ORebs;
                         commDReb = temp.DRebs;
                     }
-                    else if (result >= (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound) && result < (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 10))
+                    else if (result >= (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound) && result < (offensiveRate + homePGRebound + homeSGRebound + homeSFRebound + homePFRebound + homeCRebound + 20))
                     {
                         _playerPossession = -1;
                     }
@@ -3915,7 +3920,7 @@ namespace ABASim.api.Controllers
                     PlayerRating checking = awayRatingsSorted[i];
                     int stealRating = checking.StealRating + stealStrategy;
                     int rating = StaminaEffect(checking.PlayerId, 1, stealRating);
-                    int result = _random.Next(1, (4201 - stealBonus)); // This is times 5 to account for all 5 players pn the court
+                    int result = _random.Next(1, (4151 - stealBonus)); // This is times 5 to account for all 5 players pn the court
 
                     if (result <= rating)
                     {
@@ -3992,7 +3997,7 @@ namespace ABASim.api.Controllers
                     PlayerRating checking = homeRatingsSorted[i];
                     int stealRating = checking.StealRating + stealStrategy;
                     int rating = StaminaEffect(checking.PlayerId, 0, stealRating);
-                    int result = _random.Next(1, (4201 - stealBonus));
+                    int result = _random.Next(1, (4151 - stealBonus));
 
                     if (result <= rating)
                     {
@@ -4368,7 +4373,7 @@ namespace ABASim.api.Controllers
             for (int i = 0; i < shots; i++)
             {
                 int result = _random.Next(1, 1001);
-                int ftRating = StaminaEffect(currentPlayerRating.PlayerId, _teamPossession, currentPlayerRating.FTRating);
+                int ftRating = StaminaEffect(currentPlayerRating.PlayerId, _teamPossession, currentPlayerRating.FTRating) + 20;
 
                 if (result <= ftRating)
                 {
