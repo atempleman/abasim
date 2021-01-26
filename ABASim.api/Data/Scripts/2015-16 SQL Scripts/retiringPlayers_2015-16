@@ -1,0 +1,96 @@
+Retired Players Scripts11
+
+--2013-14 Retired Players
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jeff Adrien', 2, 3, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Earl Barron', 2, 487, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jerrelle Benimon', 2, 488, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Sim Bhullar', 2, 489, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Vander Blue', 2, 54, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jabari Brown', 2, 492, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Shannon Brown', 2, 68, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Dwight Buycks', 2, 77, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Will Bynum', 2, 79, 'PG, SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Will Cherry', 2, 496, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Patrick Christopher', 2, 497, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Earl Clark', 2, 93, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Victor Claver', 2, 95, 'SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Samuel Dalembert', 2, 112, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Gigi Datome', 2, 114, 'SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Brandon Davies', 2, 115, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Andre Dawkins', 2, 501, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Austin Daye', 2, 119, 'SF, PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Chris Douglas-Roberts', 2, 128, 'SG-SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Zoran Dragic', 2, 504, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Landry Fields', 2, 148, 'SG-SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jamaal Franklin', 2, 152, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Francisco Garcia', 2, 156, 'SG-SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Drew Gordon', 2, 514, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES (Danny Granger'', 2, 171, 'SF, PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Brendan Haywood', 2, 521, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Xavier Henry', 2, 200, 'SG, SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Lester Hudson', 2, 524, 'PG, SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Bernard James', 2, 224, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Grant Jerrett', 2, 527, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Nick Johnson', 2, 528, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jerome Jordan', 2, 531, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Andrei Kirilenko', 2, 253, 'SF-PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Alex Kirk', 2, 533, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Ognjen Kuzmic', 2, 258, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Ricky Ledo', 2, 264, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Malcolm Lee', 2, 536, 'SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Cartier Martin', 2, 285, 'SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Kenyon MArtin', 2, 286, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jerel McNeal', 2, 543, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Gal Mekel', 2, 300, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Quincy Miller', 2, 306, 'SF, PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Darius Morris', 2, 314, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Toure'' Murry', 2, 324, 'PG, SG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jannero Pargo', 2, 345, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('AJ Price', 2, 360, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Miroslav Raduljica', 2, 364, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Shavlik Randolph', 2, 366, 'PF, C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Glen Rice Jr', 2, 369, 'SG, SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Jason Richardson', 2, 558, 'SG, SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('John Salmons', 2, 382, 'SG, SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES (Alexey Shved'', 2, 393, 'SG, SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Greg Stiemsma', 2, 411, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Sebastian Telfair', 2, 567, 'PG');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Malcolm Thomas', 2, 427, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Tyrus Thomas', 2, 568, 'PF, C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Ronny Turiaf', 2, 436, 'C');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Gerald Wallace', 2, 454, 'SF, PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('David Wear', 2, 572, 'PF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Martell Webster', 2, 459, 'SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Reggie Williams', 2, 470, 'SF');
+insert into RetiredPlayers (Name, Year, PlayerId, Positions) VALUES ('Shawne Williams', 2, 471, 'SF, PF');
+
+
+delete from Rosters where PlayerId IN
+(3, 487, 488, 489, 54, 492, 68, 77, 79, 496, 497, 93, 95, 112, 114, 115, 501, 119, 128, 504, 148, 152, 156, 514, 171, 521, 200, 524, 224, 527, 528, 531, 253, 533, 258, 264, 536, 285, 286, 543, 300, 306, 314, 324, 345, 360, 364, 366
+, 369, 558, 382, 393, 411, 567, 427, 568, 436, 454, 572, 459, 471, 471);
+
+delete from PlayerTeams where PlayerId IN
+(3, 487, 488, 489, 54, 492, 68, 77, 79, 496, 497, 93, 95, 112, 114, 115, 501, 119, 128, 504, 148, 152, 156, 514, 171, 521, 200, 524, 224, 527, 528, 531, 253, 533, 258, 264, 536, 285, 286, 543, 300, 306, 314, 324, 345, 360, 364, 366
+, 369, 558, 382, 393, 411, 567, 427, 568, 436, 454, 572, 459, 471, 471);
+
+-- These below may not be needed
+
+delete from PlayerRatings where PlayerId IN
+(3, 487, 488, 489, 54, 492, 68, 77, 79, 496, 497, 93, 95, 112, 114, 115, 501, 119, 128, 504, 148, 152, 156, 514, 171, 521, 200, 524, 224, 527, 528, 531, 253, 533, 258, 264, 536, 285, 286, 543, 300, 306, 314, 324, 345, 360, 364, 366
+, 369, 558, 382, 393, 411, 567, 427, 568, 436, 454, 572, 459, 471, 471);
+
+delete from PlayerTendancies where PlayerId IN
+(3, 487, 488, 489, 54, 492, 68, 77, 79, 496, 497, 93, 95, 112, 114, 115, 501, 119, 128, 504, 148, 152, 156, 514, 171, 521, 200, 524, 224, 527, 528, 531, 253, 533, 258, 264, 536, 285, 286, 543, 300, 306, 314, 324, 345, 360, 364, 366
+, 369, 558, 382, 393, 411, 567, 427, 568, 436, 454, 572, 459, 471, 471);
+
+delete from PlayerTendancies where PlayerId IN
+(3, 487, 488, 489, 54, 492, 68, 77, 79, 496, 497, 93, 95, 112, 114, 115, 501, 119, 128, 504, 148, 152, 156, 514, 171, 521, 200, 524, 224, 527, 528, 531, 253, 533, 258, 264, 536, 285, 286, 543, 300, 306, 314, 324, 345, 360, 364, 366
+, 369, 558, 382, 393, 411, 567, 427, 568, 436, 454, 572, 459, 471, 471);
+
+delete from PlayerGradings where PlayerId IN
+(3, 487, 488, 489, 54, 492, 68, 77, 79, 496, 497, 93, 95, 112, 114, 115, 501, 119, 128, 504, 148, 152, 156, 514, 171, 521, 200, 524, 224, 527, 528, 531, 253, 533, 258, 264, 536, 285, 286, 543, 300, 306, 314, 324, 345, 360, 364, 366
+, 369, 558, 382, 393, 411, 567, 427, 568, 436, 454, 572, 459, 471, 471);
+
+delete from PlayerContracts where PlayerId IN
+(3, 487, 488, 489, 54, 492, 68, 77, 79, 496, 497, 93, 95, 112, 114, 115, 501, 119, 128, 504, 148, 152, 156, 514, 171, 521, 200, 524, 224, 527, 528, 531, 253, 533, 258, 264, 536, 285, 286, 543, 300, 306, 314, 324, 345, 360, 364, 366
+, 369, 558, 382, 393, 411, 567, 427, 568, 436, 454, 572, 459, 471, 471);

@@ -203,7 +203,8 @@ namespace ABASim.api.Controllers
 
             // 3rd Quarter
             // SetStartingLineups();
-            EndGameSubCheck(0);
+            // EndGameSubCheck(0);
+            SetStartingLineups();
 
             RunQuarter();
 
@@ -8985,7 +8986,6 @@ namespace ABASim.api.Controllers
                 List<DepthChart> depth = _homeDepth.OrderBy(x => x.Depth).ToList();
                 filterDepth = depth.Where(x => x.Position == position).ToList();
                 teamPlayers = _homePlayers;
-
             }
             else
             {
