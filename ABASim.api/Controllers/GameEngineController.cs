@@ -687,21 +687,23 @@ namespace ABASim.api.Controllers
                         _homeDRPMStrategy = _homeDRPMStrategy + -50;
                         break;
                     case 7:
-                        _homeSpeedStrategy = _homeSpeedStrategy + 50;
-                        _homeORPMStrategy = _homeORPMStrategy + 50;
-                        _homeTurnoversStrategy = _homeTurnoversStrategy + 3;
-                        _awayStealStrategy = _awayStealStrategy + 5;
+                        _homeSpeedStrategy = _homeSpeedStrategy + 25;
+                        _homeORPMStrategy = _homeORPMStrategy + 30;
+                        _awayORPMStrategy = _awayORPMStrategy + 10;
+                        _homeTurnoversStrategy = _homeTurnoversStrategy + 2;
+                        _awayStealStrategy = _awayStealStrategy + 2;
                         break;
                     case 5:
-                        _homeTwoPercentageStrategy = _homeTwoPercentageStrategy + 20;
-                        _homeSpeedStrategy = _homeSpeedStrategy + -20;
-                        _homeThreePercentageStrategy = _homeThreePercentageStrategy + 10;
-                        _homeAssistStrategy = _homeAssistStrategy + 10;
+                        _homeTwoPercentageStrategy = _homeTwoPercentageStrategy - 20;
+                        _homeSpeedStrategy = _homeSpeedStrategy + 20;
+                        _homeThreePercentageStrategy = _homeThreePercentageStrategy - 10;
+                        _homeAssistStrategy = _homeAssistStrategy + 15;
                         break;
                     case 6:
-                        _homeAssistStrategy = _homeAssistStrategy + -10;
-                        _homeTwoTendancyStrategy = _homeTwoTendancyStrategy + -15;
-                        _homeThreeTendancyStrategy = _homeThreeTendancyStrategy + -15;
+                        _homeAssistStrategy = _homeAssistStrategy - 10;
+                        _homeTwoTendancyStrategy = _homeTwoTendancyStrategy + 20;
+                        _homeThreeTendancyStrategy = _homeThreeTendancyStrategy + 10;
+                        _homeFoulsDrawnStrategy = _homeFoulsDrawnStrategy + 5;
                         break;
                     default:
                         break;
@@ -756,21 +758,23 @@ namespace ABASim.api.Controllers
                         _awayDRPMStrategy = _awayDRPMStrategy + -50;
                         break;
                     case 7:
-                        _awaySpeedStrategy = _awaySpeedStrategy + 50;
-                        _awayORPMStrategy = _awayORPMStrategy + 50;
-                        _awayTurnoversStrategy = _awayTurnoversStrategy + 3;
-                        _homeStealStrategy = _homeStealStrategy + 5;
+                        _awaySpeedStrategy = _awaySpeedStrategy + 25;
+                        _awayORPMStrategy = _awayORPMStrategy + 30;
+                        _homeORPMStrategy = _homeORPMStrategy + 10;
+                        _awayTurnoversStrategy = _awayTurnoversStrategy + 2;
+                        _homeStealStrategy = _homeStealStrategy + 2;
                         break;
                     case 5:
-                        _awayTwoPercentageStrategy = _awayTwoPercentageStrategy + 20;
-                        _awaySpeedStrategy = _awaySpeedStrategy + -20;
-                        _awayThreePercentageStrategy = _awayThreePercentageStrategy + 10;
-                        _awayAssistStrategy = _awayAssistStrategy + 10;
+                        _awayTwoPercentageStrategy = _awayTwoPercentageStrategy - 20;
+                        _awaySpeedStrategy = _awaySpeedStrategy + 20;
+                        _awayThreePercentageStrategy = _awayThreePercentageStrategy - 10;
+                        _awayAssistStrategy = _awayAssistStrategy + 15;
                         break;
                     case 6:
-                        _awayAssistStrategy = _awayAssistStrategy + -10;
-                        _awayTwoTendancyStrategy = _awayTwoTendancyStrategy + -15;
-                        _awayThreeTendancyStrategy = _awayThreeTendancyStrategy + -15;
+                        _awayAssistStrategy = _awayAssistStrategy - 10;
+                        _awayTwoTendancyStrategy = _awayTwoTendancyStrategy + 20;
+                        _awayThreeTendancyStrategy = _awayThreeTendancyStrategy + 10;
+                        _awayFoulsDrawnStrategy = _awayFoulsDrawnStrategy + 5;
                         break;
                     default:
                         break;
@@ -2795,7 +2799,7 @@ namespace ABASim.api.Controllers
                 }
                 int drpmValue = GetDrpmValue(defence);
 
-                result = result - ((orpmValue + drpmValue) / 2);
+                result = result - ((orpmValue - drpmValue) / 2);
                 result = result + _endGameResultIncrease;
 
                 result = result - 20;
@@ -3046,10 +3050,9 @@ namespace ABASim.api.Controllers
                 }
                 int drpmValue = GetDrpmValue(defence);
 
-                // result = result - orpmValue + drpmValue;
-                result = result - ((orpmValue + drpmValue) / 2);
+                result = result - ((orpmValue - drpmValue) / 2);
                 result = result + _endGameResultIncrease;
-                result = result - 10;
+                //result = result - 10;
 
                 // Need to determine whether an assist chance has been created
                 if (_playerRatingPassed != null)
@@ -5152,11 +5155,11 @@ namespace ABASim.api.Controllers
 
             if (_teamPossession == 0)
             {
-                speedStrategy = _homeSpeedStrategy * -1;
+                speedStrategy = _homeSpeedStrategy * 1;
             }
             else
             {
-                speedStrategy = _awaySpeedStrategy * -1;
+                speedStrategy = _awaySpeedStrategy * 1;
             }
 
             if (_shotClock > 22)
