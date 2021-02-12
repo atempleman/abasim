@@ -42,6 +42,10 @@ namespace ABASim.api.Data
             {
                 league.Day = 45;
             }
+            else if (newState == 8)
+            {
+                league.Day = 218;
+            }
 
             _context.Update(league);
             return await _context.SaveChangesAsync() > 0;
@@ -303,7 +307,34 @@ namespace ABASim.api.Data
                                 int awayTeamId = 0;
 
                                 int totalGamesPlayed = series.HomeWins + series.AwayWins;
-                                int nextGameDay = league.Day + 1;
+
+                                // This is where the day needs to be determined
+                                int nextGameDay = 0;
+                                if (league.day == 219)
+                                {
+                                    // Game 2
+                                    nextGameDay = 220;
+                                } else if (league.day = 221)
+                                {
+                                    // Game 3
+                                    nextGameDay = 223;
+                                } else if (league.day = 224)
+                                {
+                                    // Game 4
+                                    nextGameDay = 226
+                                } else if (league.day = 227)
+                                {
+                                    // Game 5
+                                    nextGameDay = 229;
+                                } else if (league.day = 230)
+                                {
+                                    // Game 6
+                                    nextGameDay = 231;
+                                } else if (league.day = 232)
+                                {
+                                    // Game 7
+                                    nextGameDay = 233;
+                                }
 
                                 if (totalGamesPlayed == 3 || totalGamesPlayed == 4 || totalGamesPlayed == 6)
                                 {
@@ -1016,6 +1047,9 @@ namespace ABASim.api.Data
             // Change the League State Id to 8
             await UpdateLeagueState(8);
 
+            // Need to check the injuries and update appropriately
+            await DailyInjuriesUpdate(league.StateId, league.Day);
+
             // Create the PlayOff Series for Round 1
             // Get the standings and set up the lists
             var leagueStandings = await _context.Standings.OrderByDescending(x => x.Wins).ToListAsync();
@@ -1139,7 +1173,7 @@ namespace ABASim.api.Data
                         AwayTeamId = series.AwayTeamId,
                         HomeTeamId = series.HomeTeamId,
                         SeriesId = series.Id,
-                        GameDay = 1
+                        GameDay = 218
                     };
                     await _context.AddAsync(sched);
                 }

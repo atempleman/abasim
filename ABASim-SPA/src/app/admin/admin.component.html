@@ -124,7 +124,7 @@
 
 				<!-- STATE 7 -->
 				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;"
-					*ngIf="this.league?.stateId == 7">
+					*ngIf="this.league?.stateId == 7 && this.league?.day < 215">
 					<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
 							class="header-card ml-3"><strong>Run Day</strong></span></div>
 					<div class="card-body">
@@ -132,6 +132,20 @@
 						<div style="text-align: right;">
 							<button type="button" class="btn btn-link text-left"
 								(click)="openModal(completesseasondays, 2)">Complete Day</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Begin Playoffs from Regular Season -->
+				<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;"
+					*ngIf="this.league?.stateId == 7 && this.league?.day == 215">
+					<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
+							class="header-card ml-3"><strong>Begin Playoffs</strong></span></div>
+					<div class="card-body">
+						<p class="card-text">Begin the playoffs.</p>
+						<div style="text-align: right;">
+							<button type="button" class="btn btn-link text-left"
+								(click)="openModal(beginplayoffs, 5)">Begin Playoffs</button>
 						</div>
 					</div>
 				</div>
@@ -592,27 +606,28 @@
 	</div>
 </ng-template>
 
+<!-- Begin Playoffs -->
+<ng-template #beginplayoffs>
+	<div class="modal-header">
+		<h4 class="modal-title">Begin the Playoffs</h4>
+		<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
+	</div>
+	<form #draftlotteryForm (ngSubmit)="beginPlayoffs()">
+		<div class="modal-body">
+			<p>Setup and begin the season's playoffs</p>
+		</div>
+		<div class="modal-footer form-group text-center">
+			<button type="submit" class="btn btn-primary">Begin</button>
+			<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
+		</div>
+	</form>
+</ng-template>
+
 
 
 
 <!-- 
-			<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;">
-				<div class="card-header"><i class="fa fa-gamepad fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>Roll Over Day</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Complete the day, save games and stats and move to the next day.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left"
-							(click)="openModal(rollover, 2)">Rollover</button>
-					</div>
-				</div>
-			</div> -->
-
-			
-
-
-
-			<!-- <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 12">
+<div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;" *ngIf="this.league?.stateId == 12">
 				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
 						class="header-card ml-3"><strong>Rollover Season</strong></span></div>
 				<div class="card-body">
@@ -620,19 +635,6 @@
 					<div style="text-align: right;">
 						<button type="button" class="btn btn-link text-left"
 							(click)="openModal(rolloverseason, 11)">Setup next season</button>
-					</div>
-				</div>
-			</div> -->
-
-			<!-- <div class="card border-info mb-3 ml-2 mr-2" style="max-width: 20rem;"
-				*ngIf="this.league?.stateId == 7 && this.league?.day >= 172">
-				<div class="card-header"><i class="fa fa-exchange fa-2x" aria-hidden="true"></i><span
-						class="header-card ml-3"><strong>Begin Playoffs</strong></span></div>
-				<div class="card-body">
-					<p class="card-text">Setup the playoffs and move the league into the Playoffs state.</p>
-					<div style="text-align: right;">
-						<button type="button" class="btn btn-link text-left" (click)="openModal(beginplayoffs, 5)">Begin
-							Playoffs</button>
 					</div>
 				</div>
 			</div> -->
@@ -713,23 +715,6 @@
 			<div class="modal-footer form-group text-center">
 				<button type="submit" class="btn btn-primary"
 					*ngIf="this.gamesAllRun == 1 && this.run == 0">Select</button>
-				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
-			</div>
-		</form>
-	</ng-template> -->
-
-<!-- 
-	<ng-template #beginplayoffs>
-		<div class="modal-header">
-			<h4 class="modal-title">Begin the Playoffs</h4>
-			<button type="button" class="close pull-right" (click)="modalRef.hide()">&times;</button>
-		</div>
-		<form #draftlotteryForm (ngSubmit)="beginPlayoffs()">
-			<div class="modal-body">
-				<p>Setup and begin the season's playoffs</p>
-			</div>
-			<div class="modal-footer form-group text-center">
-				<button type="submit" class="btn btn-primary">Begin</button>
 				<button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancel</button>
 			</div>
 		</form>

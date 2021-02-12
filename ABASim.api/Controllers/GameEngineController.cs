@@ -723,17 +723,17 @@ namespace ABASim.api.Controllers
                         break;
                     case 4:
                         _homeDRebStrategy = _homeDRebStrategy + 50;
-                        _awaySpeedStrategy = _awaySpeedStrategy + -50;
+                        _awaySpeedStrategy = _awaySpeedStrategy - 20;
                         break;
                     case 5:
-                        _homeSpeedStrategy = _homeSpeedStrategy + -50;
+                        _homeSpeedStrategy = _homeSpeedStrategy - 35;
                         _homeDRebStrategy = _homeDRebStrategy + 30;
                         _homeStaminaStrategy = _homeStaminaStrategy + 20;
                         _awayStaminaStrategy = _awayStaminaStrategy + 20;
                         break;
                     case 6:
-                        _awayTwoPercentageStrategy = _awayTwoPercentageStrategy + -25;
-                        _awayThreePercentageStrategy = _awayThreePercentageStrategy + -25;
+                        _awayTwoPercentageStrategy = _awayTwoPercentageStrategy + 20;
+                        _awayThreePercentageStrategy = _awayThreePercentageStrategy + 20;
                         _homeBlockStrategy = _homeBlockStrategy + 10;
                         _awayFoulsDrawnStrategy = _awayFoulsDrawnStrategy + 15;
                         break;
@@ -794,17 +794,17 @@ namespace ABASim.api.Controllers
                         break;
                     case 4:
                         _awayDRebStrategy = _awayDRebStrategy + 50;
-                        _homeSpeedStrategy = _homeSpeedStrategy + -50;
+                        _homeSpeedStrategy = _homeSpeedStrategy - 20;
                         break;
                     case 5:
-                        _homeSpeedStrategy = _homeSpeedStrategy + -50;
+                        _homeSpeedStrategy = _homeSpeedStrategy - 35;
                         _homeDRebStrategy = _homeDRebStrategy + 30;
                         _homeStaminaStrategy = _homeStaminaStrategy + 20;
                         _awayStaminaStrategy = _awayStaminaStrategy + 20;
                         break;
                     case 6:
-                        _homeTwoPercentageStrategy = _homeTwoPercentageStrategy + -25;
-                        _homeThreePercentageStrategy = _homeThreePercentageStrategy + -25;
+                        _homeTwoPercentageStrategy = _homeTwoPercentageStrategy + 20;
+                        _homeThreePercentageStrategy = _homeThreePercentageStrategy + 20;
                         _awayBlockStrategy = _awayBlockStrategy + 10;
                         _homeFoulsDrawnStrategy = _homeFoulsDrawnStrategy + 15;
                         break;
