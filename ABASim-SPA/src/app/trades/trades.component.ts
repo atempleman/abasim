@@ -8,7 +8,7 @@ import { Team } from '../_models/team';
 import { Player } from '../_models/player';
 import { TransferService } from '../_services/transfer.service';
 import { Trade } from '../_models/trade';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { TradeMessage } from '../_models/tradeMessage';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TeamDraftPick } from '../_models/teamDraftPick';

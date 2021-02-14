@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SimGame } from '../_models/simGame';
 import { GameEngineService } from '../_services/game-engine.service';
 import { AlertifyService } from '../_services/alertify.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { BoxScore } from '../_models/boxScore';
 
 @Component({

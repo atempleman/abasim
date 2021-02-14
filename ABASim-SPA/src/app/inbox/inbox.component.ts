@@ -7,7 +7,7 @@ import { AuthService } from '../_services/auth.service';
 import { Team } from '../_models/team';
 import { InboxMessage } from '../_models/inboxMessage';
 import { ContactService } from '../_services/contact.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import {formatDate} from '@angular/common';
 
 @Component({

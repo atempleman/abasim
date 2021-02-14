@@ -9,7 +9,7 @@ import { AuthService } from '../_services/auth.service';
 import { Team } from '../_models/team';
 import { Router } from '@angular/router';
 import { TransferService } from '../_services/transfer.service';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { SignedPlayer } from '../_models/signedPlayer';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerInjury } from '../_models/playerInjury';

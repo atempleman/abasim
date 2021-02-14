@@ -11,7 +11,7 @@ import { DraftPick } from '../_models/draftPick';
 import { AuthService } from '../_services/auth.service';
 import { DraftTracker } from '../_models/draftTracker';
 import { DraftPlayer } from '../_models/draftPlayer';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { PlayerService } from '../_services/player.service';
 import { DraftSelection } from '../_models/draftSelection';
 import { AdminService } from '../_services/admin.service';

@@ -7,7 +7,7 @@ import { TeamService } from '../_services/team.service';
 import { League } from '../_models/league';
 import { Team } from '../_models/team';
 import { ExtendedPlayer } from '../_models/extendedPlayer';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { WaivedPlayer } from '../_models/waivedPlayer';
 import { TransferService } from '../_services/transfer.service';
 import { PlayerInjury } from '../_models/playerInjury';

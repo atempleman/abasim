@@ -9,7 +9,7 @@ import { League } from '../_models/league';
 import { LeagueService } from '../_services/league.service';
 import { DraftTracker } from '../_models/draftTracker';
 import { InitialDraftPicks } from '../_models/initialDraftPicks';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DraftPlayer } from '../_models/draftPlayer';
 import { DraftSelection } from '../_models/draftSelection';
 import { Player } from '../_models/player';

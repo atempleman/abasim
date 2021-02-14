@@ -11,7 +11,7 @@ import { TransferService } from '../_services/transfer.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DraftTracker } from '../_models/draftTracker';
 import { InitialDraftPicks } from '../_models/initialDraftPicks';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AdminService } from '../_services/admin.service';
 import { DraftSelection } from '../_models/draftSelection';
 import { LeagueService } from '../_services/league.service';

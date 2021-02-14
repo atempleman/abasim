@@ -1,0 +1,88 @@
+/*--------------------------------------------------------------
+	Navbar
+--------------------------------------------------------------*/
+.navbar-custom {
+    background-color: rgba(10, 10, 10, 0.9);
+    border: 0;
+    border-radius: 0;
+    z-index: 1000;
+    font-family: "Roboto Condensed", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 10px;
+    transition: background, padding 0.4s ease-in-out 0s;
+  }
+  
+  .navbar a {
+    transition: color 0.125s ease-in-out 0s;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  
+  .navbar-custom .dropdown-menu {
+    background: rgba(26, 26, 26, 0.9);
+    border-radius: 0;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+  
+  /* The title text css */
+  .navbar-custom .navbar-brand {
+    letter-spacing: 3px;
+    font-weight: 130;
+    font-size: 16px;
+    color: #fff;
+  }
+  
+  /* Colouring for the menu links */
+  .navbar-custom .nav li > a {
+    position: relative;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  /* .navbar-custom .dropdown-menu > li > a {
+    border-bottom: 1px solid rgba(73, 71, 71, 0.15) !important;
+    padding: 11px 15px;
+    letter-spacing: 2px;
+    color: #999;
+  } */
+  
+  /* .navbar-custom .dropdown-menu .dropdown-menu {
+    border-left: 1px solid rgba(73, 71, 71, 0.15);
+    left: 100%;
+    right: auto;
+    top: 0;
+    margin-top: 0;
+  } */
+  
+  /* .navbar-custom .dropdown-menu.left-side .dropdown-menu {
+    border: 0;
+    border-right: 1px solid rgba(73, 71, 71, 0.15);
+    right: 100%;
+    left: auto;
+  } */
+  
+  /* This is the hover colour - dropdown-menu */
+  .navbar-custom .nav > li > a:focus,
+  .navbar-custom .nav > li > a:hover,
+  .navbar-custom .nav .open > a,
+  .navbar-custom .nav .open > a:focus,
+  .navbar-custom .nav .open > a:hover
+  /*, .navbar-custom .dropdown-menu > li > a:focus,
+  .navbar-custom .dropdown-menu > li > a:hover  */
+  {
+    background: none;
+    color: rgb(255, 255, 255);
+  }
+  
+  .navbar-custom .navbar-toggle .icon-bar {
+    background: #fff;
+  }
+
+  .logo-image {
+    position: relative;
+    overflow: hidden;
+    width: 8%;
+    height:8%;
+  }

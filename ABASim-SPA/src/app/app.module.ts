@@ -2,7 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BsDropdownModule, ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { ModalModule, BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
@@ -103,6 +104,7 @@ export function tokenGetter() {
       BrowserModule,
       AppRoutingModule,
       HttpClientModule,
+      // CollapseModule.forRoot(),
       FormsModule,
       NgxSpinnerModule,
       NgbCollapseModule,

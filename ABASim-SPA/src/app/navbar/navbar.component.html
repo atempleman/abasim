@@ -1,7 +1,151 @@
+<!-- <nav class="navbar navbar-custom navbar-fixed-top navbar-transparent" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#custom-collapse">
+        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand">KLUTCH FANTASY BASKETBALL</a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" >
+          <a class="nav-link" [routerLink]="['/dashboard']">Dashboard</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav> -->
+
 <!-- navbar-dark bg-primary -->
-<nav class="navbar navbar-expand-lg ml-2 mr-2"  
-[style.background-color]="'rgb(' + primaryColor + ')'">
-  <a class="navbar-brand" [routerLink]="['/home']" routerLinkActive="router-link-active">ABA Basketball</a>
+<!-- <nav class="navbar navbar-custom navbar-fixed-top navbar-transparent" role="navigation">
+  <div class="container">
+    <div class="navbar-header"> -->
+      <!-- <a class="navbar-brand"><img class="logo-image" src="assets\images\branding\kfb_logo.png" alt="Logo"/> KLUTCH FANTASY BASKETBALL</a> -->
+      <!-- <a class="navbar-brand" href="#">Dashboard</a>
+      <button class="navbar-toggler d-lg-none" type="button" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="navbarsExampleDefault" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
+        <ul class="navbar-nav mr-auto">
+          <li class="dropdown active">
+            <a href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="dropdown">
+            <a href="#">Settings</a>
+          </li>
+          <li class="dropdown">
+            <a href="#">Profile</a>
+          </li>
+          <li class="dropdown">
+            <a href="#">Help</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav> -->
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand"><img class="logo-image" src="assets\images\branding\kfb_logo.png" alt="Logo"/> KLUTCH FANTASY BASKETBALL</a>
+  <button class="navbar-toggler d-lg-none" type="button" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="navbarsExampleDefault" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
+    <!-- <div class="nav navbar-nav navbar-right"> -->
+    <ul class="navbar-nav">
+    <!-- class="navbar-nav mr-auto"> -->
+      <li class="nav-item" *ngIf="loggedIn()" >
+        <a class="nav-link" [routerLink]="['/dashboard']">Dashboard</a>
+        <!-- <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a> -->
+      </li>
+      <li class="nav-item" *ngIf="loggedIn()" >
+        <a class="nav-link" [routerLink]="['/playoffs']" *ngIf="this.league?.stateId > 7">Playoffs</a>
+      </li>
+      <li class="nav-item" *ngIf="loggedIn() && this.league?.stateId != 1">
+        <a class="nav-link" [routerLink]="['/league']">League</a>
+      </li>
+      <li class="nav-item" *ngIf="loggedIn()" >
+        <a class="nav-link" [routerLink]="['/team']">Team</a>
+      </li>
+      <!-- <li class="nav-item" *ngIf="loggedIn()">
+        <a class="nav-link" [routerLink]="['/players']">Players</a>
+      </li> -->
+      <li class="nav-item" *ngIf="loggedIn() && (this.league?.stateId < 7 || this.league?.stateId > 11)">
+        <a class="nav-link" [routerLink]="['/draft']">Draft</a>
+      </li>
+      <li class="nav-item" *ngIf="loggedIn()">
+        <a class="nav-link" [routerLink]="['/inbox']">Inbox
+          <span class="badge badge-warning" *ngIf="this.countOfMessages?.countOfMessages != 0">( {{ this.countOfMessages?.countOfMessages }} )</span>
+          <span *ngIf="this.countOfMessages?.countOfMessages == 0">( 0 )</span>
+        </a>  
+      </li>
+      <li class="nav-item" *ngIf="loggedIn() && this.isAdmin == 1">
+        <a class="nav-link" [routerLink]="['/admin']" *ngIf="this.isAdmin == 1">Admin</a>
+      </li>
+      <li class="nav-item" *ngIf="loggedIn()">
+        <a class="nav-link" [routerLink]="" (click)="logout()">Logout</a>
+      </li>
+    </ul>
+    <!-- </div> -->
+  </div>
+</nav>
+
+<!-- <nav class="navbar navbar-custom navbar-expand navbar-fixed-top navbar-transparent" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand"><img class="logo-image" src="assets\images\branding\kfb_logo.png" alt="Logo"/> KLUTCH FANTASY BASKETBALL</a>
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#custom-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+  </div>
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault"> -->
+   <!-- [ngbCollapse]="isCollapsed"> -->
+    <!-- <div class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a *ngIf="loggedIn()" [routerLink]="['/dashboard']">Dashboard</a>
+      </li>
+      <li class="dropdown">
+        <a [routerLink]="['/league']">League</a>
+      </li>
+      <li class="dropdown" *ngIf="loggedIn()">
+        <a [routerLink]="['/playoffs']" *ngIf="this.league?.stateId > 7">Playoffs</a>
+      </li>
+      <li class="dropdown" *ngIf="loggedIn()">
+        <a [routerLink]="['/team']">Team</a>
+      </li>
+      <li class="dropdown" *ngIf="loggedIn()">
+        <a [routerLink]="['/players']">Players</a>
+      </li>
+      <li class="dropdown" *ngIf="loggedIn() && (this.league?.stateId < 7 || this.league?.stateId > 11)">
+        <a [routerLink]="['/draft']">Draft</a>
+      </li>
+      <li class="dropdown" *ngIf="loggedIn()">
+        <a [routerLink]="['/inbox']">Inbox
+          <span class="badge badge-warning" *ngIf="this.countOfMessages?.countOfMessages != 0">( {{ this.countOfMessages?.countOfMessages }} )</span>
+          <span *ngIf="this.countOfMessages?.countOfMessages == 0">( 0 )</span>
+        </a>      
+      </li>
+      <li class="dropdown" *ngIf="loggedIn() && this.isAdmin == 1">
+        <a [routerLink]="['/admin']" *ngIf="this.isAdmin == 1">Admin</a>
+      </li>
+      <li class="dropdown" *ngIf="loggedIn()">
+        <a [routerLink]="" (click)="logout()">Logout</a>
+      </li>
+    </div>
+  </div>
+</nav> -->
+
+<!-- navbar-dark bg-primary -->
+<!-- <nav class="navbar navbar-custom navbar-expand-lg navbar-fixed-top navbar-transparent" role="navigation">
+
+  <a class="navbar-brand" [routerLink]="['/home']" routerLinkActive="router-link-active">KLTUCH FANTASY BASKETBALL</a>
   <button class="navbar-toggler d-lg-none" type="button" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="navbarsExampleDefault" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -40,4 +184,4 @@
       </li>
     </ul>
   </div>
-</nav>
+</nav> -->

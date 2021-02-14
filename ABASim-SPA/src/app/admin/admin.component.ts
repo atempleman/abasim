@@ -4,7 +4,7 @@ import { League } from '../_models/league';
 import { AuthService } from '../_services/auth.service';
 import { LeagueService } from '../_services/league.service';
 import { AlertifyService } from '../_services/alertify.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LeagueState } from '../_models/leagueState';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AdminService } from '../_services/admin.service';
