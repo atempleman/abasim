@@ -310,33 +310,33 @@ namespace ABASim.api.Data
 
                                 // This is where the day needs to be determined
                                 int nextGameDay = 0;
-                                if (league.day == 219)
+                                if (league.Day == 219)
                                 {
                                     // Game 2
                                     nextGameDay = 220;
-                                } else if (league.day = 221)
+                                } else if (league.Day == 221)
                                 {
                                     // Game 3
                                     nextGameDay = 223;
-                                } else if (league.day = 224)
+                                } else if (league.Day == 225)
                                 {
                                     // Game 4
-                                    nextGameDay = 226
-                                } else if (league.day = 227)
+                                    nextGameDay = 226;
+                                } else if (league.Day == 228)
                                 {
                                     // Game 5
                                     nextGameDay = 229;
-                                } else if (league.day = 230)
+                                } else if (league.Day == 230)
                                 {
                                     // Game 6
                                     nextGameDay = 231;
-                                } else if (league.day = 232)
+                                } else if (league.Day == 232)
                                 {
                                     // Game 7
                                     nextGameDay = 233;
                                 }
 
-                                if (totalGamesPlayed == 3 || totalGamesPlayed == 4 || totalGamesPlayed == 6)
+                                if (totalGamesPlayed == 2 || totalGamesPlayed == 3 || totalGamesPlayed == 5)
                                 {
                                     homeTeamId = series.AwayTeamId;
                                     awayTeamId = series.HomeTeamId;
@@ -510,8 +510,10 @@ namespace ABASim.api.Data
             // Preseaon - just rollover day
             // league.Day = league.Day + 1;
             // }
-
-            league.Day = league.Day + 1;
+            if (league.StateId != 8)
+            {
+                league.Day = league.Day + 1;
+            }
 
             // Need to do the free agency checks here - TODO
             await FreeAgentDecisionMaking();
@@ -1047,6 +1049,7 @@ namespace ABASim.api.Data
             // Change the League State Id to 8
             await UpdateLeagueState(8);
 
+            var league = await _context.Leagues.FirstOrDefaultAsync();
             // Need to check the injuries and update appropriately
             await DailyInjuriesUpdate(league.StateId, league.Day);
 
