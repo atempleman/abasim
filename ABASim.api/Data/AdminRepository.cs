@@ -347,11 +347,6 @@ namespace ABASim.api.Data
                                     awayTeamId = series.AwayTeamId;
                                 }
 
-                                if (totalGamesPlayed == 2 || totalGamesPlayed == 4)
-                                {
-                                    nextGameDay = nextGameDay + 1;
-                                }
-
                                 SchedulesPlayoff sched = new SchedulesPlayoff
                                 {
                                     AwayTeamId = awayTeamId,

@@ -1,4 +1,4 @@
-.main-content {
+/* .main-content {
     position: relative;
     background: #696969;
     overflow: hidden;
@@ -34,7 +34,7 @@ ul {
     padding: 10px;
     border-radius: 10px;
     margin: 10px;
-    height: auto; /*550px; /* make this dynamic */
+    height: auto;
  }
  .card p {
     font-size: 18px;
@@ -48,4 +48,6 @@ ul {
     .card {
        width: 100%;
     }
- }
+ } */
+
+ 
